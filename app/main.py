@@ -14,8 +14,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from logic.ethics import evaluate_ethics
 from logic.nist import map_nist_functions
 
-# Display CHDS logo and credit
-st.image("https://www.chds.us/c/images/CHDS_header_logo.png", width=300)
+# ✅ Display CHDS logo from user's GitHub upload
+st.image("https://raw.githubusercontent.com/kimberapittman/Ethical-Cybersecurity-Tool/bf8587a118dea4f5c0a5f68c7cfa177802dc9a84/app/chds%20logo.jpg", width=300)
 st.caption("Built for the Center for Homeland Defense and Security Graduate Thesis")
 
 # Title and intro
