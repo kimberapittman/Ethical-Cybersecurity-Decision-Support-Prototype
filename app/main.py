@@ -1,4 +1,18 @@
 import streamlit as st
+import os
+import sys  # NEW
+
+# DEBUG
+st.write("🔍 Current working directory:", os.getcwd())
+
+# ✅ ADD THIS LINE to make the logic folder visible to Python
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+# Now your imports will work
+from logic.ethics import evaluate_ethics
+from logic.nist import map_nist_functions
+
+import streamlit as st
 import os  # 👈 add this if not already imported
 
 st.write("🔍 Current working directory:", os.getcwd())  # 👈 DEBUG LINE
