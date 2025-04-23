@@ -5,7 +5,7 @@ import sys
 st.set_page_config(
     page_title="Ethical Cybersecurity Decision Tool",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="collapsed",
     [theme]
 primaryColor = "#0A81AB"
 backgroundColor = "#FFFFFF"
