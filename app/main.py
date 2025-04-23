@@ -14,6 +14,10 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from logic.ethics import evaluate_ethics
 from logic.nist import map_nist_functions
 
+# Display CHDS logo and credit
+st.image("https://www.chds.us/c/images/CHDS_header_logo.png", width=300)
+st.caption("Built for the Center for Homeland Defense and Security Graduate Thesis")
+
 # Title and intro
 st.title("🛡️ Ethical Cybersecurity Decision Tool")
 
@@ -67,9 +71,8 @@ with col3:
 
 additional_constraints = st.text_area("Other constraint notes or political considerations:")
 
-# Ethical evaluation
-st.markdown("### 🧠 4. Ethical Evaluation")
-
+# Ethical Evaluation
+st.markdown("### 🧠 4. Ethical Evaluation (Principlist Framework)")
 with st.expander("🧭 What do these principles mean?"):
     st.markdown("""
 - **Beneficence** – Promote well-being and good outcomes.  
@@ -115,46 +118,3 @@ if st.button("🧾 Generate Case Summary"):
     - **NIST CSF Functions:** {', '.join(nist_functions)}
     - **Stakeholders:** {', '.join(stakeholders)}
     - **Values at Risk:** {', '.join(values)}
-    - **Constraints:** Budget: {budget}/10 | Legal: {legal}/10 | Staffing: {staffing}/10
-    - **Notes:** {additional_constraints}
-    """)
-
-# Justification generation
-st.markdown("### ✅ 6. Ethical Justification")
-
-if st.button("Generate Justification Narrative"):
-    ethical_summary = evaluate_ethics(
-        beneficence, non_maleficence, autonomy, justice, explicability
-    )
-    nist_summary = map_nist_functions(nist_functions)
-
-    result = f"""
-    ## Justification Narrative
-
-    **Incident Type:** {incident_type}  
-    **NIST CSF Functions Applied:** {nist_summary}  
-    **Incident Description:** {incident_description}  
-
-    **Stakeholders Impacted:** {", ".join(stakeholders)}  
-    **Public Values at Risk:** {", ".join(values)}  
-
-    **Constraints Considered:**  
-    - Budget: {budget}/10  
-    - Legal: {legal}/10  
-    - Staffing: {staffing}/10  
-    - Notes: {additional_constraints}  
-
-    **Ethical Evaluation Summary:**  
-    {ethical_summary}
-
-    ✅ This decision reflects principlist ethical reasoning, aligns with the NIST Cybersecurity Framework, and accounts for institutional constraints common in municipal environments.
-    """
-    st.success("✅ Justification generated!")
-    st.markdown(result)
-
-    st.download_button(
-        label="📄 Download Justification as .txt",
-        data=result,
-        file_name="ethical_justification.txt",
-        mime="text/plain"
-    )
