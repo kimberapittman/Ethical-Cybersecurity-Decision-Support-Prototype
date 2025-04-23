@@ -15,7 +15,7 @@ from logic.ethics import evaluate_ethics
 from logic.nist import map_nist_functions
 
 # ✅ CHDS logo hosted on Imgur
-st.image("https://i.imgur.com/1R7nuZ2.jpeg", use_container_width=True)
+st.image("https://i.imgur.com/1R7nuZ2.jpeg", width=500)
 st.caption("Center for Homeland Defense and Security")
 
 # Title and intro
