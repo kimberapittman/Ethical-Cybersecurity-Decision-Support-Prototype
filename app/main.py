@@ -2,43 +2,53 @@ import streamlit as st
 import os
 import sys
 
-# ✅ Set Streamlit page config first
-st.set_page_config(page_title="Ethical Cybersecurity Decision Tool", layout="wide")
+# 🌐 Streamlit layout config
+st.set_page_config(
+    page_title="Ethical Cybersecurity Decision Tool",
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
 
-# ✅ Add logic/ folder to Python path
+# 📁 Fix import path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
-# ✅ Import modules from logic/
 from logic.ethics import evaluate_ethics
 from logic.nist import map_nist_functions
 
-# App title
-st.title("🛡️ Ethical Decision-Support Tool for Municipal Cybersecurity")
+# 🧭 Intro
+st.title("🛡️ Ethical Cybersecurity Decision Tool")
 
-# 1. Incident Overview
-st.header("1. Incident Overview")
-incident_type = st.selectbox("Select the type of cybersecurity incident:", [
+with st.expander("ℹ️ About this tool"):
+    st.markdown("""
+    This tool helps municipal cybersecurity professionals navigate high-stakes ethical decisions using:
+    - 🧠 Principlist ethics
+    - 🔐 NIST Cybersecurity Framework (CSF)
+    - ⚖️ Real-world municipal constraints  
+    Built for a graduate thesis at the Center for Homeland Defense and Security.
+    """)
+
+# 📌 Incident Details
+st.markdown("### 🚨 1. Incident Overview")
+incident_type = st.selectbox("Type of Cybersecurity Incident", [
     "Phishing Attack", "Ransomware", "Unauthorized Access", "Data Breach", "Other"
 ])
 
-# ✅ NIST CSF expander
-st.markdown("**Select the NIST Cybersecurity Framework (CSF) functions involved:**")
-with st.expander("🧭 What do these functions mean?"):
+with st.expander("🧭 What are NIST CSF functions?"):
     st.markdown("""
-- **Identify**: Understand the organization to manage cybersecurity risk.
-- **Protect**: Safeguard critical infrastructure services.
-- **Detect**: Discover cybersecurity events in a timely manner.
-- **Respond**: Take action once an event is detected.
-- **Recover**: Restore capabilities or services impaired due to an incident.
+- **Identify** – Understand risks to systems, assets, data.
+- **Protect** – Safeguard delivery of critical services.
+- **Detect** – Discover cybersecurity events.
+- **Respond** – Act on detected incidents.
+- **Recover** – Restore systems and services.
 """)
 
-nist_functions = st.multiselect("Choose relevant NIST CSF functions:", [
+nist_functions = st.multiselect("NIST CSF Functions Involved", [
     "Identify", "Protect", "Detect", "Respond", "Recover"
 ])
-incident_description = st.text_area("Describe the incident briefly:")
 
-# 2. Stakeholders & Values
-st.header("2. Stakeholders & Public Values at Risk")
+incident_description = st.text_area("Briefly describe the incident:")
+
+# 👥 Stakeholders & Values
+st.markdown("### 👥 2. Stakeholders & Public Values at Risk")
 stakeholders = st.multiselect("Who is impacted?", [
     "Residents", "City Employees", "Vendors", "City Council", "Media", "Others"
 ])
@@ -46,48 +56,50 @@ values = st.multiselect("What public values are at risk?", [
     "Privacy", "Transparency", "Trust", "Safety", "Equity", "Autonomy"
 ])
 
-# 3. Constraints Assessment
-st.header("3. Constraints Assessment")
-budget = st.slider("Budget Constraint", 0, 10, 5)
-legal = st.slider("Legal/Regulatory Constraint", 0, 10, 5)
-staffing = st.slider("Staffing Constraint", 0, 10, 5)
-additional_constraints = st.text_area("Additional notes on constraints:")
+# ⚖️ Constraints
+st.markdown("### ⚖️ 3. Constraints Assessment")
+col1, col2, col3 = st.columns(3)
+with col1:
+    budget = st.slider("💰 Budget", 0, 10, 5)
+with col2:
+    legal = st.slider("⚖️ Legal", 0, 10, 5)
+with col3:
+    staffing = st.slider("👥 Staffing", 0, 10, 5)
 
-# 4. Ethical Evaluation with expander
-st.header("4. Ethical Evaluation (Principlist Framework)")
+additional_constraints = st.text_area("Other constraint notes or political considerations:")
+
+# 💡 Ethics
+st.markdown("### 🧠 4. Ethical Evaluation")
+
 with st.expander("🧭 What do these principles mean?"):
     st.markdown("""
-These ethical principles are adapted from biomedical ethics and applied to cybersecurity:
-
-- **Beneficence** – Promote public good. Ask: *Who benefits from this action?*
-- **Non-maleficence** – Avoid causing harm. Ask: *Who could be negatively impacted?*
-- **Autonomy** – Respect individuals' rights. Ask: *Are we respecting informed choice and consent?*
-- **Justice** – Ensure fairness. Ask: *Are burdens and benefits distributed equitably?*
-- **Explicability** – Ensure transparency. Ask: *Can we clearly explain this decision to the public?*
+- **Beneficence** – Promote well-being and good outcomes.  
+- **Non-maleficence** – Avoid harm.  
+- **Autonomy** – Respect individual rights and choices.  
+- **Justice** – Ensure fairness and equity.  
+- **Explicability** – Be transparent and accountable.
 """)
 
-beneficence = st.text_area("Beneficence – How does this action promote good?")
-non_maleficence = st.text_area("Non-maleficence – How does it avoid harm?")
-autonomy = st.text_area("Autonomy – Are rights and choices respected?")
-justice = st.text_area("Justice – Are burdens and benefits fairly distributed?")
-explicability = st.text_area("Explicability – Can the decision be clearly explained?")
+beneficence = st.text_area("💡 Beneficence – How does this action promote good?")
+non_maleficence = st.text_area("🚫 Non-maleficence – How does it avoid harm?")
+autonomy = st.text_area("🧍 Autonomy – Are rights and choices respected?")
+justice = st.text_area("⚖️ Justice – Are burdens/benefits fairly distributed?")
+explicability = st.text_area("🔍 Explicability – Can the decision be clearly explained?")
 
-# 5. Generate Case Summary
-if st.button("Generate Case Summary"):
-    summary = f"""
+# 📝 Case Summary
+if st.button("🧾 Generate Case Summary"):
+    st.markdown(f"""
     ### 📝 Case Summary
-
     - **Incident Type:** {incident_type}
     - **NIST CSF Functions:** {', '.join(nist_functions)}
-    - **Public Values at Risk:** {', '.join(values)}
     - **Stakeholders:** {', '.join(stakeholders)}
+    - **Values at Risk:** {', '.join(values)}
     - **Constraints:** Budget: {budget}/10 | Legal: {legal}/10 | Staffing: {staffing}/10
     - **Notes:** {additional_constraints}
-    """
-    st.markdown(summary)
+    """)
 
-# 6. Generate Justification Narrative
-st.header("5. Generate Ethical Justification")
+# ✅ Justification Narrative
+st.markdown("### ✅ 5. Ethical Justification")
 
 if st.button("Generate Justification Narrative"):
     ethical_summary = evaluate_ethics(
@@ -109,16 +121,17 @@ if st.button("Generate Justification Narrative"):
     - Budget: {budget}/10  
     - Legal: {legal}/10  
     - Staffing: {staffing}/10  
-    - Notes: {additional_constraints}  
+    - Additional Notes: {additional_constraints}  
 
     **Ethical Evaluation Summary:**  
     {ethical_summary}
 
-    ✅ This decision reflects principlist ethical reasoning, aligns with the NIST Cybersecurity Framework, and accounts for institutional constraints common in municipal environments.
+    ✅ This decision reflects principlist ethical reasoning, aligns with the NIST Cybersecurity Framework, and accounts for municipal constraints.
     """
+    st.success("✅ Justification generated!")
     st.markdown(result)
 
-    # ✅ Download button to export result as .txt
+    # Export as TXT
     st.download_button(
         label="📄 Download Justification as .txt",
         data=result,
