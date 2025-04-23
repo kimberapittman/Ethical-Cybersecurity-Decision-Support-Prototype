@@ -21,7 +21,7 @@ incident_type = st.selectbox("Select the type of cybersecurity incident:", [
     "Phishing Attack", "Ransomware", "Unauthorized Access", "Data Breach", "Other"
 ])
 
-# ✅ Enhanced NIST CSF section with descriptions
+# ✅ Enhanced NIST CSF explanation
 st.markdown("**Select the NIST Cybersecurity Framework (CSF) functions involved:**")
 with st.expander("🧭 What do these functions mean?"):
     st.markdown("""
@@ -29,7 +29,7 @@ with st.expander("🧭 What do these functions mean?"):
 - **Protect**: Safeguard critical infrastructure services.
 - **Detect**: Discover cybersecurity events in a timely manner.
 - **Respond**: Take action once an event is detected.
-- **Recover**: Restore any capabilities or services impaired due to an incident.
+- **Recover**: Restore capabilities or services impaired due to an incident.
 """)
 
 nist_functions = st.multiselect("Choose relevant NIST CSF functions:", [
@@ -53,8 +53,19 @@ legal = st.slider("Legal/Regulatory Constraint", 0, 10, 5)
 staffing = st.slider("Staffing Constraint", 0, 10, 5)
 additional_constraints = st.text_area("Additional notes on constraints:")
 
-# 4. Ethical Evaluation
+# 4. Ethical Evaluation (with explanation)
 st.header("4. Ethical Evaluation (Principlist Framework)")
+with st.expander("🧭 What do these principles mean?"):
+    st.markdown("""
+These ethical principles are adapted from biomedical ethics and applied to cybersecurity decision-making:
+
+- **Beneficence** – Promote public good. Ask: *Who benefits from this action?*
+- **Non-maleficence** – Avoid causing harm. Ask: *Who could be negatively impacted?*
+- **Autonomy** – Respect individuals' rights. Ask: *Are we respecting informed choice and consent?*
+- **Justice** – Ensure fairness. Ask: *Are burdens and benefits distributed equitably?*
+- **Explicability** – Ensure transparency. Ask: *Can we clearly explain this decision to the public?*
+""")
+
 beneficence = st.text_area("Beneficence – How does this action promote good?")
 non_maleficence = st.text_area("Non-maleficence – How does it avoid harm?")
 autonomy = st.text_area("Autonomy – Are rights and choices respected?")
