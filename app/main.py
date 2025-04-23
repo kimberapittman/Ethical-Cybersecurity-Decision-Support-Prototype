@@ -7,6 +7,12 @@ st.set_page_config(
     page_title="Ethical Cybersecurity Decision Tool",
     layout="wide",
     initial_sidebar_state="collapsed"
+    [theme]
+primaryColor = "#0A81AB"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F5F7FA"
+textColor = "#1E1E1E"
+font = "sans serif"
 )
 
 # 📁 Fix import path
