@@ -1,24 +1,20 @@
 import streamlit as st
 import os
 import sys
-# 🌐 Streamlit layout config
+
+# Set page layout
 st.set_page_config(
     page_title="Ethical Cybersecurity Decision Tool",
     layout="wide",
-    initial_sidebar_state="collapsed",
-    [theme],
-primaryColor = "#0A81AB"
-backgroundColor = "#FFFFFF"
-secondaryBackgroundColor = "#F5F7FA"
-textColor = "#1E1E1E"
-font = "sans serif"
+    initial_sidebar_state="collapsed"
 )
-# 📁 Fix import path
+
+# Fix import path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from logic.ethics import evaluate_ethics
 from logic.nist import map_nist_functions
 
-# 🧭 Intro
+# Title and intro
 st.title("🛡️ Ethical Cybersecurity Decision Tool")
 
 with st.expander("ℹ️ About this tool"):
@@ -30,7 +26,7 @@ with st.expander("ℹ️ About this tool"):
     Built for a graduate thesis at the Center for Homeland Defense and Security.
     """)
 
-# 📌 Incident Details
+# Incident Overview
 st.markdown("### 🚨 1. Incident Overview")
 incident_type = st.selectbox("Type of Cybersecurity Incident", [
     "Phishing Attack", "Ransomware", "Unauthorized Access", "Data Breach", "Other"
@@ -48,10 +44,9 @@ with st.expander("🧭 What are NIST CSF functions?"):
 nist_functions = st.multiselect("NIST CSF Functions Involved", [
     "Identify", "Protect", "Detect", "Respond", "Recover"
 ])
-
 incident_description = st.text_area("Briefly describe the incident:")
 
-# 👥 Stakeholders & Values
+# Stakeholders and Values
 st.markdown("### 👥 2. Stakeholders & Public Values at Risk")
 stakeholders = st.multiselect("Who is impacted?", [
     "Residents", "City Employees", "Vendors", "City Council", "Media", "Others"
@@ -60,7 +55,7 @@ values = st.multiselect("What public values are at risk?", [
     "Privacy", "Transparency", "Trust", "Safety", "Equity", "Autonomy"
 ])
 
-# ⚖️ Constraints
+# Constraints
 st.markdown("### ⚖️ 3. Constraints Assessment")
 col1, col2, col3 = st.columns(3)
 with col1:
@@ -72,7 +67,7 @@ with col3:
 
 additional_constraints = st.text_area("Other constraint notes or political considerations:")
 
-# 💡 Ethics
+# Ethical evaluation
 st.markdown("### 🧠 4. Ethical Evaluation")
 
 with st.expander("🧭 What do these principles mean?"):
@@ -90,7 +85,29 @@ autonomy = st.text_area("🧍 Autonomy – Are rights and choices respected?")
 justice = st.text_area("⚖️ Justice – Are burdens/benefits fairly distributed?")
 explicability = st.text_area("🔍 Explicability – Can the decision be clearly explained?")
 
-# 📝 Case Summary
+# Tension scoring
+def calculate_ethics_tension():
+    constraint_score = (budget + legal + staffing) * 2
+    values_score = len(values) * 5
+    stakeholder_score = len(stakeholders) * 3
+    empty_ethics_fields = sum(not bool(field.strip()) for field in [
+        beneficence, non_maleficence, autonomy, justice, explicability])
+    ethics_penalty = empty_ethics_fields * 5
+    total_score = constraint_score + values_score + stakeholder_score + ethics_penalty
+    return min(total_score, 100)
+
+st.markdown("### 🔍 5. Ethical Tension Score")
+score = calculate_ethics_tension()
+st.progress(score)
+
+if score < 30:
+    st.success("🟢 Low ethical tension – decision environment is relatively clear.")
+elif score < 70:
+    st.warning("🟠 Moderate ethical tension – consider documenting your justification carefully.")
+else:
+    st.error("🔴 High ethical tension – review stakeholder impacts and public values closely.")
+
+# Case Summary
 if st.button("🧾 Generate Case Summary"):
     st.markdown(f"""
     ### 📝 Case Summary
@@ -102,8 +119,8 @@ if st.button("🧾 Generate Case Summary"):
     - **Notes:** {additional_constraints}
     """)
 
-# ✅ Justification Narrative
-st.markdown("### ✅ 5. Ethical Justification")
+# Justification generation
+st.markdown("### ✅ 6. Ethical Justification")
 
 if st.button("Generate Justification Narrative"):
     ethical_summary = evaluate_ethics(
@@ -125,17 +142,16 @@ if st.button("Generate Justification Narrative"):
     - Budget: {budget}/10  
     - Legal: {legal}/10  
     - Staffing: {staffing}/10  
-    - Additional Notes: {additional_constraints}  
+    - Notes: {additional_constraints}  
 
     **Ethical Evaluation Summary:**  
     {ethical_summary}
 
-    ✅ This decision reflects principlist ethical reasoning, aligns with the NIST Cybersecurity Framework, and accounts for municipal constraints.
+    ✅ This decision reflects principlist ethical reasoning, aligns with the NIST Cybersecurity Framework, and accounts for institutional constraints common in municipal environments.
     """
     st.success("✅ Justification generated!")
     st.markdown(result)
 
-    # Export as TXT
     st.download_button(
         label="📄 Download Justification as .txt",
         data=result,
