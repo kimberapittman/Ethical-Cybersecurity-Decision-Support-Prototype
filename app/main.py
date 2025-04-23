@@ -1,5 +1,22 @@
 import streamlit as st
 import os
+import sys
+
+# ✅ MUST BE FIRST
+st.set_page_config(page_title="Ethical Cybersecurity Decision Tool", layout="wide")
+
+# Debug line (optional after config)
+st.write("🔍 Current working directory:", os.getcwd())
+
+# ✅ Fix Python path for logic folder
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+# Now safe to import
+from logic.ethics import evaluate_ethics
+from logic.nist import map_nist_functions
+
+import streamlit as st
+import os
 import sys  # NEW
 
 # DEBUG
