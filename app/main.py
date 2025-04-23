@@ -1,3 +1,7 @@
+import streamlit as st
+import os  # 👈 add this if not already imported
+
+st.write("🔍 Current working directory:", os.getcwd())  # 👈 DEBUG LINE
 
 import streamlit as st
 from logic.ethics import evaluate_ethics
