@@ -2,13 +2,13 @@ import streamlit as st
 import os
 import sys
 
-# ✅ MUST be the first Streamlit command
+# ✅ Set Streamlit page config first
 st.set_page_config(page_title="Ethical Cybersecurity Decision Tool", layout="wide")
 
-# ✅ Ensure logic/ is importable
+# ✅ Add logic/ folder to Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-# ✅ Import logic modules
+# ✅ Import modules from logic/
 from logic.ethics import evaluate_ethics
 from logic.nist import map_nist_functions
 
@@ -21,7 +21,7 @@ incident_type = st.selectbox("Select the type of cybersecurity incident:", [
     "Phishing Attack", "Ransomware", "Unauthorized Access", "Data Breach", "Other"
 ])
 
-# ✅ Enhanced NIST CSF explanation
+# ✅ NIST CSF expander
 st.markdown("**Select the NIST Cybersecurity Framework (CSF) functions involved:**")
 with st.expander("🧭 What do these functions mean?"):
     st.markdown("""
@@ -37,7 +37,7 @@ nist_functions = st.multiselect("Choose relevant NIST CSF functions:", [
 ])
 incident_description = st.text_area("Describe the incident briefly:")
 
-# 2. Stakeholder and Value Mapping
+# 2. Stakeholders & Values
 st.header("2. Stakeholders & Public Values at Risk")
 stakeholders = st.multiselect("Who is impacted?", [
     "Residents", "City Employees", "Vendors", "City Council", "Media", "Others"
@@ -53,11 +53,11 @@ legal = st.slider("Legal/Regulatory Constraint", 0, 10, 5)
 staffing = st.slider("Staffing Constraint", 0, 10, 5)
 additional_constraints = st.text_area("Additional notes on constraints:")
 
-# 4. Ethical Evaluation (with explanation)
+# 4. Ethical Evaluation with expander
 st.header("4. Ethical Evaluation (Principlist Framework)")
 with st.expander("🧭 What do these principles mean?"):
     st.markdown("""
-These ethical principles are adapted from biomedical ethics and applied to cybersecurity decision-making:
+These ethical principles are adapted from biomedical ethics and applied to cybersecurity:
 
 - **Beneficence** – Promote public good. Ask: *Who benefits from this action?*
 - **Non-maleficence** – Avoid causing harm. Ask: *Who could be negatively impacted?*
@@ -72,7 +72,21 @@ autonomy = st.text_area("Autonomy – Are rights and choices respected?")
 justice = st.text_area("Justice – Are burdens and benefits fairly distributed?")
 explicability = st.text_area("Explicability – Can the decision be clearly explained?")
 
-# 5. Generate Ethical Justification
+# 5. Generate Case Summary
+if st.button("Generate Case Summary"):
+    summary = f"""
+    ### 📝 Case Summary
+
+    - **Incident Type:** {incident_type}
+    - **NIST CSF Functions:** {', '.join(nist_functions)}
+    - **Public Values at Risk:** {', '.join(values)}
+    - **Stakeholders:** {', '.join(stakeholders)}
+    - **Constraints:** Budget: {budget}/10 | Legal: {legal}/10 | Staffing: {staffing}/10
+    - **Notes:** {additional_constraints}
+    """
+    st.markdown(summary)
+
+# 6. Generate Justification Narrative
 st.header("5. Generate Ethical Justification")
 
 if st.button("Generate Justification Narrative"):
@@ -103,3 +117,11 @@ if st.button("Generate Justification Narrative"):
     ✅ This decision reflects principlist ethical reasoning, aligns with the NIST Cybersecurity Framework, and accounts for institutional constraints common in municipal environments.
     """
     st.markdown(result)
+
+    # ✅ Download button to export result as .txt
+    st.download_button(
+        label="📄 Download Justification as .txt",
+        data=result,
+        file_name="ethical_justification.txt",
+        mime="text/plain"
+    )
