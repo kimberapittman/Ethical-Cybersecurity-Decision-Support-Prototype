@@ -1,7 +1,6 @@
 import streamlit as st
 import os
 import sys
-
 # 🌐 Streamlit layout config
 st.set_page_config(
     page_title="Ethical Cybersecurity Decision Tool",
@@ -14,7 +13,6 @@ secondaryBackgroundColor = "#F5F7FA"
 textColor = "#1E1E1E"
 font = "sans serif"
 )
-
 # 📁 Fix import path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from logic.ethics import evaluate_ethics
