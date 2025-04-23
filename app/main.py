@@ -30,7 +30,7 @@ with st.expander("ℹ️ About this tool"):
     Built for a graduate thesis at the Center for Homeland Defense and Security.
     """)
 
-# Incident Overview
+# 1. Incident Overview
 st.markdown("### 🚨 1. Incident Overview")
 incident_type = st.selectbox("Type of Cybersecurity Incident", [
     "Phishing Attack", "Ransomware", "Unauthorized Access", "Data Breach", "Other"
@@ -50,7 +50,7 @@ nist_functions = st.multiselect("NIST CSF Functions Involved", [
 ])
 incident_description = st.text_area("Briefly describe the incident:")
 
-# Stakeholders and Values
+# 2. Stakeholders & Values
 st.markdown("### 👥 2. Stakeholders & Public Values at Risk")
 stakeholders = st.multiselect("Who is impacted?", [
     "Residents", "City Employees", "Vendors", "City Council", "Media", "Others"
@@ -59,7 +59,7 @@ values = st.multiselect("What public values are at risk?", [
     "Privacy", "Transparency", "Trust", "Safety", "Equity", "Autonomy"
 ])
 
-# Constraints
+# 3. Constraints
 st.markdown("### ⚖️ 3. Constraints Assessment")
 col1, col2, col3 = st.columns(3)
 with col1:
@@ -71,7 +71,7 @@ with col3:
 
 additional_constraints = st.text_area("Other constraint notes or political considerations:")
 
-# Ethical Evaluation
+# 4. Ethical Evaluation
 st.markdown("### 🧠 4. Ethical Evaluation (Principlist Framework)")
 with st.expander("🧭 What do these principles mean?"):
     st.markdown("""
@@ -88,7 +88,7 @@ autonomy = st.text_area("🧍 Autonomy – Are rights and choices respected?")
 justice = st.text_area("⚖️ Justice – Are burdens/benefits fairly distributed?")
 explicability = st.text_area("🔍 Explicability – Can the decision be clearly explained?")
 
-# Tension scoring
+# 5. Ethical Tension Score
 def calculate_ethics_tension():
     constraint_score = (budget + legal + staffing) * 2
     values_score = len(values) * 5
@@ -110,11 +110,55 @@ elif score < 70:
 else:
     st.error("🔴 High ethical tension – review stakeholder impacts and public values closely.")
 
-# Case Summary
+# 6. Case Summary
 if st.button("🧾 Generate Case Summary"):
-    st.markdown(f"""
+    summary = f"""
     ### 📝 Case Summary
     - **Incident Type:** {incident_type}
     - **NIST CSF Functions:** {', '.join(nist_functions)}
     - **Stakeholders:** {', '.join(stakeholders)}
     - **Values at Risk:** {', '.join(values)}
+    - **Constraints:** Budget: {budget}/10 | Legal: {legal}/10 | Staffing: {staffing}/10
+    - **Notes:** {additional_constraints}
+    """
+    st.markdown(summary)
+
+# 7. Justification Narrative
+st.markdown("### ✅ 6. Ethical Justification")
+
+if st.button("Generate Justification Narrative"):
+    ethical_summary = evaluate_ethics(
+        beneficence, non_maleficence, autonomy, justice, explicability
+    )
+    nist_summary = map_nist_functions(nist_functions)
+
+    result = f"""
+    ## Justification Narrative
+
+    **Incident Type:** {incident_type}  
+    **NIST CSF Functions Applied:** {nist_summary}  
+    **Incident Description:** {incident_description}  
+
+    **Stakeholders Impacted:** {", ".join(stakeholders)}  
+    **Public Values at Risk:** {", ".join(values)}  
+
+    **Constraints Considered:**  
+    - Budget: {budget}/10  
+    - Legal: {legal}/10  
+    - Staffing: {staffing}/10  
+    - Notes: {additional_constraints}  
+
+    **Ethical Evaluation Summary:**  
+    {ethical_summary}
+
+    ✅ This decision reflects principlist ethical reasoning, aligns with the NIST Cybersecurity Framework, and accounts for institutional constraints common in municipal environments.
+    """
+    st.success("✅ Justification generated!")
+    st.markdown(result)
+
+    st.download_button(
+        label="📄 Download Justification as .txt",
+        data=result,
+        file_name="ethical_justification.txt",
+        mime="text/plain"
+    )
