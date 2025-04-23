@@ -14,9 +14,9 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from logic.ethics import evaluate_ethics
 from logic.nist import map_nist_functions
 
-# ✅ Display CHDS logo from user's GitHub upload
-st.image("https://raw.githubusercontent.com/kimberapittman/Ethical-Cybersecurity-Tool/bf8587a118dea4f5c0a5f68c7cfa177802dc9a84/app/chds%20logo.jpg", width=300)
-st.caption("Built for the Center for Homeland Defense and Security Graduate Thesis")
+# ✅ CHDS logo hosted on Imgur
+st.image("https://i.imgur.com/1R7nuZ2.jpeg", width=300)
+st.caption("Center for Homeland Defense and Security")
 
 # Title and intro
 st.title("🛡️ Ethical Cybersecurity Decision Tool")
@@ -26,8 +26,7 @@ with st.expander("ℹ️ About this tool"):
     This tool helps municipal cybersecurity professionals navigate high-stakes ethical decisions using:
     - 🧠 Principlist ethics
     - 🔐 NIST Cybersecurity Framework (CSF)
-    - ⚖️ Real-world municipal constraints  
-    Built for a graduate thesis at the Center for Homeland Defense and Security.
+    - ⚖️ Real-world municipal constraints
     """)
 
 # 1. Incident Overview
@@ -50,7 +49,7 @@ nist_functions = st.multiselect("NIST CSF Functions Involved", [
 ])
 incident_description = st.text_area("Briefly describe the incident:")
 
-# 2. Stakeholders & Values
+# 2. Stakeholders and Values
 st.markdown("### 👥 2. Stakeholders & Public Values at Risk")
 stakeholders = st.multiselect("Who is impacted?", [
     "Residents", "City Employees", "Vendors", "City Council", "Media", "Others"
