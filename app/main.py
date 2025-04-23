@@ -15,7 +15,7 @@ from logic.ethics import evaluate_ethics
 from logic.nist import map_nist_functions
 
 # ✅ CHDS logo hosted on Imgur
-st.image("https://i.imgur.com/1R7nuZ2.jpeg", width=700)
+st.image("https://i.imgur.com/1R7nuZ2.jpeg", width=900)
 
 # Title and intro
 st.title("🛡️ Ethical Cybersecurity Decision Tool")
