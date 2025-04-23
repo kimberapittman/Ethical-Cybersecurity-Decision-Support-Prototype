@@ -12,9 +12,6 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from logic.ethics import evaluate_ethics
 from logic.nist import map_nist_functions
 
-# (Optional) Debugging
-# st.write("🔍 Current working directory:", os.getcwd())
-
 # App title
 st.title("🛡️ Ethical Decision-Support Tool for Municipal Cybersecurity")
 
@@ -23,7 +20,19 @@ st.header("1. Incident Overview")
 incident_type = st.selectbox("Select the type of cybersecurity incident:", [
     "Phishing Attack", "Ransomware", "Unauthorized Access", "Data Breach", "Other"
 ])
-nist_functions = st.multiselect("Select NIST CSF functions involved:", [
+
+# ✅ Enhanced NIST CSF section with descriptions
+st.markdown("**Select the NIST Cybersecurity Framework (CSF) functions involved:**")
+with st.expander("🧭 What do these functions mean?"):
+    st.markdown("""
+- **Identify**: Understand the organization to manage cybersecurity risk.
+- **Protect**: Safeguard critical infrastructure services.
+- **Detect**: Discover cybersecurity events in a timely manner.
+- **Respond**: Take action once an event is detected.
+- **Recover**: Restore any capabilities or services impaired due to an incident.
+""")
+
+nist_functions = st.multiselect("Choose relevant NIST CSF functions:", [
     "Identify", "Protect", "Detect", "Respond", "Recover"
 ])
 incident_description = st.text_area("Describe the incident briefly:")
@@ -65,21 +74,21 @@ if st.button("Generate Justification Narrative"):
     ## Justification Narrative
 
     **Incident Type:** {incident_type}  
-    **NIST CSF Functions:** {nist_summary}  
-    **Description:** {incident_description}  
+    **NIST CSF Functions Applied:** {nist_summary}  
+    **Incident Description:** {incident_description}  
 
     **Stakeholders Impacted:** {", ".join(stakeholders)}  
     **Public Values at Risk:** {", ".join(values)}  
 
-    **Constraints:**  
+    **Constraints Considered:**  
     - Budget: {budget}/10  
     - Legal: {legal}/10  
     - Staffing: {staffing}/10  
     - Notes: {additional_constraints}  
 
-    **Ethical Evaluation:**  
+    **Ethical Evaluation Summary:**  
     {ethical_summary}
 
-    ✅ This decision reflects principlist ethical reasoning, aligns with NIST CSF, and considers real-world municipal constraints.
+    ✅ This decision reflects principlist ethical reasoning, aligns with the NIST Cybersecurity Framework, and accounts for institutional constraints common in municipal environments.
     """
     st.markdown(result)
