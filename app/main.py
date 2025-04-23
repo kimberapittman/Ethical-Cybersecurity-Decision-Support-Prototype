@@ -14,18 +14,26 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from logic.ethics import evaluate_ethics
 from logic.nist import map_nist_functions
 
-# ✅ CHDS logo hosted on Imgur
-st.image("https://i.imgur.com/1R7nuZ2.jpeg", width=900)
+# CHDS logo (hosted externally)
+st.image("https://i.imgur.com/1R7nuZ2.jpeg", use_container_width=True)
+st.caption("Center for Homeland Defense and Security")
 
-# Title and intro
+# Title and real-time use subtitle
 st.title("🛡️ Ethical Cybersecurity Decision Tool")
+st.markdown("#### A real-time ethical decision-support tool for municipal cybersecurity professionals")
 
+# Updated about section to emphasize live decision-making
 with st.expander("ℹ️ About this tool"):
     st.markdown("""
-    This tool helps municipal cybersecurity professionals navigate high-stakes ethical decisions using:
-    - 🧠 Principlist ethics
-    - 🔐 NIST Cybersecurity Framework (CSF)
-    - ⚖️ Real-world municipal constraints
+    This tool is designed to assist **real-time ethical decision-making** during municipal cybersecurity incidents.
+
+    It helps professionals:
+    - Assess stakeholder and public value impacts
+    - Reflect on ethical principles under time pressure
+    - Align actions with NIST CSF standards
+    - Justify decisions transparently and defensibly
+
+    Built to support municipal IT leaders **during live response**, not just after-action review.
     """)
 
 # 1. Incident Overview
@@ -121,10 +129,10 @@ if st.button("🧾 Generate Case Summary"):
     """
     st.markdown(summary)
 
-# 7. Justification Narrative
+# 7. Justification Narrative with real-time intent
 st.markdown("### ✅ 6. Ethical Justification")
 
-if st.button("Generate Justification Narrative"):
+if st.button("📄 Confirm & Justify Action"):
     ethical_summary = evaluate_ethics(
         beneficence, non_maleficence, autonomy, justice, explicability
     )
