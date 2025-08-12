@@ -14,10 +14,6 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from logic.ethics import evaluate_ethics
 from logic.nist import map_nist_functions
 
-# CHDS logo (hosted externally)
-st.image("https://i.imgur.com/1R7nuZ2.jpeg", use_container_width=True)
-st.caption("Center for Homeland Defense and Security")
-
 # Title and real-time use subtitle
 st.title("🛡️ Ethical Cybersecurity Decision Tool")
 st.markdown("#### A real-time ethical decision-support tool for municipal cybersecurity professionals")
