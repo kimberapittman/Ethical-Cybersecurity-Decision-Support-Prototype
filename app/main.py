@@ -1,375 +1,376 @@
 import streamlit as st
-import os
-import sys
+import json
 from datetime import datetime
 
-# ------------------------------
-# Page & imports
-# ------------------------------
+# ---------- Page setup ----------
 st.set_page_config(
     page_title="Ethical Cybersecurity Decision Tool",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded",
 )
 
-# Optional local imports (with safe fallbacks)
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-try:
-    from logic.ethics import evaluate_ethics as _evaluate_ethics_external
-except Exception:
-    _evaluate_ethics_external = None
+# ---------- Session init ----------
+if "presets_loaded" not in st.session_state:
+    st.session_state.presets_loaded = False
 
-try:
-    from logic.nist import map_nist_functions as _map_nist_functions_external
-except Exception:
-    _map_nist_functions_external = None
+# ---------- Helpers ----------
+NIST_2_FUNCTIONS = [
+    "Govern", "Identify", "Protect", "Detect", "Respond", "Recover"
+]
 
-def evaluate_ethics_fallback(beneficence, non_maleficence, autonomy, justice, explicability):
-    parts = []
-    if beneficence.strip(): parts.append(f"- Beneficence: {beneficence.strip()}")
-    if non_maleficence.strip(): parts.append(f"- Non-maleficence: {non_maleficence.strip()}")
-    if autonomy.strip(): parts.append(f"- Autonomy: {autonomy.strip()}")
-    if justice.strip(): parts.append(f"- Justice: {justice.strip()}")
-    if explicability.strip(): parts.append(f"- Explicability: {explicability.strip()}")
-    return "\n".join(parts) if parts else "No ethical notes provided."
-
-def evaluate_ethics(*args, **kwargs):
-    if _evaluate_ethics_external:
-        return _evaluate_ethics_external(*args, **kwargs)
-    return evaluate_ethics_fallback(*args, **kwargs)
-
-def map_nist_functions_fallback(funcs):
-    if not funcs:
-        return "No NIST functions selected."
-    descriptions = {
-        "Identify": "asset/business context, risk appetite, governance",
-        "Protect": "access control, awareness/training, data security, maintenance",
-        "Detect": "anomalies/events, continuous monitoring, detection processes",
-        "Respond": "analysis, mitigation, communications, improvements",
-        "Recover": "restoration, improvements, communications"
-    }
-    return "; ".join(f"{f}: {descriptions.get(f,'')}" for f in funcs)
-
-def map_nist_functions(funcs):
-    if _map_nist_functions_external:
-        return _map_nist_functions_external(funcs)
-    return map_nist_functions_fallback(funcs)
-
-# ------------------------------
-# Title & About
-# ------------------------------
-st.title("🛡️ Ethical Cybersecurity Decision Tool")
-st.markdown("#### A real-time ethical decision-support tool for municipal cybersecurity practitioners")
-
-with st.expander("ℹ️ About this tool"):
-    st.markdown("""
-This tool supports **live** municipal incident response by:
-- Surfacing value conflicts using **Principlism** (beneficence, non-maleficence, autonomy, justice, explicability)
-- Anchoring actions to **NIST CSF** (Identify, Protect, Detect, Respond, Recover)
-- Making **institutional & governance constraints** explicit (budget, staffing, procurement limits, fragmented authority, oversight gaps)
-- Producing a defensible **decision log** and public-facing **explicability** summary
-""")
-
-# ------------------------------
-# Scenario templates (from Chapter 3)
-# ------------------------------
-st.markdown("### 🧩 Scenario Template (optional)")
-template = st.selectbox(
-    "Pre-fill from a Chapter 3 scenario (you can still edit anything):",
-    ["None", "Baltimore-like: Ransomware", "San Diego-like: Surveillance Repurposing", "Riverton-like: AI-enabled Incident"]
-)
-
-# ------------------------------
-# 1) Incident Overview
-# ------------------------------
-st.markdown("### 🚨 1) Incident Overview")
-
-incident_type = st.selectbox("Type of Cybersecurity Incident", [
-    "Ransomware", "Data Breach", "Unauthorized Access", "Phishing Attack",
-    "Surveillance Technology Repurposing", "AI-enabled Operational Disruption", "Other"
-])
-
-colA, colB = st.columns([2,1])
-with colA:
-    incident_description = st.text_area("Briefly describe the incident:")
-with colB:
-    timestamp = st.text_input("Incident time (optional)", value=datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC"))
-
-with st.expander("🧭 What are NIST CSF functions?"):
-    st.markdown("""
-- **Identify** – Understand risks to systems, assets, data, and capabilities  
-- **Protect** – Safeguard delivery of critical services  
-- **Detect** – Discover cybersecurity events  
-- **Respond** – Act on detected incidents  
-- **Recover** – Restore systems and services  
-""")
-
-nist_functions = st.multiselect("NIST CSF Functions in scope", [
-    "Identify", "Protect", "Detect", "Respond", "Recover"
-])
-
-# ------------------------------
-# 2) Stakeholders & Public Values
-# ------------------------------
-st.markdown("### 👥 2) Stakeholders & Public Values")
-stakeholders = st.multiselect("Who is impacted?", [
-    "Residents", "City Employees", "Vendors", "City Council",
-    "Emergency Services", "Public Utilities", "Law Enforcement", "Media", "Other"
-])
-values = st.multiselect("Public values at risk", [
-    "Privacy", "Transparency", "Trust", "Safety", "Equity", "Autonomy", "Accountability"
-])
-
-# ------------------------------
-# 3) Institutional & Governance Constraints
-# ------------------------------
-st.markdown("### 🏛️ 3) Institutional & Governance Constraints")
-
-st.caption("Select all that apply (these reflect constraints emphasized in Chapter 3).")
-constraints_col1, constraints_col2, constraints_col3 = st.columns(3)
-with constraints_col1:
-    c_budget = st.checkbox("Constrained budget / deferred modernization")
-    c_staffing = st.checkbox("Limited staffing / coverage")
-    c_fragmented = st.checkbox("Fragmented authority / unclear ownership")
-    c_continuity = st.checkbox("No/weak incident-specific continuity plan")
-with constraints_col2:
-    c_procurement = st.checkbox("Procurement opacity / general contracts")
-    c_oversight = st.checkbox("Weak or absent oversight mechanisms")
-    c_policy_gap = st.checkbox("No formal policy (e.g., surveillance access)")
-    c_vendor_opacity = st.checkbox("Contractual opacity (limited vendor auditability)")
-with constraints_col3:
-    c_public_engage = st.checkbox("Limited public engagement / transparency")
-    c_data_gov = st.checkbox("Unclear data governance (sharing/retention)")
-    c_legal = st.checkbox("Legal/political constraints")
-    c_other_note_active = st.checkbox("Other (add notes below)")
-
-constraint_notes = st.text_area("Notes on constraints (e.g., departments affected, specific contract clauses, political context):")
-
-# ------------------------------
-# 4) Ethical Evaluation (Principlism)
-# ------------------------------
-st.markdown("### 🧠 4) Ethical Evaluation (Principlist Framework)")
-with st.expander("What do these principles mean?"):
-    st.markdown("""
-- **Beneficence** – Promote well-being (e.g., restore essential services, improve safety)  
-- **Non-maleficence** – Avoid harm (e.g., prevent secondary impacts, avoid unsafe mitigations)  
-- **Autonomy** – Respect rights & choices (e.g., privacy, informed consent where applicable)  
-- **Justice** – Fairness & equity (e.g., avoid disproportionate burdens on communities)  
-- **Explicability** – Transparency & intelligibility (clear rationale, communication, auditability)
-""")
-
-beneficence = st.text_area("💡 Beneficence – What good outcomes are you prioritizing?")
-non_maleficence = st.text_area("🚫 Non-maleficence – What harms are you avoiding/minimizing?")
-autonomy = st.text_area("🧍 Autonomy – How are rights/choices respected (incl. privacy)?")
-justice = st.text_area("⚖️ Justice – How are burdens/benefits distributed fairly?")
-explicability = st.text_area("🔍 Explicability – How will the decision be communicated and made auditable?")
-
-# ------------------------------
-# 5) Principle Trade-off Matrix (quick tension scan)
-# ------------------------------
-st.markdown("### ⚖️ 5) Principle Trade-off Matrix")
-st.caption("Rate the *pressure* each principle is under in this incident (0 = none, 10 = extreme).")
-t_col1, t_col2, t_col3, t_col4, t_col5 = st.columns(5)
-with t_col1:
-    t_ben = st.slider("Beneficence", 0, 10, 5)
-with t_col2:
-    t_non = st.slider("Non-maleficence", 0, 10, 5)
-with t_col3:
-    t_aut = st.slider("Autonomy", 0, 10, 5)
-with t_col4:
-    t_jus = st.slider("Justice", 0, 10, 5)
-with t_col5:
-    t_exp = st.slider("Explicability", 0, 10, 5)
-
-tension_vector = {
-    "Beneficence": t_ben,
-    "Non-maleficence": t_non,
-    "Autonomy": t_aut,
-    "Justice": t_jus,
-    "Explicability": t_exp
+NIST_2_HELP = {
+    "Govern": "Establish risk management strategy, roles, policies, oversight, and accountability.",
+    "Identify": "Understand assets, risks, business context, and dependencies.",
+    "Protect": "Safeguard services via controls, training, access, data security.",
+    "Detect": "Discover events via monitoring, anomalies, and continuous analysis.",
+    "Respond": "Contain, communicate, analyze, and coordinate during incidents.",
+    "Recover": "Restore capabilities and improve based on lessons learned."
 }
 
-# ------------------------------
-# 6) Constraints intensity (quick sliders for 3 core pressures)
-# ------------------------------
-st.markdown("### 🧱 6) Core Constraint Pressures")
-cc1, cc2, cc3 = st.columns(3)
-with cc1:
-    budget_int = st.slider("💰 Budget pressure", 0, 10, 5)
-with cc2:
-    legal_int = st.slider("⚖️ Legal/policy pressure", 0, 10, 5)
-with cc3:
-    staffing_int = st.slider("👥 Staffing/ops pressure", 0, 10, 5)
+PRINCIPLES = [
+    ("Beneficence", "Promote well-being and good outcomes."),
+    ("Non-maleficence", "Avoid harm."),
+    ("Autonomy", "Respect individuals’ rights and choices."),
+    ("Justice", "Ensure fairness and equity."),
+    ("Explicability", "Ensure transparency, intelligibility, and accountability.")
+]
 
-# ------------------------------
-# 7) Decision Options (contextual)
-# ------------------------------
-st.markdown("### 🧭 7) Candidate Decision Options")
+EXTENDED_OBLIGATIONS = [
+    ("Accountability", "Document, justify, and accept responsibility for actions."),
+    ("Proportionality", "Match measures to the actual risk and context."),
+    ("Privacy & Confidentiality", "Safeguard personal/operational data appropriately."),
+    ("Professional Integrity", "Adhere to ethical/technical standards despite pressures."),
+    ("Public Trust", "Sustain legitimacy via openness, consistency, and stewardship.")
+]
 
-def options_for_incident(inc_type):
-    if inc_type == "Ransomware":
-        return [
-            "Refuse ransom; pursue restore/recover; communicate timeline",
-            "Consider controlled negotiation for decryption key with law enforcement guidance",
-            "Segment & rebuild critical services first; defer non-critical",
-            "Public outage dashboard + staged restoration plan"
-        ]
-    if inc_type == "Surveillance Technology Repurposing":
-        return [
-            "Pause access; conduct rapid DPIA (Data Protection Impact Assessment)",
-            "Establish interim oversight & access log review; narrow use-cases",
-            "Community disclosure + council review before resumption",
-            "Data minimization & retention limits; publish policy"
-        ]
-    if inc_type == "AI-enabled Operational Disruption":
-        return [
-            "Fail-safe to human control; isolate/rollback AI model",
-            "Independent audit of vendor model & training data",
-            "Staged service restoration with enhanced monitoring",
-            "Public advisory on risks, mitigations, and timelines"
-        ]
-    # Generic defaults:
-    return [
-        "Containment & triage aligned to NIST Respond/Recover",
-        "Stakeholder communication plan (Explicability)",
-        "Interim governance/oversight measures",
-        "Documented rationale & after-action improvements"
-    ]
+CONSTRAINTS_MENU = [
+    "Limited budget",
+    "Staffing shortages / skill gaps",
+    "Fragmented authority / unclear decision rights",
+    "Outdated infrastructure / technical debt",
+    "Procurement limits / speed vs. vetting",
+    "Vendor opacity / audit limitations",
+    "Lack of policy (e.g., surveillance, data governance)",
+    "Legal uncertainty / compliance ambiguity",
+    "Limited time / incident time pressure",
+    "Public trust / political pressure"
+]
 
-suggested_options = options_for_incident(incident_type)
-picked_options = st.multiselect("Select one or more options to justify:", suggested_options, default=suggested_options[:2])
-custom_option = st.text_input("Add a custom option (optional):")
-if custom_option:
-    picked_options.append(custom_option)
+VALUES_MENU = [
+    "Privacy", "Transparency", "Trust", "Safety",
+    "Equity", "Autonomy", "Accountability", "Fairness"
+]
 
-# ------------------------------
-# 8) Ethical Tension Score (simple, explainable)
-# ------------------------------
-st.markdown("### 🔍 8) Ethical Tension Score (quick heuristic)")
-def calculate_ethics_tension():
-    constraint_score = (budget_int + legal_int + staffing_int) * 2
-    values_score = len(values) * 4
-    stakeholder_score = len(stakeholders) * 2
-    pressure_score = sum(tension_vector.values())  # 0–50
-    text_fields_empty = sum(not bool(x.strip()) for x in [
-        beneficence, non_maleficence, autonomy, justice, explicability
-    ]) * 4
-    total = constraint_score + values_score + stakeholder_score + pressure_score + text_fields_empty
-    return max(0, min(total, 100))
+STAKEHOLDER_MENU = [
+    "Residents", "City Employees", "Vendors/Partners",
+    "City Council/Mayor", "Public Safety", "Regulators", "Media", "Others"
+]
 
-score = calculate_ethics_tension()
-st.progress(score)
-if score < 30:
-    st.success("🟢 Low ethical tension – decision environment is relatively clear.")
-elif score < 70:
-    st.warning("🟠 Moderate ethical tension – document justification and mitigations.")
+CONFLICT_PAIRS = [
+    "Beneficence ↔ Non-maleficence",
+    "Beneficence ↔ Autonomy",
+    "Justice ↔ Autonomy",
+    "Justice ↔ Non-maleficence",
+    "Explicability ↔ Any"
+]
+
+def chip(label):
+    st.markdown(
+        f"<span style='display:inline-block;padding:.2rem .5rem;border:1px solid #e5e7eb;"
+        f"border-radius:.75rem;font-size:.85rem;background:#fafafa;margin:.1rem .2rem'>{label}</span>",
+        unsafe_allow_html=True,
+    )
+
+def calc_ethics_tension(num_values, num_stakeholders, constraint_severities, conflict_count, empty_principles):
+    # Components
+    constraints = sum(constraint_severities) * 2.5              # 0–(10*#sel)*2.5
+    scope = (num_values * 4) + (num_stakeholders * 3)            # breadth of impact
+    conflicts = conflict_count * 10                               # explicit tensions
+    incompleteness = empty_principles * 6                         # missing justifications increase tension
+    total = constraints + scope + conflicts + incompleteness
+    return min(int(total), 100), {
+        "Constraints": constraints,
+        "Scope (values/stakeholders)": scope,
+        "Conflicts": conflicts,
+        "Gaps (missing principle notes)": incompleteness
+    }
+
+def make_report(data):
+    lines = []
+    lines.append("# Ethical Decision Justification\n")
+    lines.append(f"**Timestamp:** {datetime.utcnow().isoformat()}Z\n")
+    lines.append(f"**Incident Type:** {data['incident_type']}")
+    lines.append(f"**Incident Description:** {data['incident_description'] or '—'}\n")
+    lines.append("**NIST CSF 2.0 Functions Applied:** " + ", ".join(data['nist']))
+    lines.append("\n---\n")
+    lines.append("## Stakeholders & Public Values")
+    lines.append("**Stakeholders:** " + (", ".join(data['stakeholders']) or "—"))
+    lines.append("**Values at Risk:** " + (", ".join(data['values']) or "—"))
+    lines.append("\n---\n")
+    lines.append("## Institutional & Governance Constraints")
+    if data['constraints']:
+        for c in data['constraints']:
+            sev = data['constraint_severity'].get(c, 0)
+            lines.append(f"- {c}: severity {sev}/10")
+    else:
+        lines.append("- None indicated")
+    if data['constraint_notes']:
+        lines.append(f"\n**Constraint Notes:** {data['constraint_notes']}")
+    lines.append("\n---\n")
+    lines.append("## Principlist Evaluation")
+    for key, text in data['principles'].items():
+        lines.append(f"**{key}:** {text or '—'}")
+    if any(data['extended'].values()):
+        lines.append("\n### Extended Obligations")
+        for key, text in data['extended'].items():
+            if text.strip():
+                lines.append(f"- **{key}:** {text}")
+    lines.append("\n---\n")
+    lines.append("## Principle Conflict Matrix")
+    if data['conflicts']:
+        for row in data['conflicts']:
+            lines.append(f"- **Pair:** {row['pair']}; **Provisional priority:** {row['priority']}  \n  **Rationale:** {row['rationale'] or '—'}")
+    else:
+        lines.append("- None logged")
+    lines.append("\n---\n")
+    lines.append("## Chosen Action & Alternatives")
+    lines.append("**Chosen Action:** " + (data['chosen_action'] or "—"))
+    if data['alternatives']:
+        for a in data['alternatives']:
+            lines.append(f"- {a}")
+    else:
+        lines.append("- (no alternatives recorded)")
+    lines.append("\n---\n")
+    lines.append("## NIST Alignment Notes")
+    if data['nist_notes']:
+        lines.append(data['nist_notes'])
+    else:
+        lines.append("—")
+    lines.append("\n---\n")
+    lines.append("## Ethical Tension Score (0–100)")
+    lines.append(f"**Total:** {data['score_total']}")
+    for k, v in data['score_breakdown'].items():
+        lines.append(f"- {k}: {int(v)}")
+    lines.append("\n---\n")
+    lines.append("## Explicability Summary (for public/oversight)")
+    lines.append(
+        f"This action was selected after evaluating impacts on **{', '.join(data['values']) or '—'}** "
+        f"for **{', '.join(data['stakeholders']) or '—'}**, considering institutional constraints "
+        f"({', '.join([f'{c} {data['constraint_severity'].get(c,0)}/10' for c in data['constraints']]) or '—'}). "
+        f"The reasoning applied the **Principlist framework** and mapped to **NIST CSF 2.0** functions "
+        f"({', '.join(data['nist']) or '—'})."
+    )
+    return "\n".join(lines)
+
+def load_preset(name):
+    # Safe, neutral presets (no numeric claims), consistent with Ch.3 arcs
+    if name == "—":
+        return
+    if name == "Baltimore (ransomware)":
+        st.session_state.incident_type = "Ransomware"
+        st.session_state.nist_functions = ["Identify", "Protect", "Detect", "Respond", "Recover", "Govern"]
+        st.session_state.stakeholders = ["Residents", "City Employees", "Vendors/Partners", "City Council/Mayor", "Public Safety"]
+        st.session_state.values = ["Safety", "Trust", "Transparency", "Autonomy", "Equity", "Privacy", "Accountability"]
+        st.session_state.constraints_sel = ["Limited budget", "Outdated infrastructure / technical debt", "Fragmented authority / unclear decision rights", "Limited time / incident time pressure", "Public trust / political pressure"]
+    if name == "San Diego (smart streetlights)":
+        st.session_state.incident_type = "Technology Repurposing / Surveillance Governance"
+        st.session_state.nist_functions = ["Govern", "Identify", "Protect", "Respond", "Recover"]
+        st.session_state.stakeholders = ["Residents", "City Council/Mayor", "Public Safety", "City Employees", "Media"]
+        st.session_state.values = ["Transparency", "Privacy", "Accountability", "Equity", "Trust", "Autonomy"]
+        st.session_state.constraints_sel = ["Lack of policy (e.g., surveillance, data governance)", "Fragmented authority / unclear decision rights", "Vendor opacity / audit limitations", "Procurement limits / speed vs. vetting", "Public trust / political pressure"]
+    if name == "Riverton (AI-enabled incident)":
+        st.session_state.incident_type = "AI-enabled Incident (Critical Infrastructure)"
+        st.session_state.nist_functions = ["Govern", "Identify", "Protect", "Detect", "Respond", "Recover"]
+        st.session_state.stakeholders = ["Residents", "Public Safety", "Vendors/Partners", "City Council/Mayor", "City Employees"]
+        st.session_state.values = ["Safety", "Transparency", "Accountability", "Autonomy", "Trust", "Equity"]
+        st.session_state.constraints_sel = ["Vendor opacity / audit limitations", "Limited time / incident time pressure", "Fragmented authority / unclear decision rights", "Procurement limits / speed vs. vetting"]
+
+# ---------- Sidebar: Presets & Modes ----------
+st.sidebar.header("Case Preset & Modes")
+preset = st.sidebar.selectbox("Load preset (optional)", ["—", "Baltimore (ransomware)", "San Diego (smart streetlights)", "Riverton (AI-enabled incident)"])
+if st.sidebar.button("Load preset"):
+    load_preset(preset)
+    st.session_state.presets_loaded = True
+    st.sidebar.success(f"Preset loaded: {preset}")
+
+urgency_mode = st.sidebar.toggle("⏱️ Urgency mode (time pressure)", value=False, help="Highlights minimum documentation fields for fast capture.")
+st.sidebar.write("---")
+st.sidebar.caption("NIST CSF 2.0 adds **Govern**. This tool aligns your actions with both ethics and standards.")
+
+# ---------- Title / About ----------
+st.title("🛡️ Ethical Cybersecurity Decision Tool (Municipal)")
+st.markdown("#### Real-time ethical decision support integrating NIST CSF 2.0 and principlist reasoning")
+
+with st.expander("ℹ️ About (fit to thesis)"):
+    st.markdown("""
+- Built for **municipal** contexts where technical, ethical, and governance constraints collide.
+- Implements **NIST CSF 2.0** (including **Govern**) and the **Principlist** framework (beneficence, non‑maleficence, autonomy, justice, explicability).
+- Captures **institutional/governance constraints**, logs **principle conflicts**, and generates a clear **Explicability Report** for oversight/public trust.
+""")
+
+# ---------- 1) Incident Overview ----------
+st.markdown("### 1) 🚨 Incident Overview")
+colA, colB = st.columns([1, 2])
+
+with colA:
+    incident_type = st.selectbox(
+        "Type of Incident",
+        [
+            st.session_state.get("incident_type", ""),
+            "Ransomware",
+            "Unauthorized Access",
+            "Data Breach",
+            "Technology Repurposing / Surveillance Governance",
+            "AI-enabled Incident (Critical Infrastructure)",
+            "Other"
+        ],
+        index=0 if st.session_state.get("incident_type") else 1
+    )
+
+with colB:
+    incident_description = st.text_area("Describe the situation in 2–4 sentences:", placeholder="What happened, what’s at risk, and current status?")
+
+with st.expander("🧭 NIST CSF 2.0 functions (cheat sheet)"):
+    cols = st.columns(len(NIST_2_FUNCTIONS))
+    for i, fn in enumerate(NIST_2_FUNCTIONS):
+        with cols[i]:
+            st.markdown(f"**{fn}**")
+            st.caption(NIST_2_HELP[fn])
+
+nist_functions = st.multiselect(
+    "Which NIST CSF 2.0 functions are in play?",
+    NIST_2_FUNCTIONS,
+    default=st.session_state.get("nist_functions", [])
+)
+
+nist_notes = st.text_area("NIST alignment notes (e.g., categories/activities touched):", placeholder="E.g., RS.CO (Response Communications), GV (Governance), PR.AC (Access Control) …")
+
+# ---------- 2) Stakeholders & Values ----------
+st.markdown("### 2) 👥 Stakeholders & Public Values at Risk")
+stakeholders = st.multiselect("Who is affected or accountable?", STAKEHOLDER_MENU, default=st.session_state.get("stakeholders", []))
+values = st.multiselect("Which values are implicated?", VALUES_MENU, default=st.session_state.get("values", []))
+
+# quick chips
+st.caption("Selected:")
+st.write("Stakeholders:")
+for s in stakeholders: chip(s)
+st.write("Values:")
+for v in values: chip(v)
+
+# ---------- 3) Institutional & Governance Constraints ----------
+st.markdown("### 3) ⚖️ Institutional & Governance Constraints")
+
+constraints_sel = st.multiselect(
+    "Select all constraints that materially shape the decision:",
+    CONSTRAINTS_MENU,
+    default=st.session_state.get("constraints_sel", [])
+)
+
+sev_cols = st.columns(5)
+constraint_severity = {}
+for idx, c in enumerate(constraints_sel):
+    with sev_cols[idx % 5]:
+        constraint_severity[c] = st.slider(f"{c}", 0, 10, 5)
+
+constraint_notes = st.text_area("Notes on constraints (legal/policy obligations, oversight availability, political/public trust considerations):")
+
+# ---------- 4) Principlist Evaluation + Extended Obligations ----------
+st.markdown("### 4) 🧠 Principlist Evaluation & Extended Obligations")
+
+p_cols = st.columns(5)
+principle_inputs = {}
+for i, (p, helper) in enumerate(PRINCIPLES):
+    with p_cols[i]:
+        st.caption(f"**{p}** — {helper}")
+    principle_inputs[p] = st.text_area(f"{p}: how considered?", key=f"p_{p}", placeholder=f"Record how {p.lower()} is addressed.")
+
+with st.expander("➕ Extended obligations (optional but recommended)"):
+    e_cols = st.columns(3)
+    extended_inputs = {}
+    for i, (name, helper) in enumerate(EXTENDED_OBLIGATIONS):
+        with e_cols[i % 3]:
+            st.caption(f"**{name}** — {helper}")
+            extended_inputs[name] = st.text_area(f"{name}: how considered?", key=f"e_{name}", placeholder=f"Record how {name.lower()} is addressed.")
+
+# ---------- 5) Principle Conflict Matrix ----------
+st.markdown("### 5) ⚔️ Principle Conflict Matrix")
+conflicts_sel = st.multiselect("Log explicit tensions (pick all that apply):", CONFLICT_PAIRS)
+conflict_rows = []
+if conflicts_sel:
+    for pair in conflicts_sel:
+        c1, c2 = pair.split("↔") if "↔" in pair else (pair, "")
+        c1, c2 = c1.strip(), c2.strip()
+        with st.container():
+            ccol1, ccol2 = st.columns([1.2, 1.8])
+            with ccol1:
+                priority = st.selectbox(f"Provisional priority for **{pair}**", [c1, c2, "Context-dependent / balanced"], key=f"prio_{pair}")
+            with ccol2:
+                rationale = st.text_input(f"Rationale for **{pair}**", key=f"rat_{pair}", placeholder="Why this priority? Risk, rights, equity, feasibility, etc.")
+            conflict_rows.append({"pair": pair, "priority": priority, "rationale": rationale})
+
+# ---------- 6) Ethical Tension Score ----------
+st.markdown("### 6) 🔍 Ethical Tension Score (with breakdown)")
+empty_principles = sum(1 for v in principle_inputs.values() if not v.strip())
+constraint_severities = [constraint_severity.get(c, 0) for c in constraints_sel]
+score_total, score_breakdown = calc_ethics_tension(
+    num_values=len(values),
+    num_stakeholders=len(stakeholders),
+    constraint_severities=constraint_severities,
+    conflict_count=len(conflict_rows),
+    empty_principles=empty_principles
+)
+st.progress(score_total)
+sc1, sc2 = st.columns([1,1])
+with sc1:
+    if score_total < 30:
+        st.success("🟢 Low ethical tension — environment relatively clear.")
+    elif score_total < 70:
+        st.warning("🟠 Moderate ethical tension — document justification carefully.")
+    else:
+        st.error("🔴 High ethical tension — revisit conflicts, constraints, and alternatives.")
+with sc2:
+    st.write("**Breakdown**")
+    st.json({k: int(v) for k, v in score_breakdown.items()})
+
+# ---------- 7) Decisions & Alternatives ----------
+st.markdown("### 7) ✅ Decision & Alternatives")
+chosen_action = st.text_input("Chosen action (describe clearly):", placeholder="E.g., do not pay ransom; enable partial service; issue public notice; enact temporary policy; etc.")
+alts = st.tags_input if hasattr(st, "tags_input") else None  # fallback if streamlit-extras not present
+alternatives = []
+if alts:
+    alternatives = st.tags_input("List key alternatives considered (press Enter to add):", ["Alternative A"])
 else:
-    st.error("🔴 High ethical tension – revisit principle conflicts and constraints; consider additional oversight.")
+    alt_text = st.text_area("Alternatives considered (comma-separated):", placeholder="Alternative A, Alternative B, …")
+    alternatives = [a.strip() for a in alt_text.split(",") if a.strip()]
 
-# ------------------------------
-# 9) Case Summary
-# ------------------------------
-if st.button("🧾 Generate Case Summary"):
-    summary = f"""
-### 📝 Case Summary
-- **Incident Type:** {incident_type}
-- **Incident Time:** {timestamp}
-- **NIST CSF Functions:** {', '.join(nist_functions) if nist_functions else '—'}
-- **Stakeholders:** {', '.join(stakeholders) if stakeholders else '—'}
-- **Values at Risk:** {', '.join(values) if values else '—'}
+# ---------- 8) Generate Explicability Report ----------
+st.markdown("### 8) 🧾 Generate Explicability Report & Exports")
+if st.button("Generate Report"):
+    bundle = {
+        "incident_type": incident_type,
+        "incident_description": incident_description,
+        "nist": nist_functions,
+        "nist_notes": nist_notes,
+        "stakeholders": stakeholders,
+        "values": values,
+        "constraints": constraints_sel,
+        "constraint_severity": constraint_severity,
+        "constraint_notes": constraint_notes,
+        "principles": principle_inputs,
+        "extended": extended_inputs if any(v.strip() for v in extended_inputs.values()) else {},
+        "conflicts": conflict_rows,
+        "chosen_action": chosen_action,
+        "alternatives": alternatives,
+        "score_total": score_total,
+        "score_breakdown": score_breakdown
+    }
+    report_md = make_report(bundle)
+    st.success("Report generated below. You can copy or download it.")
+    st.markdown(report_md)
 
-**Institutional & Governance Constraints:**
-- Budget:{' ✓' if c_budget else ''}  Staffing:{' ✓' if c_staffing else ''}  Fragmented Authority:{' ✓' if c_fragmented else ''}
-- Continuity Gap:{' ✓' if c_continuity else ''}  Procurement Opacity:{' ✓' if c_procurement else ''}  Oversight Weakness:{' ✓' if c_oversight else ''}
-- Policy Gap:{' ✓' if c_policy_gap else ''}  Vendor Opacity:{' ✓' if c_vendor_opacity else ''}  Public Engagement Limits:{' ✓' if c_public_engage else ''}
-- Data Governance Unclear:{' ✓' if c_data_gov else ''}  Legal/Political Constraints:{' ✓' if c_legal else ''}
-- Notes: {constraint_notes or '—'}
-"""
-    st.markdown(summary)
+    st.download_button("📄 Download report (.txt)", data=report_md, file_name="ethical_decision_report.txt", mime="text/plain")
+    st.download_button("🧩 Download session (.json)", data=json.dumps(bundle, indent=2), file_name="ethical_decision_session.json", mime="application/json")
 
-# ------------------------------
-# 10) Justification & Public Comms
-# ------------------------------
-st.markdown("### ✅ 10) Justification & Public-Facing Explicability")
+# ---------- Footer hint ----------
+st.caption("Tip: In urgency mode, complete the Incident, NIST, Principlist (briefly), Constraints (severity), and Decision. You can refine later for a thorough explicability record.")
 
-if st.button("📄 Confirm & Generate Justification"):
-    nist_summary = map_nist_functions(nist_functions)
-    ethical_summary = evaluate_ethics(
-        beneficence, non_maleficence, autonomy, justice, explicability
-    )
-
-    chosen = "\n".join(f"- {o}" for o in picked_options) if picked_options else "—"
-
-    # Public-facing paragraph (explicability)
-    public_msg = (
-        f"On {timestamp}, we experienced a {incident_type.lower()} affecting municipal services. "
-        f"Our immediate priorities are safety, service continuity, and transparency. "
-        f"We are acting under the NIST Cybersecurity Framework ({', '.join(nist_functions) if nist_functions else '—'}), "
-        f"and we will provide regular updates as we implement the options listed below. "
-        f"We are also documenting decisions for independent review and long-term improvements."
-    )
-
-    result = f"""
-## Decision Justification Log
-
-**Incident Type:** {incident_type}  
-**Time:** {timestamp}  
-**Incident Description:** {incident_description or '—'}
-
-**NIST CSF Functions Applied:**  
-{nist_summary}
-
-**Stakeholders Impacted:** {", ".join(stakeholders) if stakeholders else '—'}  
-**Public Values at Risk:** {", ".join(values) if values else '—'}
-
-**Institutional & Governance Constraints (selected):**
-- Budget:{' ✓' if c_budget else ''} | Staffing:{' ✓' if c_staffing else ''} | Fragmented Authority:{' ✓' if c_fragmented else ''}
-- Continuity Gap:{' ✓' if c_continuity else ''} | Procurement Opacity:{' ✓' if c_procurement else ''} | Oversight Weakness:{' ✓' if c_oversight else ''}
-- Policy Gap:{' ✓' if c_policy_gap else ''} | Vendor Opacity:{' ✓' if c_vendor_opacity else ''} | Public Engagement Limits:{' ✓' if c_public_engage else ''}
-- Data Governance Unclear:{' ✓' if c_data_gov else ''} | Legal/Political Constraints:{' ✓' if c_legal else ''}
-- Notes: {constraint_notes or '—'}
-
-**Principlist Ethical Evaluation:**
-{ethical_summary or '—'}
-
-**Principle Pressure (0-10):** Beneficence={t_ben}, Non-maleficence={t_non}, Autonomy={t_aut}, Justice={t_jus}, Explicability={t_exp}
-
-**Selected Options:**
-{chosen}
-
-**Ethical Tension Score:** {score}/100
-
-**Public-Facing Summary (Explicability):**  
-{public_msg}
-
-— Generated by Ethical Cybersecurity Decision Tool
-    """
-    st.success("✅ Justification generated. See below and download if needed.")
-    st.markdown(result)
-
-    st.download_button(
-        label="📄 Download Justification (.txt)",
-        data=result,
-        file_name=f"ethical_justification_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.txt",
-        mime="text/plain"
-    )
-
-# ------------------------------
-# Prefill helper (applies after UI has loaded)
-# ------------------------------
-if template != "None" and not incident_description:
-    # Light, non-binding prefills tuned to your Chapter 3 cases
-    if template == "Baltimore-like: Ransomware":
-        st.session_state["Incident Prefill"] = True
-        st.info("Template loaded: Baltimore-like ransomware scenario (edit freely).")
-        st.experimental_set_query_params(t="baltimore")
-    elif template == "San Diego-like: Surveillance Repurposing":
-        st.session_state["Incident Prefill"] = True
-        st.info("Template loaded: San Diego-like surveillance repurposing (edit freely).")
-        st.experimental_set_query_params(t="sandiego")
-    elif template == "Riverton-like: AI-enabled Incident":
-        st.session_state["Incident Prefill"] = True
-        st.info("Template loaded: Riverton-like AI-enabled disruption (edit freely).")
-        st.experimental_set_query_params(t="riverton")
-
-# (Note: Query params can be used to drive deeper prefill behavior if desired.)
