@@ -1,370 +1,361 @@
-# app.py
 import streamlit as st
-import json
 from datetime import datetime
 
+# ----------------------------
+# Page + Layout
+# ----------------------------
 st.set_page_config(
-    page_title="Ethical Cybersecurity Decision Tool (Municipal)",
+    page_title="Municipal Ethical Cyber Decision Tool",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed",
 )
 
+st.title("🛡️ Municipal Ethical Cyber Decision Tool")
+st.caption("Integrates NIST CSF actions with principlist ethical reasoning under municipal constraints.")
+
 # ----------------------------
-# Helpers
+# Reference Data
 # ----------------------------
-NIST_HELP = {
-    "Identify":"Understand business context, assets, risks.",
-    "Protect":"Safeguard critical services (access control, training, data security).",
-    "Detect":"Discover events (anomalies, continuous monitoring).",
-    "Respond":"Contain, analyze, communicate, and mitigate incidents.",
-    "Recover":"Restore capabilities/services and improve."
+PRINCIPLES = ["Beneficence", "Non-maleficence", "Autonomy", "Justice", "Explicability"]
+
+NIST_FUNCTIONS = {
+    "Identify": [
+        "Inventory affected assets/services",
+        "Classify criticality & dependencies",
+        "Map stakeholders & harms",
+        "Establish legal/policy requirements",
+    ],
+    "Protect": [
+        "Apply access controls/segmentation",
+        "Harden endpoints & configurations",
+        "Safeguard backups & keys",
+        "Protect sensitive data",
+    ],
+    "Detect": [
+        "Triage alerts & indicators",
+        "Hunt for persistence/lateral movement",
+        "Validate scope & root cause",
+        "Monitor for recurrence",
+    ],
+    "Respond": [
+        "Containment & eradication",
+        "Ransom/payment decision path",
+        "Regulatory/comms notifications",
+        "Coordinate with law enforcement",
+    ],
+    "Recover": [
+        "Restore systems/services",
+        "Validate integrity & safety",
+        "Lessons learned & postmortem",
+        "Improvements & resilience upgrades",
+    ],
 }
 
-PRINCIPLE_HELP = {
-    "Beneficence":"Promote public well‑being (e.g., restore essential services).",
-    "Non‑maleficence":"Avoid/prevent harm (e.g., minimize outage side‑effects).",
-    "Autonomy":"Respect rights/choices and lawful authority (e.g., consent, due process).",
-    "Justice":"Distribute burdens/benefits fairly; avoid disparate impacts.",
-    "Explicability":"Be transparent, traceable, and justifiable to stakeholders."
+# Ethical prompts mapped to NIST CSF (ties the “how” to the “why”)
+NIST_TO_ETHICAL_QUESTIONS = {
+    "Identify": {
+        "Beneficence": "Which essential services/people benefit most from rapid stabilization?",
+        "Non-maleficence": "What foreseeable harms arise if we misclassify criticality?",
+        "Justice": "Are impacts unequal across neighborhoods or groups?",
+        "Autonomy": "Whose data/choices are implicated by our asset/stakeholder mapping?",
+        "Explicability": "Can we clearly explain our scoping assumptions and criteria?",
+    },
+    "Protect": {
+        "Beneficence": "Which protections most directly reduce imminent risk to the public?",
+        "Non-maleficence": "Could protective controls themselves cause harm (e.g., lockouts)?",
+        "Justice": "Do protections shift burdens unfairly (e.g., service cuts in one area)?",
+        "Autonomy": "Do controls respect individuals’ rights/consent expectations?",
+        "Explicability": "Can protections and trade-offs be explained to non-experts?",
+    },
+    "Detect": {
+        "Beneficence": "Will faster detection materially improve safety/outcomes?",
+        "Non-maleficence": "What is the harm of false positives/negatives here?",
+        "Justice": "Are monitoring capabilities equitably deployed?",
+        "Autonomy": "Does detection infringe privacy beyond proportional need?",
+        "Explicability": "Is our detection rationale transparent and auditable?",
+    },
+    "Respond": {
+        "Beneficence": "What action restores essential services most quickly and safely?",
+        "Non-maleficence": "Does this response encourage future attacks or cause collateral harm?",
+        "Justice": "Are costs/risks of response fairly distributed?",
+        "Autonomy": "Are we acting within lawful authority and respecting due process?",
+        "Explicability": "Can we defend this response publicly and to oversight bodies?",
+    },
+    "Recover": {
+        "Beneficence": "Which recovery path best improves long-term well-being?",
+        "Non-maleficence": "How do we avoid reintroducing vulnerabilities or unsafe configs?",
+        "Justice": "Are restorations prioritized fairly (not just politically)?",
+        "Autonomy": "Are restoration choices transparent and respect residents’ expectations?",
+        "Explicability": "Is the recovery rationale clear, documented, and reviewable?",
+    },
 }
 
-CONSTRAINTS = [
-    ("Funding limitations", "Budget constraints that delay modernization or response."),
-    ("Authority fragmentation", "Split decision rights across departments; slows coordination."),
-    ("Procurement opacity", "Vague scopes/labels; hidden capabilities (e.g., ‘mission creep’)."),
-    ("Vendor opacity", "Limited auditability of code/data/models; contractual blind spots."),
-    ("Policy/oversight gaps", "Missing surveillance/incident/AI policies; weak governance."),
-    ("Staffing capacity", "Insufficient staff/skills to execute secure/ethical response."),
-]
+# Simple keyword-based heuristic to auto-suggest implicated principles
+AUTO_KEYWORDS = {
+    "Beneficence": ["restore", "safety", "public health", "911", "water", "service"],
+    "Non-maleficence": ["harm", "injury", "extortion", "ransom", "misuse", "outage"],
+    "Autonomy": ["privacy", "consent", "choice", "monitor", "surveillance", "ai"],
+    "Justice": ["equity", "disparity", "fair", "disproportionate", "neighborhood"],
+    "Explicability": ["transparency", "explain", "disclose", "accountability", "audit"],
+}
 
-# default text for constraints notes
-DEFAULT_NOTES = {
-    "Funding limitations": "Capital refresh delayed; competing priorities.",
-    "Authority fragmentation": "IT, utilities, and emergency mgmt split; unclear incident lead.",
-    "Procurement opacity": "Contract framed as sustainability/efficiency—surveillance/AI not explicit.",
-    "Vendor opacity": "No right to audit model/data; limited logs/explainability.",
-    "Policy/oversight gaps": "Surveillance ordinance/AI policy absent or immature.",
-    "Staffing capacity": "Thin bench for IR, legal, comms; reliance on contractors."
+# Weights used in the decision matrix (you can tune for your thesis emphasis)
+PRINCIPLE_WEIGHTS = {
+    "Beneficence": 2.0,
+    "Non-maleficence": 2.0,
+    "Justice": 1.5,
+    "Autonomy": 1.25,
+    "Explicability": 1.25,
 }
 
 # ----------------------------
-# Sidebar: Mode & Presets
+# Sidebar: Mode + About
 # ----------------------------
-st.sidebar.markdown("## ⚙️ Mode & Presets")
-
-mode = st.sidebar.radio(
-    "Workflow speed",
-    ["Rapid (≈90 sec triage)", "Standard (full deliberation)"],
-    index=1
-)
-
-preset = st.sidebar.selectbox(
-    "Load a case preset",
-    ["— None —", "Baltimore (2019) – ransomware",
-     "San Diego (2017–20) – smart streetlights",
-     "Riverton (2027) – AI‑enabled network attack"]
-)
-
-# state container
-if "form" not in st.session_state:
-    st.session_state.form = {}
-
-def apply_preset(name:str):
-    f = {}
-    if name.startswith("Baltimore"):
-        f.update({
-            "incident_type":"Ransomware",
-            "nist":["Identify","Protect","Detect","Respond","Recover"],
-            "description":"RobbinHood ransomware encrypted core systems; extortion demanded.",
-            "stakeholders":["Residents","City Employees","Vendors","City Council","Media"],
-            "values":["Safety","Trust","Transparency","Equity","Autonomy","Privacy"],
-            "constraints_scores":{
-                "Funding limitations":7,"Authority fragmentation":6,"Procurement opacity":3,
-                "Vendor opacity":4,"Policy/oversight gaps":5,"Staffing capacity":6
-            },
-            "beneficence":"Restore essential services (payments, permitting, property transfers) quickly.",
-            "nonmaleficence":"Avoid harms from prolonged outages and workarounds.",
-            "autonomy":"Respect residents’ choices; follow lawful authority on ransom guidance.",
-            "justice":"Avoid disproportionate harms to vulnerable residents/businesses.",
-            "explicability":"Clear, frequent, candid incident comms; document decision rationale."
-        })
-    elif name.startswith("San Diego"):
-        f.update({
-            "incident_type":"Technology repurposing / surveillance",
-            "nist":["Identify","Protect","Detect","Respond"],
-            "description":"Sensor streetlights repurposed for policing without robust public oversight.",
-            "stakeholders":["Residents","City Council","City Employees","Media","Community Orgs"],
-            "values":["Privacy","Transparency","Trust","Equity","Autonomy","Safety"],
-            "constraints_scores":{
-                "Funding limitations":4,"Authority fragmentation":7,"Procurement opacity":8,
-                "Vendor opacity":6,"Policy/oversight gaps":8,"Staffing capacity":5
-            },
-            "beneficence":"Leverage data for safety and service improvements.",
-            "nonmaleficence":"Prevent civil liberties erosion and misuse of data.",
-            "autonomy":"Respect public consent/contestability in surveillance deployments.",
-            "justice":"Avoid disparate impacts and racialized surveillance.",
-            "explicability":"Full disclosure of capabilities, use, retention, and oversight."
-        })
-    elif name.startswith("Riverton"):
-        f.update({
-            "incident_type":"AI‑enabled network attack",
-            "nist":["Identify","Protect","Detect","Respond","Recover"],
-            "description":"Adversarial ML steered autonomous defenses into unsafe plant shutdown.",
-            "stakeholders":["Residents","City Employees","Vendors","City Council","Regulators"],
-            "values":["Safety","Trust","Transparency","Autonomy","Equity","Privacy"],
-            "constraints_scores":{
-                "Funding limitations":5,"Authority fragmentation":6,"Procurement opacity":6,
-                "Vendor opacity":9,"Policy/oversight gaps":7,"Staffing capacity":6
-            },
-            "beneficence":"Restore safe water service; protect public health.",
-            "nonmaleficence":"Prevent further unsafe automated actions; contain spillover risk.",
-            "autonomy":"Ensure decisions are explainable, auditable, and within legal authority.",
-            "justice":"Equitable restoration across neighborhoods; prioritize critical users.",
-            "explicability":"Explain AI failure mode and risk; justify disable/rollback choices."
-        })
-    st.session_state.form = f
-
-if preset != "— None —":
-    apply_preset(preset)
-
-# ----------------------------
-# Header
-# ----------------------------
-st.title("🛡️ Ethical Cybersecurity Decision Tool (Municipal)")
-st.caption("Integrates NIST CSF 2.0, principlist ethics, and municipal governance constraints for real‑time incident support.")
+with st.sidebar:
+    st.subheader("Run Mode")
+    crisis_mode = st.toggle("🚨 Crisis Mode (2–5 min workflow)", value=False)
+    st.markdown("---")
+    st.markdown("**About**")
+    st.write(
+        "- **Principlist Framework** surfaces value tensions (why).  \n"
+        "- **NIST CSF 2.0** structures the operational levers (how).  \n"
+        "- **Constraints** capture municipal reality (can)."
+    )
 
 # ----------------------------
 # 1) Incident Overview
 # ----------------------------
 st.markdown("### 1) Incident Overview")
 
-colA, colB = st.columns([1,2])
+colA, colB = st.columns([1, 1])
 with colA:
     incident_type = st.selectbox(
         "Incident type",
-        ["Ransomware","Data Breach","Unauthorized Access","Service Disruption",
-         "Technology Repurposing","AI‑enabled Network Attack","Other"],
-        index=0 if st.session_state.form.get("incident_type") is None else
-        ["Ransomware","Data Breach","Unauthorized Access","Service Disruption",
-         "Technology Repurposing","AI‑enabled Network Attack","Other"].index(
-            st.session_state.form.get("incident_type","Ransomware"))
+        ["Ransomware", "Phishing", "Unauthorized Access", "Data Breach", "AI/Autonomous System Failure", "Other"],
     )
 with colB:
-    description = st.text_area(
-        "Brief description (what, where, impact)",
-        value=st.session_state.form.get("description",""),
-        height=100
+    severity = st.select_slider("Assessed severity", options=["Low", "Moderate", "High", "Severe"], value="Moderate")
+
+incident_description = st.text_area(
+    "Briefly describe the incident (what failed, who is affected, immediate risks):",
+    placeholder="e.g., Ransomware impacted finance, water billing, and permitting; 911 unaffected; public-facing portals offline..."
+)
+
+# ----------------------------
+# 2) NIST CSF Functions + Ethical Prompts
+# ----------------------------
+st.markdown("### 2) NIST CSF Functions in Play + Value Prompts")
+
+nist_selected = st.multiselect(
+    "Select the NIST CSF functions relevant now:",
+    list(NIST_FUNCTIONS.keys()),
+    default=(["Respond", "Recover"] if "ransom" in incident_description.lower() else []),
+)
+
+# Auto-suggest implicated principles from the incident description
+def auto_principles(text: str):
+    s = text.lower()
+    hits = []
+    for p, keys in AUTO_KEYWORDS.items():
+        if any(k in s for k in keys):
+            hits.append(p)
+    # If nothing matched, suggest a balanced default
+    return hits or ["Beneficence", "Non-maleficence", "Explicability"]
+
+suggested_principles = auto_principles(incident_description)
+
+st.info(f"Auto‑suggested ethical principles implicated (based on description): {', '.join(suggested_principles)}")
+
+# Show ethical prompts aligned to the selected NIST functions (crisis mode collapses detail)
+if nist_selected:
+    if not crisis_mode:
+        tabs = st.tabs(nist_selected)
+        for i, fn in enumerate(nist_selected):
+            with tabs[i]:
+                st.markdown(f"**{fn} – Common actions**")
+                st.write("\n".join([f"- {a}" for a in NIST_FUNCTIONS[fn]]))
+                st.markdown(f"**{fn} – Ethical prompts (Principlist)**")
+                q = NIST_TO_ETHICAL_QUESTIONS[fn]
+                for p in PRINCIPLES:
+                    st.write(f"- *{p}*: {q[p]}")
+    else:
+        st.markdown("**Crisis Mode prompts (condensed):**")
+        for fn in nist_selected:
+            st.write(f"- {fn}: " + "; ".join([NIST_TO_ETHICAL_QUESTIONS[fn][p] for p in suggested_principles]))
+
+# ----------------------------
+# 3) Stakeholders & Values
+# ----------------------------
+st.markdown("### 3) Stakeholders & Public Values")
+
+col1, col2 = st.columns(2)
+with col1:
+    stakeholders = st.multiselect(
+        "Stakeholders impacted",
+        ["Residents", "City Employees", "Vendors", "Elected Officials", "Emergency Services", "Regulators", "Media", "Other"],
+        default=["Residents", "City Employees"] if not crisis_mode else ["Residents", "Emergency Services"],
+    )
+with col2:
+    values_at_risk = st.multiselect(
+        "Public values at risk",
+        ["Privacy", "Transparency", "Trust", "Safety", "Equity", "Autonomy", "Accountability"],
+        default=["Safety", "Trust", "Transparency"] if "ransom" in incident_description.lower() else [],
     )
 
-with st.expander("NIST CSF 2.0 functions (quick reference)"):
-    st.write(NIST_HELP)
+# ----------------------------
+# 4) Constraints (Institutional & Governance)
+# ----------------------------
+st.markdown("### 4) Institutional & Governance Constraints")
 
-nist = st.multiselect(
-    "NIST CSF functions implicated",
-    list(NIST_HELP.keys()),
-    default=st.session_state.form.get("nist",[])
+colc1, colc2, colc3, colc4 = st.columns(4)
+with colc1:
+    budget = st.slider("Budget constraints", 0, 10, 6 if crisis_mode else 5)
+with colc2:
+    staffing = st.slider("Staffing capacity", 0, 10, 6 if crisis_mode else 5)
+with colc3:
+    legal = st.slider("Legal/policy complexity", 0, 10, 5)
+with colc4:
+    time_pressure = st.slider("Time pressure/urgency", 0, 10, 8 if crisis_mode else 6)
+
+constraint_notes = st.text_area(
+    "Notes on constraints (e.g., fragmented authority, vendor opacity, election cycle, public pressure):",
+    placeholder="e.g., Split authority across IT/Utilities/Mayor; vendor contract blocks code audit; council session in 24h...",
 )
 
 # ----------------------------
-# 2) Stakeholders & Public Values
+# 5) Ethical Evaluation (Principlist) – short or full
 # ----------------------------
-st.markdown("### 2) Stakeholders & Public Values")
+st.markdown("### 5) Ethical Evaluation (Principlist)")
 
-stakeholders = st.multiselect(
-    "Stakeholders impacted",
-    ["Residents","City Employees","Vendors","City Council","Regulators","Media","Community Orgs","Emergency Services","Schools","Other"],
-    default=st.session_state.form.get("stakeholders",[])
+def default_text(p):
+    if p in suggested_principles:
+        return f"(Auto‑flagged) Key concerns for {p.lower()} given the incident description…"
+    return ""
+
+colp = st.columns(5)
+inputs = {}
+for i, p in enumerate(PRINCIPLES):
+    with colp[i]:
+        inputs[p] = st.text_area(p, value=default_text(p), height=100 if crisis_mode else 140)
+
+# ----------------------------
+# 6) Decision Options & Matrix
+# ----------------------------
+st.markdown("### 6) Decision Options & Ethical Impact Matrix")
+
+st.caption("Rate each option’s expected effect on each principle: -2 (strongly harms) to +2 (strongly advances).")
+
+opt_cols = st.columns(3)
+options = []
+for i in range(3):
+    with opt_cols[i]:
+        title = st.text_input(f"Option {i+1} – label", value=["Rebuild from backups", "Limited partial restoration", "Pay ransom & decrypt"][i] if i==0 else "")
+        if i == 1 and not title:
+            title = st.text_input(f"Option {i+1} – label ", value="Limited partial restoration")
+        if i == 2 and not title:
+            title = st.text_input(f"Option {i+1} – label  ", value="Pay ransom & decrypt")
+
+        scores = {}
+        for p in PRINCIPLES:
+            scores[p] = st.slider(f"{title} → {p}", -2, 2, 0, key=f"{title}-{p}")
+        options.append({"title": title, "scores": scores})
+
+# Weighted scoring
+def score_option(opt):
+    return sum(opt["scores"][p] * PRINCIPLE_WEIGHTS[p] for p in PRINCIPLES)
+
+ranked = sorted(
+    [{"title": o["title"], "score": score_option(o), "scores": o["scores"]} for o in options if o["title"].strip()],
+    key=lambda x: x["score"],
+    reverse=True
 )
 
-values = st.multiselect(
-    "Public values at risk",
-    ["Safety","Privacy","Transparency","Trust","Equity","Autonomy","Service Continuity","Accountability"],
-    default=st.session_state.form.get("values",[])
-)
-
 # ----------------------------
-# 3) Institutional & Governance Constraints
+# 7) Synthesis & Recommendation
 # ----------------------------
-st.markdown("### 3) Institutional & Governance Constraints")
+st.markdown("### 7) Synthesis & Recommendation")
 
-c_cols = st.columns(6)
-constraint_scores = {}
-for (i,(name,helptext)) in enumerate(CONSTRAINTS):
-    with c_cols[i]:
-        constraint_scores[name] = st.slider(name, 0, 10, value=st.session_state.form.get("constraints_scores",{}).get(name,5), help=helptext)
+def calc_tension_index():
+    # crude composite: constraints + time pressure + implicated principles + severity
+    constraints_load = budget + staffing + legal + time_pressure  # 0–40
+    principle_load = len([p for p,v in inputs.items() if v.strip()]) * 2  # 0–10
+    sev = {"Low": 2, "Moderate": 5, "High": 8, "Severe": 10}[severity]
+    raw = constraints_load + principle_load + sev
+    return min(int(raw * 1.5), 100)
 
-notes = st.text_area(
-    "Context notes (political pressures, legal triggers, inter‑agency issues)",
-    value="\n".join(f"- {k}: {DEFAULT_NOTES[k]}" for k in DEFAULT_NOTES) if not st.session_state.form else
-          "\n".join([f"- {k}: {DEFAULT_NOTES[k]}" for k in DEFAULT_NOTES])
-)
+tension = calc_tension_index()
+st.progress(tension, text=f"Ethical tension index: {tension}/100")
 
-# ----------------------------
-# 4) Principlist Ethics
-# ----------------------------
-st.markdown("### 4) Principlist Evaluation")
-with st.expander("Principles reference"):
-    st.write(PRINCIPLE_HELP)
-
-beneficence = st.text_area("Beneficence – How does your action promote public well‑being?",
-                           value=st.session_state.form.get("beneficence",""))
-nonmaleficence = st.text_area("Non‑maleficence – How does it avoid or reduce harm?",
-                              value=st.session_state.form.get("nonmaleficence",""))
-autonomy = st.text_area("Autonomy – Rights, lawful authority, and choice respected?",
-                        value=st.session_state.form.get("autonomy",""))
-justice = st.text_area("Justice – Fair distribution; any disparate impacts mitigated?",
-                       value=st.session_state.form.get("justice",""))
-explicability = st.text_area("Explicability – Can you clearly explain and justify?",
-                             value=st.session_state.form.get("explicability",""))
-
-# ----------------------------
-# 5) Rapid vs Standard sections
-# ----------------------------
-st.markdown("### 5) Ethical Tension Snapshot")
-
-def tension_score():
-    # weights tuned for quick signal, not “truth”
-    c = sum(constraint_scores.values())          # 0–60
-    s = len(stakeholders) * 4                    # 0–40
-    v = len(values) * 3                          # 0–24
-    empties = sum(1 for t in [beneficence,nonmaleficence,autonomy,justice,explicability] if not t.strip())
-    penalty = empties * 6                        # 0–30
-    raw = c + s + v + penalty
-    return min(100, int(raw/1.8))
-
-score = tension_score()
-st.progress(score, text=f"Tension score: {score}/100")
-
-if score < 35:
-    st.success("Low–moderate tension. Proceed with documented justification; monitor conditions.")
-elif score < 70:
-    st.warning("Elevated tension. Document trade‑offs, consult cross‑functional leads, and time‑box decisions.")
+if ranked:
+    best = ranked[0]
+    st.success(f"**Provisional Recommendation:** {best['title']} (weighted ethical score: {best['score']:.1f})")
 else:
-    st.error("High tension. Escalate governance, ensure legal/comms review, consider interim/least‑harm options.")
-
-if mode.startswith("Rapid"):
-    st.info("**Rapid mode:** focus on minimal fields → Description, NIST functions, top two constraints, and one‑line notes per principle. You can refine later.")
-else:
-    st.caption("Standard mode enables fuller documentation and export.")
+    st.warning("Add at least one decision option to compute a recommendation.")
 
 # ----------------------------
-# 6) Decision & NIST alignment builder
+# 8) Justification Narrative (exportable)
 # ----------------------------
-st.markdown("### 6) Provisional Decision & NIST Alignment")
+st.markdown("### 8) Exportable Justification")
 
-action = st.text_area(
-    "Proposed action (what you will do now)",
-    placeholder="e.g., Isolate affected network segments; refuse ransom; publish outage status q4h; prioritize water billing restoration; invoke vendor rollback...",
-    height=90
-)
+def fmt_scores(sc):
+    return "; ".join([f"{p}: {('+' if v>0 else '')}{v}" for p, v in sc.items()])
 
-nist_alignment = st.multiselect(
-    "Which CSF outcomes does this action align with?",
-    [
-        "ID.AM – Asset mgmt updated",
-        "ID.RA – Risk assessment refined",
-        "PR.AC – Access controls applied",
-        "PR.DS – Data security safeguards",
-        "DE.CM – Continuous monitoring",
-        "RS.MI – Mitigation executed",
-        "RS.CO – Communications executed",
-        "RC.RP – Recovery planning enacted",
-        "RC.IM – Improvements captured"
-    ],
-    default=[]
-)
+timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
 
-# ----------------------------
-# 7) Build justification & export
-# ----------------------------
-st.markdown("### 7) Generate Justification")
+if st.button("Generate Justification"):
+    rec_line = f"Recommended path: {ranked[0]['title']} (ethical score {ranked[0]['score']:.1f})." if ranked else "Recommended path: (pending selection)."
+    justification = f"""
+Municipal Ethical Cyber Decision Log — {timestamp}
 
-if st.button("✅ Generate structured justification"):
-    now = datetime.utcnow().isoformat() + "Z"
-    record = {
-        "timestamp_utc": now,
-        "mode": mode,
-        "preset": preset,
-        "incident_type": incident_type,
-        "description": description,
-        "nist_functions": nist,
-        "stakeholders": stakeholders,
-        "values": values,
-        "constraints_scores": constraint_scores,
-        "notes": notes,
-        "principlist": {
-            "beneficence": beneficence,
-            "non_maleficence": nonmaleficence,
-            "autonomy": autonomy,
-            "justice": justice,
-            "explicability": explicability
-        },
-        "proposed_action": action,
-        "nist_alignment": nist_alignment,
-        "tension_score": score
-    }
+Incident
+- Type: {incident_type} | Severity: {severity}
+- Description: {incident_description}
 
-    # human‑readable markdown
-    md = f"""# Ethical Decision Justification (Municipal Cybersecurity)
+NIST CSF functions engaged:
+- {", ".join(nist_selected) if nist_selected else "(none selected)"}
 
-**Timestamp (UTC):** {now}  
-**Mode:** {mode}  
-**Preset:** {preset}
+Stakeholders & public values:
+- Stakeholders: {", ".join(stakeholders) if stakeholders else "(none)"}
+- Values at risk: {", ".join(values_at_risk) if values_at_risk else "(none)"}
 
-## Incident
-- **Type:** {incident_type}  
-- **Description:** {description}
+Institutional & governance constraints:
+- Budget={budget}/10 | Staffing={staffing}/10 | Legal/Policy={legal}/10 | Time Pressure={time_pressure}/10
+- Notes: {constraint_notes or '(none)'}
+- Ethical tension index: {tension}/100
 
-## NIST CSF 2.0 Functions
-- {", ".join(nist) if nist else "—"}
+Principlist evaluation:
+- Beneficence: {inputs['Beneficence'] or '(n/a)'}
+- Non-maleficence: {inputs['Non-maleficence'] or '(n/a)'}
+- Justice: {inputs['Justice'] or '(n/a)'}
+- Autonomy: {inputs['Autonomy'] or '(n/a)'}
+- Explicability: {inputs['Explicability'] or '(n/a)'}
 
-## Stakeholders & Values
-- **Stakeholders:** {", ".join(stakeholders) if stakeholders else "—"}
-- **Public Values at Risk:** {", ".join(values) if values else "—"}
+Decision options (ethical impacts; -2 harms → +2 advances):
+{chr(10).join([f"- {o['title']}: {fmt_scores(o['scores'])}" for o in ranked]) or '(no options)'}
 
-## Institutional & Governance Constraints (0–10)
-{chr(10).join([f"- **{k}:** {constraint_scores[k]} — {DEFAULT_NOTES.get(k,'')}" for k,_ in CONSTRAINTS])}
+Synthesis
+- {rec_line}
+- Rationale links NIST CSF actions to ethical requirements:
+  - Identify/Protect/Detect/Respond/Recover prompts considered for selected functions.
+  - Trade-offs documented across beneficence (public well-being), non-maleficence (avoid foreseeable harm),
+    justice (fairness/equity), autonomy (rights/lawful authority), explicability (transparency/accountability).
 
-**Context notes:**  
-{notes}
-
-## Principlist Evaluation
-- **Beneficence:** {beneficence or '—'}
-- **Non‑maleficence:** {nonmaleficence or '—'}
-- **Autonomy:** {autonomy or '—'}
-- **Justice:** {justice or '—'}
-- **Explicability:** {explicability or '—'}
-
-## Provisional Action
-{action or '—'}
-
-**NIST outcomes referenced:** {", ".join(nist_alignment) if nist_alignment else "—"}  
-**Ethical tension score:** {score}/100
+Governance
+- This decision is justified against documented constraints and is suitable for internal review, public explanation,
+  and lessons-learned integration into future policy, training, and procurement.
 """
-
-    st.success("Structured justification created below. You can copy, or export JSON/Markdown.")
-    st.markdown(md)
-
+    st.code(justification)
     st.download_button(
-        "⬇️ Download JSON",
-        data=json.dumps(record, indent=2),
-        file_name="municipal_ethics_decision.json",
-        mime="application/json"
-    )
-    st.download_button(
-        "⬇️ Download Markdown",
-        data=md,
-        file_name="municipal_ethics_decision.md",
-        mime="text/markdown"
+        "📄 Download justification (.txt)",
+        data=justification,
+        file_name="municipal_ethical_decision_justification.txt",
+        mime="text/plain",
     )
 
 # ----------------------------
-# Footer
+# Footer note for thesis mapping
 # ----------------------------
-with st.expander("About this prototype & thesis alignment"):
-    st.markdown("""
-- **Ethics**: Principlist (beneficence, non‑maleficence, autonomy, justice, explicability) used as the core evaluative lens.  
-- **Standards**: Mapped to **NIST CSF 2.0** functions/outcomes to anchor actions in recognized practice.  
-- **Municipal governance**: Explicit sliders for funding, authority fragmentation, procurement/vendor opacity, policy gaps, staffing—reflecting Ch. 3 constraints.  
-- **Operational reality**: Rapid vs Standard modes; exportable, auditable justification for accountability and post‑incident learning.
-""")
+st.caption(
+    "Design notes: Principlist = value framing (why); NIST CSF = operational levers (how); "
+    "Constraints = municipal realism (can). Crisis Mode condenses prompts for 2–5 minute use."
+)
