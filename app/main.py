@@ -174,7 +174,7 @@ with st.expander("About this prototype"):
     st.markdown("""
 - **Purpose:** Real-time support for municipal incident decisions that involve ethical trade-offs.
 - **Backbone:** NIST CSF 2.0 (Identify/Protect/Detect/Respond/Recover) + Principlist ethics (Beneficence, Non‑maleficence, Autonomy, Justice, Explicability).
-- **Context:** Reflects institutional and governance constraints common in municipalities (procurement opacity, fragmented authority, legacy tech, limited staffing, etc.).
+- **Context:** Reflects institutional and governance constraints common in municipalities (procurement opacity, fragmented authority, legacy technology, limited staffing, etc.).
 """)
 
 # ---------- Incident Overview ----------
