@@ -71,5 +71,6 @@ PRINCIPLES = ["Beneficence", "Non-maleficence", "Autonomy", "Justice", "Explicab
 def suggest_nist(incident_type:str, description:str):
     it = incident_type.lower()
     seed = []
-    for k, v in NIST_KB.items():
-        if k in it or k in description.lower():
+  for k, v in NIST_KB.items():
+    if k in it or k in description.lower():
+        seed.extend(v)
