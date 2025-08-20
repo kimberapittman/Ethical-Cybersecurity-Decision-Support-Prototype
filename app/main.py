@@ -202,7 +202,7 @@ with st.expander("About this prototype"):
     st.markdown(
         """
 - **Purpose:** Demonstrate a principlist–NIST decision-support approach for municipal incidents, grounded in your thesis scenarios but extensible to other incident types.
-- **Backbone:** NIST CSF 2.0 (Identify/Protect/Detect/Respond/Recover) + Principlist ethics (Beneficence, Non‑maleficence, Autonomy, Justice, Explicability).
+- **Backbone:** NIST CSF 2.0 (Identify/Protect/Detect/Respond/Recover) + Principlist ethics (Beneficence, Non-maleficence, Autonomy, Justice, Explicability).
 - **Context:** Reflects institutional and governance constraints common in municipalities (procurement opacity, fragmented authority, legacy technology, limited staffing, etc.).
         """
     )
@@ -310,7 +310,7 @@ else:
         autonomy = st.text_area("Autonomy – respect rights/choice", "")
         justice = st.text_area("Justice – fairness/equity", "")
     with colp2:
-        non_maleficence = st.text_area("Non‑maleficence – avoid harm", "")
+        non_maleficence = st.text_area("Non-maleficence – avoid harm", "")
         explicability = st.text_area("Explicability – transparency/accountability", "")
 
 # ---------- Tension score ----------
@@ -323,10 +323,10 @@ if score < 35:
 elif score < 70:
     st.warning("Moderate tension: ensure proportionality, comms, and oversight are in place.")
 else:
-    st.error("High tension: escalate, ensure cross‑dept decision rights, consider external ethics/LE counsel.")
+    st.error("High tension: escalate, ensure cross-dept decision rights, consider external ethics/LE counsel.")
 
 # ---------- Action plan (NIST-aligned) ----------
-st.markdown("### 5) NIST‑aligned action plan (editable)")
+st.markdown("### 5) NIST-aligned action plan (editable)")
 plan = []
 for f in selected_nist:
     st.write(f"**{f}**")
@@ -336,9 +336,9 @@ for f in selected_nist:
 # ---------- Communication checklist (explicability in practice) ----------
 with st.expander("Public communication & accountability checklist"):
     st.checkbox("Name a responsible official and decision authority for this incident", value=True)
-    st.checkbox("Publish plain‑language status, impacts, and next steps (no speculation)", value=True)
-    st.checkbox("State data handling, retention, and law‑enforcement coordination terms", value=True)
-    st.checkbox("Record rationale for decisions (pay/no‑pay; enable/disable tech; scope of surveillance)", value=True)
+    st.checkbox("Publish plain-language status, impacts, and next steps (no speculation)", value=True)
+    st.checkbox("State data handling, retention, and law-enforcement coordination terms", value=True)
+    st.checkbox("Record rationale for decisions (pay/no-pay; enable/disable tech; scope of surveillance)", value=True)
     st.checkbox("Equity statement: assess & mitigate disproportionate impact by neighborhood/group", value=True)
 
 # ---------- Generate justification ----------
@@ -373,7 +373,7 @@ Public values at risk: {", ".join(values) or '—'}
 Constraints: {", ".join(constraints) or '—'}
 Ethical/context tension score: {score}/100
 
-## Action plan (NIST‑aligned)
+## Action plan (NIST-aligned)
 - """ + "\n- ".join(plan) + f"""
 
 ## Ethical rationale
