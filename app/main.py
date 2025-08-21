@@ -201,7 +201,7 @@ preset_data = {
 
 # ---------- Intro ----------
 st.title("🛡️ Municipal Ethical Cyber Decision-Support (Prototype)")
-st.caption("Integrates NIST CSF 2.0 (GV/ID/PR/DE/RS/RC) + Principlist ethics, within municipal institutional and governance constraints.")
+st.caption("Integrates NIST CSF 2.0 + Principlist ethics, within municipal institutional and governance constraints.")
 
 with st.expander("About this prototype"):
     st.markdown(
