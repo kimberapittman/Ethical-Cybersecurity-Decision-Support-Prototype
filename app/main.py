@@ -68,25 +68,19 @@ NIST_ACTIONS = {
 
 PRINCIPLES = ["Beneficence", "Non-maleficence", "Autonomy", "Justice", "Explicability"]
 
-
 def suggest_nist(incident_type: str, description: str):
     it = incident_type.lower()
     seed = []
     for k, v in NIST_KB.items():
         if k in it or k in description.lower():
             seed.extend(v)
-    # fallback if nothing matched
     if not seed:
         seed = ["Identify", "Protect", "Detect", "Respond", "Recover"]
-    # dedupe preserving order
-    seen = set()
-    ordered = []
+    seen, ordered = set(), []
     for x in seed:
         if x not in seen:
-            ordered.append(x)
-            seen.add(x)
+            ordered.append(x); seen.add(x)
     return ordered
-
 
 def suggest_principles(description: str):
     hits = []
@@ -96,14 +90,11 @@ def suggest_principles(description: str):
             hits.extend(plist)
     if not hits:
         hits = ["Beneficence", "Non-maleficence", "Autonomy", "Justice", "Explicability"]
-    seen = set()
-    ordered = []
+    seen, ordered = set(), []
     for p in hits:
         if p not in seen:
-            ordered.append(p)
-            seen.add(p)
+            ordered.append(p); seen.add(p)
     return ordered
-
 
 def quick_ethics_blurbs(principles, ctx):
     blurbs = []
@@ -121,9 +112,7 @@ def quick_ethics_blurbs(principles, ctx):
                 blurbs.append("Explicability: Communicate decisions and rationales clearly, with auditable records.")
     return blurbs
 
-
 def score_tension(selected_principles, selected_nist, constraints, stakeholders, values):
-    # simple, transparent heuristic
     base = 10
     base += 5 * len(selected_principles)
     base += 3 * len(selected_nist)
@@ -132,8 +121,7 @@ def score_tension(selected_principles, selected_nist, constraints, stakeholders,
     base += 4 * len(values)
     return min(base, 100)
 
-
-# ---------- Sidebar: mode, scope, and presets ----------
+# ---------- Sidebar: mode, scope, presets ----------
 st.sidebar.header("Mode & Presets")
 mode = st.sidebar.radio("Mode", ["Quick triage (2–3 min)", "Full deliberation (8–12 min)"])
 scope = st.sidebar.radio("Scope", ["Thesis scenarios only", "Open-ended"])
@@ -193,12 +181,12 @@ with st.expander("About this prototype"):
     st.markdown(
         """
 - **Purpose:** Demonstrate a principlist–NIST decision-support approach for municipal incidents, grounded in your thesis scenarios but extensible to other incident types.
-- **Backbone:** NIST CSF 2.0 (Identify/Protect/Detect/Respond/Recover) + Principlist ethics (Beneficence, Non-maleficence, Autonomy, Justice, Explicability).
+- **Backbone:** NIST CSF 2.0 (Identify/Protect/Detect/Respond/Recover) + Principlist ethics (Beneficence, Non‑maleficence, Autonomy, Justice, Explicability).
 - **Context:** Reflects institutional and governance constraints common in municipalities (procurement opacity, fragmented authority, legacy technology, limited staffing, etc.).
         """
     )
 
-# ---------- Incident Overview ----------
+# ---------- 1) Incident Overview ----------
 st.markdown("### 1) Incident overview")
 colA, colB = st.columns([1.2, 2])
 
@@ -226,7 +214,6 @@ OPEN_INCIDENTS = [
     "Third-party/vendor compromise",
     "Other (specify)"
 ]
-
 incident_options = THESIS_INCIDENTS if scope == "Thesis scenarios only" else OPEN_INCIDENTS
 
 with colA:
@@ -242,7 +229,6 @@ with colA:
             default_option = "AI-enabled incident on critical infrastructure"
         else:
             default_option = "Other (specify)"
-
     selected_index = incident_options.index(default_option) if default_option in incident_options else 0
     incident_choice = st.selectbox("Incident type", incident_options, index=selected_index)
 
@@ -254,13 +240,10 @@ with colA:
     description = st.text_area("Brief description", pd.get("description", ""), height=110)
 
 with colB:
-    suggested_nist = suggest_nist(incident_type, description)
-    st.write("**Suggested NIST CSF functions** (editable):")
-    selected_nist = st.multiselect("", ["Identify", "Protect", "Detect", "Respond", "Recover"], default=suggested_nist)
+    st.write("")  # keep layout balance
 
-# ---------- Stakeholders, values, constraints ----------
+# ---------- 2) Stakeholders, values, constraints ----------
 st.markdown("### 2) Stakeholders, values, and constraints")
-
 col1, col2, col3 = st.columns(3)
 with col1:
     stakeholders = st.multiselect(
@@ -284,9 +267,13 @@ with col3:
         default=pd.get("constraints", [])
     )
 
-# ---------- Ethical evaluation ----------
-st.markdown("### 3) Ethical evaluation (Principlist)")
+# ---------- 3) Suggested NIST CSF functions (moved here) ----------
+st.markdown("### 3) Suggested NIST CSF functions (editable)")
+suggested_nist = suggest_nist(incident_type, description)
+selected_nist = st.multiselect("", ["Identify", "Protect", "Detect", "Respond", "Recover"], default=suggested_nist)
 
+# ---------- 4) Ethical evaluation (Principlist) ----------
+st.markdown("### 4) Ethical evaluation (Principlist)")
 auto_principles = suggest_principles(description + " " + " ".join(values))
 selected_principles = st.multiselect("Suggested principles (editable)", PRINCIPLES, default=auto_principles)
 
@@ -301,11 +288,11 @@ else:
         autonomy = st.text_area("Autonomy – respect rights/choice", "")
         justice = st.text_area("Justice – fairness/equity", "")
     with colp2:
-        non_maleficence = st.text_area("Non-maleficence – avoid harm", "")
+        non_maleficence = st.text_area("Non‑maleficence – avoid harm", "")
         explicability = st.text_area("Explicability – transparency/accountability", "")
 
-# ---------- Tension score ----------
-st.markdown("### 4) Ethical tension score")
+# ---------- 5) Ethical tension score ----------
+st.markdown("### 5) Ethical tension score")
 score = score_tension(selected_principles, selected_nist, constraints, stakeholders, values)
 st.progress(score, text=f"Ethical/contextual tension: {score}/100")
 
@@ -314,26 +301,26 @@ if score < 35:
 elif score < 70:
     st.warning("Moderate tension: ensure proportionality, comms, and oversight are in place.")
 else:
-    st.error("High tension: escalate, ensure cross-dept decision rights, consider external ethics/LE counsel.")
+    st.error("High tension: escalate, ensure cross‑dept decision rights, consider external ethics/LE counsel.")
 
-# ---------- Action plan (NIST-aligned) ----------
-st.markdown("### 5) NIST-aligned action plan (editable)")
+# ---------- 6) NIST‑aligned action plan (editable) ----------
+st.markdown("### 6) NIST‑aligned action plan (editable)")
 plan = []
 for f in selected_nist:
     st.write(f"**{f}**")
     chosen = st.multiselect(f"Select {f} actions", NIST_ACTIONS[f], default=NIST_ACTIONS[f], key=f)
     plan.extend([f"{f}: {a}" for a in chosen])
 
-# ---------- Communication checklist (explicability in practice) ----------
+# ---------- Communication checklist ----------
 with st.expander("Public communication & accountability checklist"):
     st.checkbox("Name a responsible official and decision authority for this incident", value=True)
-    st.checkbox("Publish plain-language status, impacts, and next steps (no speculation)", value=True)
-    st.checkbox("State data handling, retention, and law-enforcement coordination terms", value=True)
-    st.checkbox("Record rationale for decisions (pay/no-pay; enable/disable tech; scope of surveillance)", value=True)
+    st.checkbox("Publish plain‑language status, impacts, and next steps (no speculation)", value=True)
+    st.checkbox("State data handling, retention, and law‑enforcement coordination terms", value=True)
+    st.checkbox("Record rationale for decisions (pay/no‑pay; enable/disable tech; scope of surveillance)", value=True)
     st.checkbox("Equity statement: assess & mitigate disproportionate impact by neighborhood/group", value=True)
 
-# ---------- Generate justification ----------
-st.markdown("### 6) Generate justification")
+# ---------- 7) Generate justification ----------
+st.markdown("### 7) Generate justification")
 if st.button("Create decision record"):
     timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
     if mode.startswith("Quick"):
@@ -364,7 +351,7 @@ Public values at risk: {", ".join(values) or '—'}
 Constraints: {", ".join(constraints) or '—'}
 Ethical/context tension score: {score}/100
 
-## Action plan (NIST-aligned)
+## Action plan (NIST‑aligned)
 - """ + "\n- ".join(plan) + f"""
 
 ## Ethical rationale
@@ -376,5 +363,6 @@ This decision reflects principlist ethical reasoning and NIST CSF 2.0 practices,
     st.code(record, language="markdown")
     st.download_button("📥 Download decision record (.md)", record, file_name="decision_record.md")
 
-# ---------- Footer hint ----------
+# ---------- Footer ----------
 st.caption("Prototype: for thesis demonstration (Chapter IV) — aligns case presets with your Chapter III scenarios.")
+
