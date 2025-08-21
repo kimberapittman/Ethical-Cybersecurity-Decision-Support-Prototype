@@ -189,13 +189,6 @@ preset_data = {
 st.title("🛡️ Municipal Ethical Cyber Decision-Support (Prototype)")
 st.caption("Integrates NIST CSF 2.0 + Principlist ethics, with municipal institutional and governance constraints.")
 
-st.markdown(
-    "<div style='background-color:#f9f9a7;padding:10px;border-radius:5px'>"
-    "<b>Context:</b> Decisions are evaluated within <i>municipal institutional and governance constraints</i>."
-    "</div>", 
-    unsafe_allow_html=True
-)
-
 with st.expander("About this prototype"):
     st.markdown(
         """
