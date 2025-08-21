@@ -4,14 +4,25 @@ from datetime import datetime
 # ---------- Page config ----------
 st.set_page_config(page_title="Municipal Ethical Cyber Decision-Support", layout="wide")
 
+# ---------- NIST CSF 2.0 constants ----------
+NIST_FUNCTIONS = [
+    "Govern (GV)",
+    "Identify (ID)",
+    "Protect (PR)",
+    "Detect (DE)",
+    "Respond (RS)",
+    "Recover (RC)",
+]
+
 # ---------- Simple rule-based NLP helpers (no external deps) ----------
+# Include GV (governance) as an overarching function for most incidents
 NIST_KB = {
-    "ransomware": ["Identify", "Protect", "Detect", "Respond", "Recover"],
-    "phishing": ["Protect", "Detect", "Respond", "Recover"],
-    "unauthorized access": ["Detect", "Respond", "Recover", "Identify"],
-    "data breach": ["Identify", "Protect", "Detect", "Respond", "Recover"],
-    "surveillance": ["Identify", "Protect", "Respond"],
-    "ai-enabled": ["Identify", "Detect", "Respond", "Recover"]
+    "ransomware": ["Govern (GV)", "Identify (ID)", "Protect (PR)", "Detect (DE)", "Respond (RS)", "Recover (RC)"],
+    "phishing":   ["Govern (GV)", "Protect (PR)", "Detect (DE)", "Respond (RS)", "Recover (RC)"],
+    "unauthorized access": ["Govern (GV)", "Detect (DE)", "Respond (RS)", "Recover (RC)", "Identify (ID)"],
+    "data breach": ["Govern (GV)", "Identify (ID)", "Protect (PR)", "Detect (DE)", "Respond (RS)", "Recover (RC)"],
+    "surveillance": ["Govern (GV)", "Identify (ID)", "Protect (PR)", "Respond (RS)"],
+    "ai-enabled": ["Govern (GV)", "Identify (ID)", "Detect (DE)", "Respond (RS)", "Recover (RC)"]
 }
 
 ETHICAL_HINTS = {
@@ -38,32 +49,46 @@ GOV_CONSTRAINTS = [
     "Ambiguous data sharing/retention policies"
 ]
 
+# ---------- NIST CSF 2.0 action examples (now includes GOVERN) ----------
 NIST_ACTIONS = {
-    "Identify": [
-        "Confirm crown jewels & service criticality",
-        "Establish incident objectives, decision authority, and escalation paths",
-        "Map stakeholders and equity impacts"
+    "Govern (GV)": [
+        "Affirm decision rights, RACI, and escalation paths (counsel, CIO/CISO, utilities, council)",
+        "Activate risk governance: convene cross‑dept incident steering group",
+        "Ensure policies for privacy, surveillance use, and AI are applied/waived only with due process",
+        "Require procurement/vendor transparency (SBOMs, data handling, model cards)",
+        "Coordinate with oversight bodies (council, civil rights, public records) and document rationale",
+        "Mandate equity impact check and document mitigations",
     ],
-    "Protect": [
+    "Identify (ID)": [
+        "Confirm crown jewels & service criticality",
+        "Establish incident objectives and scope",
+        "Map stakeholders and equity impacts",
+        "Inventory affected assets, data, and dependencies"
+    ],
+    "Protect (PR)": [
         "Harden access (MFA, least privilege, network segmentation)",
         "Freeze risky changes; ensure backups are protected/offline",
-        "Apply emergency configuration baselines"
+        "Apply emergency configuration baselines",
+        "Safeguard sensitive data (masking, minimum necessary use)"
     ],
-    "Detect": [
+    "Detect (DE)": [
         "Correlate alerts; verify indicators of compromise",
         "Expand monitoring to adjacent systems",
-        "Preserve logs and evidence (chain of custody)"
+        "Preserve logs and evidence (chain of custody)",
+        "Hunt for lateral movement and persistence"
     ],
-    "Respond": [
+    "Respond (RS)": [
         "Contain (isolate affected hosts/segments); coordinate with counsel/LE",
         "Activate comms plan; publish clear, non-speculative updates",
-        "Decide on takedown/disablement with proportionality & due process"
+        "Decide on takedown/disablement with proportionality & due process",
+        "Coordinate with vendors and external partners"
     ],
-    "Recover": [
+    "Recover (RC)": [
         "Restore by criticality with integrity checks",
         "Post-incident review; address root causes & policy gaps",
-        "Update playbooks; brief council/public with lessons learned"
-    ]
+        "Update playbooks; brief council/public with lessons learned",
+        "Track residual risk and follow-up actions"
+    ],
 }
 
 PRINCIPLES = ["Beneficence", "Non-maleficence", "Autonomy", "Justice", "Explicability"]
@@ -75,7 +100,8 @@ def suggest_nist(incident_type: str, description: str):
         if k in it or k in description.lower():
             seed.extend(v)
     if not seed:
-        seed = ["Identify", "Protect", "Detect", "Respond", "Recover"]
+        seed = NIST_FUNCTIONS[:]  # default to all six, in CSF 2.0 order
+    # dedupe preserving order
     seen, ordered = set(), []
     for x in seed:
         if x not in seen:
@@ -89,7 +115,7 @@ def suggest_principles(description: str):
         if k in text:
             hits.extend(plist)
     if not hits:
-        hits = ["Beneficence", "Non-maleficence", "Autonomy", "Justice", "Explicability"]
+        hits = PRINCIPLES[:]
     seen, ordered = set(), []
     for p in hits:
         if p not in seen:
@@ -175,13 +201,13 @@ preset_data = {
 
 # ---------- Intro ----------
 st.title("🛡️ Municipal Ethical Cyber Decision-Support (Prototype)")
-st.caption("Integrates NIST CSF 2.0 + Principlist ethics, with municipal institutional and governance constraints.")
+st.caption("Integrates NIST CSF 2.0 (GV/ID/PR/DE/RS/RC) + Principlist ethics, within municipal institutional and governance constraints.")
 
 with st.expander("About this prototype"):
     st.markdown(
         """
-- **Purpose:** Demonstrate a principlist–NIST decision-support approach for municipal incidents, grounded in your thesis scenarios but extensible to other incident types.
-- **Backbone:** NIST CSF 2.0 (Identify/Protect/Detect/Respond/Recover) + Principlist ethics (Beneficence, Non‑maleficence, Autonomy, Justice, Explicability).
+- **Purpose:** Demonstrate a principlist–NIST decision-support approach for municipal incidents, grounded in thesis scenarios but extensible to other incident types.
+- **Backbone:** NIST CSF **2.0** — six functions: **Govern (GV), Identify (ID), Protect (PR), Detect (DE), Respond (RS), Recover (RC)** — plus Principlist ethics (Beneficence, Non‑maleficence, Autonomy, Justice, Explicability).
 - **Context:** Reflects institutional and governance constraints common in municipalities (procurement opacity, fragmented authority, legacy technology, limited staffing, etc.).
         """
     )
@@ -267,10 +293,10 @@ with col3:
         default=pd.get("constraints", [])
     )
 
-# ---------- 3) Suggested NIST CSF functions (moved here) ----------
-st.markdown("### 3) Suggested NIST CSF functions (editable)")
+# ---------- 3) Suggested NIST CSF 2.0 functions (moved here) ----------
+st.markdown("### 3) Suggested NIST CSF 2.0 functions (editable)")
 suggested_nist = suggest_nist(incident_type, description)
-selected_nist = st.multiselect("", ["Identify", "Protect", "Detect", "Respond", "Recover"], default=suggested_nist)
+selected_nist = st.multiselect("", NIST_FUNCTIONS, default=suggested_nist)
 
 # ---------- 4) Ethical evaluation (Principlist) ----------
 st.markdown("### 4) Ethical evaluation (Principlist)")
@@ -342,7 +368,7 @@ Type: {incident_type or '—'}
 Description: {description or '—'}
 
 ## Frameworks
-NIST CSF: {", ".join(selected_nist)}
+NIST CSF 2.0: {", ".join(selected_nist)}
 Principlist: {", ".join(selected_principles)}
 
 ## Context
@@ -358,11 +384,10 @@ Ethical/context tension score: {score}/100
 {ethics_summary}
 
 ## Notes
-This decision reflects principlist ethical reasoning and NIST CSF 2.0 practices, applied within municipal governance constraints.
+This decision reflects principlist ethical reasoning and NIST CSF 2.0 practices (GV/ID/PR/DE/RS/RC), applied within municipal governance constraints.
 """
     st.code(record, language="markdown")
     st.download_button("📥 Download decision record (.md)", record, file_name="decision_record.md")
 
 # ---------- Footer ----------
 st.caption("Prototype: for thesis demonstration (Chapter IV) — aligns case presets with your Chapter III scenarios.")
-
