@@ -91,9 +91,9 @@ NIST_ACTIONS = {
     ],
 # Define the scenario summaries
 scenario_summaries = {
-    "Baltimore Ransomware (2019)": "In 2019, Baltimore’s local government suffered a ransomware attack that crippled municipal systems for weeks. Decision-makers faced urgent questions about paying the ransom, communicating with the public, and balancing service continuity with long-term security implications.",
-    "San Diego Smart Streetlights": "San Diego implemented a smart streetlight program intended for traffic and environmental monitoring. When law enforcement began using the sensors for surveillance without clear public oversight, ethical concerns about transparency, consent, and mission creep arose.",
-    "Hypothetical Workforce Monitoring Case": "A fictional city IT department considers deploying AI-based monitoring software on employee devices to detect insider threats. Ethical tensions arise around privacy, informed consent, and balancing security with employee rights."
+    "Ransomware on Baltimore": "In 2019, Baltimore was hit by a ransomware attack that disrupted city services for weeks, exposing tensions between transparency, public safety, and data protection.",
+    "Smart Streetlights in San Diego": "San Diego’s smart streetlight program raised concerns over surveillance, consent, and repurposing of technology initially introduced for traffic monitoring.",
+    "Hypothetical Scenario": "A fictional incident to explore ethical decision-making in a crisis involving workforce monitoring, limited resources, and competing public pressures."
 }
 
 PRINCIPLES = ["Beneficence", "Non-maleficence", "Autonomy", "Justice", "Explicability"]
