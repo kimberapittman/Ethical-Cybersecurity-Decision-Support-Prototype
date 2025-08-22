@@ -1,100 +1,90 @@
 import streamlit as st
+from datetime import datetime
 
-# Define the scenario summaries
-scenario_summaries = {
-    "Baltimore Ransomware (2019)": "In 2019, Baltimore’s local government suffered a ransomware attack that crippled municipal systems for weeks. Decision-makers faced urgent questions about paying the ransom, communicating with the public, and balancing service continuity with long-term security implications.",
-    "San Diego Smart Streetlights": "San Diego implemented a smart streetlight program intended for traffic and environmental monitoring. When law enforcement began using the sensors for surveillance without clear public oversight, ethical concerns about transparency, consent, and mission creep arose.",
-    "Hypothetical Workforce Monitoring Case": "A fictional city IT department considers deploying AI-based monitoring software on employee devices to detect insider threats. Ethical tensions arise around privacy, informed consent, and balancing security with employee rights."
-}
-
-# Set page configuration
+# Set page layout
 st.set_page_config(
-    page_title="Ethical Cybersecurity Decision Prototype",
+    page_title="Ethical Cybersecurity Decision Tool",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Title and subtitle
+# ---- HEADER ----
 st.title("What’s Secure Isn’t Always What’s Right")
-st.subheader("A Decision-Support Prototype for Municipal Cybersecurity Practitioners")
+st.subheader("Designing a Decision-Support Prototype for Municipal Cybersecurity Practitioners")
 
-# About section
+# ---- ABOUT THE PROTOTYPE ----
 st.markdown("""
-### About the Prototype
-This prototype demonstrates how a decision-support tool could guide municipal cybersecurity practitioners through ethically and technically complex scenarios. It is not intended to prescribe answers but to illuminate value tensions, relevant standards, and contextual constraints using structured, real-world case reconstructions. Each scenario is drawn from thesis case studies and showcases how ethical reasoning and the NIST Cybersecurity Framework can inform decision-making in high-stakes environments.
+This interactive tool is designed to demonstrate how ethical and technical frameworks can guide decision-making in complex municipal cybersecurity scenarios. The goal is to show how structured ethical reasoning can work alongside technical standards to navigate trade-offs, justify decisions, and document rationale. It is built around three illustrative case studies used in a thesis project.
 """)
 
-# Select scenario
-scenario = st.selectbox(
-    "Choose a Municipal Cybersecurity Scenario",
-    options=list(scenario_summaries.keys())
-)
+# ---- BACKBONE + CONTEXT ----
+with st.expander("📚 Prototype Backbone & Context"):
+    st.markdown("""
+    - **Frameworks Used**:
+        - [NIST Cybersecurity Framework (CSF)](https://www.nist.gov/cyberframework): A widely adopted technical risk management standard.
+        - Principlist Framework for Cybersecurity Ethics: A normative tool emphasizing four ethical principles—Respect for Autonomy, Nonmaleficence, Beneficence, and Justice.
+    - **Design Goal**: Provide structured guidance without prescribing outcomes. The tool surfaces ethical tensions and institutional constraints to help users reach morally defensible, context-aware decisions.
+    """)
 
-# Auto-display scenario summary
-st.markdown(f"**Scenario Overview:** {scenario_summaries[scenario]}")
+# ---- SCENARIO SELECTION ----
+st.sidebar.header("Select a Scenario")
+scenario = st.sidebar.selectbox("Choose one of the illustrative thesis cases:", [
+    "2019 Baltimore Ransomware Attack",
+    "San Diego Smart Streetlights",
+    "Hypothetical: Workforce Monitoring in a Municipal IT Department"
+])
 
-# Ethical Tensions section
-st.markdown("### Ethical Tensions")
-ethical_tensions = st.multiselect(
-    "Select the relevant ethical tensions present in this scenario:",
-    [
-        "Privacy vs. Security",
-        "Transparency vs. Confidentiality",
-        "Autonomy vs. Oversight",
-        "Public Trust vs. Operational Necessity",
-        "Fairness vs. Efficiency",
-        "Short-Term Action vs. Long-Term Risk"
-    ]
-)
+# ---- SECTION 1: INCIDENT OVERVIEW ----
+st.header("1. Incident Overview")
 
-# Institutional & Governance Constraints
-st.markdown("### Institutional & Governance Constraints")
-constraints = st.multiselect(
-    "Which constraints affect decision-making in this case?",
-    [
-        "Budget limitations",
-        "Legal ambiguity",
-        "Time pressure",
-        "Fragmented authority",
-        "Public scrutiny",
-        "Vendor dependence"
-    ]
-)
+# Auto-filled summaries for each scenario
+scenario_summaries = {
+    "2019 Baltimore Ransomware Attack": """In May 2019, Baltimore’s government systems were paralyzed by a ransomware attack. The attack halted email access and disrupted real estate transactions, water billing, and more. The city refused to pay the ransom, leading to extended downtime and an estimated $18 million in recovery costs.""",
+    "San Diego Smart Streetlights": """San Diego installed smart streetlights equipped with surveillance technology, initially justified for energy savings and traffic monitoring. Over time, concerns grew around lack of public input, transparency, and potential misuse of surveillance data by law enforcement.""",
+    "Hypothetical: Workforce Monitoring in a Municipal IT Department": """A city IT department implements new software that quietly tracks employee activity for cybersecurity monitoring. The deployment occurs without informing staff, raising ethical concerns around consent, autonomy, and trust within a constrained institutional environment."""
+}
 
-# NIST CSF Functions
-st.markdown("### NIST Cybersecurity Framework (CSF) Functions")
+st.markdown(f"**Scenario Summary:**\n\n{scenario_summaries[scenario]}")
+
+# ---- SECTION 2: ETHICAL TENSIONS ----
+st.header("2. Ethical Tensions")
+
+ethical_tension = st.text_area("What are the key ethical tensions in this case?", placeholder="E.g., Autonomy vs. Security, Transparency vs. Efficiency...")
+
+# ---- SECTION 3: NIST CSF FUNCTIONS ----
+st.header("3. NIST Cybersecurity Functions")
+
 nist_functions = st.multiselect(
-    "Which NIST functions apply here?",
+    "Which NIST CSF Functions are relevant to this case?",
     ["Identify", "Protect", "Detect", "Respond", "Recover"]
 )
 
-# Ethical Principles
-st.markdown("### Principlist Ethical Framework")
+# ---- SECTION 4: PRINCIPLIST FRAMEWORK ----
+st.header("4. Principlist Framework")
+
 principles = st.multiselect(
-    "Which ethical principles are most relevant?",
-    ["Respect for Autonomy", "Non-Maleficence", "Beneficence", "Justice", "Explicability"]
+    "Which ethical principles apply?",
+    ["Respect for Autonomy", "Nonmaleficence", "Beneficence", "Justice"]
 )
 
-# Action plan input
-st.markdown("### Action Plan")
-action_plan = st.text_area(
-    "Describe your recommended path forward:",
-    placeholder="Outline a response that balances ethical concerns and technical standards."
-)
+# ---- SECTION 5: CONSTRAINTS ----
+st.header("5. Institutional & Governance Constraints")
 
-# Decision rationale generator
-if st.button("Generate Decision Record"):
+constraints = st.text_area("What practical constraints shape the decision?", placeholder="E.g., budget limitations, political pressure, unclear authority...")
+
+# ---- SECTION 6: ACTION PATH ----
+st.header("6. Proposed Action Path")
+
+action_plan = st.text_area("What is your proposed course of action?", placeholder="Describe how you would proceed, balancing ethical and technical considerations...")
+
+# ---- SECTION 7: DECISION RATIONALE ----
+st.header("7. Rationale Summary")
+
+if st.button("Generate Summary"):
     st.markdown("---")
-    st.markdown("## 📘 Decision Summary")
+    st.subheader("📝 Decision Summary")
     st.markdown(f"**Scenario Chosen:** {scenario}")
-    st.markdown(f"**Scenario Summary:** {scenario_summaries[scenario]}")
-    st.markdown(f"**Ethical Tensions Identified:** {', '.join(ethical_tensions) if ethical_tensions else 'None selected'}")
-    st.markdown(f"**Constraints Present:** {', '.join(constraints) if constraints else 'None selected'}")
-    st.markdown(f"**NIST Functions Referenced:** {', '.join(nist_functions) if nist_functions else 'None selected'}")
-    st.markdown(f"**Ethical Principles Applied:** {', '.join(principles) if principles else 'None selected'}")
-    st.markdown("**Proposed Action Plan:**")
-    st.write(action_plan if action_plan else "No action plan provided.")
-
-# Footer
-st.markdown("---")
-st.caption("Prototype created for thesis demonstration purposes – not for operational use.")
+    st.markdown(f"**Ethical Tensions Identified:** {ethical_tension}")
+    st.markdown(f"**Relevant NIST CSF Functions:** {', '.join(nist_functions)}")
+    st.markdown(f"**Applied Ethical Principles:** {', '.join(principles)}")
+    st.markdown(f"**Constraints Considered:** {constraints}")
