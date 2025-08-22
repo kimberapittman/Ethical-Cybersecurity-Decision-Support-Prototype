@@ -201,7 +201,7 @@ preset_data = {
 
 # ---------- Intro ----------
 st.title("🛡️ Municipal Ethical Cyber Decision-Support (Prototype)")
-st.caption(st.caption("Because What's secure isn't always what's right.")
+st.markdown("**Because what's secure isn't always what's right.**")
 st.caption("A structured tool for making ethical, justifiable decisions in municipal cybersecurity.")
 
 with st.expander("About this prototype"):
