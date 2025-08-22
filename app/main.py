@@ -90,11 +90,11 @@ NIST_ACTIONS = {
         "Track residual risk and follow-up actions"
     ],
 # Define the scenario summaries
-scenario_summaries = {
+scenario_summaries = [
     "Ransomware on Baltimore": "In 2019, Baltimore was hit by a ransomware attack that disrupted city services for weeks, exposing tensions between transparency, public safety, and data protection.",
     "Smart Streetlights in San Diego": "San Diego’s smart streetlight program raised concerns over surveillance, consent, and repurposing of technology initially introduced for traffic monitoring.",
     "Hypothetical Scenario": "A fictional incident to explore ethical decision-making in a crisis involving workforce monitoring, limited resources, and competing public pressures."
-}
+],
 
 PRINCIPLES = ["Beneficence", "Non-maleficence", "Autonomy", "Justice", "Explicability"]
 
