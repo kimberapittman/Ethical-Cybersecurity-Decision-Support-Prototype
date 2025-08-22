@@ -206,7 +206,7 @@ st.caption("Integrates NIST CSF 2.0 + Principlist ethics, within municipal insti
 with st.expander("About this prototype"):
     st.markdown(
         """
-- **Purpose:** Demonstrate a principlist–NIST decision-support approach for municipal incidents, grounded in thesis scenarios but extensible to other incident types.
+- **Purpose:** Support municipal cybersecurity practitioners in navigating complex ethical dilemmas by integrating NIST CSF 2.0 functions with principlist ethical reasoning. The tool is designed to guide users through high-stakes decisions in real time—clarifying value conflicts, aligning actions with institutional priorities, and documenting justifiable outcomes under practical constraints.
 - **Backbone:** NIST CSF **2.0** — six functions: **Govern (GV), Identify (ID), Protect (PR), Detect (DE), Respond (RS), Recover (RC)** — plus Principlist ethics (Beneficence, Non‑maleficence, Autonomy, Justice, Explicability).
 - **Context:** Reflects institutional and governance constraints common in municipalities (procurement opacity, fragmented authority, legacy technology, limited staffing, etc.).
         """
