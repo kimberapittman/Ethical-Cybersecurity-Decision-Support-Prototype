@@ -89,12 +89,20 @@ NIST_ACTIONS = {
         "Update playbooks; brief council/public with lessons learned",
         "Track residual risk and follow-up actions"
     ],
-# Define the scenario summaries
-scenario_summaries = [
-    "Ransomware on Baltimore": "In 2019, Baltimore was hit by a ransomware attack that disrupted city services for weeks, exposing tensions between transparency, public safety, and data protection.",
-    "Smart Streetlights in San Diego": "San Diego’s smart streetlight program raised concerns over surveillance, consent, and repurposing of technology initially introduced for traffic monitoring.",
-    "Hypothetical Scenario": "A fictional incident to explore ethical decision-making in a crisis involving workforce monitoring, limited resources, and competing public pressures."
-],
+scenario_summaries = {
+    "Ransomware on Baltimore city servers": 
+        "In 2019, Baltimore experienced a ransomware attack that locked staff out of critical systems. "
+        "The city refused to pay the ransom, resulting in prolonged disruptions and $18M in recovery costs.",
+    
+    "San Diego smart streetlights and surveillance": 
+        "San Diego installed smart streetlights for traffic and environmental data, but later repurposed them "
+        "for police surveillance without public consent, raising ethical concerns about transparency, trust, and misuse.",
+    
+    "Hypothetical insider threat involving IT admin": 
+        "An internal IT administrator is suspected of accessing confidential employee communications without a warrant. "
+        "Officials must weigh internal oversight, privacy rights, and breach mitigation."
+}
+
 
 PRINCIPLES = ["Beneficence", "Non-maleficence", "Autonomy", "Justice", "Explicability"]
 
