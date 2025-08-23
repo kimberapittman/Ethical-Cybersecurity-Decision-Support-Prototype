@@ -89,7 +89,7 @@ NIST_ACTIONS = {
         "Update playbooks; brief council/public with lessons learned",
         "Track residual risk and follow-up actions"
     ],
-scenario_summaries = {:
+scenario_summaries = {
     "Ransomware on Baltimore city servers": [
         "In 2019, Baltimore experienced a ransomware attack that locked staff out of critical systems."
         "The city refused to pay the ransom, resulting in prolonged disruptions and $18M in recovery costs."
