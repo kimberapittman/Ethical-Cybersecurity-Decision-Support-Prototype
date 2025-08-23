@@ -91,7 +91,7 @@ NIST_ACTIONS = {
     ],
 }
 
-# ---------- Scenario summaries (cleaned & outside of NIST_ACTIONS) ----------
+# ---------- Scenario summaries ----------
 scenario_summaries = {
     "Baltimore Ransomware Attack": (
         "In 2019, Baltimore experienced a ransomware attack that locked staff out of critical systems. "
@@ -163,57 +163,9 @@ def score_tension(selected_principles, selected_nist, constraints, stakeholders,
     base += 4 * len(values)
     return min(base, 100)
 
-# ---------- Sidebar: mode, scope, presets ----------
-st.sidebar.header("Mode & Presets")
-mode = st.sidebar.radio("Mode", ["Quick triage (2–3 min)", "Full deliberation (8–12 min)"])
+# ---------- Sidebar (kept only Scope; removed Mode + Presets) ----------
+st.sidebar.header("Options")
 scope = st.sidebar.radio("Scope", ["Thesis scenarios only", "Open-ended"])
-
-preset = st.sidebar.selectbox(
-    "Load a preset (optional)",
-    [
-        "— None —",
-        "Baltimore-style: Ransomware on core city services",
-        "San Diego-style: Tech repurposed for surveillance",
-        "Riverton-style: AI-enabled incident on critical infra"
-    ]
-)
-
-preset_data = {
-    "Baltimore-style: Ransomware on core city services": dict(
-        incident_type="Ransomware",
-        description="City servers encrypted; email and payment portals offline; pressure to pay ransom vs. restore from backups.",
-        stakeholders=["Residents", "City Employees", "City Council", "Courts/Recorders"],
-        values=["Safety", "Trust", "Transparency", "Equity", "Autonomy"],
-        constraints=[
-            "Legacy tech / poor segmentation / patch backlog",
-            "Limited budget / staffing",
-            "No/weak incident playbooks or continuity plans"
-        ]
-    ),
-    "San Diego-style: Tech repurposed for surveillance": dict(
-        incident_type="Technology repurposing / Surveillance use",
-        description="Sensor-enabled streetlights used by police for investigations without prior public process; policy and equity concerns.",
-        stakeholders=["Residents", "City Council", "Media", "Civil Rights Groups"],
-        values=["Privacy", "Transparency", "Trust", "Equity", "Autonomy"],
-        constraints=[
-            "Procurement did not disclose ethical/surveillance risk",
-            "Lack of public engagement / oversight",
-            "Ambiguous data sharing/retention policies",
-            "Fragmented authority / unclear decision rights"
-        ]
-    ),
-    "Riverton-style: AI-enabled incident on critical infra": dict(
-        incident_type="AI-enabled intrusion on water treatment network",
-        description="AI monitor auto-acted on adversarial signal, disrupting water distribution; choice between disabling AI or retraining live.",
-        stakeholders=["Residents", "Public Utilities Board", "Vendors", "Mayor’s Office"],
-        values=["Safety", "Trust", "Transparency", "Equity", "Autonomy"],
-        constraints=[
-            "Vendor opacity (limited audit of code/training data)",
-            "Fragmented authority / unclear decision rights",
-            "No/weak incident playbooks or continuity plans"
-        ]
-    )
-}
 
 # ---------- Intro ----------
 st.title("🛡️ Municipal Ethical Cyber Decision-Support (Prototype)")
@@ -236,15 +188,10 @@ scenario = st.selectbox(
 st.markdown(f"### 1) Scenario Overview")
 st.markdown(f"**Scenario Overview:** {scenario_summaries[scenario]}")
 
-# derive incident/description without separate inputs
+# Derive incident and description without presets
 incident_type = scenario
-# prefer preset description when a preset is chosen; else fall back to scenario summary
-if preset != "— None —":
-    pd = preset_data[preset]
-    description = pd.get("description", "") or scenario_summaries[scenario]
-else:
-    description = scenario_summaries[scenario]
-    pd = dict(description="", stakeholders=[], values=[], constraints=[])
+description = scenario_summaries[scenario]
+pd = dict(description="", stakeholders=[], values=[], constraints=[])
 
 # ---------- 2) Stakeholders, values, and constraints ----------
 st.markdown("### 2) Stakeholders, values, and constraints")
@@ -281,19 +228,15 @@ st.markdown("### 4) Ethical evaluation (Principlist)")
 auto_principles = suggest_principles(description + " " + " ".join(values))
 selected_principles = st.multiselect("Suggested principles (editable)", PRINCIPLES, default=auto_principles)
 
-if mode.startswith("Quick"):
-    st.info("Quick triage mode: we’ll generate short principle prompts for rapid documentation.")
-    for b in quick_ethics_blurbs(selected_principles, description):
-        st.write("• " + b)
-else:
-    colp1, colp2 = st.columns(2)
-    with colp1:
-        beneficence = st.text_area("Beneficence – promote well-being", "")
-        autonomy = st.text_area("Autonomy – respect rights/choice", "")
-        justice = st.text_area("Justice – fairness/equity", "")
-    with colp2:
-        non_maleficence = st.text_area("Non‑maleficence – avoid harm", "")
-        explicability = st.text_area("Explicability – transparency/accountability", "")
+# Always show full deliberation inputs (Quick triage removed)
+colp1, colp2 = st.columns(2)
+with colp1:
+    beneficence = st.text_area("Beneficence – promote well-being", "")
+    autonomy = st.text_area("Autonomy – respect rights/choice", "")
+    justice = st.text_area("Justice – fairness/equity", "")
+with colp2:
+    non_maleficence = st.text_area("Non‑maleficence – avoid harm", "")
+    explicability = st.text_area("Explicability – transparency/accountability", "")
 
 # ---------- 5) Ethical tension score ----------
 st.markdown("### 5) Ethical tension score")
@@ -327,16 +270,13 @@ with st.expander("Public communication & accountability checklist"):
 st.markdown("### 7) Generate justification")
 if st.button("Create decision record"):
     timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
-    if mode.startswith("Quick"):
-        ethics_summary = "\n".join(quick_ethics_blurbs(selected_principles, description))
-    else:
-        ethics_summary = "\n".join([
-            f"Beneficence: {locals().get('beneficence', '') or '—'}",
-            f"Non-maleficence: {locals().get('non_maleficence', '') or '—'}",
-            f"Autonomy: {locals().get('autonomy', '') or '—'}",
-            f"Justice: {locals().get('justice', '') or '—'}",
-            f"Explicability: {locals().get('explicability', '') or '—'}"
-        ])
+    ethics_summary = "\n".join([
+        f"Beneficence: {beneficence or '—'}",
+        f"Non-maleficence: {non_maleficence or '—'}",
+        f"Autonomy: {autonomy or '—'}",
+        f"Justice: {justice or '—'}",
+        f"Explicability: {explicability or '—'}"
+    ])
 
     record = f"""# Municipal Cyber Decision Record
 Timestamp: {timestamp}
@@ -432,3 +372,4 @@ st.caption("Prototype: for thesis demonstration (Chapter IV) — aligns case pre
 
 st.markdown("---")
 st.caption("Prototype created for thesis demonstration purposes – not for operational use.")
+
