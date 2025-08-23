@@ -228,30 +228,23 @@ with st.expander("About this prototype"):
         """
     )
 
-# ---------- 1) Incident overview ----------
-# Quick scenario chooser using scenario_summaries (as in your content)
+# ---------- 1) Scenario overview ----------
 scenario = st.selectbox(
     "Choose a Municipal Cybersecurity Scenario",
     options=list(scenario_summaries.keys())
 )
+st.markdown(f"### 1) Scenario Overview")
 st.markdown(f"**Scenario Overview:** {scenario_summaries[scenario]}")
 
-st.markdown("### 1) Incident overview")
-colA, colB = st.columns([1.2, 2])
-
-# Use preset only for description/stakeholders/values/constraints defaults
+# derive incident/description without separate inputs
+incident_type = scenario
+# prefer preset description when a preset is chosen; else fall back to scenario summary
 if preset != "— None —":
     pd = preset_data[preset]
+    description = pd.get("description", "") or scenario_summaries[scenario]
 else:
-    pd = dict(incident_type="", description="", stakeholders=[], values=[], constraints=[])
-
-with colA:
-    # We no longer ask for Incident type; instead we derive it from the chosen scenario
-    incident_type = scenario  # keep rest of code working
-    description = st.text_area("Brief description", pd.get("description", ""), height=110)
-
-with colB:
-    st.write("")  # keep layout balance
+    description = scenario_summaries[scenario]
+    pd = dict(description="", stakeholders=[], values=[], constraints=[])
 
 # ---------- 2) Stakeholders, values, and constraints ----------
 st.markdown("### 2) Stakeholders, values, and constraints")
