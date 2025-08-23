@@ -103,7 +103,7 @@ scenario_summaries = {
     ),
     "Riverton AI-Enabled Threat": (
         "In the fictional city of Riverton, adversarial signals disrupted an AI monitoring system at a water treatment facility, interrupting water distribution and threatening public safety. "
-    "Officials faced a difficult choice between disabling the AI system or attempting live retraining, raising concerns about trust, continuity of service, and long-term reliability."
+        "Officials faced a difficult choice between disabling the AI system or attempting live retraining, raising concerns about trust, continuity of service, and long-term reliability."
     )
 }
 
@@ -235,56 +235,19 @@ scenario = st.selectbox(
     options=list(scenario_summaries.keys())
 )
 st.markdown(f"**Scenario Overview:** {scenario_summaries[scenario]}")
+
 st.markdown("### 1) Incident overview")
 colA, colB = st.columns([1.2, 2])
 
+# Use preset only for description/stakeholders/values/constraints defaults
 if preset != "— None —":
     pd = preset_data[preset]
 else:
     pd = dict(incident_type="", description="", stakeholders=[], values=[], constraints=[])
 
-THESIS_INCIDENTS = [
-    "Ransomware on core city services",
-    "Technology repurposing / Surveillance use",
-    "AI-enabled incident on critical infrastructure",
-    "Other (specify)"
-]
-OPEN_INCIDENTS = [
-    "Ransomware",
-    "Phishing / Business Email Compromise",
-    "Unauthorized access",
-    "Data breach",
-    "Technology repurposing / Surveillance use",
-    "AI-enabled incident on critical infrastructure",
-    "Operational outage / ICS disruption",
-    "Website defacement / DDoS",
-    "Insider misuse / data exfiltration",
-    "Third-party/vendor compromise",
-    "Other (specify)"
-]
-incident_options = THESIS_INCIDENTS if scope == "Thesis scenarios only" else OPEN_INCIDENTS
-
 with colA:
-    default_option = incident_options[0]
-    preset_incident = pd.get("incident_type", "")
-    if preset_incident:
-        lower = preset_incident.lower()
-        if "ransom" in lower:
-            default_option = incident_options[0] if scope == "Thesis scenarios only" else "Ransomware"
-        elif "surveil" in lower:
-            default_option = "Technology repurposing / Surveillance use"
-        elif "ai" in lower or "water" in lower:
-            default_option = "AI-enabled incident on critical infrastructure"
-        else:
-            default_option = "Other (specify)"
-    selected_index = incident_options.index(default_option) if default_option in incident_options else 0
-    incident_choice = st.selectbox("Incident type", incident_options, index=selected_index)
-
-    if incident_choice == "Other (specify)":
-        incident_type = st.text_input("Specify incident type", value=(preset_incident if default_option == "Other (specify)" else ""))
-    else:
-        incident_type = incident_choice
-
+    # We no longer ask for Incident type; instead we derive it from the chosen scenario
+    incident_type = scenario  # keep rest of code working
     description = st.text_area("Brief description", pd.get("description", ""), height=110)
 
 with colB:
