@@ -215,22 +215,6 @@ preset_data = {
     )
 }
 
-# ---------- Top titles & about (kept as you wrote) ----------
-st.title("What’s Secure Isn’t Always What’s Right")
-st.subheader("A Decision-Support Prototype for Municipal Cybersecurity Practitioners")
-
-st.markdown("""
-### About the Prototype
-This prototype demonstrates how a decision-support tool could guide municipal cybersecurity practitioners through ethically and technically complex scenarios. It is not intended to prescribe answers but to illuminate value tensions, relevant standards, and contextual constraints using structured, real-world case reconstructions. Each scenario is drawn from thesis case studies and showcases how ethical reasoning and the NIST Cybersecurity Framework can inform decision-making in high-stakes environments.
-""")
-
-# Quick scenario chooser using scenario_summaries (as in your content)
-scenario = st.selectbox(
-    "Choose a Municipal Cybersecurity Scenario",
-    options=list(scenario_summaries.keys())
-)
-st.markdown(f"**Scenario Overview:** {scenario_summaries[scenario]}")
-
 # ---------- Intro ----------
 st.title("🛡️ Municipal Ethical Cyber Decision-Support (Prototype)")
 st.markdown("**Because what's secure isn't always what's right.**")
@@ -246,6 +230,12 @@ with st.expander("About this prototype"):
     )
 
 # ---------- 1) Incident overview ----------
+# Quick scenario chooser using scenario_summaries (as in your content)
+scenario = st.selectbox(
+    "Choose a Municipal Cybersecurity Scenario",
+    options=list(scenario_summaries.keys())
+)
+st.markdown(f"**Scenario Overview:** {scenario_summaries[scenario]}")
 st.markdown("### 1) Incident overview")
 colA, colB = st.columns([1.2, 2])
 
