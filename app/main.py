@@ -165,7 +165,7 @@ def score_tension(selected_principles, selected_nist, constraints, stakeholders,
 
 # ---------- Sidebar (kept only Scope; removed Mode + Presets) ----------
 st.sidebar.header("Options")
-scope = st.sidebar.radio("Scope", ["Thesis scenarios only", "Open-ended"])
+scope = st.sidebar.radio("Scope", ["Thesis scenarios", "Open-ended"])
 
 # ---------- Intro ----------
 st.title("🛡️ Municipal Ethical Cyber Decision-Support (Prototype)")
