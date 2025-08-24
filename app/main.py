@@ -4,15 +4,6 @@ from datetime import datetime
 # ---------- Page config ----------
 st.set_page_config(page_title="Municipal Ethical Cyber Decision-Support", layout="wide", initial_sidebar_state="expanded")
 
-[theme]
-base="dark"
-primaryColor="#4C8BF5"
-backgroundColor="#0B1221"
-secondaryBackgroundColor="#121A2B"
-textColor="#E6E9EF"
-font="sans serif"
-
-
 # ---------- NIST CSF 2.0 constants ----------
 NIST_FUNCTIONS = [
     "Govern (GV)",
