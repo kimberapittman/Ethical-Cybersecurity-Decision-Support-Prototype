@@ -197,8 +197,23 @@ pd_defaults = dict(description="", stakeholders=[], values=[], constraints=[])
 # CHANGE: read-only in Thesis scenarios; editable in Open-ended
 suggested_nist = suggest_nist(incident_type, description)
 
+# NEW: short explanation of NIST CSF and how the prototype uses it
+st.markdown("### 2) NIST CSF 2.0 functions")
+st.markdown(
+    """
+**What is NIST CSF 2.0?** A voluntary, outcome‑based framework that organizes cybersecurity risk management
+into six functions—**Govern (GV), Identify (ID), Protect (PR), Detect (DE), Respond (RS),** and **Recover (RC)**—
+to help organizations structure policies, controls, and continuous improvement.
+
+**How this prototype applies it:** Based on the chosen scenario, the app highlights the CSF functions most
+implicated by the facts. In **Thesis scenarios** mode (read‑only), these functions are shown as fixed “chips”
+to reflect the technical posture the municipality should consider; in **Open‑ended** mode, you can adjust them.
+The functions you see here directly feed the **NIST‑aligned action plan** below and are recorded in the
+**Decision Record** for defensibility and traceability.
+"""
+)
+
 if mode == "Thesis scenarios":
-    st.markdown("### 2) NIST CSF 2.0 functions")
     # Show all functions, emphasizing those suggested
     def chip(name: str, active: bool) -> str:
         if active:
@@ -212,7 +227,7 @@ if mode == "Thesis scenarios":
     # lock selection to suggested set so downstream sections work unchanged
     selected_nist = suggested_nist[:]
 else:
-    st.markdown("### 2) Suggested NIST CSF 2.0 functions")
+    st.markdown("#### Suggested functions for this scenario (editable in Open‑ended mode)")
     selected_nist = st.multiselect("", NIST_FUNCTIONS, default=suggested_nist)
 
 # ---------- 3) Ethical evaluation (Principlist) ----------
@@ -391,4 +406,3 @@ st.caption("Prototype: for thesis demonstration (Chapter IV) — aligns case pre
 
 st.markdown("---")
 st.caption("Prototype created for thesis demonstration purposes – not for operational use.")
-
