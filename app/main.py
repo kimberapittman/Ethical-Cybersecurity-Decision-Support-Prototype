@@ -163,9 +163,9 @@ def score_tension(selected_principles, selected_nist, constraints, stakeholders,
     base += 4 * len(values)
     return min(base, 100)
 
-# ---------- Sidebar (kept only Scope; removed Mode + Presets) ----------
+# ---------- Sidebar (kept only Mode; removed Mode + Presets) ----------
 st.sidebar.header("Options")
-scope = st.sidebar.radio("Scope", ["Thesis scenarios", "Open-ended"])
+mode = st.sidebar.radio("Mode", ["Thesis scenarios", "Open-ended"])
 
 # ---------- Intro ----------
 st.title("🛡️ Municipal Ethical Cyber Decision-Support (Prototype)")
@@ -193,7 +193,7 @@ incident_type = scenario
 description = scenario_summaries[scenario]
 pd_defaults = dict(description="", stakeholders=[], values=[], constraints=[])
 
-# ---------- 2) Suggested NIST CSF 2.0 functions (editable) ----------
+# ---------- 2) NIST CSF 2.0 functions ----------
 st.markdown("### 2) Suggested NIST CSF 2.0 functions (editable)")
 suggested_nist = suggest_nist(incident_type, description)
 selected_nist = st.multiselect("", NIST_FUNCTIONS, default=suggested_nist)
