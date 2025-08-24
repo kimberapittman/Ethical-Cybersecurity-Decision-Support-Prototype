@@ -194,8 +194,7 @@ description = scenario_summaries[scenario]
 pd_defaults = dict(description="", stakeholders=[], values=[], constraints=[])
 
 # ---------- 2) NIST CSF 2.0 functions ----------
-# CHANGE: read-only in Thesis scenarios; editable in Open-ended
-suggested_nist = suggest_nist(incident_type, description)
+st.markdown("### 2) NIST CSF 2.0 functions")
 
 with st.expander("About the NIST CSF"):
     st.markdown("""
