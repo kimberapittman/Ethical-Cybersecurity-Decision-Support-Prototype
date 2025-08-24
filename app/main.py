@@ -2,7 +2,81 @@ import streamlit as st
 from datetime import datetime
 
 # ---------- Page config ----------
-st.set_page_config(page_title="Municipal Ethical Cyber Decision-Support", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(
+    page_title="Municipal Ethical Cyber Decision-Support",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+# ---------- Minimal styling (no extra deps) ----------
+st.markdown("""
+<style>
+/* App title & subtitle */
+.app-hero {
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #0b4ef0 0%, #7aa2ff 100%);
+  color: white;
+  margin-bottom: 16px;
+}
+.app-hero h1 {
+  font-size: 1.6rem;
+  margin: 0 0 4px 0;
+}
+.app-hero p {
+  margin: 0;
+  opacity: 0.95;
+}
+
+/* Section cards */
+.section-card {
+  border: 1px solid #e8e8ef;
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px 18px;
+  margin: 10px 0 16px 0;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+}
+
+/* Section titles */
+.section-title {
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: 8px;
+}
+
+/* NIST chips */
+.nist-chips { margin-top: 8px; }
+.chip {
+  display: inline-block;
+  padding: 6px 12px;
+  margin: 4px 6px 0 0;
+  border-radius: 999px;
+  border: 1px solid #d6d6e7;
+  background: #f7f7fb;
+  font-size: 0.92rem;
+}
+.chip.active {
+  border-color: #0c6cf2;
+  background: #e8f0fe;
+  font-weight: 600;
+}
+.chip .tick {
+  margin-left: 6px;
+  font-weight: 700;
+  color: #0c6cf2;
+}
+
+/* Progress label */
+.small-muted {
+  font-size: 0.92rem;
+  color: #666;
+}
+
+/* Download code block spacing */
+.block-spacer { height: 8px; }
+</style>
+""", unsafe_allow_html=True)
 
 # ---------- NIST CSF 2.0 constants ----------
 NIST_FUNCTIONS = [
@@ -60,7 +134,7 @@ NIST_ACTIONS = {
         "Mandate equity impact check and document mitigations",
     ],
     "Identify (ID)": [
-        "Confirm crown jewels & service criautoticality",
+        "Confirm crown jewels & service criticality",
         "Establish incident objectives and scope",
         "Map stakeholders and equity impacts",
         "Inventory affected assets, data, and dependencies"
@@ -117,7 +191,6 @@ def suggest_nist(incident_type: str, description: str):
             seed.extend(v)
     if not seed:
         seed = NIST_FUNCTIONS[:]  # default to all six, in CSF 2.0 order
-    # dedupe preserving order
     seen, ordered = set(), []
     for x in seed:
         if x not in seen:
@@ -138,22 +211,6 @@ def suggest_principles(description: str):
             ordered.append(p); seen.add(p)
     return ordered
 
-def quick_ethics_blurbs(principles, ctx):
-    blurbs = []
-    for p in PRINCIPLES:
-        if p in principles:
-            if p == "Beneficence":
-                blurbs.append("Beneficence: Prioritize restoring essential services and public well-being.")
-            if p == "Non-maleficence":
-                blurbs.append("Non-maleficence: Avoid foreseeable harms from containment, disclosure, or automation side-effects.")
-            if p == "Autonomy":
-                blurbs.append("Autonomy: Respect rights, choice, and due process—minimize unnecessary surveillance or coercive measures.")
-            if p == "Justice":
-                blurbs.append("Justice: Distribute burdens/benefits fairly; prevent disproportionate impact on specific neighborhoods or groups.")
-            if p == "Explicability":
-                blurbs.append("Explicability: Communicate decisions and rationales clearly, with auditable records.")
-    return blurbs
-
 def score_tension(selected_principles, selected_nist, constraints, stakeholders, values):
     base = 10
     base += 5 * len(selected_principles)
@@ -163,140 +220,164 @@ def score_tension(selected_principles, selected_nist, constraints, stakeholders,
     base += 4 * len(values)
     return min(base, 100)
 
-# ---------- Sidebar (kept only Mode; removed Mode + Presets) ----------
+# ---------- Sidebar ----------
 st.sidebar.header("Options")
 mode = st.sidebar.radio("Mode", ["Thesis scenarios", "Open-ended"])
 
-# ---------- Intro ----------
-st.title("🛡️ Municipal Ethical Cyber Decision-Support Prototype")
-st.markdown("**Because what's secure isn't always what's right.**")
+# ---------- Hero ----------
+st.markdown("""
+<div class="app-hero">
+  <h1>🛡️ Municipal Ethical Cyber Decision-Support Prototype</h1>
+  <p><strong>Because what's secure isn't always what's right.</strong></p>
+</div>
+""", unsafe_allow_html=True)
 
 with st.expander("About this prototype"):
     st.markdown(
         """
 - **Purpose:** Support municipal cybersecurity practitioners in navigating complex ethical dilemmas. The tool is designed to guide users through high-stakes decisions in real time—clarifying value conflicts, aligning actions with technical standards, and documenting justifiable outcomes under institutional and governance constraints.
-- **Backbone:** The tool draws on the NIST Cybersecurity Framework 2.0, guiding users through six core functions: Govern, Identify, Protect, Detect, Respond, and Recover. These are integrated with principlist ethical values—Beneficence, Non-maleficence, Autonomy, Justice, and Explicability—to help users weigh trade-offs and make morally defensible decisions.
-- **Context:** Designed specifically for municipal use, the tool accounts for real-world constraints like limited budgets, outdated systems, fragmented authority, and opaque procurement. It supports ethical decision-making within these practical and political realities.
+- **Backbone:** The tool draws on the NIST Cybersecurity Framework 2.0—Govern, Identify, Protect, Detect, Respond, and Recover—integrated with principlist ethical values (Beneficence, Non-maleficence, Autonomy, Justice, Explicability).
+- **Context:** Built for municipal realities: limited budgets, legacy systems, fragmented authority, and public accountability.
         """
     )
 
 # ---------- 1) Scenario overview ----------
-scenario = st.selectbox(
-    "Choose a Municipal Cybersecurity Scenario",
-    options=list(scenario_summaries.keys())
-)
-st.markdown(f"### 1) Scenario Overview")
-st.markdown(f"**Scenario Overview:** {scenario_summaries[scenario]}")
+with st.container():
+    st.markdown('<div class="section-card">', unsafe_allow_html=True)
+    st.markdown('<div class="section-title">1) Scenario overview</div>', unsafe_allow_html=True)
 
-# Derive incident and description without presets
+    scenario = st.selectbox(
+        "Choose a Municipal Cybersecurity Scenario",
+        options=list(scenario_summaries.keys())
+    )
+    st.markdown(f"**Scenario Overview:** {scenario_summaries[scenario]}")
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# Set incident/description from scenario
 incident_type = scenario
 description = scenario_summaries[scenario]
 pd_defaults = dict(description="", stakeholders=[], values=[], constraints=[])
 
-# ---------- 2) Technical Evaluation (NIST CSF) ----------
-st.markdown("### 2) Technical Evaluation (NIST CSF)")
+# Get suggested CSF functions now (used in Section 2)
+suggested_nist = suggest_nist(incident_type, description)
 
-with st.expander("About the NIST CSF"):
-    st.markdown("""
-The **NIST Cybersecurity Framework (CSF) 2.0** is a risk-based framework created by the 
-National Institute of Standards and Technology to help organizations manage and reduce 
-cybersecurity risks. It is organized into six core functions:
+# ---------- 2) NIST CSF 2.0 functions ----------
+with st.container():
+    st.markdown('<div class="section-card">', unsafe_allow_html=True)
+    st.markdown('<div class="section-title">2) NIST CSF 2.0 functions</div>', unsafe_allow_html=True)
+
+    with st.expander("About the NIST CSF"):
+        st.markdown("""
+The **NIST Cybersecurity Framework (CSF) 2.0** is a risk-based standard that helps organizations manage and reduce cybersecurity risk.  
+It is organized into six core functions:
 
 - **Govern (GV):** Establish oversight, clarify roles, responsibilities, and decision rights.  
 - **Identify (ID):** Understand assets, risks, and critical services.  
 - **Protect (PR):** Safeguard systems, data, and services against threats.  
 - **Detect (DE):** Monitor and discover anomalous events quickly.  
 - **Respond (RS):** Contain and manage active incidents.  
-- **Recover (RC):** Restore capabilities, lessons learned, and improve resilience.  
+- **Recover (RC):** Restore capabilities, learn, and improve resilience.  
 
-In this prototype, the CSF provides the **technical backbone**.  
-For each scenario, relevant CSF functions are highlighted to show what standards and best 
-practices guide municipal cybersecurity actions. This ensures that ethical reasoning (Principlist 
-Framework) is always grounded in recognized technical standards.
-    """)
+In this prototype, the CSF provides the **technical backbone**. For each scenario, relevant CSF functions are highlighted to
+show which standards and practices are most applicable; your ethical reasoning then builds on this technical foundation.
+        """)
 
-# Suggested functions
-suggested_nist = suggest_nist(incident_type, description)
+    if mode == "Thesis scenarios":
+        # Read‑only chips that highlight suggested functions
+        def chip(name: str, active: bool) -> str:
+            base = 'chip active' if active else 'chip'
+            tick = "<span class='tick'>✓</span>" if active else ""
+            return f"<span class='{base}'>{name}{tick}</span>"
 
-if mode == "Thesis scenarios":
-    # Show all functions, with chips for suggested ones
-    def chip(name: str, active: bool) -> str:
-        if active:
-            return f"<span style='display:inline-block;padding:4px 10px;margin:3px;border-radius:12px;border:1px solid #0c6cf2;background:#e8f0fe;'>{name} ✓</span>"
-        else:
-            return f"<span style='display:inline-block;padding:4px 10px;margin:3px;border-radius:12px;border:1px solid #ccc;background:#f7f7f7;opacity:0.7'>{name}</span>"
+        chips_html = " ".join([chip(fn, fn in suggested_nist) for fn in NIST_FUNCTIONS])
+        st.markdown(f"<div class='nist-chips'>{chips_html}</div>", unsafe_allow_html=True)
 
-    chips_html = " ".join([chip(fn, fn in suggested_nist) for fn in NIST_FUNCTIONS])
-    st.markdown(chips_html, unsafe_allow_html=True)
+        # lock selection to suggested set so downstream sections work unchanged
+        selected_nist = suggested_nist[:]
+    else:
+        st.markdown("#### Suggested functions for this scenario (editable in Open‑ended mode)")
+        selected_nist = st.multiselect("", NIST_FUNCTIONS, default=suggested_nist)
 
-    # lock to suggested set
-    selected_nist = suggested_nist[:]
-else:
-    st.markdown("#### Suggested functions for this scenario (editable in Open-ended mode)")
-    selected_nist = st.multiselect("", NIST_FUNCTIONS, default=suggested_nist)
+    st.markdown('</div>', unsafe_allow_html=True)
 
+# ---------- 3) Ethical evaluation (Principlist) ----------
+with st.container():
+    st.markdown('<div class="section-card">', unsafe_allow_html=True)
+    st.markdown('<div class="section-title">3) Ethical evaluation (Principlist)</div>', unsafe_allow_html=True)
 
-# ---------- 3) Ethical Evaluation (Principlist Framework) ----------
-st.markdown("### 3) Ethical Evaluation (Principlist Framework)")
+    col_sv1, col_sv2 = st.columns(2)
+    with col_sv1:
+        stakeholders = st.multiselect(
+            "Stakeholders affected",
+            [
+                "Residents", "City Employees", "Vendors", "City Council", "Mayor’s Office",
+                "Public Utilities Board", "Police Department", "Civil Rights Groups", "Media", "Courts/Recorders"
+            ],
+            default=pd_defaults.get("stakeholders", [])
+        )
+    with col_sv2:
+        values = st.multiselect(
+            "Public values at risk",
+            ["Privacy", "Transparency", "Trust", "Safety", "Equity", "Autonomy"],
+            default=pd_defaults.get("values", [])
+        )
 
-# Stakeholders & values (kept with ethical evaluation so values can drive suggestions)
-col_sv1, col_sv2 = st.columns(2)
-with col_sv1:
-    stakeholders = st.multiselect(
-        "Stakeholders affected",
-        [
-            "Residents", "City Employees", "Vendors", "City Council", "Mayor’s Office",
-            "Public Utilities Board", "Police Department", "Civil Rights Groups", "Media", "Courts/Recorders"
-        ],
-        default=pd_defaults.get("stakeholders", [])
-    )
-with col_sv2:
-    values = st.multiselect(
-        "Public values at risk",
-        ["Privacy", "Transparency", "Trust", "Safety", "Equity", "Autonomy"],
-        default=pd_defaults.get("values", [])
-    )
+    auto_principles = suggest_principles(description + " " + " ".join(values))
+    selected_principles = st.multiselect("Suggested principles (editable)", PRINCIPLES, default=auto_principles)
 
-auto_principles = suggest_principles(description + " " + " ".join(values))
-selected_principles = st.multiselect("Suggested principles (editable)", PRINCIPLES, default=auto_principles)
+    colp1, colp2 = st.columns(2)
+    with colp1:
+        beneficence = st.text_area("Beneficence – promote well-being", "")
+        autonomy = st.text_area("Autonomy – respect rights/choice", "")
+        justice = st.text_area("Justice – fairness/equity", "")
+    with colp2:
+        non_maleficence = st.text_area("Non‑maleficence – avoid harm", "")
+        explicability = st.text_area("Explicability – transparency/accountability", "")
 
-# Full deliberation inputs
-colp1, colp2 = st.columns(2)
-with colp1:
-    beneficence = st.text_area("Beneficence – promote well-being", "")
-    autonomy = st.text_area("Autonomy – respect rights/choice", "")
-    justice = st.text_area("Justice – fairness/equity", "")
-with colp2:
-    non_maleficence = st.text_area("Non‑maleficence – avoid harm", "")
-    explicability = st.text_area("Explicability – transparency/accountability", "")
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # ---------- 4) Institutional & governance constraints ----------
-st.markdown("### 4) Institutional & governance constraints")
-constraints = st.multiselect(
-    "Select constraints relevant to this scenario",
-    GOV_CONSTRAINTS,
-    default=pd_defaults.get("constraints", [])
-)
+with st.container():
+    st.markdown('<div class="section-card">', unsafe_allow_html=True)
+    st.markdown('<div class="section-title">4) Institutional & governance constraints</div>', unsafe_allow_html=True)
+
+    constraints = st.multiselect(
+        "Select constraints relevant to this scenario",
+        GOV_CONSTRAINTS,
+        default=pd_defaults.get("constraints", [])
+    )
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # ---------- 5) Ethical tension score ----------
-st.markdown("### 5) Ethical tension score")
-score = score_tension(selected_principles, selected_nist, constraints, stakeholders, values)
-st.progress(score, text=f"Ethical/contextual tension: {score}/100")
+with st.container():
+    st.markdown('<div class="section-card">', unsafe_allow_html=True)
+    st.markdown('<div class="section-title">5) Ethical tension score</div>', unsafe_allow_html=True)
 
-if score < 35:
-    st.success("Low tension: document rationale and proceed.")
-elif score < 70:
-    st.warning("Moderate tension: ensure proportionality, comms, and oversight are in place.")
-else:
-    st.error("High tension: escalate, ensure cross‑dept decision rights, consider external ethics/LE counsel.")
+    score = score_tension(selected_principles, selected_nist, constraints, stakeholders, values)
+    st.progress(score, text=f"Ethical/contextual tension: {score}/100")
+    if score < 35:
+        st.success("Low tension: document rationale and proceed.")
+    elif score < 70:
+        st.warning("Moderate tension: ensure proportionality, comms, and oversight are in place.")
+    else:
+        st.error("High tension: escalate, ensure cross‑dept decision rights, consider external ethics/LE counsel.")
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # ---------- 6) NIST‑aligned action plan (editable) ----------
-st.markdown("### 6) NIST‑aligned action plan (editable)")
-plan = []
-for f in selected_nist:
-    st.write(f"**{f}**")
-    chosen = st.multiselect(f"Select {f} actions", NIST_ACTIONS[f], default=NIST_ACTIONS[f], key=f)
-    plan.extend([f"{f}: {a}" for a in chosen])
+with st.container():
+    st.markdown('<div class="section-card">', unsafe_allow_html=True)
+    st.markdown('<div class="section-title">6) NIST‑aligned action plan (editable)</div>', unsafe_allow_html=True)
+
+    plan = []
+    for f in selected_nist:
+        st.write(f"**{f}**")
+        chosen = st.multiselect(f"Select {f} actions", NIST_ACTIONS[f], default=NIST_ACTIONS[f], key=f)
+        plan.extend([f"{f}: {a}" for a in chosen])
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # ---------- Communication checklist ----------
 with st.expander("Public communication & accountability checklist"):
@@ -307,18 +388,21 @@ with st.expander("Public communication & accountability checklist"):
     st.checkbox("Equity statement: assess & mitigate disproportionate impact by neighborhood/group", value=True)
 
 # ---------- 7) Generate justification ----------
-st.markdown("### 7) Generate justification")
-if st.button("Create decision record"):
-    timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
-    ethics_summary = "\n".join([
-        f"Beneficence: {beneficence or '—'}",
-        f"Non-maleficence: {non_maleficence or '—'}",
-        f"Autonomy: {autonomy or '—'}",
-        f"Justice: {justice or '—'}",
-        f"Explicability: {explicability or '—'}"
-    ])
+with st.container():
+    st.markdown('<div class="section-card">', unsafe_allow_html=True)
+    st.markdown('<div class="section-title">7) Generate justification</div>', unsafe_allow_html=True)
 
-    record = f"""# Municipal Cyber Decision Record
+    if st.button("Create decision record"):
+        timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
+        ethics_summary = "\n".join([
+            f"Beneficence: {beneficence or '—'}",
+            f"Non-maleficence: {non_maleficence or '—'}",
+            f"Autonomy: {autonomy or '—'}",
+            f"Justice: {justice or '—'}",
+            f"Explicability: {explicability or '—'}"
+        ])
+
+        record = f"""# Municipal Cyber Decision Record
 Timestamp: {timestamp}
 
 ## Incident
@@ -344,71 +428,76 @@ Ethical/context tension score: {score}/100
 ## Notes
 This decision reflects principlist ethical reasoning and NIST CSF 2.0 practices (GV/ID/PR/DE/RS/RC), applied within municipal governance constraints.
 """
-    st.code(record, language="markdown")
-    st.download_button("📥 Download decision record (.md)", record, file_name="decision_record.md")
+        st.code(record, language="markdown")
+        st.markdown('<div class="block-spacer"></div>', unsafe_allow_html=True)
+        st.download_button("📥 Download decision record (.md)", record, file_name="decision_record.md")
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # ---------- Extra inputs you had in your content (kept, presented after main flow) ----------
-st.markdown("### Ethical Tensions (quick list)")
-ethical_tensions = st.multiselect(
-    "Select the relevant ethical tensions present in this scenario:",
-    [
-        "Privacy vs. Security",
-        "Transparency vs. Confidentiality",
-        "Autonomy vs. Oversight",
-        "Public Trust vs. Operational Necessity",
-        "Fairness vs. Efficiency",
-        "Short-Term Action vs. Long-Term Risk"
-    ]
-)
+with st.container():
+    st.markdown('<div class="section-card">', unsafe_allow_html=True)
+    st.markdown('<div class="section-title">Additional quick lists</div>', unsafe_allow_html=True)
 
-st.markdown("### Institutional & Governance Constraints (quick list)")
-constraints_quick = st.multiselect(
-    "Which constraints affect decision-making in this case?",
-    [
-        "Budget limitations",
-        "Legal ambiguity",
-        "Time pressure",
-        "Fragmented authority",
-        "Public scrutiny",
-        "Vendor dependence"
-    ]
-)
+    st.markdown("**Ethical Tensions (quick list)**")
+    ethical_tensions = st.multiselect(
+        "Select the relevant ethical tensions present in this scenario:",
+        [
+            "Privacy vs. Security",
+            "Transparency vs. Confidentiality",
+            "Autonomy vs. Oversight",
+            "Public Trust vs. Operational Necessity",
+            "Fairness vs. Efficiency",
+            "Short-Term Action vs. Long-Term Risk"
+        ]
+    )
 
-st.markdown("### NIST Cybersecurity Framework (CSF) Functions (quick list)")
-nist_functions = st.multiselect(
-    "Which NIST functions apply here?",
-    ["Identify", "Protect", "Detect", "Respond", "Recover"]
-)
+    st.markdown("**Institutional & Governance Constraints (quick list)**")
+    constraints_quick = st.multiselect(
+        "Which constraints affect decision-making in this case?",
+        [
+            "Budget limitations",
+            "Legal ambiguity",
+            "Time pressure",
+            "Fragmented authority",
+            "Public scrutiny",
+            "Vendor dependence"
+        ]
+    )
 
-st.markdown("### Principlist Ethical Framework (quick list)")
-principles = st.multiselect(
-    "Which ethical principles are most relevant?",
-    ["Respect for Autonomy", "Non-Maleficence", "Beneficence", "Justice", "Explicability"]
-)
+    st.markdown("**NIST Cybersecurity Framework (CSF) Functions (quick list)**")
+    nist_functions = st.multiselect(
+        "Which NIST functions apply here?",
+        ["Identify", "Protect", "Detect", "Respond", "Recover"]
+    )
 
-st.markdown("### Action Plan (quick text)")
-action_plan = st.text_area(
-    "Describe your recommended path forward:",
-    placeholder="Outline a response that balances ethical concerns and technical standards."
-)
+    st.markdown("**Principlist Ethical Framework (quick list)**")
+    principles = st.multiselect(
+        "Which ethical principles are most relevant?",
+        ["Respect for Autonomy", "Non-Maleficence", "Beneficence", "Justice", "Explicability"]
+    )
 
-# A second summary button you had at the bottom (kept intact)
-if st.button("Generate Decision Record"):
-    st.markdown("---")
-    st.markdown("## 📘 Decision Summary")
-    st.markdown(f"**Scenario Chosen:** {scenario}")
-    st.markdown(f"**Scenario Summary:** {scenario_summaries[scenario]}")
-    st.markdown(f"**Ethical Tensions Identified:** {', '.join(ethical_tensions) if ethical_tensions else 'None selected'}")
-    st.markdown(f"**Constraints Present:** {', '.join(constraints_quick) if constraints_quick else 'None selected'}")
-    st.markdown(f"**NIST Functions Referenced:** {', '.join(nist_functions) if nist_functions else 'None selected'}")
-    st.markdown(f"**Ethical Principles Applied:** {', '.join(principles) if principles else 'None selected'}")
-    st.markdown("**Proposed Action Plan:**")
-    st.write(action_plan if action_plan else "No action plan provided.")
+    st.markdown("**Action Plan (quick text)**")
+    action_plan = st.text_area(
+        "Describe your recommended path forward:",
+        placeholder="Outline a response that balances ethical concerns and technical standards."
+    )
+
+    if st.button("Generate Decision Record"):
+        st.markdown("---")
+        st.markdown("## 📘 Decision Summary")
+        st.markdown(f"**Scenario Chosen:** {scenario}")
+        st.markdown(f"**Scenario Summary:** {scenario_summaries[scenario]}")
+        st.markdown(f"**Ethical Tensions Identified:** {', '.join(ethical_tensions) if ethical_tensions else 'None selected'}")
+        st.markdown(f"**Constraints Present:** {', '.join(constraints_quick) if constraints_quick else 'None selected'}")
+        st.markdown(f"**NIST Functions Referenced:** {', '.join(nist_functions) if nist_functions else 'None selected'}")
+        st.markdown(f"**Ethical Principles Applied:** {', '.join(principles) if principles else 'None selected'}")
+        st.markdown("**Proposed Action Plan:**")
+        st.write(action_plan if action_plan else "No action plan provided.")
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # ---------- Footer ----------
 st.markdown("---")
 st.caption("Prototype created for thesis demonstration purposes – not for operational use.")
 st.caption("Prototype: for thesis demonstration (Chapter IV) — aligns case presets with your Chapter III scenarios.")
-
-st.markdown("---")
-st.caption("Prototype created for thesis demonstration purposes – not for operational use.")
