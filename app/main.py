@@ -198,21 +198,23 @@ pd_defaults = dict(description="", stakeholders=[], values=[], constraints=[])
 suggested_nist = suggest_nist(incident_type, description)
 
 with st.expander("About the NIST CSF"):
-# NEW: short explanation of NIST CSF and how the prototype uses it
-st.markdown("### 2) NIST CSF 2.0 functions")
-st.markdown(
-    """
-**What is NIST CSF 2.0?** A voluntary, outcome‑based framework that organizes cybersecurity risk management
-into six functions—**Govern (GV), Identify (ID), Protect (PR), Detect (DE), Respond (RS),** and **Recover (RC)**—
-to help organizations structure policies, controls, and continuous improvement.
+    st.markdown("""
+The **NIST Cybersecurity Framework (CSF) 2.0** is a risk-based framework created by the 
+National Institute of Standards and Technology to help organizations manage and reduce 
+cybersecurity risks. It is organized into six core functions:
 
-**How this prototype applies it:** Based on the chosen scenario, the app highlights the CSF functions most
-implicated by the facts. In **Thesis scenarios** mode (read‑only), these functions are shown as fixed “chips”
-to reflect the technical posture the municipality should consider; in **Open‑ended** mode, you can adjust them.
-The functions you see here directly feed the **NIST‑aligned action plan** below and are recorded in the
-**Decision Record** for defensibility and traceability.
-"""
-)
+- **Govern (GV):** Establish oversight, clarify roles, responsibilities, and decision rights.  
+- **Identify (ID):** Understand assets, risks, and critical services.  
+- **Protect (PR):** Safeguard systems, data, and services against threats.  
+- **Detect (DE):** Monitor and discover anomalous events quickly.  
+- **Respond (RS):** Contain and manage active incidents.  
+- **Recover (RC):** Restore capabilities, lessons learned, and improve resilience.  
+
+In this prototype, the CSF provides the **technical backbone**.  
+For each scenario, relevant CSF functions are highlighted to show what standards and best 
+practices guide municipal cybersecurity actions. This ensures that ethical reasoning (Principlist 
+Framework) is always grounded in recognized technical standards.
+    """)
 
 if mode == "Thesis scenarios":
     # Show all functions, emphasizing those suggested
