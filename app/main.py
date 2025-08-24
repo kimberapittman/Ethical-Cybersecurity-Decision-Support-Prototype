@@ -60,7 +60,7 @@ NIST_ACTIONS = {
         "Mandate equity impact check and document mitigations",
     ],
     "Identify (ID)": [
-        "Confirm crown jewels & service criticality",
+        "Confirm crown jewels & service criautoticality",
         "Establish incident objectives and scope",
         "Map stakeholders and equity impacts",
         "Inventory affected assets, data, and dependencies"
@@ -198,7 +198,7 @@ pd_defaults = dict(description="", stakeholders=[], values=[], constraints=[])
 suggested_nist = suggest_nist(incident_type, description)
 
 if mode == "Thesis scenarios":
-    st.markdown("### 2) NIST CSF 2.0 functions (auto‑applied)")
+    st.markdown("### 2) NIST CSF 2.0 functions")
     # Show all functions, emphasizing those suggested
     def chip(name: str, active: bool) -> str:
         if active:
@@ -212,7 +212,7 @@ if mode == "Thesis scenarios":
     # lock selection to suggested set so downstream sections work unchanged
     selected_nist = suggested_nist[:]
 else:
-    st.markdown("### 2) Suggested NIST CSF 2.0 functions (editable)")
+    st.markdown("### 2) Suggested NIST CSF 2.0 functions")
     selected_nist = st.multiselect("", NIST_FUNCTIONS, default=suggested_nist)
 
 # ---------- 3) Ethical evaluation (Principlist) ----------
