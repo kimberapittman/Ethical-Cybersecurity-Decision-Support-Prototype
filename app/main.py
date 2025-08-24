@@ -191,44 +191,38 @@ st.markdown(f"**Scenario Overview:** {scenario_summaries[scenario]}")
 # Derive incident and description without presets
 incident_type = scenario
 description = scenario_summaries[scenario]
-pd = dict(description="", stakeholders=[], values=[], constraints=[])
+pd_defaults = dict(description="", stakeholders=[], values=[], constraints=[])
 
-# ---------- 2) Stakeholders, values, and constraints ----------
-st.markdown("### 2) Stakeholders, values, and constraints")
-col1, col2, col3 = st.columns(3)
-with col1:
+# ---------- 2) Suggested NIST CSF 2.0 functions (editable) ----------
+st.markdown("### 2) Suggested NIST CSF 2.0 functions (editable)")
+suggested_nist = suggest_nist(incident_type, description)
+selected_nist = st.multiselect("", NIST_FUNCTIONS, default=suggested_nist)
+
+# ---------- 3) Ethical evaluation (Principlist) ----------
+st.markdown("### 3) Ethical evaluation (Principlist)")
+
+# Stakeholders & values (kept with ethical evaluation so values can drive suggestions)
+col_sv1, col_sv2 = st.columns(2)
+with col_sv1:
     stakeholders = st.multiselect(
         "Stakeholders affected",
         [
             "Residents", "City Employees", "Vendors", "City Council", "Mayor’s Office",
             "Public Utilities Board", "Police Department", "Civil Rights Groups", "Media", "Courts/Recorders"
         ],
-        default=pd.get("stakeholders", [])
+        default=pd_defaults.get("stakeholders", [])
     )
-with col2:
+with col_sv2:
     values = st.multiselect(
         "Public values at risk",
         ["Privacy", "Transparency", "Trust", "Safety", "Equity", "Autonomy"],
-        default=pd.get("values", [])
-    )
-with col3:
-    constraints = st.multiselect(
-        "Institutional & governance constraints",
-        GOV_CONSTRAINTS,
-        default=pd.get("constraints", [])
+        default=pd_defaults.get("values", [])
     )
 
-# ---------- 3) Suggested NIST CSF 2.0 functions (editable) ----------
-st.markdown("### 3) Suggested NIST CSF 2.0 functions (editable)")
-suggested_nist = suggest_nist(incident_type, description)
-selected_nist = st.multiselect("", NIST_FUNCTIONS, default=suggested_nist)
-
-# ---------- 4) Ethical evaluation (Principlist) ----------
-st.markdown("### 4) Ethical evaluation (Principlist)")
 auto_principles = suggest_principles(description + " " + " ".join(values))
 selected_principles = st.multiselect("Suggested principles (editable)", PRINCIPLES, default=auto_principles)
 
-# Always show full deliberation inputs (Quick triage removed)
+# Full deliberation inputs
 colp1, colp2 = st.columns(2)
 with colp1:
     beneficence = st.text_area("Beneficence – promote well-being", "")
@@ -237,6 +231,14 @@ with colp1:
 with colp2:
     non_maleficence = st.text_area("Non‑maleficence – avoid harm", "")
     explicability = st.text_area("Explicability – transparency/accountability", "")
+
+# ---------- 4) Institutional & governance constraints ----------
+st.markdown("### 4) Institutional & governance constraints")
+constraints = st.multiselect(
+    "Select constraints relevant to this scenario",
+    GOV_CONSTRAINTS,
+    default=pd_defaults.get("constraints", [])
+)
 
 # ---------- 5) Ethical tension score ----------
 st.markdown("### 5) Ethical tension score")
