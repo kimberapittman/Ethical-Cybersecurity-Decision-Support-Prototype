@@ -215,8 +215,11 @@ practices guide municipal cybersecurity actions. This ensures that ethical reaso
 Framework) is always grounded in recognized technical standards.
     """)
 
+# Suggested functions
+suggested_nist = suggest_nist(incident_type, description)
+
 if mode == "Thesis scenarios":
-    # Show all functions, emphasizing those suggested
+    # Show all functions, with chips for suggested ones
     def chip(name: str, active: bool) -> str:
         if active:
             return f"<span style='display:inline-block;padding:4px 10px;margin:3px;border-radius:12px;border:1px solid #0c6cf2;background:#e8f0fe;'>{name} ✓</span>"
@@ -226,11 +229,12 @@ if mode == "Thesis scenarios":
     chips_html = " ".join([chip(fn, fn in suggested_nist) for fn in NIST_FUNCTIONS])
     st.markdown(chips_html, unsafe_allow_html=True)
 
-    # lock selection to suggested set so downstream sections work unchanged
+    # lock to suggested set
     selected_nist = suggested_nist[:]
 else:
-    st.markdown("#### Suggested functions for this scenario (editable in Open‑ended mode)")
+    st.markdown("#### Suggested functions for this scenario (editable in Open-ended mode)")
     selected_nist = st.multiselect("", NIST_FUNCTIONS, default=suggested_nist)
+
 
 # ---------- 3) Ethical evaluation (Principlist) ----------
 st.markdown("### 3) Ethical evaluation (Principlist)")
