@@ -193,8 +193,8 @@ incident_type = scenario
 description = scenario_summaries[scenario]
 pd_defaults = dict(description="", stakeholders=[], values=[], constraints=[])
 
-# ---------- 2) NIST CSF 2.0 functions ----------
-st.markdown("### 2) NIST CSF 2.0 functions")
+# ---------- 2) Technical Evaluation (NIST CSF) ----------
+st.markdown("### 2) Technical Evaluation (NIST CSF)")
 
 with st.expander("About the NIST CSF"):
     st.markdown("""
@@ -236,8 +236,8 @@ else:
     selected_nist = st.multiselect("", NIST_FUNCTIONS, default=suggested_nist)
 
 
-# ---------- 3) Ethical evaluation (Principlist) ----------
-st.markdown("### 3) Ethical evaluation (Principlist)")
+# ---------- 3) Ethical Evaluation (Principlist Framework) ----------
+st.markdown("### 3) Ethical Evaluation (Principlist Framework)")
 
 # Stakeholders & values (kept with ethical evaluation so values can drive suggestions)
 col_sv1, col_sv2 = st.columns(2)
