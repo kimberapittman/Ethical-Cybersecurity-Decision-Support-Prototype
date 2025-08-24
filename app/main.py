@@ -194,9 +194,26 @@ description = scenario_summaries[scenario]
 pd_defaults = dict(description="", stakeholders=[], values=[], constraints=[])
 
 # ---------- 2) NIST CSF 2.0 functions ----------
-st.markdown("### 2) Suggested NIST CSF 2.0 functions (editable)")
+# CHANGE: read-only in Thesis scenarios; editable in Open-ended
 suggested_nist = suggest_nist(incident_type, description)
-selected_nist = st.multiselect("", NIST_FUNCTIONS, default=suggested_nist)
+
+if mode == "Thesis scenarios":
+    st.markdown("### 2) NIST CSF 2.0 functions (auto‑applied)")
+    # Show all functions, emphasizing those suggested
+    def chip(name: str, active: bool) -> str:
+        if active:
+            return f"<span style='display:inline-block;padding:4px 10px;margin:3px;border-radius:12px;border:1px solid #0c6cf2;background:#e8f0fe;'>{name} ✓</span>"
+        else:
+            return f"<span style='display:inline-block;padding:4px 10px;margin:3px;border-radius:12px;border:1px solid #ccc;background:#f7f7f7;opacity:0.7'>{name}</span>"
+
+    chips_html = " ".join([chip(fn, fn in suggested_nist) for fn in NIST_FUNCTIONS])
+    st.markdown(chips_html, unsafe_allow_html=True)
+
+    # lock selection to suggested set so downstream sections work unchanged
+    selected_nist = suggested_nist[:]
+else:
+    st.markdown("### 2) Suggested NIST CSF 2.0 functions (editable)")
+    selected_nist = st.multiselect("", NIST_FUNCTIONS, default=suggested_nist)
 
 # ---------- 3) Ethical evaluation (Principlist) ----------
 st.markdown("### 3) Ethical evaluation (Principlist)")
@@ -374,3 +391,4 @@ st.caption("Prototype: for thesis demonstration (Chapter IV) — aligns case pre
 
 st.markdown("---")
 st.caption("Prototype created for thesis demonstration purposes – not for operational use.")
+
