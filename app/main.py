@@ -168,7 +168,7 @@ st.sidebar.header("Options")
 mode = st.sidebar.radio("Mode", ["Thesis scenarios", "Open-ended"])
 
 # ---------- Intro ----------
-st.title("🛡️ Municipal Ethical Cyber Decision-Support (Prototype)")
+st.title("🛡️ Municipal Ethical Cyber Decision-Support Prototype")
 st.markdown("**Because what's secure isn't always what's right.**")
 
 with st.expander("About this prototype"):
