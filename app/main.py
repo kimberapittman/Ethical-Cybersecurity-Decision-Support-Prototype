@@ -159,11 +159,11 @@ with col_sv2:
 auto_principles = suggest_principles(description + " " + " ".join(values))
 selected_principles = st.multiselect("Suggested principles (editable)", PRINCIPLES, default=auto_principles)
 
-# ---------- 4) Institutional & governance constraints ----------
+# ---------- 4) Institutional & Governance Constraints ----------
 st.markdown("### 4) Institutional & governance constraints")
 constraints = st.multiselect("Select constraints relevant to this scenario", GOV_CONSTRAINTS, default=pd_defaults.get("constraints", []))
 
-# ---------- 5) Ethical tension score ----------
+# ---------- 5) Ethical Tension Score ----------
 st.markdown("### 5) Ethical tension score")
 score = score_tension(selected_principles, selected_nist, constraints, stakeholders, values)
 st.progress(score, text=f"Ethical/contextual tension: {score}/100")
