@@ -109,7 +109,10 @@ mode = st.sidebar.radio("Mode", ["Thesis scenarios", "Open-ended"])
 
 # ---------- Intro ----------
 st.title("🛡️ Municipal Ethical Cyber Decision-Support Prototype")
-st.markdown("**Because what's secure isn't always what's right.**")
+st.markdown(
+    "<h3 style='text-align: center; color: #4C8BF5;'>Because what's secure isn't always what's right.</h3>",
+    unsafe_allow_html=True
+)
 
 # ---------- 1) Scenario overview ----------
 scenario = st.selectbox("Choose a Municipal Cybersecurity Scenario", options=list(scenario_summaries.keys()))
