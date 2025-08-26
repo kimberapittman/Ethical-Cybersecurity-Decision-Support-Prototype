@@ -53,14 +53,14 @@ GOV_CONSTRAINTS = [
 NIST_ACTIONS = {
     "Govern (GV)": [
         "Affirm decision rights, RACI, and escalation paths (counsel, CIO/CISO, utilities, council)",
-        "Activate risk governance: convene cross‑dept incident steering group",
+        "Activate risk governance: convene cross-dept incident steering group",
         "Ensure policies for privacy, surveillance use, and AI are applied/waived only with due process",
         "Require procurement/vendor transparency (SBOMs, data handling, model cards)",
         "Coordinate with oversight bodies (council, civil rights, public records) and document rationale",
         "Mandate equity impact check and document mitigations",
     ],
     "Identify (ID)": [
-        "Confirm crown jewels & service criautoticality",
+        "Confirm crown jewels & service criticality",
         "Establish incident objectives and scope",
         "Map stakeholders and equity impacts",
         "Inventory affected assets, data, and dependencies"
@@ -163,7 +163,7 @@ def score_tension(selected_principles, selected_nist, constraints, stakeholders,
     base += 4 * len(values)
     return min(base, 100)
 
-# ---------- Sidebar (kept only Mode; removed Mode + Presets) ----------
+# ---------- Sidebar ----------
 st.sidebar.header("Options")
 mode = st.sidebar.radio("Mode", ["Thesis scenarios", "Open-ended"])
 
@@ -235,7 +235,6 @@ else:
     st.markdown("#### Suggested functions for this scenario (editable in Open-ended mode)")
     selected_nist = st.multiselect("", NIST_FUNCTIONS, default=suggested_nist)
 
-
 # ---------- 3) Ethical Evaluation (Principlist Framework) ----------
 st.markdown("### 3) Ethical Evaluation (Principlist Framework)")
 
@@ -267,7 +266,7 @@ with colp1:
     autonomy = st.text_area("Autonomy – respect rights/choice", "")
     justice = st.text_area("Justice – fairness/equity", "")
 with colp2:
-    non_maleficence = st.text_area("Non‑maleficence – avoid harm", "")
+    non_maleficence = st.text_area("Non-maleficence – avoid harm", "")
     explicability = st.text_area("Explicability – transparency/accountability", "")
 
 # ---------- 4) Institutional & governance constraints ----------
@@ -288,10 +287,10 @@ if score < 35:
 elif score < 70:
     st.warning("Moderate tension: ensure proportionality, comms, and oversight are in place.")
 else:
-    st.error("High tension: escalate, ensure cross‑dept decision rights, consider external ethics/LE counsel.")
+    st.error("High tension: escalate, ensure cross-dept decision rights, consider external ethics/LE counsel.")
 
-# ---------- 6) NIST‑aligned action plan (editable) ----------
-st.markdown("### 6) NIST‑aligned action plan (editable)")
+# ---------- 6) NIST-aligned action plan (editable) ----------
+st.markdown("### 6) NIST-aligned action plan (editable)")
 plan = []
 for f in selected_nist:
     st.write(f"**{f}**")
@@ -301,9 +300,9 @@ for f in selected_nist:
 # ---------- Communication checklist ----------
 with st.expander("Public communication & accountability checklist"):
     st.checkbox("Name a responsible official and decision authority for this incident", value=True)
-    st.checkbox("Publish plain‑language status, impacts, and next steps (no speculation)", value=True)
-    st.checkbox("State data handling, retention, and law‑enforcement coordination terms", value=True)
-    st.checkbox("Record rationale for decisions (pay/no‑pay; enable/disable tech; scope of surveillance)", value=True)
+    st.checkbox("Publish plain-language status, impacts, and next steps (no speculation)", value=True)
+    st.checkbox("State data handling, retention, and law-enforcement coordination terms", value=True)
+    st.checkbox("Record rationale for decisions (pay/no-pay; enable/disable tech; scope of surveillance)", value=True)
     st.checkbox("Equity statement: assess & mitigate disproportionate impact by neighborhood/group", value=True)
 
 # ---------- 7) Generate justification ----------
@@ -335,7 +334,7 @@ Public values at risk: {", ".join(values) or '—'}
 Constraints: {", ".join(constraints) or '—'}
 Ethical/context tension score: {score}/100
 
-## Action plan (NIST‑aligned)
+## Action plan (NIST-aligned)
 - """ + "\n- ".join(plan) + f"""
 
 ## Ethical rationale
@@ -412,3 +411,5 @@ st.caption("Prototype: for thesis demonstration (Chapter IV) — aligns case pre
 
 st.markdown("---")
 st.caption("Prototype created for thesis demonstration purposes – not for operational use.")
+
+
