@@ -150,8 +150,15 @@ st.sidebar.header("Options")
 mode = st.sidebar.radio("Mode", ["Thesis scenarios", "Open-ended"])
 
 # ---------- Intro ----------
-st.title("🛡️ Municipal Ethical Cyber Decision-Support Prototype")
-st.markdown("<h3 style='font-size:22px;'>Because what's secure isn't always what's right.</h3>", unsafe_allow_html=True)
+st.markdown(
+    """
+    <div style='text-align: center;'>
+        <h1>🛡️ Municipal Ethical Cyber Decision-Support Prototype</h1>
+        <h4 style='color:#4C8BF5;'>Because what's secure isn't always what's right.</h4>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 with st.expander("About this prototype"):
     st.markdown(
