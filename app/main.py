@@ -219,9 +219,22 @@ pd_defaults = dict(description="", stakeholders=[], values=[], constraints=[])
 st.markdown("### 2) Technical Evaluation (NIST CSF)")
 with st.expander("About the NIST CSF"):
     st.markdown("""
-The **NIST Cybersecurity Framework (CSF) 2.0** is a risk-based framework to help organizations manage and reduce risks.  
-Its six functions—Govern, Identify, Protect, Detect, Respond, Recover—are the technical backbone of this prototype.  
-Relevant CSF functions are highlighted for each scenario to ensure ethical reasoning is grounded in technical standards.
+The **NIST Cybersecurity Framework (CSF) 2.0** is a risk-based framework created by the 
+National Institute of Standards and Technology to help organizations manage and reduce 
+cybersecurity risks. It is organized into six core functions, which together provide a 
+comprehensive approach to managing cyber risk:
+
+- **Govern (GV):** Establish and communicate organizational context, roles, policies, and oversight for managing cybersecurity risk.  
+- **Identify (ID):** Develop an organizational understanding of systems, people, assets, data, and capabilities to manage risk.  
+- **Protect (PR):** Develop and implement safeguards to ensure delivery of critical services.  
+- **Detect (DE):** Develop and implement activities to identify the occurrence of a cybersecurity event.  
+- **Respond (RS):** Take appropriate action regarding a detected cybersecurity incident.  
+- **Recover (RC):** Maintain plans for resilience and restore capabilities impaired by incidents.  
+
+In this prototype, the CSF provides the **technical backbone**.  
+Relevant CSF functions are highlighted for each scenario, and tooltips explain how they 
+apply in that specific situation—ensuring that ethical reasoning (via the Principlist 
+Framework) is always grounded in recognized technical standards.
     """)
 
 # Suggested functions
@@ -286,14 +299,21 @@ else:
 
 # ---------- 3) Ethical Evaluation (Principlist) ----------
 st.markdown("### 3) Ethical Evaluation (Principlist)")
-
 with st.expander("About the Principlist Framework"):
     st.markdown("""
-Principlism is an approach to ethical reasoning that balances **Beneficence** (promote well-being),
-**Non-maleficence** (avoid harm), **Autonomy** (respect rights/choice), **Justice** (fairness/equity),
-and **Explicability** (transparency/accountability).  
-In this prototype, we surface the principles most likely implicated by the scenario so practitioners
-can weigh trade-offs alongside the NIST CSF’s technical guidance.
+**Principlism** is a practical approach to ethical reasoning that balances multiple
+values rather than optimizing only one. This prototype uses five principles:
+
+- **Beneficence:** Promote public well-being and the delivery of essential services.  
+- **Non-maleficence:** Avoid foreseeable harm from actions taken or omitted (e.g., over-collection, rash shutdowns).  
+- **Autonomy:** Respect legal rights, due process, and meaningful choice for affected people.  
+- **Justice:** Distribute burdens and benefits fairly; avoid disproportionate impact on specific communities.  
+- **Explicability:** Ensure transparency, accountability, and the ability to explain decisions and system behavior.
+
+**How this is used here:**  
+For each scenario, the tool highlights which principles are most likely implicated
+so practitioners can weigh ethical trade-offs **alongside** the NIST CSF technical guidance.
+This keeps decisions grounded in standards while making value tensions explicit.
     """)
 
 # Auto-suggested principles (read-only in Thesis mode; editable in Open-ended)
