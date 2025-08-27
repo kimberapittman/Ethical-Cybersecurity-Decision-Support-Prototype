@@ -224,18 +224,66 @@ Its six functions—Govern, Identify, Protect, Detect, Respond, Recover—are th
 Relevant CSF functions are highlighted for each scenario to ensure ethical reasoning is grounded in technical standards.
     """)
 
+# Suggested functions
 suggested_nist = suggest_nist(incident_type, description)
+
+# NEW: per-scenario “how it applies” notes shown on hover
+def scenario_csfs_explanations(incident_text: str) -> dict:
+    t = incident_text.lower()
+    notes = {
+        "Govern (GV)": "Clarify decision rights, escalation, and documentation duties for this scenario.",
+        "Identify (ID)": "Confirm critical services, impacted assets, and risk to residents for this scenario.",
+        "Protect (PR)": "Harden access, backups, and sensitive data paths most relevant here.",
+        "Detect (DE)": "Tighten monitoring for IOCs and adjacent systems implicated in this scenario.",
+        "Respond (RS)": "Contain, coordinate comms/counsel, and execute proportional response steps.",
+        "Recover (RC)": "Restore by criticality, verify integrity, and capture lessons learned."
+    }
+    # Light tailoring by keywords (kept simple and non-invasive)
+    if "ransom" in t:
+        notes["Protect (PR)"] = "Ensure offline/immutable backups; least-privilege clean-up to prevent re-encryption."
+        notes["Respond (RS)"] = "Isolate infected hosts, evaluate ransom stance, coordinate comms and legal."
+        notes["Recover (RC)"] = "Prioritize restoration of city services; validate from clean backups."
+    if "surveillance" in t or "streetlight" in t:
+        notes["Govern (GV)"] = "Ensure policy/oversight and due process around repurposing technology."
+        notes["Identify (ID)"] = "Map data types, retention, and groups most affected by repurposing."
+        notes["Protect (PR)"] = "Enforce access controls and data minimization for sensitive footage/metadata."
+        notes["Respond (RS)"] = "Adjust usage, pause feeds if needed, and publish transparent updates."
+    if "ai" in t or "water" in t:
+        notes["Identify (ID)"] = "Assess critical dependencies and AI decision points in the water system."
+        notes["Detect (DE)"] = "Watch for model drift/adversarial behavior; expand telemetry at interfaces."
+        notes["Respond (RS)"] = "Decide on disable vs. retrain; ensure safety-first rollback options."
+        notes["Recover (RC)"] = "Validate safe operations before full return; document model/controls changes."
+    return notes
+
+scenario_tips = scenario_csfs_explanations(description)
+
 if mode == "Thesis scenarios":
-    def chip(name: str, active: bool) -> str:
+    # Updated chip: add a 'title' attribute for hover tooltip with scenario-specific guidance
+    def chip(name: str, active: bool, tip: str) -> str:
+        base_style = "display:inline-block;padding:4px 10px;margin:3px;border-radius:12px;"
         if active:
-            return f"<span style='padding:4px 10px;margin:3px;border-radius:12px;border:1px solid #0c6cf2;background:#e8f0fe;'>{name} ✓</span>"
+            style = base_style + "border:1px solid #0c6cf2;background:#e8f0fe;"
         else:
-            return f"<span style='padding:4px 10px;margin:3px;border-radius:12px;border:1px solid #ccc;background:#f7f7f7;opacity:0.7'>{name}</span>"
-    chips_html = " ".join([chip(fn, fn in suggested_nist) for fn in NIST_FUNCTIONS])
+            style = base_style + "border:1px solid #ccc;background:#f7f7f7;opacity:0.7"
+        # 'title' provides the hover tooltip
+        return f"<span title='{tip}' style='{style}'>{name} ✓</span>" if active else f"<span title='{tip}' style='{style}'>{name}</span>"
+
+    chips_html = " ".join([
+        chip(fn, fn in suggested_nist, scenario_tips.get(fn, "How this CSF function applies in this scenario."))
+        for fn in NIST_FUNCTIONS
+    ])
     st.markdown(chips_html, unsafe_allow_html=True)
+
+    # lock selection to suggested set so downstream sections work unchanged
     selected_nist = suggested_nist[:]
 else:
+    st.markdown("#### Suggested functions for this scenario (editable in Open-ended mode)")
+    # Add tooltips as help text in editable mode (Streamlit doesn't support hover in multiselect items)
+    # We’ll render the tips as a small legend below the selector for parity.
     selected_nist = st.multiselect("", NIST_FUNCTIONS, default=suggested_nist)
+    with st.expander("How each function applies here"):
+        for fn in NIST_FUNCTIONS:
+            st.markdown(f"- **{fn}** — {scenario_tips.get(fn, 'How this CSF function applies in this scenario.')}")
 
 # ---------- 3) Ethical Evaluation (Principlist) ----------
 st.markdown("### 3) Ethical Evaluation (Principlist)")
