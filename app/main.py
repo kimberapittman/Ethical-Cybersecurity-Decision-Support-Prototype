@@ -145,6 +145,43 @@ def score_tension(selected_principles, selected_nist, constraints, stakeholders,
     base += 4 * len(values)
     return min(base, 100)
 
+# ---------- NEW: conflicts KB + small render helpers (added for Ethical Evaluation visuals) ----------
+CONFLICTS_BY_SCENARIO = {
+    "Baltimore Ransomware Attack": [
+        ("Service continuity", "Data integrity", "Restoring services quickly vs. validating integrity and forensics depth", 70),
+        ("Transparency", "Operational confidentiality", "Public updates vs. not tipping off threat actors or harming recovery", 60),
+        ("Equity/Justice", "Efficiency", "Prioritizing vulnerable services/neighborhoods vs. fastest overall restoration", 55),
+    ],
+    "San Diego Smart Streetlights and Surveillance": [
+        ("Privacy", "Public safety", "Limiting secondary use of sensors vs. using data for investigations", 75),
+        ("Transparency", "Operational confidentiality", "Open policies and audit trails vs. investigative sensitivity", 60),
+        ("Autonomy/Consent", "Oversight", "Community consent and control vs. centralized governance actions", 55),
+    ],
+    "Riverton AI-Enabled Threat": [
+        ("Safety/Continuity", "Autonomy/Explicability", "Automated control for rapid stabilization vs. explainable, human-led decisions", 70),
+        ("Short-term fix", "Long-term reliability", "Disable or hot-patch the AI now vs. robust retraining/assurance", 65),
+        ("Vendor opacity", "Public accountability", "Proprietary constraints vs. documentation and external review", 60),
+    ],
+}
+
+def render_dumbbell(left_label: str, right_label: str, pct: int) -> str:
+    pct = max(0, min(int(pct), 100))
+    return f"""
+    <div style="margin:8px 0;">
+      <div style="display:flex;justify-content:space-between;font-size:0.9rem;margin-bottom:4px;">
+        <span><b>{left_label}</b></span><span><b>{right_label}</b></span>
+      </div>
+      <div style="position:relative;height:10px;background:linear-gradient(90deg,#5c6bc0,#42a5f5);border-radius:6px;">
+        <div style="position:absolute;left:{pct}%;top:-6px;transform:translateX(-50%);width:0;height:0;
+          border-left:6px solid transparent;border-right:6px solid transparent;border-top:10px solid #ffffff;"></div>
+      </div>
+      <div style="text-align:center;color:#999;font-size:0.8rem;margin-top:4px;">Balance point: {pct}% toward “{right_label if pct>=50 else left_label}”</div>
+    </div>
+    """
+
+def conflicts_table_rows(conflicts):
+    return [{"Value A": a, "Value B": b, "Why it matters here": note} for (a, b, note, _pct) in conflicts]
+
 # ---------- Sidebar ----------
 st.sidebar.header("Options")
 mode = st.sidebar.radio("Mode", ["Thesis scenarios", "Open-ended"])
@@ -212,24 +249,18 @@ In this prototype, we surface the principles most likely implicated by the scena
 can weigh trade-offs alongside the NIST CSF’s technical guidance.
     """)
 
-# Use scenario text (and optional values) to suggest relevant principles
+# Auto-suggested principles (read-only in Thesis mode; editable in Open-ended)
 auto_principles = suggest_principles(description)
-
 if mode == "Thesis scenarios":
-    # Read-only chips mirroring the NIST CSF presentation
     def pchip(name: str, active: bool) -> str:
         if active:
             return f"<span style='display:inline-block;padding:4px 10px;margin:3px;border-radius:12px;border:1px solid #0c6cf2;background:#e8f0fe;'>{name} ✓</span>"
         else:
             return f"<span style='display:inline-block;padding:4px 10px;margin:3px;border-radius:12px;border:1px solid #ccc;background:#f7f7f7;opacity:0.7'>{name}</span>"
-
     principle_chips = " ".join([pchip(p, p in auto_principles) for p in PRINCIPLES])
     st.markdown(principle_chips, unsafe_allow_html=True)
-
-    # lock to auto-suggested set for downstream logic
     selected_principles = auto_principles[:]
 else:
-    # Open-ended mode: editable selection, like NIST section
     st.markdown("#### Suggested ethical principles for this scenario (editable in Open-ended mode)")
     selected_principles = st.multiselect("", PRINCIPLES, default=auto_principles)
 
@@ -252,12 +283,27 @@ with st.expander("Stakeholders & public values (optional)"):
             default=[]
         )
 
+# ---------- NEW: Hybrid trade-off visual + table (read-only in Thesis mode) ----------
+st.markdown("#### Key value trade-offs for this scenario")
+conflicts = CONFLICTS_BY_SCENARIO.get(scenario, [])
+if conflicts:
+    for (a, b, note, pct) in conflicts:
+        st.markdown(render_dumbbell(a, b, pct), unsafe_allow_html=True)
+        st.caption(note)
+    st.markdown("**Summary of trade-offs**")
+    st.table(conflicts_table_rows(conflicts))
+else:
+    st.info("No predefined value conflicts for this scenario.")
+
 # ---------- 4) Institutional & Governance Constraints ----------
 st.markdown("### 4) Institutional & Governance Constraints")
 constraints = st.multiselect("Select constraints relevant to this scenario", GOV_CONSTRAINTS, default=pd_defaults.get("constraints", []))
 
 # ---------- 5) Ethical Tension Score ----------
 st.markdown("### 5) Ethical Tension Score")
+# Ensure stakeholders/values exist even if the expander wasn't used
+if 'stakeholders' not in locals(): stakeholders = []
+if 'values' not in locals(): values = []
 score = score_tension(selected_principles, selected_nist, constraints, stakeholders, values)
 st.progress(score, text=f"Ethical/contextual tension: {score}/100")
 if score < 35:
@@ -270,3 +316,4 @@ else:
 # ---------- Footer ----------
 st.markdown("---")
 st.caption("Prototype created for thesis demonstration purposes – not for operational use.")
+
