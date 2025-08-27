@@ -195,11 +195,39 @@ else:
 
 # ---------- 3) Ethical Evaluation (Principlist) ----------
 st.markdown("### 3) Ethical Evaluation (Principlist)")
+
+with st.expander("About the Principlist Framework"):
+    st.markdown("""
+The **Principlist Framework for Cybersecurity Ethics** adapts principles from biomedical ethics 
+to guide decision-making in digital contexts. It provides five core values:
+
+- **Beneficence:** Promote public well-being by supporting services that protect health, safety, and trust.  
+- **Non-maleficence:** Avoid foreseeable harms caused by technical choices, disclosure, or surveillance.  
+- **Autonomy:** Respect the rights and informed choices of individuals and communities.  
+- **Justice:** Ensure fairness and equitable treatment, preventing disproportionate burdens.  
+- **Explicability:** Maintain transparency and accountability through clear, auditable reasoning.  
+
+In this prototype, these principles surface **ethical tensions** within each scenario, ensuring that 
+cybersecurity practitioners can evaluate trade-offs and document defensible decisions.
+    """)
+
+# Stakeholders & values (kept with ethical evaluation so values can drive suggestions)
 col_sv1, col_sv2 = st.columns(2)
 with col_sv1:
-    stakeholders = st.multiselect("Stakeholders affected", ["Residents","City Employees","Vendors","City Council","Mayor’s Office","Public Utilities Board","Police Department","Civil Rights Groups","Media","Courts/Recorders"], default=pd_defaults.get("stakeholders", []))
+    stakeholders = st.multiselect(
+        "Stakeholders affected",
+        [
+            "Residents", "City Employees", "Vendors", "City Council", "Mayor’s Office",
+            "Public Utilities Board", "Police Department", "Civil Rights Groups", "Media", "Courts/Recorders"
+        ],
+        default=pd_defaults.get("stakeholders", [])
+    )
 with col_sv2:
-    values = st.multiselect("Public values at risk", ["Privacy","Transparency","Trust","Safety","Equity","Autonomy"], default=pd_defaults.get("values", []))
+    values = st.multiselect(
+        "Public values at risk",
+        ["Privacy", "Transparency", "Trust", "Safety", "Equity", "Autonomy"],
+        default=pd_defaults.get("values", [])
+    )
 
 auto_principles = suggest_principles(description + " " + " ".join(values))
 selected_principles = st.multiselect("Suggested principles (editable)", PRINCIPLES, default=auto_principles)
