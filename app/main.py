@@ -279,7 +279,6 @@ if mode == "Thesis scenarios":
 else:
     st.markdown("#### Suggested functions for this scenario (editable in Open-ended mode)")
     # Add tooltips as help text in editable mode (Streamlit doesn't support hover in multiselect items)
-    # We’ll render the tips as a small legend below the selector for parity.
     selected_nist = st.multiselect("", NIST_FUNCTIONS, default=suggested_nist)
     with st.expander("How each function applies here"):
         for fn in NIST_FUNCTIONS:
