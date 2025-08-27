@@ -316,4 +316,3 @@ else:
 # ---------- Footer ----------
 st.markdown("---")
 st.caption("Prototype created for thesis demonstration purposes – not for operational use.")
-
