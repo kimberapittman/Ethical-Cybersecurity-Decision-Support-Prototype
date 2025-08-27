@@ -205,39 +205,52 @@ st.markdown("### 3) Ethical Evaluation (Principlist)")
 
 with st.expander("About the Principlist Framework"):
     st.markdown("""
-The **Principlist Framework for Cybersecurity Ethics** adapts principles from biomedical ethics 
-to guide decision-making in digital contexts. It provides five core values:
-
-- **Beneficence:** Promote public well-being by supporting services that protect health, safety, and trust.  
-- **Non-maleficence:** Avoid foreseeable harms caused by technical choices, disclosure, or surveillance.  
-- **Autonomy:** Respect the rights and informed choices of individuals and communities.  
-- **Justice:** Ensure fairness and equitable treatment, preventing disproportionate burdens.  
-- **Explicability:** Maintain transparency and accountability through clear, auditable reasoning.  
-
-In this prototype, these principles surface **ethical tensions** within each scenario, ensuring that 
-cybersecurity practitioners can evaluate trade-offs and document defensible decisions.
+Principlism is an approach to ethical reasoning that balances **Beneficence** (promote well-being),
+**Non-maleficence** (avoid harm), **Autonomy** (respect rights/choice), **Justice** (fairness/equity),
+and **Explicability** (transparency/accountability).  
+In this prototype, we surface the principles most likely implicated by the scenario so practitioners
+can weigh trade-offs alongside the NIST CSF’s technical guidance.
     """)
 
-# Stakeholders & values (kept with ethical evaluation so values can drive suggestions)
-col_sv1, col_sv2 = st.columns(2)
-with col_sv1:
-    stakeholders = st.multiselect(
-        "Stakeholders affected",
-        [
-            "Residents", "City Employees", "Vendors", "City Council", "Mayor’s Office",
-            "Public Utilities Board", "Police Department", "Civil Rights Groups", "Media", "Courts/Recorders"
-        ],
-        default=pd_defaults.get("stakeholders", [])
-    )
-with col_sv2:
-    values = st.multiselect(
-        "Public values at risk",
-        ["Privacy", "Transparency", "Trust", "Safety", "Equity", "Autonomy"],
-        default=pd_defaults.get("values", [])
-    )
+# Use scenario text (and optional values) to suggest relevant principles
+auto_principles = suggest_principles(description)
 
-auto_principles = suggest_principles(description + " " + " ".join(values))
-selected_principles = st.multiselect("Suggested principles (editable)", PRINCIPLES, default=auto_principles)
+if mode == "Thesis scenarios":
+    # Read-only chips mirroring the NIST CSF presentation
+    def pchip(name: str, active: bool) -> str:
+        if active:
+            return f"<span style='display:inline-block;padding:4px 10px;margin:3px;border-radius:12px;border:1px solid #0c6cf2;background:#e8f0fe;'>{name} ✓</span>"
+        else:
+            return f"<span style='display:inline-block;padding:4px 10px;margin:3px;border-radius:12px;border:1px solid #ccc;background:#f7f7f7;opacity:0.7'>{name}</span>"
+
+    principle_chips = " ".join([pchip(p, p in auto_principles) for p in PRINCIPLES])
+    st.markdown(principle_chips, unsafe_allow_html=True)
+
+    # lock to auto-suggested set for downstream logic
+    selected_principles = auto_principles[:]
+else:
+    # Open-ended mode: editable selection, like NIST section
+    st.markdown("#### Suggested ethical principles for this scenario (editable in Open-ended mode)")
+    selected_principles = st.multiselect("", PRINCIPLES, default=auto_principles)
+
+# (Optional) keep these inputs but tuck them away so the section visually matches NIST CSF
+with st.expander("Stakeholders & public values (optional)"):
+    col_sv1, col_sv2 = st.columns(2)
+    with col_sv1:
+        stakeholders = st.multiselect(
+            "Stakeholders affected",
+            [
+                "Residents", "City Employees", "Vendors", "City Council", "Mayor’s Office",
+                "Public Utilities Board", "Police Department", "Civil Rights Groups", "Media", "Courts/Recorders"
+            ],
+            default=[]
+        )
+    with col_sv2:
+        values = st.multiselect(
+            "Public values at risk",
+            ["Privacy", "Transparency", "Trust", "Safety", "Equity", "Autonomy"],
+            default=[]
+        )
 
 # ---------- 4) Institutional & Governance Constraints ----------
 st.markdown("### 4) Institutional & Governance Constraints")
