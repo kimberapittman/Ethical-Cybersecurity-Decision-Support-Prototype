@@ -156,9 +156,9 @@ st.markdown("<h3 style='font-size:22px;'>Because what's secure isn't always what
 with st.expander("About this prototype"):
     st.markdown(
         """
-- **Purpose:** Support municipal cybersecurity practitioners in navigating complex ethical dilemmas.  
-- **Backbone:** Integrates the NIST Cybersecurity Framework 2.0 with principlist ethical values to guide reasoning.  
-- **Context:** Designed for municipalities with real-world constraints like limited budgets, fragmented authority, and vendor opacity.  
+- **Purpose:** Support municipal cybersecurity practitioners in navigating complex ethical dilemmas. This tool is designed to guide users through high-stakes decisions in real time - aligning actions with technical standards, clarifying value conflicts, and documenting justifiable outcomes under institutional and governance constraints.  
+- **Backbone:** This prototype draws on the NIST Cybersecurity Framework, guiding users through six core functions: Govern, Identity, Protect, Detect, Respond, and Recover. These are integrated with Principlist ethical values: Beneficence, Non-maleficence, Autonomy, Justice, and Explicability - to help ussers weigh trade-offs and make morally  defensible decisions.  
+- **Context:** Designed specifically for municipal use, the prototype accounts for real-world constraints like limited budgets, fragmented authority, and vendor opacity. It supports ethical decision-making within these practical and political realities. 
         """
     )
 
