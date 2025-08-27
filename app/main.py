@@ -263,24 +263,6 @@ if mode == "Thesis scenarios":
 else:
     st.markdown("#### Suggested ethical principles for this scenario (editable in Open-ended mode)")
     selected_principles = st.multiselect("", PRINCIPLES, default=auto_principles)
-
-# (Optional) keep these inputs but tuck them away so the section visually matches NIST CSF
-with st.expander("Stakeholders & public values (optional)"):
-    col_sv1, col_sv2 = st.columns(2)
-    with col_sv1:
-        stakeholders = st.multiselect(
-            "Stakeholders affected",
-            [
-                "Residents", "City Employees", "Vendors", "City Council", "Mayor’s Office",
-                "Public Utilities Board", "Police Department", "Civil Rights Groups", "Media", "Courts/Recorders"
-            ],
-            default=[]
-        )
-    with col_sv2:
-        values = st.multiselect(
-            "Public values at risk",
-            ["Privacy", "Transparency", "Trust", "Safety", "Equity", "Autonomy"],
-            default=[]
         )
 
 # ---------- NEW: Hybrid trade-off visual + table (read-only in Thesis mode) ----------
