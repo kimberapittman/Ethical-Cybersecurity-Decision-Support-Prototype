@@ -2,7 +2,7 @@ import streamlit as st
 from datetime import datetime
 
 # ---------- Page config ----------
-st.set_page_config(page_title="Municipal Ethical Cyber Decision-Support Prototype", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="Municipal Ethical Cyber Decision-Support", layout="wide", initial_sidebar_state="expanded")
 
 # ---------- NIST CSF 2.0 constants ----------
 NIST_FUNCTIONS = [
@@ -14,7 +14,7 @@ NIST_FUNCTIONS = [
     "Recover (RC)",
 ]
 
-# ---------- Simple rule-based NLP helpers ----------
+# ---------- Simple rule-based NLP helpers (no external deps) ----------
 NIST_KB = {
     "ransomware": ["Govern (GV)", "Identify (ID)", "Protect (PR)", "Detect (DE)", "Respond (RS)", "Recover (RC)"],
     "phishing":   ["Govern (GV)", "Protect (PR)", "Detect (DE)", "Respond (RS)", "Recover (RC)"],
@@ -51,40 +51,40 @@ GOV_CONSTRAINTS = [
 # ---------- NIST CSF 2.0 action examples ----------
 NIST_ACTIONS = {
     "Govern (GV)": [
-        "Affirm decision rights, RACI, and escalation paths (counsel, CIO/CISO, utilities, council)",
+        "Affirm decision rights, RACI, and escalation paths",
         "Activate risk governance: convene cross-dept incident steering group",
-        "Ensure policies for privacy, surveillance use, and AI are applied/waived only with due process",
+        "Ensure policies for privacy, surveillance use, and AI are applied only with due process",
         "Require procurement/vendor transparency (SBOMs, data handling, model cards)",
-        "Coordinate with oversight bodies (council, civil rights, public records) and document rationale",
-        "Mandate equity impact check and document mitigations",
+        "Coordinate with oversight bodies and document rationale",
+        "Mandate equity impact check and mitigations",
     ],
     "Identify (ID)": [
-        "Confirm crown jewels & service criticality",
+        "Confirm critical assets and services",
         "Establish incident objectives and scope",
         "Map stakeholders and equity impacts",
         "Inventory affected assets, data, and dependencies"
     ],
     "Protect (PR)": [
-        "Harden access (MFA, least privilege, network segmentation)",
+        "Harden access (MFA, least privilege, segmentation)",
         "Freeze risky changes; ensure backups are protected/offline",
         "Apply emergency configuration baselines",
-        "Safeguard sensitive data (masking, minimum necessary use)"
+        "Safeguard sensitive data"
     ],
     "Detect (DE)": [
         "Correlate alerts; verify indicators of compromise",
         "Expand monitoring to adjacent systems",
-        "Preserve logs and evidence (chain of custody)",
+        "Preserve logs and evidence",
         "Hunt for lateral movement and persistence"
     ],
     "Respond (RS)": [
-        "Contain (isolate affected hosts/segments); coordinate with counsel/LE",
-        "Activate comms plan; publish clear, non-speculative updates",
-        "Decide on takedown/disablement with proportionality & due process",
-        "Coordinate with vendors and external partners"
+        "Contain affected hosts/segments; coordinate with counsel/LE",
+        "Activate comms plan; publish clear updates",
+        "Decide on takedown/disablement with proportionality",
+        "Coordinate with vendors and partners"
     ],
     "Recover (RC)": [
         "Restore by criticality with integrity checks",
-        "Post-incident review; address root causes & policy gaps",
+        "Conduct post-incident review and address root causes",
         "Update playbooks; brief council/public with lessons learned",
         "Track residual risk and follow-up actions"
     ],
@@ -93,18 +93,16 @@ NIST_ACTIONS = {
 # ---------- Scenario summaries ----------
 scenario_summaries = {
     "Baltimore Ransomware Attack": (
-        "In 2019, Baltimore experienced a ransomware attack that locked staff out of critical systems. "
-        "Essential services, including email and payment portals, were disrupted. "
-        "City leaders faced a dilemma: whether to pay the ransom to quickly restore operations or refuse payment and risk prolonged disruption."
+        "In 2019, Baltimore’s municipal systems were crippled by a ransomware attack that locked staff out of essential services. "
+        "Cybersecurity practitioners had to guide the city’s response under pressure, weighing whether to recommend paying the ransom or pursuing recovery, each carrying severe consequences."
     ),
     "San Diego Smart Streetlights and Surveillance": (
-        "San Diego deployed smart streetlights for traffic and environmental monitoring. "
-        "Later, law enforcement repurposed the system for surveillance without public consent. "
-        "City officials faced a dilemma: whether to continue supporting police use of the system or restrict it to its original civic purpose."
+        "San Diego deployed smart streetlights to collect traffic and environmental data, but the system was later repurposed for police surveillance without public consent. "
+        "Cybersecurity practitioners faced ethical trade-offs around enabling law enforcement access versus safeguarding transparency, privacy, and community trust."
     ),
     "Riverton AI-Enabled Threat": (
-        "In the fictional city of Riverton, adversarial signals disrupted an AI monitoring system at a water treatment facility, interrupting water distribution and threatening public safety. "
-        "Officials faced a dilemma: whether to disable the AI system and revert to manual oversight or attempt risky live retraining to restore trust in automation."
+        "In the fictional city of Riverton, adversarial signals disrupted an AI-based monitoring system at a water treatment facility, threatening public safety. "
+        "Cybersecurity practitioners had to decide whether to disable the AI system or attempt risky live retraining, balancing technical reliability, continuity of service, and public trust."
     )
 }
 
@@ -117,7 +115,7 @@ def suggest_nist(incident_type: str, description: str):
         if k in it or k in description.lower():
             seed.extend(v)
     if not seed:
-        seed = NIST_FUNCTIONS[:]  # default to all six
+        seed = NIST_FUNCTIONS[:]
     seen, ordered = set(), []
     for x in seed:
         if x not in seen:
@@ -153,14 +151,14 @@ mode = st.sidebar.radio("Mode", ["Thesis scenarios", "Open-ended"])
 
 # ---------- Intro ----------
 st.title("🛡️ Municipal Ethical Cyber Decision-Support Prototype")
-st.markdown("<h3 style='color:gray;'>Because what's secure isn't always what's right.</h3>", unsafe_allow_html=True)
+st.markdown("<h3 style='font-size:22px;'>Because what's secure isn't always what's right.</h3>", unsafe_allow_html=True)
 
 with st.expander("About this prototype"):
     st.markdown(
         """
 - **Purpose:** Support municipal cybersecurity practitioners in navigating complex ethical dilemmas.  
-- **Backbone:** Draws on the NIST Cybersecurity Framework 2.0 + principlist ethical values.  
-- **Context:** Designed for municipal realities: limited budgets, legacy tech, fragmented authority, and political constraints.  
+- **Backbone:** Integrates the NIST Cybersecurity Framework 2.0 with principlist ethical values to guide reasoning.  
+- **Context:** Designed for municipalities with real-world constraints like limited budgets, fragmented authority, and vendor opacity.  
         """
     )
 
@@ -173,13 +171,13 @@ incident_type = scenario
 description = scenario_summaries[scenario]
 pd_defaults = dict(description="", stakeholders=[], values=[], constraints=[])
 
-# ---------- 2) Technical Evaluation ----------
+# ---------- 2) Technical Evaluation (NIST CSF) ----------
 st.markdown("### 2) Technical Evaluation (NIST CSF)")
 with st.expander("About the NIST CSF"):
     st.markdown("""
-The **NIST Cybersecurity Framework (CSF) 2.0** provides six core functions to guide cybersecurity risk management:  
-Govern, Identify, Protect, Detect, Respond, and Recover.  
-In this prototype, relevant functions are highlighted to show which technical standards apply to each scenario.  
+The **NIST Cybersecurity Framework (CSF) 2.0** is a risk-based framework to help organizations manage and reduce risks.  
+Its six functions—Govern, Identify, Protect, Detect, Respond, Recover—are the technical backbone of this prototype.  
+Relevant CSF functions are highlighted for each scenario to ensure ethical reasoning is grounded in technical standards.
     """)
 
 suggested_nist = suggest_nist(incident_type, description)
@@ -195,31 +193,34 @@ if mode == "Thesis scenarios":
 else:
     selected_nist = st.multiselect("", NIST_FUNCTIONS, default=suggested_nist)
 
-# ---------- 3) Ethical Evaluation ----------
-st.markdown("### 3) Ethical Evaluation (Principlist Framework)")
-col1, col2 = st.columns(2)
-with col1:
-    stakeholders = st.multiselect("Stakeholders affected", ["Residents","City Employees","Vendors","City Council","Mayor’s Office","Utilities Board","Police","Civil Rights Groups","Media","Courts"], default=pd_defaults.get("stakeholders", []))
-with col2:
+# ---------- 3) Ethical Evaluation (Principlist) ----------
+st.markdown("### 3) Ethical Evaluation (Principlist)")
+col_sv1, col_sv2 = st.columns(2)
+with col_sv1:
+    stakeholders = st.multiselect("Stakeholders affected", ["Residents","City Employees","Vendors","City Council","Mayor’s Office","Public Utilities Board","Police Department","Civil Rights Groups","Media","Courts/Recorders"], default=pd_defaults.get("stakeholders", []))
+with col_sv2:
     values = st.multiselect("Public values at risk", ["Privacy","Transparency","Trust","Safety","Equity","Autonomy"], default=pd_defaults.get("values", []))
 
 auto_principles = suggest_principles(description + " " + " ".join(values))
-selected_principles = st.multiselect("Suggested principles", PRINCIPLES, default=auto_principles)
-
-colp1, colp2 = st.columns(2)
-with colp1:
-    beneficence = st.text_area("Beneficence – promote well-being", "")
-    autonomy = st.text_area("Autonomy – respect rights/choice", "")
-    justice = st.text_area("Justice – fairness/equity", "")
-with colp2:
-    non_maleficence = st.text_area("Non-maleficence – avoid harm", "")
-    explicability = st.text_area("Explicability – transparency/accountability", "")
+selected_principles = st.multiselect("Suggested principles (editable)", PRINCIPLES, default=auto_principles)
 
 # ---------- 4) Institutional & Governance Constraints ----------
 st.markdown("### 4) Institutional & Governance Constraints")
-constraints = st.multiselect("Select constraints", GOV_CONSTRAINTS, default=pd_defaults.get("constraints", []))
+constraints = st.multiselect("Select constraints relevant to this scenario", GOV_CONSTRAINTS, default=pd_defaults.get("constraints", []))
 
 # ---------- 5) Ethical Tension Score ----------
 st.markdown("### 5) Ethical Tension Score")
 score = score_tension(selected_principles, selected_nist, constraints, stakeholders, values)
-st.progress(score, text=f"Tension score: {score}/100")
+st.progress(score, text=f"Ethical/contextual tension: {score}/100")
+if score < 35:
+    st.success("Low tension: document rationale and proceed.")
+elif score < 70:
+    st.warning("Moderate tension: ensure proportionality and oversight.")
+else:
+    st.error("High tension: escalate and seek external counsel.")
+
+# ---------- Footer ----------
+st.markdown("---")
+st.caption("Prototype created for thesis demonstration purposes – not for operational use.")
+st.caption("Prototype: for thesis demonstration (Chapter IV) — aligns case presets with Chapter III scenarios.")
+
