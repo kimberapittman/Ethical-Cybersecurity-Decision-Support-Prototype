@@ -263,7 +263,6 @@ if mode == "Thesis scenarios":
 else:
     st.markdown("#### Suggested ethical principles for this scenario (editable in Open-ended mode)")
     selected_principles = st.multiselect("", PRINCIPLES, default=auto_principles)
-        )
 
 # ---------- NEW: Hybrid trade-off visual + table (read-only in Thesis mode) ----------
 st.markdown("#### Key value trade-offs for this scenario")
