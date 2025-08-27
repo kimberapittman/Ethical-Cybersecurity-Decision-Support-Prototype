@@ -232,15 +232,25 @@ comprehensive approach to managing cyber risk:
 - **Recover (RC):** Maintain plans for resilience and restore capabilities impaired by incidents.  
 
 In this prototype, the CSF provides the **technical backbone**.  
-Relevant CSF functions are highlighted for each scenario, and tooltips explain how they 
+Relevant CSF functions are highlighted for each scenario, and notes explain how they 
 apply in that specific situation—ensuring that ethical reasoning (via the Principlist 
-Framework) is always grounded in recognized technical standards.
+Framework) is grounded in recognized technical standards.
     """)
 
 # Suggested functions
 suggested_nist = suggest_nist(incident_type, description)
 
-# NEW: per-scenario “how it applies” notes shown on hover
+# Function definitions for quick reference inside each accordion
+NIST_DEFS = {
+    "Govern (GV)": "Establish oversight, roles, policies, and decision rights.",
+    "Identify (ID)": "Understand assets, risks, and critical services.",
+    "Protect (PR)": "Safeguard systems, data, and services against threats.",
+    "Detect (DE)": "Monitor and discover anomalous events quickly.",
+    "Respond (RS)": "Contain and manage active incidents and communications.",
+    "Recover (RC)": "Restore capabilities and improve resilience post-incident."
+}
+
+# Per-scenario “how it applies” notes
 def scenario_csfs_explanations(incident_text: str) -> dict:
     t = incident_text.lower()
     notes = {
@@ -251,7 +261,6 @@ def scenario_csfs_explanations(incident_text: str) -> dict:
         "Respond (RS)": "Contain, coordinate comms/counsel, and execute proportional response steps.",
         "Recover (RC)": "Restore by criticality, verify integrity, and capture lessons learned."
     }
-    # Light tailoring by keywords (kept simple and non-invasive)
     if "ransom" in t:
         notes["Protect (PR)"] = "Ensure offline/immutable backups; least-privilege clean-up to prevent re-encryption."
         notes["Respond (RS)"] = "Isolate infected hosts, evaluate ransom stance, coordinate comms and legal."
@@ -270,32 +279,21 @@ def scenario_csfs_explanations(incident_text: str) -> dict:
 
 scenario_tips = scenario_csfs_explanations(description)
 
-if mode == "Thesis scenarios":
-    # Updated chip: add a 'title' attribute for hover tooltip with scenario-specific guidance
-    def chip(name: str, active: bool, tip: str) -> str:
-        base_style = "display:inline-block;padding:4px 10px;margin:3px;border-radius:12px;"
-        if active:
-            style = base_style + "border:1px solid #0c6cf2;background:#e8f0fe;"
+# Accordion/matrix presentation for both modes
+selected_nist = []
+for fn in NIST_FUNCTIONS:
+    suggested = fn in suggested_nist
+    with st.expander(f"{fn} {'✓' if suggested else ''}", expanded=False):
+        st.markdown(f"**Definition:** {NIST_DEFS.get(fn, '')}")
+        if mode == "Thesis scenarios":
+            st.markdown(f"**How it applies in this scenario:** {scenario_tips.get(fn, '—')}")
+            if suggested:
+                selected_nist.append(fn)
         else:
-            style = base_style + "border:1px solid #ccc;background:#f7f7f7;opacity:0.7"
-        # 'title' provides the hover tooltip
-        return f"<span title='{tip}' style='{style}'>{name} ✓</span>" if active else f"<span title='{tip}' style='{style}'>{name}</span>"
-
-    chips_html = " ".join([
-        chip(fn, fn in suggested_nist, scenario_tips.get(fn, "How this CSF function applies in this scenario."))
-        for fn in NIST_FUNCTIONS
-    ])
-    st.markdown(chips_html, unsafe_allow_html=True)
-
-    # lock selection to suggested set so downstream sections work unchanged
-    selected_nist = suggested_nist[:]
-else:
-    st.markdown("#### Suggested functions for this scenario (editable in Open-ended mode)")
-    # Add tooltips as help text in editable mode (Streamlit doesn't support hover in multiselect items)
-    selected_nist = st.multiselect("", NIST_FUNCTIONS, default=suggested_nist)
-    with st.expander("How each function applies here"):
-        for fn in NIST_FUNCTIONS:
-            st.markdown(f"- **{fn}** — {scenario_tips.get(fn, 'How this CSF function applies in this scenario.')}")
+            mark = st.checkbox(f"Mark {fn} as relevant", value=suggested, key=f"chk_{fn}")
+            note = st.text_area(f"How {fn} applies here", value=scenario_tips.get(fn, ""), key=f"ta_{fn}")
+            if mark:
+                selected_nist.append(fn)
 
 # ---------- 3) Ethical Evaluation (Principlist) ----------
 st.markdown("### 3) Ethical Evaluation (Principlist)")
