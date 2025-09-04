@@ -279,8 +279,30 @@ def scenario_csfs_explanations(incident_text: str) -> dict:
 
 scenario_tips = scenario_csfs_explanations(description)
 
-# Accordion/matrix presentation for both modes
+# ---- DIFFERENT LOOK for the six NIST accordions (not the About expander)
+st.markdown("""
+<style>
+/* Only style the custom wrapper below so the About expander stays default */
+.nist-accordions details {
+  border: 1px solid #4C8BF5;
+  border-radius: 10px;
+  background: #F7FAFF;
+  margin: 8px 0;
+  padding: 2px 0;
+}
+.nist-accordions summary {
+  font-weight: 600;
+  color: #1E3A8A;
+}
+.nist-accordions details[open] {
+  background: #EFF6FF;
+  border-color: #3B82F6;
+}
+</style>
+""", unsafe_allow_html=True)
+
 selected_nist = []
+st.markdown("<div class='nist-accordions'>", unsafe_allow_html=True)
 for fn in NIST_FUNCTIONS:
     suggested = fn in suggested_nist
     with st.expander(f"{fn} {'✓' if suggested else ''}", expanded=False):
@@ -294,6 +316,7 @@ for fn in NIST_FUNCTIONS:
             note = st.text_area(f"How {fn} applies here", value=scenario_tips.get(fn, ""), key=f"ta_{fn}")
             if mark:
                 selected_nist.append(fn)
+st.markdown("</div>", unsafe_allow_html=True)
 
 # ---------- 3) Ethical Evaluation (Principlist) ----------
 st.markdown("### 3) Ethical Evaluation (Principlist)")
