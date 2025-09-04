@@ -322,21 +322,22 @@ st.markdown("</div>", unsafe_allow_html=True)
 st.markdown("### 3) Ethical Evaluation (Principlist)")
 with st.expander("About the Principlist Framework"):
     st.markdown("""
-**Principlism** is a practical approach to ethical reasoning that balances multiple
-values rather than optimizing only one. This prototype uses five principles:
+The **Principlist Framework for Cybersecurity Ethics** is a practical approach to ethical 
+reasoning that balances multiple values when making decisions under pressure. It is 
+organized into five core principles, which together provide a comprehensive approach 
+to identifying, weighing, and justifying ethical trade-offs:
 
 - **Beneficence:** Promote public well-being and the delivery of essential services.  
 - **Non-maleficence:** Avoid foreseeable harm from actions taken or omitted (e.g., over-collection, rash shutdowns).  
 - **Autonomy:** Respect legal rights, due process, and meaningful choice for affected people.  
 - **Justice:** Distribute burdens and benefits fairly; avoid disproportionate impact on specific communities.  
-- **Explicability:** Ensure transparency, accountability, and the ability to explain decisions and system behavior.
+- **Explicability:** Ensure transparency, accountability, and the ability to explain decisions and system behavior.  
 
-**How this is used here:**  
-For each scenario, the tool highlights which principles are most likely implicated
-so practitioners can weigh ethical trade-offs **alongside** the NIST CSF technical guidance.
-This keeps decisions grounded in standards while making value tensions explicit.
+In this prototype, the Principlist Framework provides the **ethical backbone**.  
+Relevant principles are highlighted for each scenario, making value tensions explicit 
+so that technical standards (via the NIST CSF) are always considered in light of 
+ethical reasoning.
     """)
-
 # Auto-suggested principles (read-only in Thesis mode; editable in Open-ended)
 auto_principles = suggest_principles(description)
 if mode == "Thesis scenarios":
