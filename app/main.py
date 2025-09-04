@@ -184,7 +184,7 @@ def conflicts_table_rows(conflicts):
 
 # ---------- Sidebar ----------
 st.sidebar.header("Options")
-mode = st.sidebar.radio("Mode", ["Thesis scenarios", "Open-ended"])
+mode = st.sidebar.radio(["Demonstration Mode", "Operational Mode"])
 
 # ---------- Intro ----------
 st.markdown(
