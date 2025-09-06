@@ -279,6 +279,29 @@ def scenario_csfs_explanations(incident_text: str) -> dict:
 
 scenario_tips = scenario_csfs_explanations(description)
 
+# NEW: Technical tensions list (renders under Technical Evaluation)
+TECH_TENSIONS = {
+    "Baltimore Ransomware Attack": [
+        "Protect (PR): Safeguarding backups vs. resource constraints",
+        "Respond (RS): Isolating systems vs. risk of disrupting critical services",
+        "Recover (RC): Speed of restoration vs. assurance of data integrity"
+    ],
+    "San Diego Smart Streetlights and Surveillance": [
+        "Govern (GV): Repurposing technology vs. lack of clear oversight",
+        "Identify (ID): Mapping affected data vs. limited transparency",
+        "Protect (PR): Enforcing access controls vs. vendor limitations"
+    ],
+    "Riverton AI-Enabled Threat": [
+        "Identify (ID): Assessing AI dependencies vs. time pressure",
+        "Detect (DE): Monitoring adversarial behavior vs. opaque vendor systems",
+        "Respond (RS): Disable AI system vs. attempt risky live retraining"
+    ]
+}
+
+st.markdown("**Technical tensions in this scenario:**")
+for t in TECH_TENSIONS.get(scenario, []):
+    st.markdown(f"- {t}")
+
 # ---- DIFFERENT LOOK for the six NIST accordions (not the About expander)
 st.markdown("""
 <style>
@@ -338,6 +361,27 @@ Relevant principles are highlighted for each scenario, making value tensions exp
 so that technical standards (via the NIST CSF) are always considered in light of 
 ethical reasoning.
     """)
+
+# NEW: Ethical tensions list (renders under Ethical Evaluation)
+ETHICAL_TENSIONS = {
+    "Baltimore Ransomware Attack": [
+        "Justice vs. Non-maleficence: Fairness of paying ransom vs. risk of future harm",
+        "Beneficence vs. Integrity: Restoring services quickly vs. long-term resilience"
+    ],
+    "San Diego Smart Streetlights and Surveillance": [
+        "Privacy vs. Public Safety: Limiting surveillance vs. supporting law enforcement",
+        "Autonomy vs. Oversight: Community consent vs. centralized governance"
+    ],
+    "Riverton AI-Enabled Threat": [
+        "Safety vs. Autonomy: Automated control vs. human explainability",
+        "Short-term Security vs. Long-term Trust: Quick fixes vs. sustainable accountability"
+    ]
+}
+
+st.markdown("**Ethical tensions in this scenario:**")
+for e in ETHICAL_TENSIONS.get(scenario, []):
+    st.markdown(f"- {e}")
+
 # Auto-suggested principles (read-only in Thesis mode; editable in Open-ended)
 auto_principles = suggest_principles(description)
 if mode == "Thesis scenarios":
@@ -462,7 +506,6 @@ with colB:
                     text=f"{p}: {pr_totals[p]}")
 
 # (Optional) expose the matrix for downstream logic or exporting
-# You can store it in session_state if you want to use it later:
 st.session_state["nist_principle_matrix"] = matrix_state
 st.session_state["nist_totals_by_function"] = fn_totals
 st.session_state["principle_totals"] = pr_totals
