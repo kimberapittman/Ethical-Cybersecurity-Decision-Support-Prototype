@@ -397,18 +397,6 @@ else:
     st.markdown("#### Suggested ethical principles for this scenario (editable in Open-ended mode)")
     selected_principles = st.multiselect("", PRINCIPLES, default=auto_principles)
 
-# ---------- NEW: Hybrid trade-off visual + table (read-only in Thesis mode) ----------
-st.markdown("#### Key value trade-offs for this scenario")
-conflicts = CONFLICTS_BY_SCENARIO.get(scenario, [])
-if conflicts:
-    for (a, b, note, pct) in conflicts:
-        st.markdown(render_dumbbell(a, b, pct), unsafe_allow_html=True)
-        st.caption(note)
-    st.markdown("**Summary of trade-offs**")
-    st.table(conflicts_table_rows(conflicts))
-else:
-    st.info("No predefined value conflicts for this scenario.")
-
 # ---------- 3a) NIST × Principlist Matrix ----------
 st.markdown("### 3a) NIST × Principlist Matrix")
 
