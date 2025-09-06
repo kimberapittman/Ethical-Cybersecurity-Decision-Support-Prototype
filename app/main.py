@@ -365,6 +365,108 @@ if conflicts:
 else:
     st.info("No predefined value conflicts for this scenario.")
 
+# ---------- 3a) NIST × Principlist Matrix ----------
+st.markdown("### 3a) NIST × Principlist Matrix")
+
+with st.expander("What is this matrix?"):
+    st.markdown("""
+This matrix helps **integrate technical and ethical reasoning**.  
+- **Rows = NIST CSF functions** (GV/ID/PR/DE/RS/RC)  
+- **Columns = Principlist ethical principles**  
+- **Cells = relevance** of a principle to a function in this case.
+
+**Thesis scenarios:** cells may be pre-selected to reflect your case analysis.  
+**Open-ended:** practitioners can select or weight cells in real time.
+    """)
+
+# Optional: toggle between simple checkboxes and 0–5 weights
+use_weights = st.toggle("Use 0–5 weighting instead of checkboxes", value=False, key="mx_use_weights")
+
+# Scenario-based pre-highlights (tune as you like)
+PREHIGHLIGHT = {
+    "Baltimore Ransomware Attack": [
+        ("Respond (RS)", "Justice"),
+        ("Protect (PR)", "Non-maleficence"),
+        ("Recover (RC)", "Beneficence"),
+        ("Govern (GV)", "Explicability"),
+        ("Identify (ID)", "Justice"),
+    ],
+    "San Diego Smart Streetlights and Surveillance": [
+        ("Govern (GV)", "Autonomy"),
+        ("Govern (GV)", "Justice"),
+        ("Govern (GV)", "Explicability"),
+        ("Identify (ID)", "Autonomy"),
+        ("Protect (PR)", "Non-maleficence"),
+        ("Respond (RS)", "Justice"),
+    ],
+    "Riverton AI-Enabled Threat": [
+        ("Detect (DE)", "Non-maleficence"),
+        ("Respond (RS)", "Beneficence"),
+        ("Respond (RS)", "Explicability"),
+        ("Identify (ID)", "Beneficence"),
+        ("Recover (RC)", "Justice"),
+        ("Govern (GV)", "Explicability"),
+    ],
+}
+
+# Build a grid: rows = NIST functions, cols = principles
+st.write("")  # small spacer
+cols = st.columns([1.1] + [1]*len(PRINCIPLES))
+
+with cols[0]:
+    st.markdown("**Function \\ Principle**")
+
+# Render column headers
+for i, p in enumerate(PRINCIPLES, start=1):
+    with cols[i]:
+        st.markdown(f"**{p}**")
+
+# Initialize matrix state
+matrix_state = {}
+pre = set(PREHIGHLIGHT.get(scenario, []))
+for fn in NIST_FUNCTIONS:
+    row_cols = st.columns([1.1] + [1]*len(PRINCIPLES))
+    with row_cols[0]:
+        st.markdown(f"**{fn}**")
+
+    for j, p in enumerate(PRINCIPLES, start=1):
+        key = f"mx_{fn}_{p}"
+        default_marked = (fn, p) in pre if mode == "Thesis scenarios" else False
+
+        with row_cols[j]:
+            if use_weights:
+                default_val = 3 if default_marked else 0
+                val = st.slider(" ", 0, 5, value=default_val, key=key, label_visibility="collapsed")
+                matrix_state[(fn, p)] = val
+            else:
+                mark = st.checkbox(" ", value=default_marked, key=key, label_visibility="collapsed")
+                matrix_state[(fn, p)] = 1 if mark else 0
+
+# Quick summaries (optional visual feedback)
+st.markdown("##### Matrix summary")
+# Per-function totals
+fn_totals = {fn: sum(matrix_state[(fn, p)] for p in PRINCIPLES) for fn in NIST_FUNCTIONS}
+# Per-principle totals
+pr_totals = {p: sum(matrix_state[(fn, p)] for fn in NIST_FUNCTIONS) for p in PRINCIPLES}
+
+colA, colB = st.columns(2)
+with colA:
+    st.markdown("**Totals by NIST function**")
+    for fn in NIST_FUNCTIONS:
+        st.progress(min(int((fn_totals[fn] / (5*len(PRINCIPLES) if use_weights else len(PRINCIPLES))) * 100), 100),
+                    text=f"{fn}: {fn_totals[fn]}")
+with colB:
+    st.markdown("**Totals by Ethical principle**")
+    for p in PRINCIPLES:
+        st.progress(min(int((pr_totals[p] / (5*len(NIST_FUNCTIONS) if use_weights else len(NIST_FUNCTIONS))) * 100), 100),
+                    text=f"{p}: {pr_totals[p]}")
+
+# (Optional) expose the matrix for downstream logic or exporting
+# You can store it in session_state if you want to use it later:
+st.session_state["nist_principle_matrix"] = matrix_state
+st.session_state["nist_totals_by_function"] = fn_totals
+st.session_state["principle_totals"] = pr_totals
+
 # ---------- 4) Institutional & Governance Constraints ----------
 st.markdown("### 4) Institutional & Governance Constraints")
 constraints = st.multiselect("Select constraints relevant to this scenario", GOV_CONSTRAINTS, default=pd_defaults.get("constraints", []))
