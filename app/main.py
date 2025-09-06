@@ -145,6 +145,43 @@ def score_tension(selected_principles, selected_nist, constraints, stakeholders,
     base += 4 * len(values)
     return min(base, 100)
 
+# ---------- NEW: conflicts KB + small render helpers (added for Ethical Evaluation visuals) ----------
+CONFLICTS_BY_SCENARIO = {
+    "Baltimore Ransomware Attack": [
+        ("Service continuity", "Data integrity", "Restoring services quickly vs. validating integrity and forensics depth", 70),
+        ("Transparency", "Operational confidentiality", "Public updates vs. not tipping off threat actors or harming recovery", 60),
+        ("Equity/Justice", "Efficiency", "Prioritizing vulnerable services/neighborhoods vs. fastest overall restoration", 55),
+    ],
+    "San Diego Smart Streetlights and Surveillance": [
+        ("Privacy", "Public safety", "Limiting secondary use of sensors vs. using data for investigations", 75),
+        ("Transparency", "Operational confidentiality", "Open policies and audit trails vs. investigative sensitivity", 60),
+        ("Autonomy/Consent", "Oversight", "Community consent and control vs. centralized governance actions", 55),
+    ],
+    "Riverton AI-Enabled Threat": [
+        ("Safety/Continuity", "Autonomy/Explicability", "Automated control for rapid stabilization vs. explainable, human-led decisions", 70),
+        ("Short-term fix", "Long-term reliability", "Disable or hot-patch the AI now vs. robust retraining/assurance", 65),
+        ("Vendor opacity", "Public accountability", "Proprietary constraints vs. documentation and external review", 60),
+    ],
+}
+
+def render_dumbbell(left_label: str, right_label: str, pct: int) -> str:
+    pct = max(0, min(int(pct), 100))
+    return f"""
+    <div style="margin:8px 0;">
+      <div style="display:flex;justify-content:space-between;font-size:0.9rem;margin-bottom:4px;">
+        <span><b>{left_label}</b></span><span><b>{right_label}</b></span>
+      </div>
+      <div style="position:relative;height:10px;background:linear-gradient(90deg,#5c6bc0,#42a5f5);border-radius:6px;">
+        <div style="position:absolute;left:{pct}%;top:-6px;transform:translateX(-50%);width:0;height:0;
+          border-left:6px solid transparent;border-right:6px solid transparent;border-top:10px solid #ffffff;"></div>
+      </div>
+      <div style="text-align:center;color:#999;font-size:0.8rem;margin-top:4px;">Balance point: {pct}% toward “{right_label if pct>=50 else left_label}”</div>
+    </div>
+    """
+
+def conflicts_table_rows(conflicts):
+    return [{"Value A": a, "Value B": b, "Why it matters here": note} for (a, b, note, _pct) in conflicts]
+
 # ---------- Sidebar ----------
 st.sidebar.header("Options")
 mode = st.sidebar.radio("Mode", ["Thesis scenarios", "Open-ended"])
@@ -164,7 +201,7 @@ with st.expander("About this prototype"):
     st.markdown(
         """
 - **Purpose:** Support municipal cybersecurity practitioners in navigating complex ethical dilemmas. This tool is designed to guide users through high-stakes decisions in real time - aligning actions with technical standards, clarifying value conflicts, and documenting justifiable outcomes under institutional and governance constraints.  
-- **Backbone:** This prototype draws on the NIST Cybersecurity Framework, guiding users through six core functions: Govern, Identify, Protect, Detect, Respond, and Recover. These are integrated with Principlist ethical values: Beneficence, Non-maleficence, Autonomy, Justice, and Explicability - to help users weigh trade-offs and make morally defensible decisions.  
+- **Backbone:** This prototype draws on the NIST Cybersecurity Framework, guiding users through six core functions: Govern, Identity, Protect, Detect, Respond, and Recover. These are integrated with Principlist ethical values: Beneficence, Non-maleficence, Autonomy, Justice, and Explicability - to help ussers weigh trade-offs and make morally  defensible decisions.  
 - **Context:** Designed specifically for municipal use, the prototype accounts for real-world constraints like limited budgets, fragmented authority, and vendor opacity. It supports ethical decision-making within these practical and political realities. 
         """
     )
@@ -242,6 +279,29 @@ def scenario_csfs_explanations(incident_text: str) -> dict:
 
 scenario_tips = scenario_csfs_explanations(description)
 
+# NEW: Technical tensions list (renders under Technical Evaluation)
+TECH_TENSIONS = {
+    "Baltimore Ransomware Attack": [
+        "Protect (PR): Safeguarding backups vs. resource constraints",
+        "Respond (RS): Isolating systems vs. risk of disrupting critical services",
+        "Recover (RC): Speed of restoration vs. assurance of data integrity"
+    ],
+    "San Diego Smart Streetlights and Surveillance": [
+        "Govern (GV): Repurposing technology vs. lack of clear oversight",
+        "Identify (ID): Mapping affected data vs. limited transparency",
+        "Protect (PR): Enforcing access controls vs. vendor limitations"
+    ],
+    "Riverton AI-Enabled Threat": [
+        "Identify (ID): Assessing AI dependencies vs. time pressure",
+        "Detect (DE): Monitoring adversarial behavior vs. opaque vendor systems",
+        "Respond (RS): Disable AI system vs. attempt risky live retraining"
+    ]
+}
+
+st.markdown("**Technical tensions in this scenario:**")
+for t in TECH_TENSIONS.get(scenario, []):
+    st.markdown(f"- {t}")
+
 # ---- DIFFERENT LOOK for the six NIST accordions (not the About expander)
 st.markdown("""
 <style>
@@ -301,6 +361,27 @@ Relevant principles are highlighted for each scenario, making value tensions exp
 so that technical standards (via the NIST CSF) are always considered in light of 
 ethical reasoning.
     """)
+
+# NEW: Ethical tensions list (renders under Ethical Evaluation)
+ETHICAL_TENSIONS = {
+    "Baltimore Ransomware Attack": [
+        "Justice vs. Non-maleficence: Fairness of paying ransom vs. risk of future harm",
+        "Beneficence vs. Integrity: Restoring services quickly vs. long-term resilience"
+    ],
+    "San Diego Smart Streetlights and Surveillance": [
+        "Privacy vs. Public Safety: Limiting surveillance vs. supporting law enforcement",
+        "Autonomy vs. Oversight: Community consent vs. centralized governance"
+    ],
+    "Riverton AI-Enabled Threat": [
+        "Safety vs. Autonomy: Automated control vs. human explainability",
+        "Short-term Security vs. Long-term Trust: Quick fixes vs. sustainable accountability"
+    ]
+}
+
+st.markdown("**Ethical tensions in this scenario:**")
+for e in ETHICAL_TENSIONS.get(scenario, []):
+    st.markdown(f"- {e}")
+
 # Auto-suggested principles (read-only in Thesis mode; editable in Open-ended)
 auto_principles = suggest_principles(description)
 if mode == "Thesis scenarios":
@@ -315,6 +396,18 @@ if mode == "Thesis scenarios":
 else:
     st.markdown("#### Suggested ethical principles for this scenario (editable in Open-ended mode)")
     selected_principles = st.multiselect("", PRINCIPLES, default=auto_principles)
+
+# ---------- NEW: Hybrid trade-off visual + table (read-only in Thesis mode) ----------
+st.markdown("#### Key value trade-offs for this scenario")
+conflicts = CONFLICTS_BY_SCENARIO.get(scenario, [])
+if conflicts:
+    for (a, b, note, pct) in conflicts:
+        st.markdown(render_dumbbell(a, b, pct), unsafe_allow_html=True)
+        st.caption(note)
+    st.markdown("**Summary of trade-offs**")
+    st.table(conflicts_table_rows(conflicts))
+else:
+    st.info("No predefined value conflicts for this scenario.")
 
 # ---------- 3a) NIST × Principlist Matrix ----------
 st.markdown("### 3a) NIST × Principlist Matrix")
@@ -404,15 +497,13 @@ colA, colB = st.columns(2)
 with colA:
     st.markdown("**Totals by NIST function**")
     for fn in NIST_FUNCTIONS:
-        denom = 5*len(PRINCIPLES) if use_weights else len(PRINCIPLES)
-        pct = min(int((fn_totals[fn] / denom) * 100), 100)
-        st.progress(pct, text=f"{fn}: {fn_totals[fn]}")
+        st.progress(min(int((fn_totals[fn] / (5*len(PRINCIPLES) if use_weights else len(PRINCIPLES))) * 100), 100),
+                    text=f"{fn}: {fn_totals[fn]}")
 with colB:
     st.markdown("**Totals by Ethical principle**")
     for p in PRINCIPLES:
-        denom = 5*len(NIST_FUNCTIONS) if use_weights else len(NIST_FUNCTIONS)
-        pct = min(int((pr_totals[p] / denom) * 100), 100)
-        st.progress(pct, text=f"{p}: {pr_totals[p]}")
+        st.progress(min(int((pr_totals[p] / (5*len(NIST_FUNCTIONS) if use_weights else len(NIST_FUNCTIONS))) * 100), 100),
+                    text=f"{p}: {pr_totals[p]}")
 
 # (Optional) expose the matrix for downstream logic or exporting
 st.session_state["nist_principle_matrix"] = matrix_state
