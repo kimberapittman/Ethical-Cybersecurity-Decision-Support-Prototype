@@ -302,28 +302,6 @@ st.markdown("**Technical tensions in this scenario:**")
 for t in TECH_TENSIONS.get(scenario, []):
     st.markdown(f"- {t}")
 
-# ---- DIFFERENT LOOK for the six NIST accordions (not the About expander)
-st.markdown("""
-<style>
-/* Only style the custom wrapper below so the About expander stays default */
-.nist-accordions details {
-  border: 1px solid #4C8BF5;
-  border-radius: 10px;
-  background: #F7FAFF;
-  margin: 8px 0;
-  padding: 2px 0;
-}
-.nist-accordions summary {
-  font-weight: 600;
-  color: #1E3A8A;
-}
-.nist-accordions details[open] {
-  background: #EFF6FF;
-  border-color: #3B82F6;
-}
-</style>
-""", unsafe_allow_html=True)
-
 selected_nist = []
 st.markdown("<div class='nist-accordions'>", unsafe_allow_html=True)
 for fn in NIST_FUNCTIONS:
