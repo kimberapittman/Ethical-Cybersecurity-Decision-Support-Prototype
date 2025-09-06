@@ -360,21 +360,6 @@ st.markdown("**Ethical tensions in this scenario:**")
 for e in ETHICAL_TENSIONS.get(scenario, []):
     st.markdown(f"- {e}")
 
-# Auto-suggested principles (read-only in Thesis mode; editable in Open-ended)
-auto_principles = suggest_principles(description)
-if mode == "Thesis scenarios":
-    def pchip(name: str, active: bool) -> str:
-        if active:
-            return f"<span style='display:inline-block;padding:4px 10px;margin:3px;border-radius:12px;border:1px solid #0c6cf2;background:#e8f0fe;'>{name} ✓</span>"
-        else:
-            return f"<span style='display:inline-block;padding:4px 10px;margin:3px;border-radius:12px;border:1px solid #ccc;background:#f7f7f7;opacity:0.7'>{name}</span>"
-    principle_chips = " ".join([pchip(p, p in auto_principles) for p in PRINCIPLES])
-    st.markdown(principle_chips, unsafe_allow_html=True)
-    selected_principles = auto_principles[:]
-else:
-    st.markdown("#### Suggested ethical principles for this scenario (editable in Open-ended mode)")
-    selected_principles = st.multiselect("", PRINCIPLES, default=auto_principles)
-
 # ---------- 3a) NIST × Principlist Matrix ----------
 st.markdown("### 3a) NIST × Principlist Matrix")
 
