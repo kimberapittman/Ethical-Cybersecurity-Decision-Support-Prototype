@@ -335,21 +335,16 @@ st.divider()
 
 # ---------- 4) Decision-Support Matrix ----------
 st.markdown("### 4) Decision-Support Matrix")
-with st.expander("What is this matrix?"):
+with st.expander("What this matrix does"):
     st.markdown("""
-This matrix is a **decision-support tool** that combines the NIST Cybersecurity Framework (technical standards) 
-with the Principlist Framework (ethical reasoning). It highlights where **technical actions and ethical principles intersect** in a given scenario.  
+The matrix is designed to help practitioners **consider technical and ethical dimensions together** when making high-stakes cybersecurity decisions.  
 
-- **Rows** = NIST CSF functions, representing the *technical steps and responsibilities*.  
-- **Columns** = Principlist ethical principles, representing the *moral values at stake*.  
-- **Cells** = Points of overlap where a technical function raises or impacts a specific ethical concern.  
+- **Rows = NIST CSF functions** — the technical steps needed to manage the incident.  
+- **Columns = Principlist ethical principles** — the values that should guide how those steps are carried out.  
+- **Cells = points of integration** — reminders to ensure that each technical action is considered in light of relevant ethical principles.  
 
-By mapping these intersections, the matrix helps practitioners:  
-- Identify **where value conflicts emerge** in technical actions.  
-- Ensure **ethical reasoning is embedded in technical decisions**.  
-- Create a **structured, transparent record** of why certain actions were prioritized.  
+This approach does not assume conflict between technical and ethical concerns. Instead, it ensures **completeness of reasoning**, so that municipal practitioners act in ways that are both technically sound and ethically defensible under real-world constraints.  
     """)
-use_weights = st.toggle("Use 0–5 weighting instead of checkboxes", value=False, key="mx_use_weights")
 
 PREHIGHLIGHT = {
     "Baltimore Ransomware Attack": [
