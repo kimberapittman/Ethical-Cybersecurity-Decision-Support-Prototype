@@ -4,6 +4,14 @@ from datetime import datetime
 # ---------- Page config ----------
 st.set_page_config(page_title="Municipal Ethical Cyber Decision-Support", layout="wide", initial_sidebar_state="expanded")
 
+# ---------- Minimal styling for list emphasis & readability (NEW, cosmetic only) ----------
+st.markdown("""
+<style>
+.listbox{background:#f9fbff;border-left:4px solid #4C8BF5;padding:10px 14px;border-radius:8px;margin:6px 0 14px;}
+.section-note{color:#6b7280;font-size:0.9rem;margin:-4px 0 10px 0;}
+</style>
+""", unsafe_allow_html=True)
+
 # ---------- NIST CSF 2.0 constants ----------
 NIST_FUNCTIONS = [
     "Govern (GV)",
@@ -188,6 +196,8 @@ with st.expander("About this prototype"):
         """
     )
 
+st.divider()
+
 # ---------- 1) Scenario overview ----------
 scenario = st.selectbox("Choose a Municipal Cybersecurity Scenario", options=list(scenario_summaries.keys()))
 st.markdown("### 1) Scenario Overview")
@@ -196,6 +206,8 @@ st.markdown(f"**Scenario Overview:** {scenario_summaries[scenario]}")
 incident_type = scenario
 description = scenario_summaries[scenario]
 pd_defaults = dict(description="", stakeholders=[], values=[], constraints=[])
+
+st.divider()
 
 # ---------- 2) Technical Evaluation (NIST CSF) ----------
 st.markdown("### 2) Technical Evaluation (NIST CSF)")
@@ -251,14 +263,17 @@ def scenario_csfs_explanations(incident_text: str) -> dict:
 
 scenario_tips = scenario_csfs_explanations(description)
 
-# ---- NEW BULLET LIST STYLE (mirrors ethical tensions section)
-st.markdown("#### Technical considerations in this scenario")
+# ---- NEW BULLET LIST STYLE (mirrors ethical tensions section) ----
+st.markdown("#### Scenario-specific technical considerations")
+st.caption("What the CSF suggests focusing on for this case.")
 if mode == "Thesis scenarios":
     selected_nist = suggested_nist[:]
+    tech_list_md = []
     for fn in NIST_FUNCTIONS:
         mark = "✓ " if fn in suggested_nist else ""
         tip = scenario_tips.get(fn, "—")
-        st.markdown(f"- **{fn}** {mark} — {tip}")
+        tech_list_md.append(f"- **{fn}** {mark} — {tip}")
+    st.markdown(f"<div class='listbox'>{chr(10).join(tech_list_md)}</div>", unsafe_allow_html=True)
 else:
     selected_nist = []
     cols_fn = st.columns(3)
@@ -268,6 +283,8 @@ else:
             if checked:
                 selected_nist.append(fn)
             st.caption(scenario_tips.get(fn, "—"))
+
+st.divider()
 
 # ---------- 3) Ethical Evaluation (Principlist) ----------
 st.markdown("### 3) Ethical Evaluation (Principlist)")
@@ -299,17 +316,21 @@ else:
 
 # ---------- Ethical tensions in this scenario (UPDATED to show Principlist terms) ----------
 st.markdown("#### Ethical tensions in this scenario")
+st.caption("Key value trade-offs framed in Principlist terms.")
 tensions = ETHICAL_TENSIONS_BY_SCENARIO.get(scenario, [])
 if tensions:
+    lines = []
     for label, tags in tensions:
         tag_str = ", ".join(tags) if tags else "—"
-        st.markdown(f"- {label}  \n  *Principlist lens:* _{tag_str}_")
+        lines.append(f"- {label}  \n  *Principlist lens:* _{tag_str}_")
+    st.markdown(f"<div class='listbox'>{chr(10).join(lines)}</div>", unsafe_allow_html=True)
 else:
     st.info("No predefined ethical tensions for this scenario.")
 
+st.divider()
+
 # ---------- 3a) NIST × Principlist Matrix ----------
 st.markdown("### 3a) NIST × Principlist Matrix")
-
 with st.expander("What is this matrix?"):
     st.markdown("""
 This matrix helps **integrate technical and ethical reasoning**.  
@@ -395,9 +416,13 @@ st.session_state["nist_principle_matrix"] = matrix_state
 st.session_state["nist_totals_by_function"] = fn_totals
 st.session_state["principle_totals"] = pr_totals
 
+st.divider()
+
 # ---------- 4) Institutional & Governance Constraints ----------
 st.markdown("### 4) Institutional & Governance Constraints")
 constraints = st.multiselect("Select constraints relevant to this scenario", GOV_CONSTRAINTS, default=pd_defaults.get("constraints", []))
+
+st.divider()
 
 # ---------- 5) Ethical Tension Score ----------
 st.markdown("### 5) Ethical Tension Score")
