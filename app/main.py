@@ -9,6 +9,9 @@ st.markdown("""
 <style>
 .listbox{background:#f9fbff;border-left:4px solid #4C8BF5;padding:10px 14px;border-radius:8px;margin:6px 0 14px;}
 .section-note{color:#6b7280;font-size:0.9rem;margin:-4px 0 10px 0;}
+.tight-list{margin:0.25rem 0 0 1.15rem;padding:0;}
+.tight-list li{margin:6px 0;}
+.sub{color:#6b7280;font-size:0.95rem;}
 </style>
 """, unsafe_allow_html=True)
 
@@ -153,7 +156,7 @@ def score_tension(selected_principles, selected_nist, constraints, stakeholders,
     base += 4 * len(values)
     return min(base, 100)
 
-# ---------- ETHICAL TENSIONS mapped to Principlist (NEW tagging only; rest unchanged) ----------
+# ---------- ETHICAL TENSIONS mapped to Principlist ----------
 ETHICAL_TENSIONS_BY_SCENARIO = {
     "Baltimore Ransomware Attack": [
         ("Paying ransom vs. refusing payment (service restoration speed vs. long-term harm/precedent)", ["Justice", "Non-maleficence", "Beneficence"]),
@@ -268,12 +271,13 @@ st.markdown("#### Technical considerations in this scenario")
 st.caption("What the CSF suggests focusing on for this case.")
 if mode == "Thesis scenarios":
     selected_nist = suggested_nist[:]
-    tech_list_md = []
+    # Build clean <ul><li> list for readability
+    items = []
     for fn in NIST_FUNCTIONS:
-        mark = "✓ " if fn in suggested_nist else ""
+        mark = " ✓" if fn in suggested_nist else ""
         tip = scenario_tips.get(fn, "—")
-        tech_list_md.append(f"- **{fn}** {mark} — {tip}")
-    st.markdown(f"<div class='listbox'>{chr(10).join(tech_list_md)}</div>", unsafe_allow_html=True)
+        items.append(f"<li><b>{fn}</b>{mark} — {tip}</li>")
+    st.markdown(f"<div class='listbox'><ul class='tight-list'>{''.join(items)}</ul></div>", unsafe_allow_html=True)
 else:
     selected_nist = []
     cols_fn = st.columns(3)
@@ -319,11 +323,11 @@ st.markdown("#### Ethical tensions in this scenario")
 st.caption("Key value trade-offs framed in Principlist terms.")
 tensions = ETHICAL_TENSIONS_BY_SCENARIO.get(scenario, [])
 if tensions:
-    lines = []
+    items = []
     for label, tags in tensions:
         tag_str = ", ".join(tags) if tags else "—"
-        lines.append(f"- {label}  \n  *Principlist lens:* _{tag_str}_")
-    st.markdown(f"<div class='listbox'>{chr(10).join(lines)}</div>", unsafe_allow_html=True)
+        items.append(f"<li>{label}<div class='sub'>Principlist lens: <i>{tag_str}</i></div></li>")
+    st.markdown(f"<div class='listbox'><ul class='tight-list'>{''.join(items)}</ul></div>", unsafe_allow_html=True)
 else:
     st.info("No predefined ethical tensions for this scenario.")
 
