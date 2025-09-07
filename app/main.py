@@ -333,7 +333,7 @@ else:
 
 st.divider()
 
-# ---------- 3a) NIST × Principlist Matrix ----------
+# ---------- 4) Decision-Support Matrix ----------
 st.markdown("### 3a) NIST × Principlist Matrix")
 with st.expander("What is this matrix?"):
     st.markdown("""
