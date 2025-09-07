@@ -268,7 +268,7 @@ scenario_tips = scenario_csfs_explanations(description)
 
 # ---- NEW BULLET LIST STYLE (mirrors ethical tensions section) ----
 st.markdown("#### Technical considerations in this scenario")
-st.caption("What the CSF suggests focusing on for this case.")
+st.caption("What the NIST CSF suggests focusing on for this case.")
 if mode == "Thesis scenarios":
     selected_nist = suggested_nist[:]
     # Build clean <ul><li> list for readability
@@ -320,7 +320,7 @@ else:
 
 # ---------- Ethical tensions in this scenario (UPDATED to show Principlist terms) ----------
 st.markdown("#### Ethical tensions in this scenario")
-st.caption("Key value trade-offs framed in Principlist terms.")
+st.caption("Key value trade-offs in this case framed in Principlist terms.")
 tensions = ETHICAL_TENSIONS_BY_SCENARIO.get(scenario, [])
 if tensions:
     items = []
