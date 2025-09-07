@@ -148,7 +148,6 @@ def score_tension(selected_principles, selected_nist, constraints, stakeholders,
 # ---------- ETHICAL TENSIONS mapped to Principlist (NEW tagging only; rest unchanged) ----------
 ETHICAL_TENSIONS_BY_SCENARIO = {
     "Baltimore Ransomware Attack": [
-        # (label, principlist_tags)
         ("Paying ransom vs. refusing payment (service restoration speed vs. long-term harm/precedent)", ["Justice", "Non-maleficence", "Beneficence"]),
         ("Public transparency vs. operational confidentiality during recovery", ["Explicability", "Non-maleficence"]),
         ("Prioritizing restoration by critical services vs. equal treatment across departments", ["Justice", "Beneficence"]),
@@ -223,7 +222,7 @@ Framework) is grounded in recognized technical standards.
 # Suggested functions
 suggested_nist = suggest_nist(incident_type, description)
 
-# Function definitions for quick reference inside each accordion
+# Function definitions for quick reference (kept for context if needed later)
 NIST_DEFS = {
     "Govern (GV)": "Establish oversight, roles, policies, and decision rights.",
     "Identify (ID)": "Understand assets, risks, and critical services.",
@@ -262,44 +261,14 @@ def scenario_csfs_explanations(incident_text: str) -> dict:
 
 scenario_tips = scenario_csfs_explanations(description)
 
-# ---- DIFFERENT LOOK for the six NIST accordions (not the About expander)
-st.markdown("""
-<style>
-/* Only style the custom wrapper below so the About expander stays default */
-.nist-accordions details {
-  border: 1px solid #4C8BF5;
-  border-radius: 10px;
-  background: #F7FAFF;
-  margin: 8px 0;
-  padding: 2px 0;
-}
-.nist-accordions summary {
-  font-weight: 600;
-  color: #1E3A8A;
-}
-.nist-accordions details[open] {
-  background: #EFF6FF;
-  border-color: #3B82F6;
-}
-</style>
-""", unsafe_allow_html=True)
-
-selected_nist = []
-st.markdown("<div class='nist-accordions'>", unsafe_allow_html=True)
+# --- NEW: Bullet list rendering of all six NIST functions (no accordions) ---
+st.markdown("#### Scenario-specific technical highlights")
+# Keep selection logic stable for downstream scoring
+selected_nist = suggested_nist[:]
 for fn in NIST_FUNCTIONS:
-    suggested = fn in suggested_nist
-    with st.expander(f"{fn} {'✓' if suggested else ''}", expanded=False):
-        st.markdown(f"**Definition:** {NIST_DEFS.get(fn, '')}")
-        if mode == "Thesis scenarios":
-            st.markdown(f"**How it applies in this scenario:** {scenario_tips.get(fn, '—')}")
-            if suggested:
-                selected_nist.append(fn)
-        else:
-            mark = st.checkbox(f"Mark {fn} as relevant", value=suggested, key=f"chk_{fn}")
-            note = st.text_area(f"How {fn} applies here", value=scenario_tips.get(fn, ""), key=f"ta_{fn}")
-            if mark:
-                selected_nist.append(fn)
-st.markdown("</div>", unsafe_allow_html=True)
+    mark = "✓ " if fn in suggested_nist else ""
+    tip = scenario_tips.get(fn, "—")
+    st.markdown(f"- **{fn}** {mark} — {tip}")
 
 # ---------- 3) Ethical Evaluation (Principlist) ----------
 st.markdown("### 3) Ethical Evaluation (Principlist)")
