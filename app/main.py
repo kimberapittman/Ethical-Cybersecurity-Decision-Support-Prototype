@@ -337,15 +337,18 @@ st.divider()
 st.markdown("### 4) Decision-Support Matrix")
 with st.expander("What is this matrix?"):
     st.markdown("""
-This matrix helps **integrate technical and ethical reasoning**.  
-- **Rows = NIST CSF functions** (GV/ID/PR/DE/RS/RC)  
-- **Columns = Principlist ethical principles**  
-- **Cells = relevance** of a principle to a function in this case.
+This matrix is a **decision-support tool** that combines the NIST Cybersecurity Framework (technical standards) 
+with the Principlist Framework (ethical reasoning). It highlights where **technical actions and ethical principles intersect** in a given scenario.  
 
-**Thesis scenarios:** cells may be pre-selected to reflect your case analysis.  
-**Open-ended:** practitioners can select or weight cells in real time.
+- **Rows** = NIST CSF functions, representing the *technical steps and responsibilities*.  
+- **Columns** = Principlist ethical principles, representing the *moral values at stake*.  
+- **Cells** = Points of overlap where a technical function raises or impacts a specific ethical concern.  
+
+By mapping these intersections, the matrix helps practitioners:  
+- Identify **where value conflicts emerge** in technical actions.  
+- Ensure **ethical reasoning is embedded in technical decisions**.  
+- Create a **structured, transparent record** of why certain actions were prioritized.  
     """)
-
 use_weights = st.toggle("Use 0–5 weighting instead of checkboxes", value=False, key="mx_use_weights")
 
 PREHIGHLIGHT = {
