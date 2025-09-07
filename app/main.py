@@ -6,7 +6,6 @@ st.set_page_config(page_title="Municipal Ethical Cyber Decision-Support", layout
 
 # ---------- NIST CSF 2.0 constants ----------
 NIST_FUNCTIONS = [
-    "Govern (GV)",
     "Identify (ID)",
     "Protect (PR)",
     "Detect (DE)",
@@ -16,12 +15,12 @@ NIST_FUNCTIONS = [
 
 # ---------- Simple rule-based NLP helpers (no external deps) ----------
 NIST_KB = {
-    "ransomware": ["Govern (GV)", "Identify (ID)", "Protect (PR)", "Detect (DE)", "Respond (RS)", "Recover (RC)"],
-    "phishing":   ["Govern (GV)", "Protect (PR)", "Detect (DE)", "Respond (RS)", "Recover (RC)"],
-    "unauthorized access": ["Govern (GV)", "Detect (DE)", "Respond (RS)", "Recover (RC)", "Identify (ID)"],
-    "data breach": ["Govern (GV)", "Identify (ID)", "Protect (PR)", "Detect (DE)", "Respond (RS)", "Recover (RC)"],
-    "surveillance": ["Govern (GV)", "Identify (ID)", "Protect (PR)", "Respond (RS)"],
-    "ai-enabled": ["Govern (GV)", "Identify (ID)", "Detect (DE)", "Respond (RS)", "Recover (RC)"]
+    "ransomware": ["Identify (ID)", "Protect (PR)", "Detect (DE)", "Respond (RS)", "Recover (RC)"],
+    "phishing":   ["Protect (PR)", "Detect (DE)", "Respond (RS)", "Recover (RC)"],
+    "unauthorized access": ["Detect (DE)", "Respond (RS)", "Recover (RC)", "Identify (ID)"],
+    "data breach": ["Identify (ID)", "Protect (PR)", "Detect (DE)", "Respond (RS)", "Recover (RC)"],
+    "surveillance": ["Identify (ID)", "Protect (PR)", "Respond (RS)"],
+    "ai-enabled": ["Identify (ID)", "Detect (DE)", "Respond (RS)", "Recover (RC)"]
 }
 
 ETHICAL_HINTS = {
@@ -50,14 +49,6 @@ GOV_CONSTRAINTS = [
 
 # ---------- NIST CSF 2.0 action examples ----------
 NIST_ACTIONS = {
-    "Govern (GV)": [
-        "Affirm decision rights, RACI, and escalation paths",
-        "Activate risk governance: convene cross-dept incident steering group",
-        "Ensure policies for privacy, surveillance use, and AI are applied only with due process",
-        "Require procurement/vendor transparency (SBOMs, data handling, model cards)",
-        "Coordinate with oversight bodies and document rationale",
-        "Mandate equity impact check and mitigations",
-    ],
     "Identify (ID)": [
         "Confirm critical assets and services",
         "Establish incident objectives and scope",
@@ -145,47 +136,42 @@ def score_tension(selected_principles, selected_nist, constraints, stakeholders,
     base += 4 * len(values)
     return min(base, 100)
 
-# ---------- Ethical tensions by scenario (added back) ----------
+# ---------- Ethical tensions mapped to Principlist (NEW) ----------
 ETHICAL_TENSIONS_BY_SCENARIO = {
     "Baltimore Ransomware Attack": [
-        "Paying ransom vs. maintaining public trust and long-term resilience",
-        "Rapid service restoration vs. data integrity/forensics preservation",
-        "Equity in service recovery across neighborhoods",
-        "Transparency with residents vs. operational confidentiality"
+        ("Pay ransom vs. refuse to pay",
+         "Restoring services quickly versus avoiding rewarding criminal behavior.",
+         ["Beneficence", "Justice", "Non-maleficence"]),
+        ("Transparency vs. operational confidentiality",
+         "Clear public comms versus withholding sensitive details that could worsen harm.",
+         ["Explicability", "Non-maleficence"]),
+        ("Speed of restoration vs. integrity/forensics",
+         "Rapid service return versus thorough integrity checks and evidence preservation.",
+         ["Beneficence", "Explicability", "Non-maleficence"])
     ],
     "San Diego Smart Streetlights and Surveillance": [
-        "Public safety support vs. residents’ privacy and autonomy",
-        "Secondary use of data vs. original consent and purpose limitation",
-        "Operational secrecy vs. transparency and explainability",
-        "Centralized control vs. community oversight and accountability"
+        ("Public safety investigations vs. privacy",
+         "Using sensor data for investigations versus limiting secondary use without consent.",
+         ["Beneficence", "Autonomy", "Justice"]),
+        ("Expediency vs. democratic oversight",
+         "Operational efficiency versus robust public process and accountable governance.",
+         ["Justice", "Explicability", "Autonomy"]),
+        ("Data retention/repurposing vs. minimization",
+         "Retaining/repurposing data for broader uses versus collecting the minimum necessary.",
+         ["Non-maleficence", "Autonomy", "Explicability"])
     ],
     "Riverton AI-Enabled Threat": [
-        "Safety-first automation vs. human autonomy and explainability",
-        "Short-term containment vs. long-term reliability and assurance",
-        "Vendor opacity vs. public accountability and documentation",
-        "Equity in service continuity for vulnerable populations"
-    ]
+        ("Automated stabilization vs. human control",
+         "Fast AI-driven control versus explainable, human-led decisions.",
+         ["Beneficence", "Autonomy", "Explicability"]),
+        ("Hot-fix now vs. rigorous retraining",
+         "Immediate mitigation versus building long-term reliability and assurance.",
+         ["Non-maleficence", "Beneficence", "Explicability"]),
+        ("Vendor opacity vs. public accountability",
+         "Proprietary constraints versus documentation and transparent review.",
+         ["Explicability", "Justice"])
+    ],
 }
-
-# ---------- NEW: conflicts KB helpers were removed per your request ----------
-
-def render_dumbbell(left_label: str, right_label: str, pct: int) -> str:
-    pct = max(0, min(int(pct), 100))
-    return f"""
-    <div style="margin:8px 0;">
-      <div style="display:flex;justify-content:space-between;font-size:0.9rem;margin-bottom:4px;">
-        <span><b>{left_label}</b></span><span><b>{right_label}</b></span>
-      </div>
-      <div style="position:relative;height:10px;background:linear-gradient(90deg,#5c6bc0,#42a5f5);border-radius:6px;">
-        <div style="position:absolute;left:{pct}%;top:-6px;transform:translateX(-50%);width:0;height:0;
-          border-left:6px solid transparent;border-right:6px solid transparent;border-top:10px solid #ffffff;"></div>
-      </div>
-      <div style="text-align:center;color:#999;font-size:0.8rem;margin-top:4px;">Balance point: {pct}% toward “{right_label if pct>=50 else left_label}”</div>
-    </div>
-    """
-
-def conflicts_table_rows(conflicts):
-    return [{"Value A": a, "Value B": b, "Why it matters here": note} for (a, b, note, _pct) in conflicts]
 
 # ---------- Sidebar ----------
 st.sidebar.header("Options")
@@ -206,8 +192,8 @@ with st.expander("About this prototype"):
     st.markdown(
         """
 - **Purpose:** Support municipal cybersecurity practitioners in navigating complex ethical dilemmas. This tool is designed to guide users through high-stakes decisions in real time - aligning actions with technical standards, clarifying value conflicts, and documenting justifiable outcomes under institutional and governance constraints.  
-- **Backbone:** This prototype draws on the NIST Cybersecurity Framework, guiding users through six core functions: Govern, Identity, Protect, Detect, Respond, and Recover. These are integrated with Principlist ethical values: Beneficence, Non-maleficence, Autonomy, Justice, and Explicability - to help ussers weigh trade-offs and make morally  defensible decisions.  
-- **Context:** Designed specifically for municipal use, the prototype accounts for real-world constraints like limited budgets, fragmented authority, and vendor opacity. It supports ethical decision-making within these practical and political realities. 
+- **Backbone:** This prototype draws on the NIST Cybersecurity Framework functions (ID/PR/DE/RS/RC) integrated with Principlist ethical values—Beneficence, Non-maleficence, Autonomy, Justice, and Explicability—so practitioners can weigh trade-offs and make defensible decisions.  
+- **Context:** Built for municipal realities: limited budgets, fragmented authority, vendor opacity, and high public accountability. 
         """
     )
 
@@ -224,42 +210,23 @@ pd_defaults = dict(description="", stakeholders=[], values=[], constraints=[])
 st.markdown("### 2) Technical Evaluation (NIST CSF)")
 with st.expander("About the NIST CSF"):
     st.markdown("""
-The **NIST Cybersecurity Framework (CSF) 2.0** is a risk-based framework created by the 
-National Institute of Standards and Technology to help organizations manage and reduce 
-cybersecurity risks. It is organized into six core functions, which together provide a 
-comprehensive approach to managing cyber risk:
+The **NIST Cybersecurity Framework (CSF) 2.0** provides the technical backbone for this prototype.
+We focus on five operational functions:
 
-- **Govern (GV):** Establish and communicate organizational context, roles, policies, and oversight for managing cybersecurity risk.  
-- **Identify (ID):** Develop an organizational understanding of systems, people, assets, data, and capabilities to manage risk.  
-- **Protect (PR):** Develop and implement safeguards to ensure delivery of critical services.  
-- **Detect (DE):** Develop and implement activities to identify the occurrence of a cybersecurity event.  
-- **Respond (RS):** Take appropriate action regarding a detected cybersecurity incident.  
-- **Recover (RC):** Maintain plans for resilience and restore capabilities impaired by incidents.  
-
-In this prototype, the CSF provides the **technical backbone**.  
-Relevant CSF functions are highlighted for each scenario, and notes explain how they 
-apply in that specific situation—ensuring that ethical reasoning (via the Principlist 
-Framework) is grounded in recognized technical standards.
+- **Identify (ID):** Understand assets, risks, and critical services.  
+- **Protect (PR):** Safeguard systems, data, and services against threats.  
+- **Detect (DE):** Monitor and discover anomalous events quickly.  
+- **Respond (RS):** Contain and manage active incidents and communications.  
+- **Recover (RC):** Restore capabilities and improve resilience post-incident.  
     """)
 
 # Suggested functions
 suggested_nist = suggest_nist(incident_type, description)
 
-# Function definitions for quick reference inside each accordion
-NIST_DEFS = {
-    "Govern (GV)": "Establish oversight, roles, policies, and decision rights.",
-    "Identify (ID)": "Understand assets, risks, and critical services.",
-    "Protect (PR)": "Safeguard systems, data, and services against threats.",
-    "Detect (DE)": "Monitor and discover anomalous events quickly.",
-    "Respond (RS)": "Contain and manage active incidents and communications.",
-    "Recover (RC)": "Restore capabilities and improve resilience post-incident."
-}
-
 # Per-scenario “how it applies” notes
 def scenario_csfs_explanations(incident_text: str) -> dict:
     t = incident_text.lower()
     notes = {
-        "Govern (GV)": "Clarify decision rights, escalation, and documentation duties for this scenario.",
         "Identify (ID)": "Confirm critical services, impacted assets, and risk to residents for this scenario.",
         "Protect (PR)": "Harden access, backups, and sensitive data paths most relevant here.",
         "Detect (DE)": "Tighten monitoring for IOCs and adjacent systems implicated in this scenario.",
@@ -271,7 +238,6 @@ def scenario_csfs_explanations(incident_text: str) -> dict:
         notes["Respond (RS)"] = "Isolate infected hosts, evaluate ransom stance, coordinate comms and legal."
         notes["Recover (RC)"] = "Prioritize restoration of city services; validate from clean backups."
     if "surveillance" in t or "streetlight" in t:
-        notes["Govern (GV)"] = "Ensure policy/oversight and due process around repurposing technology."
         notes["Identify (ID)"] = "Map data types, retention, and groups most affected by repurposing."
         notes["Protect (PR)"] = "Enforce access controls and data minimization for sensitive footage/metadata."
         notes["Respond (RS)"] = "Adjust usage, pause feeds if needed, and publish transparent updates."
@@ -284,7 +250,7 @@ def scenario_csfs_explanations(incident_text: str) -> dict:
 
 scenario_tips = scenario_csfs_explanations(description)
 
-# ---- Scenario-specific technical highlights (replaces the six accordions)
+# ---- Scenario-specific technical highlights (list; replaces 6 accordions)
 st.markdown("#### Scenario-specific technical highlights")
 if mode == "Thesis scenarios":
     selected_nist = suggested_nist[:]
@@ -306,70 +272,46 @@ else:
 st.markdown("### 3) Ethical Evaluation (Principlist)")
 with st.expander("About the Principlist Framework"):
     st.markdown("""
-The **Principlist Framework for Cybersecurity Ethics** is a practical approach to ethical 
-reasoning that balances multiple values when making decisions under pressure. It is 
-organized into five core principles, which together provide a comprehensive approach 
-to identifying, weighing, and justifying ethical trade-offs:
-
-- **Beneficence:** Promote public well-being and the delivery of essential services.  
-- **Non-maleficence:** Avoid foreseeable harm from actions taken or omitted (e.g., over-collection, rash shutdowns).  
-- **Autonomy:** Respect legal rights, due process, and meaningful choice for affected people.  
-- **Justice:** Distribute burdens and benefits fairly; avoid disproportionate impact on specific communities.  
-- **Explicability:** Ensure transparency, accountability, and the ability to explain decisions and system behavior.  
-
-In this prototype, the Principlist Framework provides the **ethical backbone**.  
-Relevant principles are highlighted for each scenario, making value tensions explicit 
-so that technical standards (via the NIST CSF) are always considered in light of 
-ethical reasoning.
+The **Principlist Framework** balances:  
+**Beneficence** (promote well-being), **Non-maleficence** (avoid harm),  
+**Autonomy** (respect rights/choice), **Justice** (fairness/equity), and  
+**Explicability** (transparency/accountability).
     """)
 
-# Auto-suggested principles for logic/scoring (chips removed intentionally)
-auto_principles = suggest_principles(description)
-if mode == "Thesis scenarios":
-    selected_principles = auto_principles[:]
-else:
-    st.markdown("#### Suggested ethical principles for this scenario (editable in Open-ended mode)")
-    selected_principles = st.multiselect("", PRINCIPLES, default=auto_principles)
-
-# ---- Ethical tensions in this scenario (ADDED BACK)
+# --- Ethical tensions in this scenario (now with Principlist tags)
 st.markdown("#### Ethical tensions in this scenario")
 tensions = ETHICAL_TENSIONS_BY_SCENARIO.get(scenario, [])
 if tensions:
-    for t in tensions:
-        st.markdown(f"- {t}")
+    for label, expl, tags in tensions:
+        tag_badges = " ".join([f"<span style='display:inline-block;margin:0 4px 4px 0;padding:2px 8px;border-radius:12px;border:1px solid #4C8BF5;color:#1E3A8A;background:#EAF2FF;font-size:0.8rem'>{t}</span>" for t in tags])
+        st.markdown(f"- **{label}** — {expl}<br/>{tag_badges}", unsafe_allow_html=True)
 else:
     st.info("No predefined tensions for this scenario.")
 
+# Auto-suggested principles (kept internal for scoring; chips removed per your request)
+auto_principles = suggest_principles(description)
+selected_principles = auto_principles[:] if mode == "Thesis scenarios" else st.multiselect("", PRINCIPLES, default=auto_principles, label_visibility="collapsed")
+
 # ---------- 3a) NIST × Principlist Matrix ----------
 st.markdown("### 3a) NIST × Principlist Matrix")
-
 with st.expander("What is this matrix?"):
     st.markdown("""
-This matrix helps **integrate technical and ethical reasoning**.  
-- **Rows = NIST CSF functions** (GV/ID/PR/DE/RS/RC)  
-- **Columns = Principlist ethical principles**  
+This matrix integrates **technical** (NIST CSF) and **ethical** (Principlist) reasoning.  
+- **Rows = NIST functions (ID/PR/DE/RS/RC)**  
+- **Columns = Principlist principles**  
 - **Cells = relevance** of a principle to a function in this case.
-
-**Thesis scenarios:** cells may be pre-selected to reflect your case analysis.  
-**Open-ended:** practitioners can select or weight cells in real time.
     """)
 
-# Optional: toggle between simple checkboxes and 0–5 weights
 use_weights = st.toggle("Use 0–5 weighting instead of checkboxes", value=False, key="mx_use_weights")
 
-# Scenario-based pre-highlights (tune as you like)
 PREHIGHLIGHT = {
     "Baltimore Ransomware Attack": [
         ("Respond (RS)", "Justice"),
         ("Protect (PR)", "Non-maleficence"),
         ("Recover (RC)", "Beneficence"),
-        ("Govern (GV)", "Explicability"),
         ("Identify (ID)", "Justice"),
     ],
     "San Diego Smart Streetlights and Surveillance": [
-        ("Govern (GV)", "Autonomy"),
-        ("Govern (GV)", "Justice"),
-        ("Govern (GV)", "Explicability"),
         ("Identify (ID)", "Autonomy"),
         ("Protect (PR)", "Non-maleficence"),
         ("Respond (RS)", "Justice"),
@@ -380,34 +322,26 @@ PREHIGHLIGHT = {
         ("Respond (RS)", "Explicability"),
         ("Identify (ID)", "Beneficence"),
         ("Recover (RC)", "Justice"),
-        ("Govern (GV)", "Explicability"),
     ],
 }
 
-# Build a grid: rows = NIST functions, cols = principles
-st.write("")  # small spacer
+st.write("")
 cols = st.columns([1.1] + [1]*len(PRINCIPLES))
-
 with cols[0]:
     st.markdown("**Function \\ Principle**")
-
-# Render column headers
 for i, p in enumerate(PRINCIPLES, start=1):
     with cols[i]:
         st.markdown(f"**{p}**")
 
-# Initialize matrix state
 matrix_state = {}
 pre = set(PREHIGHLIGHT.get(scenario, []))
 for fn in NIST_FUNCTIONS:
     row_cols = st.columns([1.1] + [1]*len(PRINCIPLES))
     with row_cols[0]:
         st.markdown(f"**{fn}**")
-
     for j, p in enumerate(PRINCIPLES, start=1):
         key = f"mx_{fn}_{p}"
         default_marked = (fn, p) in pre if mode == "Thesis scenarios" else False
-
         with row_cols[j]:
             if use_weights:
                 default_val = 3 if default_marked else 0
@@ -417,26 +351,21 @@ for fn in NIST_FUNCTIONS:
                 mark = st.checkbox(" ", value=default_marked, key=key, label_visibility="collapsed")
                 matrix_state[(fn, p)] = 1 if mark else 0
 
-# Quick summaries (optional visual feedback)
 st.markdown("##### Matrix summary")
-# Per-function totals
 fn_totals = {fn: sum(matrix_state[(fn, p)] for p in PRINCIPLES) for fn in NIST_FUNCTIONS}
-# Per-principle totals
 pr_totals = {p: sum(matrix_state[(fn, p)] for fn in NIST_FUNCTIONS) for p in PRINCIPLES}
-
 colA, colB = st.columns(2)
 with colA:
     st.markdown("**Totals by NIST function**")
     for fn in NIST_FUNCTIONS:
-        st.progress(min(int((fn_totals[fn] / (5*len(PRINCIPLES) if use_weights else len(PRINCIPLES))) * 100), 100),
-                    text=f"{fn}: {fn_totals[fn]}")
+        denom = (5*len(PRINCIPLES) if use_weights else len(PRINCIPLES))
+        st.progress(min(int((fn_totals[fn] / denom) * 100), 100), text=f"{fn}: {fn_totals[fn]}")
 with colB:
     st.markdown("**Totals by Ethical principle**")
     for p in PRINCIPLES:
-        st.progress(min(int((pr_totals[p] / (5*len(NIST_FUNCTIONS) if use_weights else len(NIST_FUNCTIONS))) * 100), 100),
-                    text=f"{p}: {pr_totals[p]}")
+        denom = (5*len(NIST_FUNCTIONS) if use_weights else len(NIST_FUNCTIONS))
+        st.progress(min(int((pr_totals[p] / denom) * 100), 100), text=f"{p}: {pr_totals[p]}")
 
-# (Optional) expose the matrix for downstream logic or exporting
 st.session_state["nist_principle_matrix"] = matrix_state
 st.session_state["nist_totals_by_function"] = fn_totals
 st.session_state["principle_totals"] = pr_totals
@@ -447,10 +376,10 @@ constraints = st.multiselect("Select constraints relevant to this scenario", GOV
 
 # ---------- 5) Ethical Tension Score ----------
 st.markdown("### 5) Ethical Tension Score")
-# Ensure stakeholders/values exist even if the expander wasn't used
 if 'stakeholders' not in locals(): stakeholders = []
 if 'values' not in locals(): values = []
-score = score_tension(selected_principles, selected_nist, constraints, stakeholders, values)
+selected_principles_for_score = list({*selected_principles}) if isinstance(selected_principles, list) else auto_principles
+score = score_tension(selected_principles_for_score, selected_nist, constraints, stakeholders, values)
 st.progress(score, text=f"Ethical/contextual tension: {score}/100")
 if score < 35:
     st.success("Low tension: document rationale and proceed.")
