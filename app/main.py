@@ -2,7 +2,7 @@ import streamlit as st
 from datetime import datetime
 
 # ---------- Page config ----------
-st.set_page_config(page_title="Ethical Cyber Decision-Support", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="Municipal Ethical Cyber Decision-Support", layout="wide", initial_sidebar_state="expanded")
 
 # ---------- NIST CSF 2.0 constants ----------
 NIST_FUNCTIONS = [
