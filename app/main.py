@@ -331,14 +331,19 @@ else:
     st.markdown("#### Suggested ethical principles for this scenario (editable in Open-ended mode)")
     selected_principles = st.multiselect("", PRINCIPLES, default=auto_principles)
 
-# ---- Ethical tensions in this scenario (ADDED BACK)
+# --- Ethical tensions in this scenario (now with Principlist tags)
 st.markdown("#### Ethical tensions in this scenario")
 tensions = ETHICAL_TENSIONS_BY_SCENARIO.get(scenario, [])
 if tensions:
-    for t in tensions:
-        st.markdown(f"- {t}")
+    for label, expl, tags in tensions:
+        tag_badges = " ".join([f"<span style='display:inline-block;margin:0 4px 4px 0;padding:2px 8px;border-radius:12px;border:1px solid #4C8BF5;color:#1E3A8A;background:#EAF2FF;font-size:0.8rem'>{t}</span>" for t in tags])
+        st.markdown(f"- **{label}** — {expl}<br/>{tag_badges}", unsafe_allow_html=True)
 else:
     st.info("No predefined tensions for this scenario.")
+
+# Auto-suggested principles (kept internal for scoring; chips removed per your request)
+auto_principles = suggest_principles(description)
+selected_principles = auto_principles[:] if mode == "Thesis scenarios" else st.multiselect("", PRINCIPLES, default=auto_principles, label_visibility="collapsed")
 
 # ---------- 3a) NIST × Principlist Matrix ----------
 st.markdown("### 3a) NIST × Principlist Matrix")
