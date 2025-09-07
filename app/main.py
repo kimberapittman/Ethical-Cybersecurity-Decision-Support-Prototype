@@ -145,47 +145,25 @@ def score_tension(selected_principles, selected_nist, constraints, stakeholders,
     base += 4 * len(values)
     return min(base, 100)
 
-# ---------- Ethical tensions by scenario (added back) ----------
+# ---------- ETHICAL TENSIONS mapped to Principlist (NEW tagging only; rest unchanged) ----------
 ETHICAL_TENSIONS_BY_SCENARIO = {
     "Baltimore Ransomware Attack": [
-        "Paying ransom vs. maintaining public trust and long-term resilience",
-        "Rapid service restoration vs. data integrity/forensics preservation",
-        "Equity in service recovery across neighborhoods",
-        "Transparency with residents vs. operational confidentiality"
+        # (label, principlist_tags)
+        ("Paying ransom vs. refusing payment (service restoration speed vs. long-term harm/precedent)", ["Justice", "Non-maleficence", "Beneficence"]),
+        ("Public transparency vs. operational confidentiality during recovery", ["Explicability", "Non-maleficence"]),
+        ("Prioritizing restoration by critical services vs. equal treatment across departments", ["Justice", "Beneficence"]),
     ],
     "San Diego Smart Streetlights and Surveillance": [
-        "Public safety support vs. residents’ privacy and autonomy",
-        "Secondary use of data vs. original consent and purpose limitation",
-        "Operational secrecy vs. transparency and explainability",
-        "Centralized control vs. community oversight and accountability"
+        ("Secondary use of data for policing vs. original civic purpose", ["Autonomy", "Justice", "Explicability"]),
+        ("Privacy protections vs. public safety claims for surveillance expansion", ["Non-maleficence", "Autonomy", "Justice"]),
+        ("Vendor opacity and procurement gaps vs. public accountability", ["Explicability", "Justice"]),
     ],
     "Riverton AI-Enabled Threat": [
-        "Safety-first automation vs. human autonomy and explainability",
-        "Short-term containment vs. long-term reliability and assurance",
-        "Vendor opacity vs. public accountability and documentation",
-        "Equity in service continuity for vulnerable populations"
-    ]
+        ("Automated control for quick stabilization vs. human oversight and explainability", ["Beneficence", "Autonomy", "Explicability"]),
+        ("Hot-fix retraining now vs. rigorous assurance before redeploy", ["Non-maleficence", "Beneficence", "Explicability"]),
+        ("Proprietary constraints vs. documentation and external review", ["Explicability", "Justice"]),
+    ],
 }
-
-# ---------- NEW: conflicts KB helpers were removed per your request ----------
-
-def render_dumbbell(left_label: str, right_label: str, pct: int) -> str:
-    pct = max(0, min(int(pct), 100))
-    return f"""
-    <div style="margin:8px 0;">
-      <div style="display:flex;justify-content:space-between;font-size:0.9rem;margin-bottom:4px;">
-        <span><b>{left_label}</b></span><span><b>{right_label}</b></span>
-      </div>
-      <div style="position:relative;height:10px;background:linear-gradient(90deg,#5c6bc0,#42a5f5);border-radius:6px;">
-        <div style="position:absolute;left:{pct}%;top:-6px;transform:translateX(-50%);width:0;height:0;
-          border-left:6px solid transparent;border-right:6px solid transparent;border-top:10px solid #ffffff;"></div>
-      </div>
-      <div style="text-align:center;color:#999;font-size:0.8rem;margin-top:4px;">Balance point: {pct}% toward “{right_label if pct>=50 else left_label}”</div>
-    </div>
-    """
-
-def conflicts_table_rows(conflicts):
-    return [{"Value A": a, "Value B": b, "Why it matters here": note} for (a, b, note, _pct) in conflicts]
 
 # ---------- Sidebar ----------
 st.sidebar.header("Options")
@@ -284,23 +262,44 @@ def scenario_csfs_explanations(incident_text: str) -> dict:
 
 scenario_tips = scenario_csfs_explanations(description)
 
-# ---- Scenario-specific technical highlights (replaces the six accordions)
-st.markdown("#### Scenario-specific technical highlights")
-if mode == "Thesis scenarios":
-    selected_nist = suggested_nist[:]
-    for fn in NIST_FUNCTIONS:
-        mark = "✓ " if fn in suggested_nist else ""
-        tip = scenario_tips.get(fn, "—")
-        st.markdown(f"- **{fn}** {mark} — {tip}")
-else:
-    selected_nist = []
-    cols_fn = st.columns(3)
-    for i, fn in enumerate(NIST_FUNCTIONS):
-        with cols_fn[i % 3]:
-            checked = st.checkbox(fn, value=(fn in suggested_nist), key=f"fn_{fn}")
-            if checked:
+# ---- DIFFERENT LOOK for the six NIST accordions (not the About expander)
+st.markdown("""
+<style>
+/* Only style the custom wrapper below so the About expander stays default */
+.nist-accordions details {
+  border: 1px solid #4C8BF5;
+  border-radius: 10px;
+  background: #F7FAFF;
+  margin: 8px 0;
+  padding: 2px 0;
+}
+.nist-accordions summary {
+  font-weight: 600;
+  color: #1E3A8A;
+}
+.nist-accordions details[open] {
+  background: #EFF6FF;
+  border-color: #3B82F6;
+}
+</style>
+""", unsafe_allow_html=True)
+
+selected_nist = []
+st.markdown("<div class='nist-accordions'>", unsafe_allow_html=True)
+for fn in NIST_FUNCTIONS:
+    suggested = fn in suggested_nist
+    with st.expander(f"{fn} {'✓' if suggested else ''}", expanded=False):
+        st.markdown(f"**Definition:** {NIST_DEFS.get(fn, '')}")
+        if mode == "Thesis scenarios":
+            st.markdown(f"**How it applies in this scenario:** {scenario_tips.get(fn, '—')}")
+            if suggested:
                 selected_nist.append(fn)
-            st.caption(scenario_tips.get(fn, "—"))
+        else:
+            mark = st.checkbox(f"Mark {fn} as relevant", value=suggested, key=f"chk_{fn}")
+            note = st.text_area(f"How {fn} applies here", value=scenario_tips.get(fn, ""), key=f"ta_{fn}")
+            if mark:
+                selected_nist.append(fn)
+st.markdown("</div>", unsafe_allow_html=True)
 
 # ---------- 3) Ethical Evaluation (Principlist) ----------
 st.markdown("### 3) Ethical Evaluation (Principlist)")
@@ -323,22 +322,22 @@ so that technical standards (via the NIST CSF) are always considered in light of
 ethical reasoning.
     """)
 
-# Auto-suggested principles for logic/scoring (chips removed intentionally)
+# Auto-suggested principles for internal logic (no chips shown)
 auto_principles = suggest_principles(description)
 if mode == "Thesis scenarios":
     selected_principles = auto_principles[:]
 else:
-    st.markdown("#### Suggested ethical principles for this scenario (editable in Open-ended mode)")
-    selected_principles = st.multiselect("", PRINCIPLES, default=auto_principles)
+    selected_principles = st.multiselect("Select relevant ethical principles (optional)", PRINCIPLES, default=auto_principles)
 
-# ---- Ethical tensions in this scenario (ADDED BACK)
+# ---------- Ethical tensions in this scenario (UPDATED to show Principlist terms) ----------
 st.markdown("#### Ethical tensions in this scenario")
 tensions = ETHICAL_TENSIONS_BY_SCENARIO.get(scenario, [])
 if tensions:
-    for t in tensions:
-        st.markdown(f"- {t}")
+    for label, tags in tensions:
+        tag_str = ", ".join(tags) if tags else "—"
+        st.markdown(f"- {label}  \n  *Principlist lens:* _{tag_str}_")
 else:
-    st.info("No predefined tensions for this scenario.")
+    st.info("No predefined ethical tensions for this scenario.")
 
 # ---------- 3a) NIST × Principlist Matrix ----------
 st.markdown("### 3a) NIST × Principlist Matrix")
@@ -354,10 +353,8 @@ This matrix helps **integrate technical and ethical reasoning**.
 **Open-ended:** practitioners can select or weight cells in real time.
     """)
 
-# Optional: toggle between simple checkboxes and 0–5 weights
 use_weights = st.toggle("Use 0–5 weighting instead of checkboxes", value=False, key="mx_use_weights")
 
-# Scenario-based pre-highlights (tune as you like)
 PREHIGHLIGHT = {
     "Baltimore Ransomware Attack": [
         ("Respond (RS)", "Justice"),
@@ -384,30 +381,23 @@ PREHIGHLIGHT = {
     ],
 }
 
-# Build a grid: rows = NIST functions, cols = principles
-st.write("")  # small spacer
+st.write("")
 cols = st.columns([1.1] + [1]*len(PRINCIPLES))
-
 with cols[0]:
     st.markdown("**Function \\ Principle**")
-
-# Render column headers
 for i, p in enumerate(PRINCIPLES, start=1):
     with cols[i]:
         st.markdown(f"**{p}**")
 
-# Initialize matrix state
 matrix_state = {}
 pre = set(PREHIGHLIGHT.get(scenario, []))
 for fn in NIST_FUNCTIONS:
     row_cols = st.columns([1.1] + [1]*len(PRINCIPLES))
     with row_cols[0]:
         st.markdown(f"**{fn}**")
-
     for j, p in enumerate(PRINCIPLES, start=1):
         key = f"mx_{fn}_{p}"
         default_marked = (fn, p) in pre if mode == "Thesis scenarios" else False
-
         with row_cols[j]:
             if use_weights:
                 default_val = 3 if default_marked else 0
@@ -417,11 +407,8 @@ for fn in NIST_FUNCTIONS:
                 mark = st.checkbox(" ", value=default_marked, key=key, label_visibility="collapsed")
                 matrix_state[(fn, p)] = 1 if mark else 0
 
-# Quick summaries (optional visual feedback)
 st.markdown("##### Matrix summary")
-# Per-function totals
 fn_totals = {fn: sum(matrix_state[(fn, p)] for p in PRINCIPLES) for fn in NIST_FUNCTIONS}
-# Per-principle totals
 pr_totals = {p: sum(matrix_state[(fn, p)] for fn in NIST_FUNCTIONS) for p in PRINCIPLES}
 
 colA, colB = st.columns(2)
@@ -436,7 +423,6 @@ with colB:
         st.progress(min(int((pr_totals[p] / (5*len(NIST_FUNCTIONS) if use_weights else len(NIST_FUNCTIONS))) * 100), 100),
                     text=f"{p}: {pr_totals[p]}")
 
-# (Optional) expose the matrix for downstream logic or exporting
 st.session_state["nist_principle_matrix"] = matrix_state
 st.session_state["nist_totals_by_function"] = fn_totals
 st.session_state["principle_totals"] = pr_totals
@@ -447,7 +433,6 @@ constraints = st.multiselect("Select constraints relevant to this scenario", GOV
 
 # ---------- 5) Ethical Tension Score ----------
 st.markdown("### 5) Ethical Tension Score")
-# Ensure stakeholders/values exist even if the expander wasn't used
 if 'stakeholders' not in locals(): stakeholders = []
 if 'values' not in locals(): values = []
 score = score_tension(selected_principles, selected_nist, constraints, stakeholders, values)
