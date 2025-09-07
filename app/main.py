@@ -222,16 +222,6 @@ Framework) is grounded in recognized technical standards.
 # Suggested functions
 suggested_nist = suggest_nist(incident_type, description)
 
-# Function definitions for quick reference (kept for context if needed later)
-NIST_DEFS = {
-    "Govern (GV)": "Establish oversight, roles, policies, and decision rights.",
-    "Identify (ID)": "Understand assets, risks, and critical services.",
-    "Protect (PR)": "Safeguard systems, data, and services against threats.",
-    "Detect (DE)": "Monitor and discover anomalous events quickly.",
-    "Respond (RS)": "Contain and manage active incidents and communications.",
-    "Recover (RC)": "Restore capabilities and improve resilience post-incident."
-}
-
 # Per-scenario “how it applies” notes
 def scenario_csfs_explanations(incident_text: str) -> dict:
     t = incident_text.lower()
@@ -261,14 +251,23 @@ def scenario_csfs_explanations(incident_text: str) -> dict:
 
 scenario_tips = scenario_csfs_explanations(description)
 
-# --- NEW: Bullet list rendering of all six NIST functions (no accordions) ---
-st.markdown("#### Scenario-specific technical highlights")
-# Keep selection logic stable for downstream scoring
-selected_nist = suggested_nist[:]
-for fn in NIST_FUNCTIONS:
-    mark = "✓ " if fn in suggested_nist else ""
-    tip = scenario_tips.get(fn, "—")
-    st.markdown(f"- **{fn}** {mark} — {tip}")
+# ---- NEW BULLET LIST STYLE (mirrors ethical tensions section)
+st.markdown("#### Technical considerations in this scenario")
+if mode == "Thesis scenarios":
+    selected_nist = suggested_nist[:]
+    for fn in NIST_FUNCTIONS:
+        mark = "✓ " if fn in suggested_nist else ""
+        tip = scenario_tips.get(fn, "—")
+        st.markdown(f"- **{fn}** {mark} — {tip}")
+else:
+    selected_nist = []
+    cols_fn = st.columns(3)
+    for i, fn in enumerate(NIST_FUNCTIONS):
+        with cols_fn[i % 3]:
+            checked = st.checkbox(fn, value=(fn in suggested_nist), key=f"fn_{fn}")
+            if checked:
+                selected_nist.append(fn)
+            st.caption(scenario_tips.get(fn, "—"))
 
 # ---------- 3) Ethical Evaluation (Principlist) ----------
 st.markdown("### 3) Ethical Evaluation (Principlist)")
