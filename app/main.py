@@ -345,6 +345,7 @@ The matrix is designed to help practitioners **consider technical and ethical di
 
 This approach does not assume conflict between technical and ethical concerns. Instead, it ensures **completeness of reasoning**, so that municipal practitioners act in ways that are both technically sound and ethically defensible under real-world constraints.  
     """)
+use_weights = st.toggle("Use 0–5 weighting instead of checkboxes", value=False, key="mx_use_weights")
 
 PREHIGHLIGHT = {
     "Baltimore Ransomware Attack": [
