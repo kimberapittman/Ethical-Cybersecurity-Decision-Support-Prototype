@@ -264,7 +264,7 @@ def scenario_csfs_explanations(incident_text: str) -> dict:
 scenario_tips = scenario_csfs_explanations(description)
 
 # ---- NEW BULLET LIST STYLE (mirrors ethical tensions section) ----
-st.markdown("#### Scenario-specific technical considerations")
+st.markdown("#### Technical considerations in this scenario")
 st.caption("What the CSF suggests focusing on for this case.")
 if mode == "Thesis scenarios":
     selected_nist = suggested_nist[:]
