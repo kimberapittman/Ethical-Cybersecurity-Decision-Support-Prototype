@@ -334,7 +334,7 @@ else:
 st.divider()
 
 # ---------- 4) Decision-Support Matrix ----------
-st.markdown("### 3a) NIST × Principlist Matrix")
+st.markdown("### 4) Decision-Support Matrix")
 with st.expander("What is this matrix?"):
     st.markdown("""
 This matrix helps **integrate technical and ethical reasoning**.  
