@@ -175,6 +175,53 @@ ETHICAL_TENSIONS_BY_SCENARIO = {
     ],
 }
 
+# --- OPEN-ENDED AUTOFILL: common incident types + tensions mapping (NEW) ---
+COMMON_ATTACK_LABELS = [
+    "— (none)",
+    "Ransomware",
+    "Phishing",
+    "Unauthorized access",
+    "Data breach",
+    "Surveillance misuse",
+    "AI-enabled anomaly",
+]
+ATTACK_KEY = {
+    "Ransomware": "ransomware",
+    "Phishing": "phishing",
+    "Unauthorized access": "unauthorized access",
+    "Data breach": "data breach",
+    "Surveillance misuse": "surveillance",
+    "AI-enabled anomaly": "ai-enabled",
+}
+ETHICAL_TENSIONS_BY_ATTACK = {
+    "ransomware": [
+        ("Paying ransom vs. refusing payment (service restoration speed vs. long-term harm/precedent)", ["Justice", "Non-maleficence", "Beneficence"]),
+        ("Public transparency vs. operational confidentiality during recovery", ["Explicability", "Non-maleficence"]),
+        ("Prioritizing restoration by critical services vs. equal treatment across departments", ["Justice", "Beneficence"]),
+    ],
+    "phishing": [
+        ("Rapid containment vs. continuity of services while accounts are frozen", ["Beneficence", "Non-maleficence"]),
+        ("User monitoring to verify compromise vs. employee privacy", ["Autonomy", "Justice", "Explicability"]),
+    ],
+    "unauthorized access": [
+        ("Immediate lockouts and wide password resets vs. operational disruption", ["Beneficence", "Non-maleficence"]),
+        ("Extent of disclosure to staff/public vs. investigative confidentiality", ["Explicability", "Non-maleficence"]),
+    ],
+    "data breach": [
+        ("Timely notification to affected residents vs. risk of causing panic", ["Explicability", "Beneficence", "Non-maleficence"]),
+        ("Equity in remediation (credit monitoring, support) vs. budget constraints", ["Justice", "Beneficence"]),
+    ],
+    "surveillance": [
+        ("Secondary use of sensors for policing vs. original civic purpose", ["Autonomy", "Justice", "Explicability"]),
+        ("Broader retention/access controls vs. investigative effectiveness", ["Non-maleficence", "Justice"]),
+    ],
+    "ai-enabled": [
+        ("Automated control for fast stabilization vs. human oversight and explainability", ["Beneficence", "Autonomy", "Explicability"]),
+        ("Hot-fix model updates vs. rigorous assurance before redeploy", ["Non-maleficence", "Explicability"]),
+    ],
+}
+# --------------------------------------------------------------------------
+
 # ---------- Sidebar ----------
 st.sidebar.header("Options")
 mode = st.sidebar.radio("Mode", ["Thesis scenarios", "Open-ended"])
@@ -236,6 +283,29 @@ Framework) is grounded in recognized technical standards.
 
 # Suggested functions
 suggested_nist = suggest_nist(incident_type, description)
+
+# --- OPEN-ENDED AUTOFILL: common incident type selector (NEW) ---
+if mode == "Open-ended":
+    attack_choice = st.selectbox("Or pick a common incident type (optional)", COMMON_ATTACK_LABELS, index=0)
+    if attack_choice != "— (none)":
+        _key = ATTACK_KEY[attack_choice]
+        # Override NIST suggestions
+        suggested_nist = NIST_KB.get(_key, suggested_nist)
+        # Override description to steer simple hinting logic
+        description = _key
+        # Store ethical tensions + principles for later sections
+        tensions_override = ETHICAL_TENSIONS_BY_ATTACK.get(_key, [])
+        st.session_state["auto_tensions_override"] = tensions_override
+        # Derive unique principlist tags from tensions for matrix + score
+        tags = sorted({t for _, taglist in tensions_override for t in taglist})
+        st.session_state["auto_principles_override"] = tags
+        # Preselect matrix cells: all suggested NIST × those principle tags
+        st.session_state["auto_pre"] = list({(fn, p) for fn in suggested_nist for p in tags})
+    else:
+        st.session_state.pop("auto_tensions_override", None)
+        st.session_state.pop("auto_principles_override", None)
+        st.session_state.pop("auto_pre", None)
+# ----------------------------------------------------------------
 
 # Per-scenario “how it applies” notes
 def scenario_csfs_explanations(incident_text: str) -> dict:
@@ -316,12 +386,17 @@ auto_principles = suggest_principles(description)
 if mode == "Thesis scenarios":
     selected_principles = auto_principles[:]
 else:
-    selected_principles = st.multiselect("Select relevant ethical principles (optional)", PRINCIPLES, default=auto_principles)
+    # --- OPEN-ENDED AUTOFILL: default to auto principles from chosen incident type if present ---
+    default_principles = st.session_state.get("auto_principles_override", auto_principles)
+    selected_principles = st.multiselect("Select relevant ethical principles (optional)", PRINCIPLES, default=default_principles)
+    # --------------------------------------------------------------------------------------------
 
 # ---------- Ethical tensions in this scenario (UPDATED to show Principlist terms) ----------
 st.markdown("#### Ethical tensions in this scenario")
 st.caption("Key value trade-offs in this case framed in Principlist terms.")
-tensions = ETHICAL_TENSIONS_BY_SCENARIO.get(scenario, [])
+# --- OPEN-ENDED AUTOFILL: use tensions override if set, else scenario defaults ---
+tensions = st.session_state.get("auto_tensions_override") or ETHICAL_TENSIONS_BY_SCENARIO.get(scenario, [])
+# --------------------------------------------------------------------------------
 if tensions:
     items = []
     for label, tags in tensions:
@@ -382,14 +457,16 @@ for i, p in enumerate(PRINCIPLES, start=1):
         st.markdown(f"**{p}**")
 
 matrix_state = {}
-pre = set(PREHIGHLIGHT.get(scenario, []))
+# --- OPEN-ENDED AUTOFILL: prefer auto_pre (from incident type), else scenario-based prehighlight ---
+pre = set(st.session_state.get("auto_pre") or PREHIGHLIGHT.get(scenario, []))
+# -------------------------------------------------------------------------------------------------
 for fn in NIST_FUNCTIONS:
     row_cols = st.columns([1.1] + [1]*len(PRINCIPLES))
     with row_cols[0]:
         st.markdown(f"**{fn}**")
     for j, p in enumerate(PRINCIPLES, start=1):
         key = f"mx_{fn}_{p}"
-        default_marked = (fn, p) in pre if mode == "Thesis scenarios" else False
+        default_marked = (fn, p) in pre if mode == "Thesis scenarios" or st.session_state.get("auto_pre") else False
         with row_cols[j]:
             if use_weights:
                 default_val = 3 if default_marked else 0
