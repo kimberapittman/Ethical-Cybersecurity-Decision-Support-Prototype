@@ -101,7 +101,7 @@ NIST_ACTIONS = {
     ],
 }
 
-# ---------- Scenario summaries ----------
+# ---------- Scenario summaries (Thesis scenarios stay as-is) ----------
 scenario_summaries = {
     "Baltimore Ransomware Attack": (
         "In 2019, Baltimore’s municipal systems were crippled by a ransomware attack that locked staff out of essential services. "
@@ -156,7 +156,7 @@ def score_tension(selected_principles, selected_nist, constraints, stakeholders,
     base += 4 * len(values)
     return min(base, 100)
 
-# ---------- ETHICAL TENSIONS mapped to Principlist ----------
+# ---------- ETHICAL TENSIONS mapped to Principlist (Thesis scenarios stay as-is) ----------
 ETHICAL_TENSIONS_BY_SCENARIO = {
     "Baltimore Ransomware Attack": [
         ("Paying ransom vs. refusing payment (service restoration speed vs. long-term harm/precedent)", ["Justice", "Non-maleficence", "Beneficence"]),
@@ -172,6 +172,152 @@ ETHICAL_TENSIONS_BY_SCENARIO = {
         ("Automated control for quick stabilization vs. human oversight and explainability", ["Beneficence", "Autonomy", "Explicability"]),
         ("Hot-fix retraining now vs. rigorous assurance before redeploy", ["Non-maleficence", "Beneficence", "Explicability"]),
         ("Proprietary constraints vs. documentation and external review", ["Explicability", "Justice"]),
+    ],
+}
+
+# ---------- NEW: Open-ended mode common scenarios (10 most common) ----------
+COMMON_SCENARIOS = {
+    # names include keywords to hit NIST_KB
+    "Ransomware attack on city services": (
+        "City systems are encrypted by ransomware, disrupting permitting, finance, or emergency services. Officials weigh paying ransom vs. restoring from backups under public pressure."
+    ),
+    "Data breach of resident PII": (
+        "Sensitive resident data (e.g., tax, utility, permits) is exposed. Leaders must decide on scope of notification, remedies, and transparency while mitigating further risk."
+    ),
+    "Smart surveillance repurposing": (
+        "Sensors or cameras deployed for traffic/environment are requested for policing. Questions arise about policy scope, consent, and safeguards for civil liberties."
+    ),
+    "Critical infrastructure disruption (water/wastewater)": (
+        "OT/SCADA alerts show potential compromise at a water or wastewater facility. Choices involve shutdown vs. continued operations while investigating."
+    ),
+    "Third-party/vendor compromise": (
+        "A vendor platform used by multiple departments is breached. The city must coordinate with limited visibility into vendor systems and obligations to residents."
+    ),
+    "Phishing campaign targeting staff": (
+        "Widespread phishing attempts target municipal employees. Response decisions include forced resets, MFA rollouts, and how to treat affected staff."
+    ),
+    "Unauthorized access / privileged misuse": (
+        "An insider or compromised admin account accesses data or systems improperly. Leaders must balance investigation, employee privacy, and swift containment."
+    ),
+    "Vulnerability & incident disclosure timing": (
+        "A serious vulnerability/incident is discovered. Teams must decide when and how much to disclose to the public without increasing risk."
+    ),
+    "AI-enabled monitoring bias/opacity": (
+        "An AI tool used for monitoring or triage raises concerns about bias or explainability. Teams weigh rapid automation benefits against accountability."
+    ),
+    "Resource allocation under budget constraints": (
+        "Limited budget forces trade-offs between cybersecurity investments and other essential services, with equity and risk implications."
+    ),
+}
+
+# Ethical tensions for common scenarios
+COMMON_TENSIONS = {
+    "Ransomware attack on city services": [
+        ("Paying ransom vs. refusing payment", ["Justice", "Non-maleficence", "Beneficence"]),
+        ("Rapid restoration vs. forensic integrity", ["Beneficence", "Explicability"]),
+        ("Public updates vs. operational security", ["Explicability", "Non-maleficence"]),
+    ],
+    "Data breach of resident PII": [
+        ("Full transparency vs. minimizing harm and panic", ["Explicability", "Non-maleficence"]),
+        ("Scope of notification/remedies vs. cost and feasibility", ["Justice", "Beneficence"]),
+    ],
+    "Smart surveillance repurposing": [
+        ("Public safety benefits vs. civil liberties and consent", ["Beneficence", "Autonomy", "Justice"]),
+        ("Repurposing data vs. original purpose limitations", ["Explicability", "Autonomy"]),
+    ],
+    "Critical infrastructure disruption (water/wastewater)": [
+        ("Shut down for safety vs. maintain service continuity", ["Non-maleficence", "Beneficence"]),
+        ("Minimal disclosure vs. resident right-to-know", ["Explicability", "Autonomy"]),
+    ],
+    "Third-party/vendor compromise": [
+        ("Vendor confidentiality vs. public accountability", ["Explicability", "Justice"]),
+        ("Immediate cutoff vs. continuity of operations", ["Non-maleficence", "Beneficence"]),
+    ],
+    "Phishing campaign targeting staff": [
+        ("Strict enforcement vs. just culture for learning", ["Justice", "Non-maleficence"]),
+        ("Rapid controls rollout vs. disruption to services", ["Beneficence", "Non-maleficence"]),
+    ],
+    "Unauthorized access / privileged misuse": [
+        ("Employee privacy vs. thorough monitoring/investigation", ["Autonomy", "Non-maleficence"]),
+        ("Swift revocation vs. operational continuity", ["Beneficence", "Justice"]),
+    ],
+    "Vulnerability & incident disclosure timing": [
+        ("Immediate disclosure vs. coordinated, delayed disclosure", ["Explicability", "Non-maleficence"]),
+        ("Detail transparency vs. exploitation risk", ["Explicability", "Non-maleficence"]),
+    ],
+    "AI-enabled monitoring bias/opacity": [
+        ("Automation speed vs. explainability and oversight", ["Beneficence", "Explicability", "Autonomy"]),
+        ("Performance claims vs. fairness and auditability", ["Justice", "Explicability"]),
+    ],
+    "Resource allocation under budget constraints": [
+        ("High-risk systems first vs. equitable distribution", ["Justice", "Beneficence"]),
+        ("Cyber spend vs. other essential services", ["Justice", "Beneficence"]),
+    ],
+}
+
+# Matrix pre-highlights for common scenarios
+COMMON_PREHIGHLIGHT = {
+    "Ransomware attack on city services": [
+        ("Respond (RS)", "Justice"),
+        ("Protect (PR)", "Non-maleficence"),
+        ("Recover (RC)", "Beneficence"),
+        ("Govern (GV)", "Explicability"),
+        ("Identify (ID)", "Justice"),
+    ],
+    "Data breach of resident PII": [
+        ("Identify (ID)", "Justice"),
+        ("Respond (RS)", "Explicability"),
+        ("Protect (PR)", "Non-maleficence"),
+        ("Recover (RC)", "Beneficence"),
+    ],
+    "Smart surveillance repurposing": [
+        ("Govern (GV)", "Autonomy"),
+        ("Govern (GV)", "Justice"),
+        ("Govern (GV)", "Explicability"),
+        ("Identify (ID)", "Autonomy"),
+        ("Protect (PR)", "Non-maleficence"),
+        ("Respond (RS)", "Justice"),
+    ],
+    "Critical infrastructure disruption (water/wastewater)": [
+        ("Detect (DE)", "Non-maleficence"),
+        ("Respond (RS)", "Beneficence"),
+        ("Recover (RC)", "Justice"),
+        ("Identify (ID)", "Beneficence"),
+        ("Govern (GV)", "Explicability"),
+    ],
+    "Third-party/vendor compromise": [
+        ("Identify (ID)", "Explicability"),
+        ("Respond (RS)", "Justice"),
+        ("Protect (PR)", "Non-maleficence"),
+        ("Govern (GV)", "Explicability"),
+    ],
+    "Phishing campaign targeting staff": [
+        ("Protect (PR)", "Non-maleficence"),
+        ("Detect (DE)", "Beneficence"),
+        ("Respond (RS)", "Justice"),
+        ("Govern (GV)", "Explicability"),
+    ],
+    "Unauthorized access / privileged misuse": [
+        ("Detect (DE)", "Non-maleficence"),
+        ("Respond (RS)", "Justice"),
+        ("Protect (PR)", "Autonomy"),
+        ("Govern (GV)", "Explicability"),
+    ],
+    "Vulnerability & incident disclosure timing": [
+        ("Respond (RS)", "Explicability"),
+        ("Govern (GV)", "Non-maleficence"),
+        ("Identify (ID)", "Justice"),
+    ],
+    "AI-enabled monitoring bias/opacity": [
+        ("Identify (ID)", "Beneficence"),
+        ("Detect (DE)", "Non-maleficence"),
+        ("Respond (RS)", "Explicability"),
+        ("Govern (GV)", "Justice"),
+    ],
+    "Resource allocation under budget constraints": [
+        ("Govern (GV)", "Justice"),
+        ("Identify (ID)", "Beneficence"),
+        ("Protect (PR)", "Non-maleficence"),
     ],
 }
 
@@ -202,12 +348,46 @@ with st.expander("About this prototype"):
 st.divider()
 
 # ---------- 1) Scenario overview ----------
-scenario = st.selectbox("Choose a Municipal Cybersecurity Scenario", options=list(scenario_summaries.keys()))
+if mode == "Thesis scenarios":
+    scenario = st.selectbox("Choose a Municipal Cybersecurity Scenario", options=list(scenario_summaries.keys()))
+    description = scenario_summaries[scenario]
+    tensions_map = ETHICAL_TENSIONS_BY_SCENARIO
+    pre_map = {
+        "Baltimore Ransomware Attack": [
+            ("Respond (RS)", "Justice"),
+            ("Protect (PR)", "Non-maleficence"),
+            ("Recover (RC)", "Beneficence"),
+            ("Govern (GV)", "Explicability"),
+            ("Identify (ID)", "Justice"),
+        ],
+        "San Diego Smart Streetlights and Surveillance": [
+            ("Govern (GV)", "Autonomy"),
+            ("Govern (GV)", "Justice"),
+            ("Govern (GV)", "Explicability"),
+            ("Identify (ID)", "Autonomy"),
+            ("Protect (PR)", "Non-maleficence"),
+            ("Respond (RS)", "Justice"),
+        ],
+        "Riverton AI-Enabled Threat": [
+            ("Detect (DE)", "Non-maleficence"),
+            ("Respond (RS)", "Beneficence"),
+            ("Respond (RS)", "Explicability"),
+            ("Identify (ID)", "Beneficence"),
+            ("Recover (RC)", "Justice"),
+            ("Govern (GV)", "Explicability"),
+        ],
+    }
+else:
+    # Open-ended mode uses 10 common scenarios
+    scenario = st.selectbox("Choose a Municipal Cybersecurity Scenario", options=list(COMMON_SCENARIOS.keys()))
+    description = COMMON_SCENARIOS[scenario]
+    tensions_map = COMMON_TENSIONS
+    pre_map = COMMON_PREHIGHLIGHT
+
 st.markdown("### 1) Scenario Overview")
-st.markdown(f"**Scenario Overview:** {scenario_summaries[scenario]}")
+st.markdown(f"**Scenario Overview:** {description}")
 
 incident_type = scenario
-description = scenario_summaries[scenario]
 pd_defaults = dict(description="", stakeholders=[], values=[], constraints=[])
 
 st.divider()
@@ -321,7 +501,7 @@ else:
 # ---------- Ethical tensions in this scenario (UPDATED to show Principlist terms) ----------
 st.markdown("#### Ethical tensions in this scenario")
 st.caption("Key value trade-offs in this case framed in Principlist terms.")
-tensions = ETHICAL_TENSIONS_BY_SCENARIO.get(scenario, [])
+tensions = tensions_map.get(scenario, [])
 if tensions:
     items = []
     for label, tags in tensions:
@@ -346,31 +526,7 @@ The matrix is designed to help practitioners **consider technical and ethical di
 This approach does not assume conflict between technical and ethical concerns. Instead, it ensures **completeness of reasoning**, so that municipal practitioners act in ways that are both technically sound and ethically defensible under real-world constraints.  
     """)
 
-PREHIGHLIGHT = {
-    "Baltimore Ransomware Attack": [
-        ("Respond (RS)", "Justice"),
-        ("Protect (PR)", "Non-maleficence"),
-        ("Recover (RC)", "Beneficence"),
-        ("Govern (GV)", "Explicability"),
-        ("Identify (ID)", "Justice"),
-    ],
-    "San Diego Smart Streetlights and Surveillance": [
-        ("Govern (GV)", "Autonomy"),
-        ("Govern (GV)", "Justice"),
-        ("Govern (GV)", "Explicability"),
-        ("Identify (ID)", "Autonomy"),
-        ("Protect (PR)", "Non-maleficence"),
-        ("Respond (RS)", "Justice"),
-    ],
-    "Riverton AI-Enabled Threat": [
-        ("Detect (DE)", "Non-maleficence"),
-        ("Respond (RS)", "Beneficence"),
-        ("Respond (RS)", "Explicability"),
-        ("Identify (ID)", "Beneficence"),
-        ("Recover (RC)", "Justice"),
-        ("Govern (GV)", "Explicability"),
-    ],
-}
+PREHIGHLIGHT = pre_map  # use appropriate set based on mode
 
 st.write("")
 cols = st.columns([1.1] + [1]*len(PRINCIPLES))
@@ -388,7 +544,7 @@ for fn in NIST_FUNCTIONS:
         st.markdown(f"**{fn}**")
     for j, p in enumerate(PRINCIPLES, start=1):
         key = f"mx_{fn}_{p}"
-        default_marked = (fn, p) in pre if mode == "Thesis scenarios" else False
+        default_marked = (fn, p) in pre if mode == "Thesis scenarios" else (fn, p) in pre
         with row_cols[j]:
             mark = st.checkbox(" ", value=default_marked, key=key, label_visibility="collapsed")
             matrix_state[(fn, p)] = 1 if mark else 0
