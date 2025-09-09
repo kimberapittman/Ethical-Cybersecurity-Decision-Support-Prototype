@@ -101,7 +101,7 @@ NIST_ACTIONS = {
     ],
 }
 
-# ---------- Thesis Scenario summaries ----------
+# ---------- Scenario summaries ----------
 scenario_summaries = {
     "Baltimore Ransomware Attack": (
         "In 2019, Baltimore’s municipal systems were crippled by a ransomware attack that locked staff out of essential services. "
@@ -117,21 +117,6 @@ scenario_summaries = {
     )
 }
 
-# ---------- NEW: Common municipal incidents (used ONLY in Open-ended mode) ----------
-COMMON_INCIDENTS = {
-    "Ransomware disrupting city services": "Critical systems encrypted; service delivery (permits, 311, public works) degraded.",
-    "Business Email Compromise (BEC) / payroll diversion": "Finance or HR targeted; fraudulent payment rerouting risks and vendor spoofing.",
-    "Widespread phishing against staff": "Credential harvesting across departments; risk of account takeover and data loss.",
-    "Public portal DDoS": "Citizen-facing portals (bill pay, permit apps) overwhelmed; access to services reduced.",
-    "Resident PII data breach": "Exposure of sensitive resident/employee data; notifications, redress, and long-term trust at stake.",
-    "Unauthorized access / insider misuse": "Privilege misuse or account abuse; audit gaps and disciplinary/oversight processes implicated.",
-    "Third-party/vendor outage (supply-chain)": "Hosted SaaS or MSP failure propagates to city systems; contract and continuity issues.",
-    "SCADA/OT disruption at water/utility": "Operational technology impacted; safety, compliance, and rapid recovery required.",
-    "IoT/smart-city sensor misuse": "Cameras/sensors repurposed or misconfigured; privacy, consent, and data minimization issues.",
-    "Website defacement/misinformation": "City site altered; reputational harm and public confusion; rapid comms and integrity restore.",
-}
-
-# ---------- Principlist list ----------
 PRINCIPLES = ["Beneficence", "Non-maleficence", "Autonomy", "Justice", "Explicability"]
 
 def suggest_nist(incident_type: str, description: str):
@@ -190,50 +175,6 @@ ETHICAL_TENSIONS_BY_SCENARIO = {
     ],
 }
 
-# ---------- NEW: Ethical tensions for COMMON incidents (Open-ended mode only) ----------
-ETHICAL_TENSIONS_BY_INCIDENT = {
-    "Ransomware disrupting city services": [
-        ("Rapid service restoration vs. not incentivizing crime", ["Beneficence", "Justice", "Non-maleficence"]),
-        ("Public updates vs. operational secrecy during containment", ["Explicability", "Non-maleficence"]),
-    ],
-    "Business Email Compromise (BEC) / payroll diversion": [
-        ("Blameless culture vs. individual accountability for errors", ["Justice", "Beneficence"]),
-        ("Quiet recovery vs. transparent notification to affected parties", ["Explicability", "Autonomy"]),
-    ],
-    "Widespread phishing against staff": [
-        ("Aggressive control (e.g., email blocks) vs. staff autonomy/usability", ["Non-maleficence", "Autonomy"]),
-        ("Targeted training for high-risk roles vs. fairness across workforce", ["Justice", "Beneficence"]),
-    ],
-    "Public portal DDoS": [
-        ("Blocking traffic (incl. some legit users) vs. equal access to services", ["Justice", "Non-maleficence"]),
-        ("Minimal comms to avoid panic vs. clear guidance for the public", ["Explicability", "Beneficence"]),
-    ],
-    "Resident PII data breach": [
-        ("Early disclosure vs. accuracy/completeness of facts", ["Explicability", "Non-maleficence"]),
-        ("Resource triage: protecting most vulnerable vs. equal treatment", ["Justice", "Beneficence"]),
-    ],
-    "Unauthorized access / insider misuse": [
-        ("Swift suspension vs. due process", ["Justice", "Autonomy"]),
-        ("Quiet internal handling vs. public accountability", ["Explicability", "Non-maleficence"]),
-    ],
-    "Third-party/vendor outage (supply-chain)": [
-        ("Vendor confidentiality vs. transparency to residents", ["Explicability", "Justice"]),
-        ("Rapid switch/rollback vs. operational risk of rushed changes", ["Non-maleficence", "Beneficence"]),
-    ],
-    "SCADA/OT disruption at water/utility": [
-        ("Automated fail-safes vs. human oversight", ["Beneficence", "Autonomy", "Explicability"]),
-        ("Restore quickly vs. validate integrity thoroughly", ["Non-maleficence", "Beneficence"]),
-    ],
-    "IoT/smart-city sensor misuse": [
-        ("Secondary use of data vs. original consent context", ["Autonomy", "Explicability"]),
-        ("Safety monitoring vs. privacy minimization", ["Beneficence", "Non-maleficence"]),
-    ],
-    "Website defacement/misinformation": [
-        ("Immediate takedown vs. preserving forensic evidence", ["Beneficence", "Explicability"]),
-        ("Rapid public messaging vs. risk of amplifying false claims", ["Explicability", "Non-maleficence"]),
-    ],
-}
-
 # ---------- Sidebar ----------
 st.sidebar.header("Options")
 mode = st.sidebar.radio("Mode", ["Thesis scenarios", "Open-ended"])
@@ -261,20 +202,12 @@ with st.expander("About this prototype"):
 st.divider()
 
 # ---------- 1) Scenario overview ----------
-if mode == "Thesis scenarios":
-    scenario = st.selectbox("Choose a Municipal Cybersecurity Scenario", options=list(scenario_summaries.keys()))
-    st.markdown("### 1) Scenario Overview")
-    st.markdown(f"**Scenario Overview:** {scenario_summaries[scenario]}")
-    incident_type = scenario
-    description = scenario_summaries[scenario]
-else:
-    # Open-ended mode uses common incident catalog
-    incident = st.selectbox("Select a common municipal cyber incident", options=list(COMMON_INCIDENTS.keys()))
-    st.markdown("### 1) Scenario Overview")
-    st.markdown(f"**Scenario Overview:** {COMMON_INCIDENTS[incident]}")
-    incident_type = incident
-    description = COMMON_INCIDENTS[incident]
+scenario = st.selectbox("Choose a Municipal Cybersecurity Scenario", options=list(scenario_summaries.keys()))
+st.markdown("### 1) Scenario Overview")
+st.markdown(f"**Scenario Overview:** {scenario_summaries[scenario]}")
 
+incident_type = scenario
+description = scenario_summaries[scenario]
 pd_defaults = dict(description="", stakeholders=[], values=[], constraints=[])
 
 st.divider()
@@ -388,10 +321,7 @@ else:
 # ---------- Ethical tensions in this scenario (UPDATED to show Principlist terms) ----------
 st.markdown("#### Ethical tensions in this scenario")
 st.caption("Key value trade-offs in this case framed in Principlist terms.")
-if mode == "Thesis scenarios":
-    tensions = ETHICAL_TENSIONS_BY_SCENARIO.get(incident_type, [])
-else:
-    tensions = ETHICAL_TENSIONS_BY_INCIDENT.get(incident_type, [])
+tensions = ETHICAL_TENSIONS_BY_SCENARIO.get(scenario, [])
 if tensions:
     items = []
     for label, tags in tensions:
@@ -415,10 +345,8 @@ The matrix is designed to help practitioners **consider technical and ethical di
 
 This approach does not assume conflict between technical and ethical concerns. Instead, it ensures **completeness of reasoning**, so that municipal practitioners act in ways that are both technically sound and ethically defensible under real-world constraints.  
     """)
-use_weights = st.toggle("Use 0–5 weighting instead of checkboxes", value=False, key="mx_use_weights")
 
 PREHIGHLIGHT = {
-    # Thesis cases
     "Baltimore Ransomware Attack": [
         ("Respond (RS)", "Justice"),
         ("Protect (PR)", "Non-maleficence"),
@@ -442,64 +370,6 @@ PREHIGHLIGHT = {
         ("Recover (RC)", "Justice"),
         ("Govern (GV)", "Explicability"),
     ],
-    # Common incidents (Open-ended)
-    "Ransomware disrupting city services": [
-        ("Respond (RS)", "Justice"),
-        ("Protect (PR)", "Non-maleficence"),
-        ("Recover (RC)", "Beneficence"),
-        ("Govern (GV)", "Explicability"),
-        ("Identify (ID)", "Justice"),
-    ],
-    "Business Email Compromise (BEC) / payroll diversion": [
-        ("Identify (ID)", "Explicability"),
-        ("Protect (PR)", "Non-maleficence"),
-        ("Respond (RS)", "Justice"),
-        ("Govern (GV)", "Explicability"),
-    ],
-    "Widespread phishing against staff": [
-        ("Protect (PR)", "Non-maleficence"),
-        ("Detect (DE)", "Beneficence"),
-        ("Respond (RS)", "Justice"),
-        ("Govern (GV)", "Explicability"),
-    ],
-    "Public portal DDoS": [
-        ("Protect (PR)", "Non-maleficence"),
-        ("Respond (RS)", "Beneficence"),
-        ("Recover (RC)", "Justice"),
-    ],
-    "Resident PII data breach": [
-        ("Identify (ID)", "Justice"),
-        ("Respond (RS)", "Explicability"),
-        ("Recover (RC)", "Beneficence"),
-        ("Govern (GV)", "Explicability"),
-    ],
-    "Unauthorized access / insider misuse": [
-        ("Detect (DE)", "Explicability"),
-        ("Respond (RS)", "Justice"),
-        ("Govern (GV)", "Autonomy"),
-    ],
-    "Third-party/vendor outage (supply-chain)": [
-        ("Identify (ID)", "Explicability"),
-        ("Respond (RS)", "Justice"),
-        ("Recover (RC)", "Beneficence"),
-        ("Govern (GV)", "Explicability"),
-    ],
-    "SCADA/OT disruption at water/utility": [
-        ("Identify (ID)", "Beneficence"),
-        ("Detect (DE)", "Non-maleficence"),
-        ("Respond (RS)", "Explicability"),
-        ("Recover (RC)", "Justice"),
-    ],
-    "IoT/smart-city sensor misuse": [
-        ("Govern (GV)", "Autonomy"),
-        ("Protect (PR)", "Non-maleficence"),
-        ("Respond (RS)", "Justice"),
-    ],
-    "Website defacement/misinformation": [
-        ("Respond (RS)", "Explicability"),
-        ("Recover (RC)", "Beneficence"),
-        ("Detect (DE)", "Non-maleficence"),
-    ],
 }
 
 st.write("")
@@ -511,22 +381,17 @@ for i, p in enumerate(PRINCIPLES, start=1):
         st.markdown(f"**{p}**")
 
 matrix_state = {}
-pre = set(PREHIGHLIGHT.get(incident_type, []))
+pre = set(PREHIGHLIGHT.get(scenario, []))
 for fn in NIST_FUNCTIONS:
     row_cols = st.columns([1.1] + [1]*len(PRINCIPLES))
     with row_cols[0]:
         st.markdown(f"**{fn}**")
     for j, p in enumerate(PRINCIPLES, start=1):
         key = f"mx_{fn}_{p}"
-        default_marked = (fn, p) in pre if mode == "Thesis scenarios" or mode == "Open-ended" else False
+        default_marked = (fn, p) in pre if mode == "Thesis scenarios" else False
         with row_cols[j]:
-            if use_weights:
-                default_val = 3 if default_marked else 0
-                val = st.slider(" ", 0, 5, value=default_val, key=key, label_visibility="collapsed")
-                matrix_state[(fn, p)] = val
-            else:
-                mark = st.checkbox(" ", value=default_marked, key=key, label_visibility="collapsed")
-                matrix_state[(fn, p)] = 1 if mark else 0
+            mark = st.checkbox(" ", value=default_marked, key=key, label_visibility="collapsed")
+            matrix_state[(fn, p)] = 1 if mark else 0
 
 st.markdown("##### Matrix summary")
 fn_totals = {fn: sum(matrix_state[(fn, p)] for p in PRINCIPLES) for fn in NIST_FUNCTIONS}
@@ -536,12 +401,12 @@ colA, colB = st.columns(2)
 with colA:
     st.markdown("**Totals by NIST function**")
     for fn in NIST_FUNCTIONS:
-        st.progress(min(int((fn_totals[fn] / (5*len(PRINCIPLES) if use_weights else len(PRINCIPLES))) * 100), 100),
+        st.progress(min(int((fn_totals[fn] / len(PRINCIPLES)) * 100), 100),
                     text=f"{fn}: {fn_totals[fn]}")
 with colB:
     st.markdown("**Totals by Ethical principle**")
     for p in PRINCIPLES:
-        st.progress(min(int((pr_totals[p] / (5*len(NIST_FUNCTIONS) if use_weights else len(NIST_FUNCTIONS))) * 100), 100),
+        st.progress(min(int((pr_totals[p] / len(NIST_FUNCTIONS)) * 100), 100),
                     text=f"{p}: {pr_totals[p]}")
 
 st.session_state["nist_principle_matrix"] = matrix_state
