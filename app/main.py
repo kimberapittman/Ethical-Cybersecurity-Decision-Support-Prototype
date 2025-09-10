@@ -413,24 +413,6 @@ st.session_state["nist_principle_matrix"] = matrix_state
 st.session_state["nist_totals_by_function"] = fn_totals
 st.session_state["principle_totals"] = pr_totals
 
-# ---------- NEW: Decision-support cues (how to use the matrix output) ----------
-cue_lines = []
-# Surface the top technical function(s) and principle(s) by count:
-top_fn_count = max(fn_totals.values()) if fn_totals else 0
-top_fns = [fn for fn, v in fn_totals.items() if v == top_fn_count and v > 0]
-top_pr_count = max(pr_totals.values()) if pr_totals else 0
-top_prs = [p for p, v in pr_totals.items() if v == top_pr_count and v > 0]
-
-if top_fns:
-    cue_lines.append(f"<li><b>Focus areas (technical)</b>: {', '.join(top_fns)} are linked to the most principles — ensure these functions have owners, timelines, and controls.</li>")
-if top_prs:
-    cue_lines.append(f"<li><b>Ethical priorities</b>: {', '.join(top_prs)} recur across functions — make these explicit in your comms and playbooks.</li>")
-cue_lines.append("<li><b>Check blind spots</b>: Any row/column with few checks may need attention or explicit justification.</li>")
-cue_lines.append("<li><b>Align actions & values</b>: For each selected cell, capture the concrete safeguard, oversight step, or transparency measure you will take.</li>")
-
-st.markdown("#### Decision-support cues")
-st.markdown(f"<div class='listbox'><ul class='tight-list'>{''.join(cue_lines)}</ul></div>", unsafe_allow_html=True)
-
 st.divider()
 
 # ---------- 4) Institutional & Governance Constraints ----------
@@ -439,60 +421,9 @@ constraints = st.multiselect("Select constraints relevant to this scenario", GOV
 
 st.divider()
 
-# ---------- 5) Ethical Tension Score ----------
-st.markdown("### 5) Ethical Tension Score")
-if 'stakeholders' not in locals(): stakeholders = []
-if 'values' not in locals(): values = []
-score = score_tension(selected_principles, selected_nist, constraints, stakeholders, values)
-st.progress(score, text=f"Ethical/contextual tension: {score}/100")
-if score < 35:
-    st.success("Low tension: document rationale and proceed.")
-elif score < 70:
-    st.warning("Moderate tension: ensure proportionality and oversight.")
-else:
-    st.error("High tension: escalate and seek external counsel.")
-
-# ---------- NEW: Documentation & Rationale ----------
+# ---------- Documentation & Rationale ----------
 st.markdown("### Documentation & Rationale")
-st.caption("Capture a defensible record of what you decided and why. This helps transparency, oversight, and lessons learned.")
-doc_decision = st.text_area("Decision summary", placeholder="What did we decide to do and why now?")
-doc_actions = st.text_area("Key actions (CSF-aligned)", placeholder="List the concrete actions taken per NIST function (e.g., PR: enable MFA on critical apps; RS: publish status page update).")
-doc_ethics  = st.text_area("Ethical reasoning (Principlist)", placeholder="Which principles guided the action (e.g., Justice, Non-maleficence) and how were trade-offs handled?")
-doc_constraints = st.text_area("Constraints & mitigations", placeholder="Note budget, staffing, vendor limits, or policy constraints and how you mitigated them.")
-doc_transparency = st.text_area("Communication & transparency", placeholder="Public updates, internal briefings, documentation, oversight notifications.")
-
-if st.button("Assemble decision log"):
-    assembled = [
-        f"# Decision Log — {datetime.now().isoformat(timespec='minutes')}",
-        f"**Scenario:** {scenario}",
-        "",
-        "## Decision summary",
-        doc_decision or "-",
-        "",
-        "## Key actions (CSF-aligned)",
-        doc_actions or "-",
-        "",
-        "## Ethical reasoning (Principlist)",
-        doc_ethics or "-",
-        "",
-        "## Constraints & mitigations",
-        doc_constraints or "-",
-        "",
-        "## Communication & transparency",
-        doc_transparency or "-",
-    ]
-    st.session_state["decision_log_md"] = "\n".join(assembled)
-    st.success("Draft assembled below. You can download it as Markdown.")
-
-if "decision_log_md" in st.session_state:
-    st.markdown("---")
-    st.markdown(st.session_state["decision_log_md"])
-    st.download_button(
-        "Download decision log (.md)",
-        data=st.session_state["decision_log_md"].encode("utf-8"),
-        file_name="decision_log.md",
-        mime="text/markdown"
-    )
+# (Intentionally left blank per your request — you’ll design this later.)
 
 # ---------- Footer ----------
 st.markdown("---")
