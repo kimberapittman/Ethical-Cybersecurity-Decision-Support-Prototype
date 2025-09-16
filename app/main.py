@@ -4,7 +4,7 @@ from datetime import datetime
 # ---------- Page config ----------
 st.set_page_config(page_title="Municipal Ethical Cyber Decision-Support", layout="wide", initial_sidebar_state="expanded")
 
-# ---------- Minimal styling (cosmetic only) ----------
+# ---------- Minimal styling for list emphasis & readability (NEW, cosmetic only) ----------
 st.markdown("""
 <style>
 .listbox{background:#f9fbff;border-left:4px solid #4C8BF5;padding:10px 14px;border-radius:8px;margin:6px 0 14px;}
@@ -12,12 +12,6 @@ st.markdown("""
 .tight-list{margin:0.25rem 0 0 1.15rem;padding:0;}
 .tight-list li{margin:6px 0;}
 .sub{color:#6b7280;font-size:0.95rem;}
-.badges{display:flex;flex-wrap:wrap;gap:.35rem;margin:.35rem 0 0 0;}
-.badge{display:inline-block;padding:.2rem .5rem;border-radius:999px;border:1px solid #e5e7eb;font-size:.85rem}
-.badge.nist{background:#eef2ff;border-color:#c7d2fe;}
-.badge.principle{background:#ecfeff;border-color:#a5f3fc;}
-.badge.note{background:#fef9c3;border-color:#fde68a;}
-h3, h4 { margin-bottom: .4rem; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -153,6 +147,15 @@ def suggest_principles(description: str):
             ordered.append(p); seen.add(p)
     return ordered
 
+def score_tension(selected_principles, selected_nist, constraints, stakeholders, values):
+    base = 10
+    base += 5 * len(selected_principles)
+    base += 3 * len(selected_nist)
+    base += 6 * len(constraints)
+    base += 3 * len(stakeholders)
+    base += 4 * len(values)
+    return min(base, 100)
+
 # ---------- ETHICAL TENSIONS mapped to Principlist ----------
 ETHICAL_TENSIONS_BY_SCENARIO = {
     "Baltimore Ransomware Attack": [
@@ -176,7 +179,7 @@ ETHICAL_TENSIONS_BY_SCENARIO = {
 st.sidebar.header("Options")
 mode = st.sidebar.radio("Mode", ["Thesis scenarios", "Open-ended"])
 
-# ---------- Header ----------
+# ---------- Intro ----------
 st.markdown(
     """
     <div style='text-align: center;'>
@@ -190,8 +193,8 @@ st.markdown(
 with st.expander("About this prototype"):
     st.markdown(
         """
-- **Purpose:** Support municipal cybersecurity practitioners in navigating complex ethical dilemmas. This tool guides users through high-stakes decisions in real time—aligning actions with technical standards, clarifying value conflicts, and documenting justifiable outcomes under institutional and governance constraints.  
-- **Backbone:** This prototype draws on the NIST Cybersecurity Framework, guiding users through six core functions: **Govern, Identify, Protect, Detect, Respond, Recover**. These are integrated with Principlist ethical values—**Beneficence, Non-maleficence, Autonomy, Justice, Explicability**—to help users weigh trade-offs and make morally defensible decisions.  
+- **Purpose:** Support municipal cybersecurity practitioners in navigating complex ethical dilemmas. This tool is designed to guide users through high-stakes decisions in real time - aligning actions with technical standards, clarifying value conflicts, and documenting justifiable outcomes under institutional and governance constraints.  
+- **Backbone:** This prototype draws on the NIST Cybersecurity Framework, guiding users through six core functions: Govern, Identity, Protect, Detect, Respond, and Recover. These are integrated with Principlist ethical values: Beneficence, Non-maleficence, Autonomy, Justice, and Explicability - to help ussers weigh trade-offs and make morally  defensible decisions.  
 - **Context:** Designed specifically for municipal use, the prototype accounts for real-world constraints like limited budgets, fragmented authority, and vendor opacity. It supports ethical decision-making within these practical and political realities. 
         """
     )
@@ -205,12 +208,7 @@ st.markdown(f"**Scenario Overview:** {scenario_summaries[scenario]}")
 
 incident_type = scenario
 description = scenario_summaries[scenario]
-auto_principles = suggest_principles(description)
-suggested_nist = suggest_nist(incident_type, description)
-
-# Scenario “tags” (FIX: no stray parentheses; correct variable name)
-st.markdown("<div class='badges'>" + "".join([f"<span class='badge nist'>NIST: {f}</span>" for f in suggested_nist]) + "</div>", unsafe_allow_html=True)
-st.markdown("<div class='badges'>" + "".join([f"<span class='badge principle'>{p}</span>" for p in auto_principles]) + "</div>", unsafe_allow_html=True)
+pd_defaults = dict(description="", stakeholders=[], values=[], constraints=[])
 
 st.divider()
 
@@ -220,7 +218,8 @@ with st.expander("About the NIST CSF"):
     st.markdown("""
 The **NIST Cybersecurity Framework (CSF) 2.0** is a risk-based framework created by the 
 National Institute of Standards and Technology to help organizations manage and reduce 
-cybersecurity risks. It is organized into six core functions:
+cybersecurity risks. It is organized into six core functions, which together provide a 
+comprehensive approach to managing cyber risk:
 
 - **Govern (GV):** Establish and communicate organizational context, roles, policies, and oversight for managing cybersecurity risk.  
 - **Identify (ID):** Develop an organizational understanding of systems, people, assets, data, and capabilities to manage risk.  
@@ -229,9 +228,16 @@ cybersecurity risks. It is organized into six core functions:
 - **Respond (RS):** Take appropriate action regarding a detected cybersecurity incident.  
 - **Recover (RC):** Maintain plans for resilience and restore capabilities impaired by incidents.  
 
-In this prototype, the CSF provides the **technical backbone**, and the Principlist Framework provides the **ethical backbone**.
+In this prototype, the CSF provides the **technical backbone**.  
+Relevant CSF functions are highlighted for each scenario, and notes explain how they 
+apply in that specific situation—ensuring that ethical reasoning (via the Principlist 
+Framework) is grounded in recognized technical standards.
     """)
 
+# Suggested functions
+suggested_nist = suggest_nist(incident_type, description)
+
+# Per-scenario “how it applies” notes
 def scenario_csfs_explanations(incident_text: str) -> dict:
     t = incident_text.lower()
     notes = {
@@ -260,10 +266,12 @@ def scenario_csfs_explanations(incident_text: str) -> dict:
 
 scenario_tips = scenario_csfs_explanations(description)
 
+# ---- NEW BULLET LIST STYLE (mirrors ethical tensions section) ----
 st.markdown("#### Technical considerations in this scenario")
 st.caption("What the NIST CSF suggests focusing on for this case.")
 if mode == "Thesis scenarios":
     selected_nist = suggested_nist[:]
+    # Build clean <ul><li> list for readability
     items = []
     for fn in NIST_FUNCTIONS:
         mark = " ✓" if fn in suggested_nist else ""
@@ -272,22 +280,10 @@ if mode == "Thesis scenarios":
     st.markdown(f"<div class='listbox'><ul class='tight-list'>{''.join(items)}</ul></div>", unsafe_allow_html=True)
 else:
     selected_nist = []
-    st.caption("Quick toggles")
-    t1, t2 = st.columns(2)
-    with t1:
-        if st.button("Select all NIST"):
-            for fn in NIST_FUNCTIONS:
-                st.session_state[f"{mode}_{scenario}_fn_{fn}"] = True
-    with t2:
-        if st.button("Clear all NIST"):
-            for fn in NIST_FUNCTIONS:
-                st.session_state[f"{mode}_{scenario}_fn_{fn}"] = False
-
     cols_fn = st.columns(3)
     for i, fn in enumerate(NIST_FUNCTIONS):
         with cols_fn[i % 3]:
-            ck_key = f"{mode}_{scenario}_fn_{fn}"
-            checked = st.checkbox(fn, value=st.session_state.get(ck_key, fn in suggested_nist), key=ck_key)
+            checked = st.checkbox(fn, value=(fn in suggested_nist), key=f"fn_{fn}")
             if checked:
                 selected_nist.append(fn)
             st.caption(scenario_tips.get(fn, "—"))
@@ -298,20 +294,31 @@ st.divider()
 st.markdown("### 3) Ethical Evaluation (Principlist)")
 with st.expander("About the Principlist Framework"):
     st.markdown("""
-The **Principlist Framework for Cybersecurity Ethics** balances multiple values when making decisions under pressure:
+The **Principlist Framework for Cybersecurity Ethics** is a practical approach to ethical 
+reasoning that balances multiple values when making decisions under pressure. It is 
+organized into five core principles, which together provide a comprehensive approach 
+to identifying, weighing, and justifying ethical trade-offs:
 
 - **Beneficence:** Promote public well-being and the delivery of essential services.  
 - **Non-maleficence:** Avoid foreseeable harm from actions taken or omitted (e.g., over-collection, rash shutdowns).  
 - **Autonomy:** Respect legal rights, due process, and meaningful choice for affected people.  
 - **Justice:** Distribute burdens and benefits fairly; avoid disproportionate impact on specific communities.  
 - **Explicability:** Ensure transparency, accountability, and the ability to explain decisions and system behavior.  
+
+In this prototype, the Principlist Framework provides the **ethical backbone**.  
+Relevant principles are highlighted for each scenario, making value tensions explicit 
+so that technical standards (via the NIST CSF) are always considered in light of 
+ethical reasoning.
     """)
 
+# Auto-suggested principles for internal logic (no chips shown)
+auto_principles = suggest_principles(description)
 if mode == "Thesis scenarios":
     selected_principles = auto_principles[:]
 else:
-    selected_principles = st.multiselect("Select relevant ethical principles (optional)", PRINCIPLES, default=auto_principles, key=f"{mode}_{scenario}_principles")
+    selected_principles = st.multiselect("Select relevant ethical principles (optional)", PRINCIPLES, default=auto_principles)
 
+# ---------- Ethical tensions in this scenario (UPDATED to show Principlist terms) ----------
 st.markdown("#### Ethical tensions in this scenario")
 st.caption("Key value trade-offs in this case framed in Principlist terms.")
 tensions = ETHICAL_TENSIONS_BY_SCENARIO.get(scenario, [])
@@ -330,10 +337,13 @@ st.divider()
 st.markdown("### 4) Decision-Support Matrix")
 with st.expander("What this matrix does"):
     st.markdown("""
-The matrix helps practitioners **consider technical and ethical dimensions together**:  
-- **Rows = NIST CSF functions** — technical steps for the incident.  
-- **Columns = Principlist principles** — values guiding how those steps are carried out.  
-- **Cells = integration points** — reminders to ensure each technical action is considered in light of relevant ethical principles.  
+The matrix is designed to help practitioners **consider technical and ethical dimensions together** when making high-stakes cybersecurity decisions.  
+
+- **Rows = NIST CSF functions** — the technical steps needed to manage the incident.  
+- **Columns = Principlist ethical principles** — the values that should guide how those steps are carried out.  
+- **Cells = points of integration** — reminders to ensure that each technical action is considered in light of relevant ethical principles.  
+
+This approach does not assume conflict between technical and ethical concerns. Instead, it ensures **completeness of reasoning**, so that municipal practitioners act in ways that are both technically sound and ethically defensible under real-world constraints.  
     """)
 
 PREHIGHLIGHT = {
@@ -362,24 +372,7 @@ PREHIGHLIGHT = {
     ],
 }
 
-# Quick actions for matrix
-qa1, qa2, qa3 = st.columns(3)
-with qa1:
-    if st.button("Apply scenario highlights"):
-        for fn, p in PREHIGHLIGHT.get(scenario, []):
-            st.session_state[f"{mode}_{scenario}_mx_{fn}_{p}"] = True
-with qa2:
-    if st.button("Clear matrix"):
-        for fn in NIST_FUNCTIONS:
-            for p in PRINCIPLES:
-                st.session_state[f"{mode}_{scenario}_mx_{fn}_{p}"] = False
-with qa3:
-    if st.button("Select full grid"):
-        for fn in NIST_FUNCTIONS:
-            for p in PRINCIPLES:
-                st.session_state[f"{mode}_{scenario}_mx_{fn}_{p}"] = True
-
-# Render matrix (keys now namespaced by mode+scenario)
+st.write("")
 cols = st.columns([1.1] + [1]*len(PRINCIPLES))
 with cols[0]:
     st.markdown("**Function \\ Principle**")
@@ -394,10 +387,10 @@ for fn in NIST_FUNCTIONS:
     with row_cols[0]:
         st.markdown(f"**{fn}**")
     for j, p in enumerate(PRINCIPLES, start=1):
-        base_key = f"{mode}_{scenario}_mx_{fn}_{p}"
+        key = f"mx_{fn}_{p}"
         default_marked = (fn, p) in pre if mode == "Thesis scenarios" else False
         with row_cols[j]:
-            mark = st.checkbox(" ", value=st.session_state.get(base_key, default_marked), key=base_key, label_visibility="collapsed")
+            mark = st.checkbox(" ", value=default_marked, key=key, label_visibility="collapsed")
             matrix_state[(fn, p)] = 1 if mark else 0
 
 st.markdown("##### Matrix summary")
@@ -408,13 +401,13 @@ colA, colB = st.columns(2)
 with colA:
     st.markdown("**Totals by NIST function**")
     for fn in NIST_FUNCTIONS:
-        pct = min(int((fn_totals[fn] / len(PRINCIPLES)) * 100), 100)
-        st.progress(pct, text=f"{fn}: {fn_totals[fn]}")
+        st.progress(min(int((fn_totals[fn] / len(PRINCIPLES)) * 100), 100),
+                    text=f"{fn}: {fn_totals[fn]}")
 with colB:
     st.markdown("**Totals by Ethical principle**")
     for p in PRINCIPLES:
-        pct = min(int((pr_totals[p] / len(NIST_FUNCTIONS)) * 100), 100)
-        st.progress(pct, text=f"{p}: {pr_totals[p]}")
+        st.progress(min(int((pr_totals[p] / len(NIST_FUNCTIONS)) * 100), 100),
+                    text=f"{p}: {pr_totals[p]}")
 
 st.session_state["nist_principle_matrix"] = matrix_state
 st.session_state["nist_totals_by_function"] = fn_totals
@@ -422,15 +415,15 @@ st.session_state["principle_totals"] = pr_totals
 
 st.divider()
 
-# ---------- 5) Institutional & Governance Constraints ----------
-st.markdown("### 5) Institutional & Governance Constraints")
-constraints = st.multiselect("Select constraints relevant to this scenario", GOV_CONSTRAINTS, default=[], key=f"{mode}_{scenario}_constraints")
+# ---------- 4) Institutional & Governance Constraints ----------
+st.markdown("### 4) Institutional & Governance Constraints")
+constraints = st.multiselect("Select constraints relevant to this scenario", GOV_CONSTRAINTS, default=pd_defaults.get("constraints", []))
 
 st.divider()
 
-# ---------- 6) Documentation & Rationale ----------
-st.markdown("### 6) Documentation & Rationale")
-# Intentionally left blank per your direction.
+# ---------- Documentation & Rationale ----------
+st.markdown("### Documentation & Rationale")
+# (Intentionally left blank per your request — you’ll design this later.)
 
 # ---------- Footer ----------
 st.markdown("---")
