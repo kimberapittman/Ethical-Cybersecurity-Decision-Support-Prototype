@@ -1,0 +1,34 @@
+meta:
+  source: "Formosa, Wilson, & Richards, A Principlist Framework for Cybersecurity Ethics (2022)"
+  url: "https://doi.org/10.1007/s10676-022-09656-9"
+
+principles:
+  - name: "Beneficence"
+    definition: "Promote public well-being and the delivery of essential services."
+    illustrative_examples:
+      - "Prioritize restoring water, health, or emergency systems first"
+      - "Choose mitigations that maximize public benefit"
+
+  - name: "Non-maleficence"
+    definition: "Avoid foreseeable harm caused by actions taken or omitted."
+    illustrative_examples:
+      - "Avoid hasty shutdowns that could endanger residents"
+      - "Mitigate harm from ransomware response decisions"
+
+  - name: "Autonomy"
+    definition: "Respect legal rights, due process, and meaningful choice for affected people."
+    illustrative_examples:
+      - "Ensure consent and oversight in surveillance systems"
+      - "Allow residents the right to be informed of breaches"
+
+  - name: "Justice"
+    definition: "Distribute burdens and benefits fairly; avoid disproportionate impact."
+    illustrative_examples:
+      - "Avoid concentrating harms on vulnerable communities"
+      - "Distribute restoration resources equitably"
+
+  - name: "Explicability"
+    definition: "Ensure transparency, accountability, and the ability to explain decisions and system behavior."
+    illustrative_examples:
+      - "Document rationale for breach disclosure timing"
+      - "Explain AI-enabled decision-making in critical services"
