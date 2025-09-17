@@ -1,0 +1,47 @@
+meta:
+  source: "NIST Cybersecurity Framework 2.0 (2024)"
+  url: "https://doi.org/10.6028/NIST.CSWP.29"
+
+functions:
+  - name: "Govern (GV)"
+    definition: "Establish and monitor the organization’s cybersecurity risk management strategy, expectations, and policy."
+    illustrative_actions:
+      - "Affirm decision rights, RACI, and escalation paths"
+      - "Activate cross-department incident steering group"
+      - "Ensure procurement/vendor transparency (SBOMs, model cards)"
+      - "Mandate equity impact checks and mitigations"
+
+  - name: "Identify (ID)"
+    definition: "Understand the organization’s environment to manage cybersecurity risk to systems, people, assets, data, and capabilities."
+    illustrative_actions:
+      - "Confirm critical assets and services"
+      - "Map stakeholders and equity impacts"
+      - "Inventory affected assets and dependencies"
+
+  - name: "Protect (PR)"
+    definition: "Safeguard the delivery of critical services against cybersecurity events."
+    illustrative_actions:
+      - "Apply MFA and least privilege access"
+      - "Ensure backups are offline/immutable"
+      - "Safeguard sensitive data"
+
+  - name: "Detect (DE)"
+    definition: "Identify the occurrence of a cybersecurity event in a timely manner."
+    illustrative_actions:
+      - "Correlate alerts and verify indicators of compromise"
+      - "Expand monitoring to adjacent systems"
+      - "Preserve logs and forensic evidence"
+
+  - name: "Respond (RS)"
+    definition: "Take action regarding a detected cybersecurity event to contain impact."
+    illustrative_actions:
+      - "Contain affected hosts and segments"
+      - "Coordinate with legal and law enforcement"
+      - "Publish transparent updates"
+
+  - name: "Recover (RC)"
+    definition: "Maintain resilience and restore capabilities or services impaired during a cybersecurity event."
+    illustrative_actions:
+      - "Restore by criticality with integrity checks"
+      - "Conduct post-incident review"
+      - "Brief council/public with lessons learned"
