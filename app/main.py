@@ -1,6 +1,35 @@
 import streamlit as st
 from datetime import datetime
 
+# --- NEW: YAML + Path imports and loaders ---
+from pathlib import Path
+import yaml
+
+# Point to your repo’s /data folder (assuming this file is in /app)
+DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+
+@st.cache_data
+def load_yaml_file(filename: str):
+    path = DATA_DIR / filename
+    try:
+        with path.open("r", encoding="utf-8") as f:
+            return yaml.safe_load(f)
+    except Exception:
+        return {}
+
+@st.cache_data
+def load_all_data():
+    nist = load_yaml_file("nist_csf.yaml")              # { meta, functions: [{name, definition, illustrative_actions}] }
+    principlist = load_yaml_file("principlist.yaml")    # { meta, principles: [{name, definition, illustrative_examples}] }
+    dilemmas = load_yaml_file("municipal_dilemmas.yaml")# { <scenario>: {overview, technical, ethical_tensions: [...] } }
+    return nist, principlist, dilemmas
+
+NIST_YAML, PRINCIPLIST_YAML, DILEMMAS_YAML = load_all_data()
+
+# Derive names from YAML if present; fall back to your constants later
+NIST_FUNCTIONS_FROM_YAML = [f.get("name", "").strip() for f in NIST_YAML.get("functions", []) if f.get("name")]
+PRINCIPLES_FROM_YAML = [p.get("name", "").strip() for p in PRINCIPLIST_YAML.get("principles", []) if p.get("name")]
+
 # ---------- Page config ----------
 st.set_page_config(page_title="Municipal Ethical Cyber Decision-Support", layout="wide", initial_sidebar_state="expanded")
 
@@ -16,7 +45,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------- NIST CSF 2.0 constants ----------
-NIST_FUNCTIONS = [
+# If YAML present, prefer its function names; otherwise use your original list
+NIST_FUNCTIONS = NIST_FUNCTIONS_FROM_YAML or [
     "Govern (GV)",
     "Identify (ID)",
     "Protect (PR)",
@@ -117,7 +147,8 @@ scenario_summaries = {
     )
 }
 
-PRINCIPLES = ["Beneficence", "Non-maleficence", "Autonomy", "Justice", "Explicability"]
+# If YAML has principles, prefer it; else use your original list
+PRINCIPLES = PRINCIPLES_FROM_YAML or ["Beneficence", "Non-maleficence", "Autonomy", "Justice", "Explicability"]
 
 def suggest_nist(incident_type: str, description: str):
     it = incident_type.lower()
@@ -202,12 +233,29 @@ with st.expander("About this prototype"):
 st.divider()
 
 # ---------- 1) Scenario overview ----------
-scenario = st.selectbox("Choose a Municipal Cybersecurity Scenario", options=list(scenario_summaries.keys()))
-st.markdown("### 1) Scenario Overview")
-st.markdown(f"**Scenario Overview:** {scenario_summaries[scenario]}")
+if mode == "Thesis scenarios":
+    scenario = st.selectbox("Choose a Municipal Cybersecurity Scenario", options=list(scenario_summaries.keys()))
+    st.markdown("### 1) Scenario Overview")
+    st.markdown(f"**Scenario Overview:** {scenario_summaries[scenario]}")
+    incident_type = scenario
+    description = scenario_summaries[scenario]
+else:
+    # Open-ended mode pulls from YAML dilemmas
+    open_options = sorted(list(DILEMMAS_YAML.keys()))
+    if not open_options:
+        st.warning("No open-ended dilemmas found in data/municipal_dilemmas.yaml.")
+        open_options = []
+    scenario = st.selectbox("Choose a Municipal Cybersecurity Scenario", options=open_options)
+    st.markdown("### 1) Scenario Overview")
+    if scenario:
+        entry = DILEMMAS_YAML.get(scenario, {})
+        description = entry.get("overview", "—")
+        st.markdown(f"**Scenario Overview:** {description}")
+        incident_type = scenario
+    else:
+        description = ""
+        incident_type = ""
 
-incident_type = scenario
-description = scenario_summaries[scenario]
 pd_defaults = dict(description="", stakeholders=[], values=[], constraints=[])
 
 st.divider()
@@ -235,7 +283,13 @@ Framework) is grounded in recognized technical standards.
     """)
 
 # Suggested functions
-suggested_nist = suggest_nist(incident_type, description)
+if mode == "Open-ended" and scenario:
+    # If YAML specifies technical functions for the selected dilemma, use them; else fallback to heuristic
+    entry = DILEMMAS_YAML.get(scenario, {})
+    yaml_funcs = entry.get("technical", [])
+    suggested_nist = yaml_funcs[:] if yaml_funcs else suggest_nist(incident_type, description)
+else:
+    suggested_nist = suggest_nist(incident_type, description)
 
 # Per-scenario “how it applies” notes
 def scenario_csfs_explanations(incident_text: str) -> dict:
@@ -321,15 +375,29 @@ else:
 # ---------- Ethical tensions in this scenario (UPDATED to show Principlist terms) ----------
 st.markdown("#### Ethical tensions in this scenario")
 st.caption("Key value trade-offs in this case framed in Principlist terms.")
-tensions = ETHICAL_TENSIONS_BY_SCENARIO.get(scenario, [])
-if tensions:
-    items = []
-    for label, tags in tensions:
-        tag_str = ", ".join(tags) if tags else "—"
-        items.append(f"<li>{label}<div class='sub'>Principlist lens: <i>{tag_str}</i></div></li>")
-    st.markdown(f"<div class='listbox'><ul class='tight-list'>{''.join(items)}</ul></div>", unsafe_allow_html=True)
+if mode == "Open-ended" and scenario:
+    entry = DILEMMAS_YAML.get(scenario, {})
+    tensions = entry.get("ethical_tensions", [])
+    if tensions:
+        items = []
+        for t in tensions:
+            label = t.get("description", "—")
+            tags = t.get("principles", [])
+            tag_str = ", ".join(tags) if tags else "—"
+            items.append(f"<li>{label}<div class='sub'>Principlist lens: <i>{tag_str}</i></div></li>")
+        st.markdown(f"<div class='listbox'><ul class='tight-list'>{''.join(items)}</ul></div>", unsafe_allow_html=True)
+    else:
+        st.info("No predefined ethical tensions for this scenario.")
 else:
-    st.info("No predefined ethical tensions for this scenario.")
+    tensions = ETHICAL_TENSIONS_BY_SCENARIO.get(scenario, [])
+    if tensions:
+        items = []
+        for label, tags in tensions:
+            tag_str = ", ".join(tags) if tags else "—"
+            items.append(f"<li>{label}<div class='sub'>Principlist lens: <i>{tag_str}</i></div></li>")
+        st.markdown(f"<div class='listbox'><ul class='tight-list'>{''.join(items)}</ul></div>", unsafe_allow_html=True)
+    else:
+        st.info("No predefined ethical tensions for this scenario.")
 
 st.divider()
 
