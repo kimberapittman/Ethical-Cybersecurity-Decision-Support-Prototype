@@ -30,6 +30,13 @@ NIST_YAML, PRINCIPLIST_YAML, DILEMMAS_YAML = load_all_data()
 NIST_FUNCTIONS_FROM_YAML = [f.get("name", "").strip() for f in NIST_YAML.get("functions", []) if f.get("name")]
 PRINCIPLES_FROM_YAML = [p.get("name", "").strip() for p in PRINCIPLIST_YAML.get("principles", []) if p.get("name")]
 
+# --- STRICT (source-only) switch ---
+STRICT_SOURCE_ONLY = True
+
+# Canonical definition maps from YAML (used in strict mode)
+NIST_DEF = {f.get("name"): f.get("definition", "") for f in NIST_YAML.get("functions", []) if f.get("name")}
+PRINCIPLE_DEF = {p.get("name"): p.get("definition", "") for p in PRINCIPLIST_YAML.get("principles", []) if p.get("name")}
+
 # ---------- Page config ----------
 st.set_page_config(page_title="Municipal Ethical Cyber Decision-Support", layout="wide", initial_sidebar_state="expanded")
 
@@ -56,6 +63,7 @@ NIST_FUNCTIONS = NIST_FUNCTIONS_FROM_YAML or [
 ]
 
 # ---------- Simple rule-based NLP helpers (no external deps) ----------
+# (Kept for compatibility, but bypassed in strict mode)
 NIST_KB = {
     "ransomware": ["Govern (GV)", "Identify (ID)", "Protect (PR)", "Detect (DE)", "Respond (RS)", "Recover (RC)"],
     "phishing":   ["Govern (GV)", "Protect (PR)", "Detect (DE)", "Respond (RS)", "Recover (RC)"],
@@ -151,6 +159,7 @@ scenario_summaries = {
 PRINCIPLES = PRINCIPLES_FROM_YAML or ["Beneficence", "Non-maleficence", "Autonomy", "Justice", "Explicability"]
 
 def suggest_nist(incident_type: str, description: str):
+    # Heuristic function kept for compatibility; not used in strict mode
     it = incident_type.lower()
     seed = []
     for k, v in NIST_KB.items():
@@ -165,6 +174,7 @@ def suggest_nist(incident_type: str, description: str):
     return ordered
 
 def suggest_principles(description: str):
+    # Heuristic function kept for compatibility; not used in strict mode
     hits = []
     text = description.lower()
     for k, plist in ETHICAL_HINTS.items():
@@ -282,16 +292,16 @@ apply in that specific situation—ensuring that ethical reasoning (via the Prin
 Framework) is grounded in recognized technical standards.
     """)
 
-# Suggested functions
+# Suggested functions — strict = YAML only (no heuristics)
 if mode == "Open-ended" and scenario:
-    # If YAML specifies technical functions for the selected dilemma, use them; else fallback to heuristic
     entry = DILEMMAS_YAML.get(scenario, {})
     yaml_funcs = entry.get("technical", [])
-    suggested_nist = yaml_funcs[:] if yaml_funcs else suggest_nist(incident_type, description)
+    suggested_nist = yaml_funcs[:] if STRICT_SOURCE_ONLY else (yaml_funcs[:] or suggest_nist(incident_type, description))
 else:
-    suggested_nist = suggest_nist(incident_type, description)
+    # Thesis scenarios: use canonical NIST list (strict) instead of heuristic suggestions
+    suggested_nist = NIST_FUNCTIONS[:] if STRICT_SOURCE_ONLY else suggest_nist(incident_type, description)
 
-# Per-scenario “how it applies” notes
+# Per-scenario “how it applies” notes — strict uses canonical NIST definitions
 def scenario_csfs_explanations(incident_text: str) -> dict:
     t = incident_text.lower()
     notes = {
@@ -318,7 +328,11 @@ def scenario_csfs_explanations(incident_text: str) -> dict:
         notes["Recover (RC)"] = "Validate safe operations before full return; document model/controls changes."
     return notes
 
-scenario_tips = scenario_csfs_explanations(description)
+# In strict mode, display canonical definitions from YAML as the “tips”
+if STRICT_SOURCE_ONLY and NIST_DEF:
+    scenario_tips = {fn: NIST_DEF.get(fn, "—") for fn in NIST_FUNCTIONS}
+else:
+    scenario_tips = scenario_csfs_explanations(description)
 
 # ---- NEW BULLET LIST STYLE (mirrors ethical tensions section) ----
 st.markdown("#### Technical considerations in this scenario")
@@ -365,8 +379,12 @@ so that technical standards (via the NIST CSF) are always considered in light of
 ethical reasoning.
     """)
 
-# Auto-suggested principles for internal logic (no chips shown)
-auto_principles = suggest_principles(description)
+# Auto-suggested principles for internal logic (strict = canonical list only)
+if STRICT_SOURCE_ONLY:
+    auto_principles = PRINCIPLES[:]  # all canonical principles
+else:
+    auto_principles = suggest_principles(description)
+
 if mode == "Thesis scenarios":
     selected_principles = auto_principles[:]
 else:
