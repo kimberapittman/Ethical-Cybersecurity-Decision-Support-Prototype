@@ -51,6 +51,13 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+/* Make sidebar a flexbox so appendix sits at bottom */
+section[data-testid="stSidebar"] > div {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
 # ---------- NIST CSF 2.0 constants ----------
 # If YAML present, prefer its function names; otherwise use your original list
 NIST_FUNCTIONS = NIST_FUNCTIONS_FROM_YAML or [
@@ -216,49 +223,18 @@ ETHICAL_TENSIONS_BY_SCENARIO = {
     ],
 }
 
-# ---------- Sidebar (Options at top, Appendix pinned to bottom) ----------
-st.markdown(
-    """
-    <style>
-    .sidebar-content { display: flex; flex-direction: column; height: 100%; }
-    .sidebar-top { flex-grow: 0; }
-    .sidebar-bottom { margin-top: auto; }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+# ---------- Sidebar ----------
+st.sidebar.header("Options")
+mode = st.sidebar.radio("Mode", ["Thesis scenarios", "Open-ended"])
 
-with st.sidebar:
-    st.markdown("<div class='sidebar-content'>", unsafe_allow_html=True)
-
-    # --- Top: Options ---
-    st.markdown("<div class='sidebar-top'>", unsafe_allow_html=True)
-    st.header("Options")
-    mode = st.radio("Mode", ["Thesis scenarios", "Open-ended"])
-    st.markdown("</div>", unsafe_allow_html=True)
-
-# ---------- Appendix pinned to bottom of sidebar with expander ----------
+# Add a spacer that takes up remaining vertical space
 st.sidebar.markdown(
-    """
-    <style>
-    .sidebar-appendix {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 15rem; /* Adjust if your sidebar is wider */
-        padding: 0 10px 10px 10px;
-        background-color: #ffffff;
-        border-top: 1px solid #ddd;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
+    "<div style='flex-grow:1;'></div>", unsafe_allow_html=True
 )
 
-with st.sidebar:
-    st.markdown('<div class="sidebar-appendix">', unsafe_allow_html=True)
-    with st.expander("📚 Appendix: Framework Sources", expanded=False):
-        st.markdown("""
+# ---------- Appendix (pinned bottom of sidebar) ----------
+with st.sidebar.expander("📚 Appendix: Framework Sources", expanded=False):
+    st.markdown("""
 **National Institute of Standards and Technology.**  
 *The NIST Cybersecurity Framework (CSF) 2.0.*  
 National Institute of Standards and Technology, 2024.  
@@ -268,8 +244,8 @@ National Institute of Standards and Technology, 2024.
 "A Principlist Framework for Cybersecurity Ethics."  
 *Computers & Security* 109 (2021): 1–15.  
 [https://doi.org/10.1016/j.cose.2021.102382](https://doi.org/10.1016/j.cose.2021.102382)  
-        """)
-    st.markdown('</div>', unsafe_allow_html=True)
+    """)
+
 
 
 # ---------- Intro ----------
