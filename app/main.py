@@ -48,15 +48,12 @@ st.markdown("""
 .tight-list{margin:0.25rem 0 0 1.15rem;padding:0;}
 .tight-list li{margin:6px 0;}
 .sub{color:#6b7280;font-size:0.95rem;}
+
+/* NEW: make the sidebar a flex column and add a spacer that pushes appendix to bottom */
+section[data-testid="stSidebar"] > div { display:flex; flex-direction:column; height:100%; }
+.sidebar-spacer { flex-grow:1; }
 </style>
 """, unsafe_allow_html=True)
-
-/* Make sidebar a flexbox so appendix sits at bottom */
-section[data-testid="stSidebar"] > div {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
 
 # ---------- NIST CSF 2.0 constants ----------
 # If YAML present, prefer its function names; otherwise use your original list
@@ -227,13 +224,11 @@ ETHICAL_TENSIONS_BY_SCENARIO = {
 st.sidebar.header("Options")
 mode = st.sidebar.radio("Mode", ["Thesis scenarios", "Open-ended"])
 
-# Add a spacer that takes up remaining vertical space
-st.sidebar.markdown(
-    "<div style='flex-grow:1;'></div>", unsafe_allow_html=True
-)
+# (NEW) Spacer that pushes the appendix to the bottom of the sidebar
+st.sidebar.markdown("<div class='sidebar-spacer'></div>", unsafe_allow_html=True)
 
-# ---------- Appendix (pinned bottom of sidebar) ----------
-with st.sidebar.expander("📚 Appendix: Framework Sources", expanded=False):
+# ---------- Appendix at bottom of sidebar ----------
+with st.sidebar.expander("📚 Appendix: Framework Sources"):
     st.markdown("""
 **National Institute of Standards and Technology.**  
 *The NIST Cybersecurity Framework (CSF) 2.0.*  
@@ -245,8 +240,6 @@ National Institute of Standards and Technology, 2024.
 *Computers & Security* 109 (2021): 1–15.  
 [https://doi.org/10.1016/j.cose.2021.102382](https://doi.org/10.1016/j.cose.2021.102382)  
     """)
-
-
 
 # ---------- Intro ----------
 st.markdown(
