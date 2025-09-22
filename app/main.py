@@ -242,7 +242,8 @@ with st.expander("About this prototype"):
 
 st.divider()
 
-# ---------- Appendix ----------
+# ---------- Appendix at bottom of sidebar ----------
+st.sidebar.markdown("---")  # divider for clarity
 with st.sidebar.expander("📚 Appendix: Framework Sources"):
     st.markdown("""
 **National Institute of Standards and Technology.**  
@@ -255,7 +256,6 @@ National Institute of Standards and Technology, 2024.
 *Computers & Security* 109 (2021): 1–15.  
 [https://doi.org/10.1016/j.cose.2021.102382](https://doi.org/10.1016/j.cose.2021.102382)  
     """)
-
 # ---------- 1) Scenario overview ----------
 if mode == "Thesis scenarios":
     scenario = st.selectbox("Choose a Municipal Cybersecurity Scenario", options=list(scenario_summaries.keys()))
