@@ -49,9 +49,13 @@ st.markdown("""
 .tight-list li{margin:6px 0;}
 .sub{color:#6b7280;font-size:0.95rem;}
 
-/* NEW: make the sidebar a flex column and add a spacer that pushes appendix to bottom */
-section[data-testid="stSidebar"] > div { display:flex; flex-direction:column; height:100%; }
-.sidebar-spacer { flex-grow:1; }
+/* Make the sidebar a flex column and push the appendix block to the bottom */
+section[data-testid="stSidebar"] > div:first-child{
+  height:100%;
+  display:flex;
+  flex-direction:column;
+}
+.sidebar-spacer{flex-grow:1;} /* this invisible div will take all remaining space */
 </style>
 """, unsafe_allow_html=True)
 
@@ -224,10 +228,10 @@ ETHICAL_TENSIONS_BY_SCENARIO = {
 st.sidebar.header("Options")
 mode = st.sidebar.radio("Mode", ["Thesis scenarios", "Open-ended"])
 
-# (NEW) Spacer that pushes the appendix to the bottom of the sidebar
+# —— Spacer that grows to fill the sidebar; appendix will sit below it (BOTTOM) ——
 st.sidebar.markdown("<div class='sidebar-spacer'></div>", unsafe_allow_html=True)
 
-# ---------- Appendix at bottom of sidebar ----------
+# ---------- Appendix (pinned to bottom of sidebar) ----------
 with st.sidebar.expander("📚 Appendix: Framework Sources"):
     st.markdown("""
 **National Institute of Standards and Technology.**  
