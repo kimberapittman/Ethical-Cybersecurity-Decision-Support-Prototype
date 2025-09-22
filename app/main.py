@@ -216,9 +216,45 @@ ETHICAL_TENSIONS_BY_SCENARIO = {
     ],
 }
 
-# ---------- Sidebar ----------
-st.sidebar.header("Options")
-mode = st.sidebar.radio("Mode", ["Thesis scenarios", "Open-ended"])
+# ---------- Sidebar (Options at top, Appendix pinned to bottom) ----------
+st.markdown(
+    """
+    <style>
+    .sidebar-content { display: flex; flex-direction: column; height: 100%; }
+    .sidebar-top { flex-grow: 0; }
+    .sidebar-bottom { margin-top: auto; }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+with st.sidebar:
+    st.markdown("<div class='sidebar-content'>", unsafe_allow_html=True)
+
+    # --- Top: Options ---
+    st.markdown("<div class='sidebar-top'>", unsafe_allow_html=True)
+    st.header("Options")
+    mode = st.radio("Mode", ["Thesis scenarios", "Open-ended"])
+    st.markdown("</div>", unsafe_allow_html=True)
+
+    # --- Bottom: Appendix (your citations unchanged) ---
+    st.markdown("<div class='sidebar-bottom'>", unsafe_allow_html=True)
+    st.markdown("---")
+    with st.expander("📚 Appendix: Framework Sources"):
+        st.markdown("""
+**National Institute of Standards and Technology.**  
+*The NIST Cybersecurity Framework (CSF) 2.0.*  
+National Institute of Standards and Technology, 2024.  
+[https://doi.org/10.6028/NIST.CSWP.29](https://doi.org/10.6028/NIST.CSWP.29)  
+
+**Formosa, Paul, Michael Wilson, and Deborah Richards.**  
+"A Principlist Framework for Cybersecurity Ethics."  
+*Computers & Security* 109 (2021): 1–15.  
+[https://doi.org/10.1016/j.cose.2021.102382](https://doi.org/10.1016/j.cose.2021.102382)  
+        """)
+    st.markdown("</div>", unsafe_allow_html=True)
+
+    st.markdown("</div>", unsafe_allow_html=True)
 
 # ---------- Intro ----------
 st.markdown(
@@ -242,20 +278,6 @@ with st.expander("About this prototype"):
 
 st.divider()
 
-# ---------- Appendix at bottom of sidebar ----------
-st.sidebar.markdown("---")  # divider for clarity
-with st.sidebar.expander("📚 Appendix: Framework Sources"):
-    st.markdown("""
-**National Institute of Standards and Technology.**  
-*The NIST Cybersecurity Framework (CSF) 2.0.*  
-National Institute of Standards and Technology, 2024.  
-[https://doi.org/10.6028/NIST.CSWP.29](https://doi.org/10.6028/NIST.CSWP.29)  
-
-**Formosa, Paul, Michael Wilson, and Deborah Richards.**  
-"A Principlist Framework for Cybersecurity Ethics."  
-*Computers & Security* 109 (2021): 1–15.  
-[https://doi.org/10.1016/j.cose.2021.102382](https://doi.org/10.1016/j.cose.2021.102382)  
-    """)
 # ---------- 1) Scenario overview ----------
 if mode == "Thesis scenarios":
     scenario = st.selectbox("Choose a Municipal Cybersecurity Scenario", options=list(scenario_summaries.keys()))
