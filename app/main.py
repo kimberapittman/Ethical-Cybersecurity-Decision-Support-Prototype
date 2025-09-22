@@ -242,6 +242,20 @@ with st.expander("About this prototype"):
 
 st.divider()
 
+# ---------- Appendix ----------
+with st.sidebar.expander("📚 Appendix: Framework Sources"):
+    st.markdown("""
+**National Institute of Standards and Technology.**  
+*The NIST Cybersecurity Framework (CSF) 2.0.*  
+National Institute of Standards and Technology, 2024.  
+[https://doi.org/10.6028/NIST.CSWP.29](https://doi.org/10.6028/NIST.CSWP.29)  
+
+**Formosa, Paul, Michael Wilson, and Deborah Richards.**  
+"A Principlist Framework for Cybersecurity Ethics."  
+*Computers & Security* 109 (2021): 1–15.  
+[https://doi.org/10.1016/j.cose.2021.102382](https://doi.org/10.1016/j.cose.2021.102382)  
+    """)
+
 # ---------- 1) Scenario overview ----------
 if mode == "Thesis scenarios":
     scenario = st.selectbox("Choose a Municipal Cybersecurity Scenario", options=list(scenario_summaries.keys()))
