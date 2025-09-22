@@ -237,24 +237,46 @@ with st.sidebar:
     mode = st.radio("Mode", ["Thesis scenarios", "Open-ended"])
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # --- Bottom: Appendix (your citations unchanged) ---
-    st.markdown("<div class='sidebar-bottom'>", unsafe_allow_html=True)
-    st.markdown("---")
-    with st.expander("📚 Appendix: Framework Sources"):
-        st.markdown("""
-**National Institute of Standards and Technology.**  
-*The NIST Cybersecurity Framework (CSF) 2.0.*  
-National Institute of Standards and Technology, 2024.  
-[https://doi.org/10.6028/NIST.CSWP.29](https://doi.org/10.6028/NIST.CSWP.29)  
+# ---------- Appendix pinned to bottom of sidebar ----------
+st.sidebar.markdown(
+    """
+    <style>
+    .sidebar-appendix {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 15rem; /* default sidebar width */
+        padding: 10px;
+        background-color: #f9f9f9;
+        border-top: 1px solid #ddd;
+        font-size: 0.85rem;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
-**Formosa, Paul, Michael Wilson, and Deborah Richards.**  
-"A Principlist Framework for Cybersecurity Ethics."  
-*Computers & Security* 109 (2021): 1–15.  
-[https://doi.org/10.1016/j.cose.2021.102382](https://doi.org/10.1016/j.cose.2021.102382)  
-        """)
-    st.markdown("</div>", unsafe_allow_html=True)
+st.sidebar.markdown(
+    """
+    <div class="sidebar-appendix">
+        <b>📚 Appendix: Framework Sources</b><br><br>
 
-    st.markdown("</div>", unsafe_allow_html=True)
+        <b>National Institute of Standards and Technology.</b><br>
+        <i>The NIST Cybersecurity Framework (CSF) 2.0.</i><br>
+        National Institute of Standards and Technology, 2024.<br>
+        <a href="https://doi.org/10.6028/NIST.CSWP.29" target="_blank">
+        https://doi.org/10.6028/NIST.CSWP.29</a><br><br>
+
+        <b>Formosa, Paul, Michael Wilson, and Deborah Richards.</b><br>
+        "A Principlist Framework for Cybersecurity Ethics."<br>
+        <i>Computers & Security</i> 109 (2021): 1–15.<br>
+        <a href="https://doi.org/10.1016/j.cose.2021.102382" target="_blank">
+        https://doi.org/10.1016/j.cose.2021.102382</a>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
 
 # ---------- Intro ----------
 st.markdown(
