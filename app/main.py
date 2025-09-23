@@ -19,14 +19,13 @@ def load_yaml_file(filename: str):
 
 @st.cache_data
 def load_all_data():
-    nist = load_yaml_file("nist_csf.yaml")               # { meta, functions: [{name, definition, illustrative_actions}] }
-    principlist = load_yaml_file("principlist.yaml")     # { meta, principles: [{name, definition, illustrative_examples}] }
-    dilemmas = load_yaml_file("municipal_dilemmas.yaml") # { <scenario>: {overview, technical, ethical_tensions: [...] } }
-    # --- NEW: load institutional/governance constraints by thesis scenario ---
-    institutional = load_yaml_file("scenario_constraints.yaml")  # { <scenario>: {constraints: [...] } } OR { <scenario>: [...] }
-    return nist, principlist, dilemmas, institutional
+    nist = load_yaml_file("nist_csf.yaml")
+    principlist = load_yaml_file("principlist.yaml")
+    dilemmas = load_yaml_file("municipal_dilemmas.yaml")
+    constraints = load_yaml_file("scenario_constraints.yaml")   # NEW
+    return nist, principlist, dilemmas, constraints
 
-NIST_YAML, PRINCIPLIST_YAML, DILEMMAS_YAML, SCENARIO_YAML = load_all_data()
+NIST_YAML, PRINCIPLIST_YAML, DILEMMAS_YAML, CONSTRAINTS_YAML = load_all_data()
 
 # Derive names from YAML if present; fall back to your constants later
 NIST_FUNCTIONS_FROM_YAML = [f.get("name", "").strip() for f in NIST_YAML.get("functions", []) if f.get("name")]
