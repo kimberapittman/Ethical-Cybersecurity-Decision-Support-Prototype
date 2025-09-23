@@ -549,23 +549,24 @@ st.divider()
 # ---------- 5) Institutional & Governance Constraints ----------
 st.markdown("### 5) Institutional & Governance Constraints")
 
-# Default selections:
-# - Thesis scenarios: pull directly from Chapter 3 map above
-# - Open-ended: if your municipal_dilemmas.yaml has constraints, prefer those; else none
+# Pull scenario-specific defaults (from YAML or dict you’re using)
 if mode == "Thesis scenarios":
-    default_constraints = THESIS_CONSTRAINTS.get(scenario, [])
+    # If you loaded thesis constraints from YAML, use that here:
+    # scenario_defaults = THESIS_CONSTRAINTS_YAML.get(scenario, [])
+    # For now, fall back to an empty list if not present:
+    scenario_defaults = DILEMMAS_YAML.get(scenario, {}).get("constraints", [])
 else:
-    entry = DILEMMAS_YAML.get(scenario, {}) if scenario else {}
-    default_constraints = entry.get("constraints", [])
+    scenario_defaults = []
+
+# Merge global options with scenario defaults, then validate defaults
+all_constraint_options = sorted(set(GOV_CONSTRAINTS) | set(scenario_defaults))
+valid_defaults = [c for c in scenario_defaults if c in all_constraint_options]
 
 constraints = st.multiselect(
     "Select constraints relevant to this scenario",
-    GOV_CONSTRAINTS,
-    default=default_constraints
+    options=all_constraint_options,
+    default=valid_defaults
 )
-
-
-st.divider()
 
 # ---------- Documentation & Rationale ----------
 st.markdown("### Documentation & Rationale")
