@@ -518,43 +518,25 @@ st.session_state["principle_totals"] = pr_totals
 
 st.divider()
 
-# ---------- 5) Institutional & Governance Constraints ----------
+# ---------- Institutional & Governance Constraints ----------
 st.markdown("### 5) Institutional & Governance Constraints")
 
-def get_constraints_for_scenario(name: str):
-    """
-    Supports either of these YAML shapes:
-      Baltimore Ransomware Attack:
-        constraints:
-          - item A
-          - item B
-    OR
-      Baltimore Ransomware Attack:
-        - item A
-        - item B
-    """
-    entry = INSTITUTIONAL_YAML.get(name, [])
-    if isinstance(entry, dict):
-        return entry.get("constraints", []) or []
-    if isinstance(entry, list):
-        return entry
-    return []
-
 if mode == "Thesis scenarios":
-    constraints_list = get_constraints_for_scenario(scenario)
-    if constraints_list:
-        # Read-only bullet list, auto-populated from your Chapter 3 YAML
-        bullets = "".join(f"<li>{c}</li>" for c in constraints_list)
-        st.markdown(f"<div class='listbox'><ul class='tight-list'>{bullets}</ul></div>", unsafe_allow_html=True)
+    # Auto-populate from scenario_constraints.yaml
+    scenario_constraints = CONSTRAINTS_YAML.get(scenario, [])
+    if scenario_constraints:
+        st.markdown("**Constraints for this scenario:**")
+        st.markdown("<ul>" + "".join([f"<li>{c}</li>" for c in scenario_constraints]) + "</ul>", unsafe_allow_html=True)
     else:
-        st.info("No constraints found for this scenario in data/institutional_constraints.yaml.")
-    # Keep a variable for downstream logic if needed
-    constraints = constraints_list[:]
+        st.info("No predefined constraints found for this scenario.")
 else:
-    # Open-ended mode: keep your existing multiselect
-    constraints = st.multiselect("Select constraints relevant to this scenario", GOV_CONSTRAINTS, default=pd_defaults.get("constraints", []))
+    # Open-ended mode stays a dropdown
+    constraints = st.multiselect(
+        "Select constraints relevant to this scenario",
+        GOV_CONSTRAINTS,
+        default=pd_defaults.get("constraints", [])
+    )
 
-st.divider()
 
 # ---------- Documentation & Rationale ----------
 st.markdown("### Documentation & Rationale")
