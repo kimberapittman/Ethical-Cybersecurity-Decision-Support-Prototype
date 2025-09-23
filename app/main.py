@@ -519,8 +519,8 @@ st.session_state["principle_totals"] = pr_totals
 
 st.divider()
 
-# ---------- 4) Institutional & Governance Constraints ----------
-st.markdown("### 4) Institutional & Governance Constraints")
+# ---------- 5) Institutional & Governance Constraints ----------
+st.markdown("### 5) Institutional & Governance Constraints")
 
 def get_constraints_for_scenario(name: str):
     """
