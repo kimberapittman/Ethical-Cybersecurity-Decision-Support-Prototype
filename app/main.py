@@ -222,8 +222,10 @@ ETHICAL_TENSIONS_BY_SCENARIO = {
 }
 
 # ---------- Sidebar ----------
-st.sidebar.header("Options")
-mode = st.sidebar.radio("Mode", ["Thesis scenarios", "Open-ended"])
+mode = st.sidebar.radio(
+    "### **Mode**",   # makes the label bold and larger
+    ["Thesis scenarios", "Open-ended"]
+)
 
 # spacer that grows to push the next block to the bottom of the sidebar
 st.sidebar.markdown("<div class='sidebar-spacer'></div>", unsafe_allow_html=True)
