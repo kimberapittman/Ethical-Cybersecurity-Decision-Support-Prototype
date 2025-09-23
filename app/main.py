@@ -202,6 +202,27 @@ def score_tension(selected_principles, selected_nist, constraints, stakeholders,
     base += 4 * len(values)
     return min(base, 100)
 
+# --- Auto-populated Institutional & Governance Constraints (from Chapter 3) ---
+THESIS_CONSTRAINTS = {
+    "Baltimore Ransomware Attack": [
+        "Outdated IT infrastructure (insufficient segmentation, patch backlog)",
+        "Fragmented authority delayed a coordinated response",
+        "Absence of an incident-specific continuity plan",
+        "Funding limitations stalled modernization; prior vulnerability warnings deprioritized"
+    ],
+    "San Diego Smart Streetlights and Surveillance": [
+        "Procurement did not clearly identify the tech as surveillance, avoiding notice requirements",
+        "Fragmented decision-making; no single owner for data access/privacy/accountability",
+        "Funding structure (bonds/vendor partnerships) obscured scope and limited council oversight",
+        "No privacy impact assessments; unclear retention/sharing policies; moratorium followed Grand Jury findings"
+    ],
+    "Riverton AI-Enabled Threat": [
+        "Vendor contract lacked provisions for independent audit of model/code/training data",
+        "Split authorities (IT, utilities board, mayor’s emergency office) with no AI-crisis protocol",
+        "Procurement emphasized cost/speed over robust ethical & security vetting"
+    ]
+}
+
 # ---------- ETHICAL TENSIONS mapped to Principlist ----------
 ETHICAL_TENSIONS_BY_SCENARIO = {
     "Baltimore Ransomware Attack": [
@@ -525,9 +546,24 @@ st.session_state["principle_totals"] = pr_totals
 
 st.divider()
 
-# ---------- 4) Institutional & Governance Constraints ----------
-st.markdown("### 4) Institutional & Governance Constraints")
-constraints = st.multiselect("Select constraints relevant to this scenario", GOV_CONSTRAINTS, default=pd_defaults.get("constraints", []))
+# ---------- 5) Institutional & Governance Constraints ----------
+st.markdown("### 5) Institutional & Governance Constraints")
+
+# Default selections:
+# - Thesis scenarios: pull directly from Chapter 3 map above
+# - Open-ended: if your municipal_dilemmas.yaml has constraints, prefer those; else none
+if mode == "Thesis scenarios":
+    default_constraints = THESIS_CONSTRAINTS.get(scenario, [])
+else:
+    entry = DILEMMAS_YAML.get(scenario, {}) if scenario else {}
+    default_constraints = entry.get("constraints", [])
+
+constraints = st.multiselect(
+    "Select constraints relevant to this scenario",
+    GOV_CONSTRAINTS,
+    default=default_constraints
+)
+
 
 st.divider()
 
