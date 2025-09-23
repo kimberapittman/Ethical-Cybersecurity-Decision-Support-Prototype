@@ -1,20 +1,15 @@
 scenarios:
-  Baltimore Ransomware Attack:
-    constraints:
-      - Outdated IT infrastructure (insufficient segmentation, poor patch management)
-      - Fragmented authority delayed coordination
-      - No incident-specific continuity plan
-      - Funding limitations and ignored prior vulnerability warnings
+ Baltimore Ransomware Attack:
+  - Fragmented authority and unclear ransom decision rights
+  - Outdated backups and limited offline copies
+  - Budget constraints delaying modernization
 
-  San Diego Smart Streetlights and Surveillance:
-    constraints:
-      - Procurement under general contracts without clear surveillance labeling
-      - Fragmented governance: no single entity responsible for oversight
-      - Governance “black hole” allowed SDPD use without institutional checks
-      - Funding via energy-efficiency bonds and vendor partnerships obscured scope and limited council oversight
+San Diego Smart Streetlights and Surveillance:
+  - Repurposing tech without clear policy/oversight
+  - Vendor opacity on data retention and access controls
+  - Weak public engagement and transparency processes
 
-  Riverton AI-Enabled Threat:
-    constraints:
-      - Vendor contracts lacked audit rights for AI code/training data
-      - Split authority between IT, utilities board, and mayor’s office, with no dispute resolution protocol
-      - Procurement prioritized cost savings and speed over ethical/security vetting
+Riverton AI-Enabled Threat:
+  - Proprietary AI with limited explainability/audit
+  - Thin staffing for safety assurance & red-teaming
+  - Emergency change controls not well defined
