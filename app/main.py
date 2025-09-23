@@ -48,6 +48,11 @@ st.markdown("""
 .tight-list{margin:0.25rem 0 0 1.15rem;padding:0;}
 .tight-list li{margin:6px 0;}
 .sub{color:#6b7280;font-size:0.95rem;}
+
+/* --- place appendix at the absolute bottom of the sidebar --- */
+[data-testid="stSidebar"] { display:flex; flex-direction:column; }
+[data-testid="stSidebar"] > div { display:flex; flex-direction:column; width:100%; }
+.sidebar-spacer { flex:1 1 auto; }  /* grows to fill all remaining space */
 </style>
 """, unsafe_allow_html=True)
 
@@ -220,6 +225,23 @@ ETHICAL_TENSIONS_BY_SCENARIO = {
 st.sidebar.header("Options")
 mode = st.sidebar.radio("Mode", ["Thesis scenarios", "Open-ended"])
 
+# spacer that grows to push the next block to the bottom of the sidebar
+st.sidebar.markdown("<div class='sidebar-spacer'></div>", unsafe_allow_html=True)
+
+# --- Appendix fixed to bottom of sidebar (keeps Streamlit expander look) ---
+with st.sidebar.expander("📚 Appendix: Framework Sources"):
+    st.markdown("""
+**National Institute of Standards and Technology.**  
+*The NIST Cybersecurity Framework (CSF) 2.0.*  
+National Institute of Standards and Technology, 2024.  
+[https://doi.org/10.6028/NIST.CSWP.29](https://doi.org/10.6028/NIST.CSWP.29)  
+
+**Formosa, Paul, Michael Wilson, and Deborah Richards.**  
+"A Principlist Framework for Cybersecurity Ethics."  
+*Computers & Security* 109 (2021): 1–15.  
+[https://doi.org/10.1016/j.cose.2021.102382](https://doi.org/10.1016/j.cose.2021.102382)  
+    """)
+
 # ---------- Intro ----------
 st.markdown(
     """
@@ -241,40 +263,6 @@ with st.expander("About this prototype"):
     )
 
 st.divider()
-
-# ---------- Appendix pinned to bottom of the sidebar ----------
-st.sidebar.markdown(
-    """
-    <style>
-    /* Make sidebar content a flex column that fills full height */
-    section[data-testid="stSidebar"] > div:first-child {
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-    }
-    /* Spacer that grows to push anything after it to the bottom */
-    section[data-testid="stSidebar"] .sidebar-spacer {
-        flex-grow: 1;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-# this invisible element expands and pushes the next block to the bottom
-st.sidebar.markdown('<div class="sidebar-spacer"></div>', unsafe_allow_html=True)
-
-with st.sidebar.expander("📚 Appendix: Framework Sources"):
-    st.markdown("""
-**National Institute of Standards and Technology.**  
-*The NIST Cybersecurity Framework (CSF) 2.0.*  
-National Institute of Standards and Technology, 2024.  
-[https://doi.org/10.6028/NIST.CSWP.29](https://doi.org/10.6028/NIST.CSWP.29)  
-
-**Formosa, Paul, Michael Wilson, and Deborah Richards.**  
-"A Principlist Framework for Cybersecurity Ethics."  
-*Computers & Security* 109 (2021): 1–15.  
-[https://doi.org/10.1016/j.cose.2021.102382](https://doi.org/10.1016/j.cose.2021.102382)  
-    """)
 
 # ---------- 1) Scenario overview ----------
 if mode == "Thesis scenarios":
