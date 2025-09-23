@@ -38,6 +38,18 @@ STRICT_SOURCE_ONLY = True
 NIST_DEF = {f.get("name"): f.get("definition", "") for f in NIST_YAML.get("functions", []) if f.get("name")}
 PRINCIPLE_DEF = {p.get("name"): p.get("definition", "") for p in PRINCIPLIST_YAML.get("principles", []) if p.get("name")}
 
+def get_constraints_for_scenario(scn: str):
+    """Return constraints for a scenario with forgiving matching."""
+    if not isinstance(CONSTRAINTS_YAML, dict):
+        return []
+    # 1) exact key
+    if scn in CONSTRAINTS_YAML:
+        return CONSTRAINTS_YAML[scn]
+    # 2) case/space-insensitive key
+    norm = scn.strip().lower()
+    lowered = {k.strip().lower(): v for k, v in CONSTRAINTS_YAML.items() if isinstance(k, str)}
+    return lowered.get(norm, [])
+
 # ---------- Page config ----------
 st.set_page_config(page_title="Municipal Ethical Cyber Decision-Support", layout="wide", initial_sidebar_state="expanded")
 
@@ -518,25 +530,27 @@ st.session_state["principle_totals"] = pr_totals
 
 st.divider()
 
-# ---------- Institutional & Governance Constraints ----------
 st.markdown("### 5) Institutional & Governance Constraints")
 
 if mode == "Thesis scenarios":
-    # Auto-populate from scenario_constraints.yaml
-    scenario_constraints = CONSTRAINTS_YAML.get(scenario, [])
+    scenario_constraints = get_constraints_for_scenario(scenario)
     if scenario_constraints:
-        st.markdown("**Constraints for this scenario:**")
+        st.markdown("**Constraints for this scenario (from data/scenario_constraints.yaml):**")
         st.markdown("<ul>" + "".join([f"<li>{c}</li>" for c in scenario_constraints]) + "</ul>", unsafe_allow_html=True)
     else:
+        # Helpful debug so you can see what keys were loaded
+        loaded_keys = []
+        if isinstance(CONSTRAINTS_YAML, dict):
+            loaded_keys = sorted(CONSTRAINTS_YAML.keys())
         st.info("No predefined constraints found for this scenario.")
+        with st.expander("Debug: keys found in scenario_constraints.yaml"):
+            st.write(loaded_keys)
 else:
-    # Open-ended mode stays a dropdown
     constraints = st.multiselect(
         "Select constraints relevant to this scenario",
         GOV_CONSTRAINTS,
         default=pd_defaults.get("constraints", [])
     )
-
 
 # ---------- Documentation & Rationale ----------
 st.markdown("### Documentation & Rationale")
