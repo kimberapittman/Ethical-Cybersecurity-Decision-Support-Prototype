@@ -19,12 +19,14 @@ def load_yaml_file(filename: str):
 
 @st.cache_data
 def load_all_data():
-    nist = load_yaml_file("nist_csf.yaml")              # { meta, functions: [{name, definition, illustrative_actions}] }
-    principlist = load_yaml_file("principlist.yaml")    # { meta, principles: [{name, definition, illustrative_examples}] }
-    dilemmas = load_yaml_file("municipal_dilemmas.yaml")# { <scenario>: {overview, technical, ethical_tensions: [...] } }
-    return nist, principlist, dilemmas
+    nist = load_yaml_file("nist_csf.yaml")               # { meta, functions: [{name, definition, illustrative_actions}] }
+    principlist = load_yaml_file("principlist.yaml")     # { meta, principles: [{name, definition, illustrative_examples}] }
+    dilemmas = load_yaml_file("municipal_dilemmas.yaml") # { <scenario>: {overview, technical, ethical_tensions: [...] } }
+    # --- NEW: load institutional/governance constraints by thesis scenario ---
+    institutional = load_yaml_file("institutional_constraints.yaml")  # { <scenario>: {constraints: [...] } } OR { <scenario>: [...] }
+    return nist, principlist, dilemmas, institutional
 
-NIST_YAML, PRINCIPLIST_YAML, DILEMMAS_YAML = load_all_data()
+NIST_YAML, PRINCIPLIST_YAML, DILEMMAS_YAML, INSTITUTIONAL_YAML = load_all_data()
 
 # Derive names from YAML if present; fall back to your constants later
 NIST_FUNCTIONS_FROM_YAML = [f.get("name", "").strip() for f in NIST_YAML.get("functions", []) if f.get("name")]
@@ -48,11 +50,6 @@ st.markdown("""
 .tight-list{margin:0.25rem 0 0 1.15rem;padding:0;}
 .tight-list li{margin:6px 0;}
 .sub{color:#6b7280;font-size:0.95rem;}
-
-/* --- place appendix at the absolute bottom of the sidebar --- */
-[data-testid="stSidebar"] { display:flex; flex-direction:column; }
-[data-testid="stSidebar"] > div { display:flex; flex-direction:column; width:100%; }
-.sidebar-spacer { flex:1 1 auto; }  /* grows to fill all remaining space */
 </style>
 """, unsafe_allow_html=True)
 
@@ -202,27 +199,6 @@ def score_tension(selected_principles, selected_nist, constraints, stakeholders,
     base += 4 * len(values)
     return min(base, 100)
 
-# --- Auto-populated Institutional & Governance Constraints (from Chapter 3) ---
-THESIS_CONSTRAINTS = {
-    "Baltimore Ransomware Attack": [
-        "Outdated IT infrastructure (insufficient segmentation, patch backlog)",
-        "Fragmented authority delayed a coordinated response",
-        "Absence of an incident-specific continuity plan",
-        "Funding limitations stalled modernization; prior vulnerability warnings deprioritized"
-    ],
-    "San Diego Smart Streetlights and Surveillance": [
-        "Procurement did not clearly identify the tech as surveillance, avoiding notice requirements",
-        "Fragmented decision-making; no single owner for data access/privacy/accountability",
-        "Funding structure (bonds/vendor partnerships) obscured scope and limited council oversight",
-        "No privacy impact assessments; unclear retention/sharing policies; moratorium followed Grand Jury findings"
-    ],
-    "Riverton AI-Enabled Threat": [
-        "Vendor contract lacked provisions for independent audit of model/code/training data",
-        "Split authorities (IT, utilities board, mayor’s emergency office) with no AI-crisis protocol",
-        "Procurement emphasized cost/speed over robust ethical & security vetting"
-    ]
-}
-
 # ---------- ETHICAL TENSIONS mapped to Principlist ----------
 ETHICAL_TENSIONS_BY_SCENARIO = {
     "Baltimore Ransomware Attack": [
@@ -243,27 +219,9 @@ ETHICAL_TENSIONS_BY_SCENARIO = {
 }
 
 # ---------- Sidebar ----------
-mode = st.sidebar.radio(
-    "### **Mode**",   # makes the label bold and larger
-    ["Thesis scenarios", "Open-ended"]
-)
-
-# spacer that grows to push the next block to the bottom of the sidebar
-st.sidebar.markdown("<div class='sidebar-spacer'></div>", unsafe_allow_html=True)
-
-# --- Appendix fixed to bottom of sidebar (keeps Streamlit expander look) ---
-with st.sidebar.expander("📚 Appendix: Framework Sources"):
-    st.markdown("""
-**National Institute of Standards and Technology.**  
-*The NIST Cybersecurity Framework (CSF) 2.0.*  
-National Institute of Standards and Technology, 2024.  
-[https://doi.org/10.6028/NIST.CSWP.29](https://doi.org/10.6028/NIST.CSWP.29)  
-
-**Formosa, Paul, Michael Wilson, and Deborah Richards.**  
-"A Principlist Framework for Cybersecurity Ethics."  
-*Computers & Security* 109 (2021): 1–15.  
-[https://doi.org/10.1016/j.cose.2021.102382](https://doi.org/10.1016/j.cose.2021.102382)  
-    """)
+# (You can remove the header if you like; keeping your current UI)
+st.sidebar.header("Options")
+mode = st.sidebar.radio("Mode", ["Thesis scenarios", "Open-ended"])
 
 # ---------- Intro ----------
 st.markdown(
@@ -286,6 +244,21 @@ with st.expander("About this prototype"):
     )
 
 st.divider()
+
+# ---------- Appendix at bottom of sidebar ----------
+st.sidebar.markdown("---")  # divider for clarity
+with st.sidebar.expander("📚 Appendix: Framework Sources"):
+    st.markdown("""
+**National Institute of Standards and Technology.**  
+*The NIST Cybersecurity Framework (CSF) 2.0.*  
+National Institute of Standards and Technology, 2024.  
+[https://doi.org/10.6028/NIST.CSWP.29](https://doi.org/10.6028/NIST.CSWP.29)  
+
+**Formosa, Paul, Michael Wilson, and Deborah Richards.**  
+"A Principlist Framework for Cybersecurity Ethics."  
+*Computers & Security* 109 (2021): 1–15.  
+[https://doi.org/10.1016/j.cose.2021.102382](https://doi.org/10.1016/j.cose.2021.102382)  
+    """)
 
 # ---------- 1) Scenario overview ----------
 if mode == "Thesis scenarios":
@@ -546,27 +519,43 @@ st.session_state["principle_totals"] = pr_totals
 
 st.divider()
 
-# ---------- 5) Institutional & Governance Constraints ----------
-st.markdown("### 5) Institutional & Governance Constraints")
+# ---------- 4) Institutional & Governance Constraints ----------
+st.markdown("### 4) Institutional & Governance Constraints")
 
-# Pull scenario-specific defaults (from YAML or dict you’re using)
+def get_constraints_for_scenario(name: str):
+    """
+    Supports either of these YAML shapes:
+      Baltimore Ransomware Attack:
+        constraints:
+          - item A
+          - item B
+    OR
+      Baltimore Ransomware Attack:
+        - item A
+        - item B
+    """
+    entry = INSTITUTIONAL_YAML.get(name, [])
+    if isinstance(entry, dict):
+        return entry.get("constraints", []) or []
+    if isinstance(entry, list):
+        return entry
+    return []
+
 if mode == "Thesis scenarios":
-    # If you loaded thesis constraints from YAML, use that here:
-    # scenario_defaults = THESIS_CONSTRAINTS_YAML.get(scenario, [])
-    # For now, fall back to an empty list if not present:
-    scenario_defaults = DILEMMAS_YAML.get(scenario, {}).get("constraints", [])
+    constraints_list = get_constraints_for_scenario(scenario)
+    if constraints_list:
+        # Read-only bullet list, auto-populated from your Chapter 3 YAML
+        bullets = "".join(f"<li>{c}</li>" for c in constraints_list)
+        st.markdown(f"<div class='listbox'><ul class='tight-list'>{bullets}</ul></div>", unsafe_allow_html=True)
+    else:
+        st.info("No constraints found for this scenario in data/institutional_constraints.yaml.")
+    # Keep a variable for downstream logic if needed
+    constraints = constraints_list[:]
 else:
-    scenario_defaults = []
+    # Open-ended mode: keep your existing multiselect
+    constraints = st.multiselect("Select constraints relevant to this scenario", GOV_CONSTRAINTS, default=pd_defaults.get("constraints", []))
 
-# Merge global options with scenario defaults, then validate defaults
-all_constraint_options = sorted(set(GOV_CONSTRAINTS) | set(scenario_defaults))
-valid_defaults = [c for c in scenario_defaults if c in all_constraint_options]
-
-constraints = st.multiselect(
-    "Select constraints relevant to this scenario",
-    options=all_constraint_options,
-    default=valid_defaults
-)
+st.divider()
 
 # ---------- Documentation & Rationale ----------
 st.markdown("### Documentation & Rationale")
