@@ -559,75 +559,136 @@ else:
 
 st.divider()
 
-# ---------- 6) Decision Log & Rationale (PDF export) ----------
+# ---------- 6) Decision Log & Rationale (auto-filled & PDF export) ----------
 st.markdown("### 6) Decision Log & Rationale")
 with st.expander("What this section is for"):
     st.markdown("""
-Use this area to record the **decision taken**, your **rationale**, expected **risks**, and **mitigations**, anchored to the NIST CSF and Principlist analysis above.  
-When ready, click **Generate PDF** to download a timestamped decision log for documentation and accountability.
+This log **auto-populates** from your analysis above (scenario, NIST functions, Principlist values, ethical tensions, and constraints).
+Add the **Decision maker**, refine the **Decision**, **Rationale**, **Risks**, and **Mitigations**, then export a timestamped PDF for records.
     """)
 
-colA, colB = st.columns(2)
-with colA:
-    prepared_by = st.text_input("Prepared by (name/role)", value="")
-    decision_title = st.text_input("Decision / Action chosen", value="")
-with colB:
-    stakeholders = st.text_input("Key stakeholders (comma-separated)", value="")
-    reference_id = st.text_input("Reference ID (optional)", value="")
+# --- Build helpful defaults from previous sections ---
+def _fmt_bullets(items):
+    return "\n".join([f"- {x}" for x in items]) if items else "—"
 
-rationale = st.text_area("Rationale / Justification", value="", height=140, placeholder="Why this option? Link to NIST functions and Principlist values you prioritized.")
-risks = st.text_area("Key Risks", value="", height=120, placeholder="What could go wrong or be harmed (technical, operational, equity)?")
-mitigations = st.text_area("Mitigations / Safeguards", value="", height=120, placeholder="Controls, governance steps, comms, monitoring, etc.")
-notes = st.text_area("Additional Notes (optional)", value="", height=100)
-
-# --- normalize tensions to strings for export ---
-def _normalize_tensions(t):
+def _normalize_tensions_to_lines(t):
     out = []
     if not t:
         return out
-    # thesis: list of (label, [principles])
-    if isinstance(t, list):
-        for item in t:
-            if isinstance(item, tuple) or isinstance(item, list):
-                label = item[0]
-                tags = ", ".join(item[1]) if len(item) > 1 and isinstance(item[1], list) else ""
-                out.append(f"{label}" + (f" — Principlist: {tags}" if tags else ""))
-            elif isinstance(item, dict):
-                lab = item.get("description", "")
-                tags = ", ".join(item.get("principles", []))
-                out.append(f"{lab}" + (f" — Principlist: {tags}" if tags else ""))
-            else:
-                out.append(str(item))
+    # thesis: [(label, [principles])] | open-ended: [{"description", "principles"}]
+    for item in t:
+        if isinstance(item, (tuple, list)):
+            label = item[0]
+            tags = ", ".join(item[1]) if len(item) > 1 and isinstance(item[1], list) else ""
+            out.append(f"{label}" + (f" — Principlist: {tags}" if tags else ""))
+        elif isinstance(item, dict):
+            lab = item.get("description", "")
+            tags = ", ".join(item.get("principles", []))
+            out.append(f"{lab}" + (f" — Principlist: {tags}" if tags else ""))
+        else:
+            out.append(str(item))
     return out
 
-norm_tensions = _normalize_tensions(tensions)
+_default_rationale = (
+    "This decision aligns actions with the **NIST CSF** functions emphasized above and is "
+    "guided by **Principlist** ethical values to ensure the response is technically sound and ethically defensible "
+    "within municipal constraints."
+)
 
-# --- PDF generator ---
+_default_risks = (
+    "Potential operational disruption; reputational impact; equity concerns for affected groups; "
+    "vendor and legal dependencies; residual risk if mitigations are delayed."
+)
+
+_default_mitigations = (
+    "Enforce least privilege and change freeze where applicable; communicate clearly with stakeholders; "
+    "document rationale and oversight; stage rollbacks; monitor outcomes; schedule post-incident review."
+)
+
+# Keep a normalized view of tensions for display/PDF
+norm_tensions = _normalize_tensions_to_lines(tensions)
+
+# Use final_constraints (set above) for both modes
+constraints_list = final_constraints or []
+
+# --- User-editable but pre-populated fields ---
+colA, colB = st.columns(2)
+with colA:
+    prepared_by = st.text_input("Decision maker (name/role)", value="")
+    decision_title = st.text_input("Decision / Action chosen", value="")
+with colB:
+    # Date/time is auto in PDF; show it here read-only for clarity
+    st.text_input("Date & time (auto)", value=datetime.now().strftime("%Y-%m-%d %H:%M"), disabled=True)
+    reference_id = st.text_input("Reference ID (optional)", value="")
+
+st.markdown("##### Auto-filled context (edit if needed)")
+st.text_area("Scenario Overview", value=(description or "—"), height=110, key="dl_overview")
+
+st.text_area(
+    "NIST CSF Functions Emphasized",
+    value=_fmt_bullets(selected_nist or []),
+    height=110,
+    key="dl_nist"
+)
+
+st.text_area(
+    "Principlist Values Considered",
+    value=_fmt_bullets(selected_principles or []),
+    height=110,
+    key="dl_principlist"
+)
+
+st.text_area(
+    "Ethical Tensions (auto from above)",
+    value=_fmt_bullets(norm_tensions),
+    height=120,
+    key="dl_tensions"
+)
+
+st.text_area(
+    "Institutional & Governance Constraints (auto from above)",
+    value=_fmt_bullets(constraints_list),
+    height=120,
+    key="dl_constraints"
+)
+
+st.markdown("##### Decision fields")
+rationale = st.text_area("Rationale / Justification", value=_default_rationale, height=140)
+risks = st.text_area("Key Risks", value=_default_risks, height=120)
+mitigations = st.text_area("Mitigations / Safeguards", value=_default_mitigations, height=120)
+stakeholders = st.text_area("Key Stakeholders (optional)", value="", height=90)
+notes = st.text_area("Additional Notes (optional)", value="", height=90)
+
+# --- PDF generator (uses ReportLab imports defined earlier) ---
 def generate_pdf():
     if not REPORTLAB_OK:
         st.error("PDF engine not available. Add `reportlab` to your requirements.txt to enable PDF export.")
         return None
 
+    from io import BytesIO
+    from reportlab.lib.pagesizes import LETTER
+    from reportlab.lib import colors
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, ListFlowable, ListItem
+
     buf = BytesIO()
     doc = SimpleDocTemplate(buf, pagesize=LETTER, leftMargin=54, rightMargin=54, topMargin=54, bottomMargin=54)
     styles = getSampleStyleSheet()
-    styles.add(ParagraphStyle(name="H1", fontSize=16, leading=20, spaceAfter=10, textColor=colors.HexColor("#1f2937"), alignment=0, bold=True))
+    styles.add(ParagraphStyle(name="H1", fontSize=16, leading=20, spaceAfter=10, textColor=colors.HexColor("#1f2937")))
     styles.add(ParagraphStyle(name="H2", fontSize=13, leading=16, spaceBefore=8, spaceAfter=6, textColor=colors.HexColor("#111827")))
     styles.add(ParagraphStyle(name="Body", fontSize=10.5, leading=14))
-    styles.add(ParagraphStyle(name="Meta", fontSize=9, leading=12, textColor=colors.grey))
-
     story = []
 
-    # Header
+    # Header / meta
     story.append(Paragraph("Municipal Ethical Cyber Decision Log", styles["H1"]))
     meta_table = Table(
         [
             ["Scenario", scenario],
-            ["Prepared by", prepared_by or "—"],
+            ["Decision maker", prepared_by or "—"],
             ["Date/Time", datetime.now().strftime("%Y-%m-%d %H:%M")],
             ["Reference ID", reference_id or "—"],
         ],
-        colWidths=[90, 400],
+        colWidths=[110, 380],
         hAlign="LEFT",
     )
     meta_table.setStyle(TableStyle([
@@ -636,38 +697,34 @@ def generate_pdf():
         ("BOTTOMPADDING", (0,0), (-1,-1), 4),
     ]))
     story.append(meta_table)
-    story.append(Spacer(1, 12))
+    story.append(Spacer(1, 10))
 
     # Overview
     story.append(Paragraph("Scenario Overview", styles["H2"]))
-    story.append(Paragraph(description or "—", styles["Body"]))
+    story.append(Paragraph(st.session_state.get("dl_overview","—").replace("\n","<br/>"), styles["Body"]))
     story.append(Spacer(1, 6))
 
     # NIST & Principlist
     story.append(Paragraph("NIST CSF Functions Emphasized", styles["H2"]))
-    lst_nist = ListFlowable([ListItem(Paragraph(fn, styles["Body"])) for fn in (selected_nist or [])], bulletType="bullet", leftIndent=18)
-    story.append(lst_nist if selected_nist else Paragraph("—", styles["Body"]))
+    nist_lines = [x.strip("- ").strip() for x in st.session_state.get("dl_nist","").splitlines() if x.strip()]
+    story.append(ListFlowable([ListItem(Paragraph(x, styles["Body"])) for x in nist_lines] or [ListItem(Paragraph("—", styles["Body"]))], bulletType="bullet", leftIndent=18))
     story.append(Spacer(1, 6))
 
     story.append(Paragraph("Principlist Values Considered", styles["H2"]))
-    lst_pr = ListFlowable([ListItem(Paragraph(p, styles["Body"])) for p in (selected_principles or [])], bulletType="bullet", leftIndent=18)
-    story.append(lst_pr if selected_principles else Paragraph("—", styles["Body"]))
+    pr_lines = [x.strip("- ").strip() for x in st.session_state.get("dl_principlist","").splitlines() if x.strip()]
+    story.append(ListFlowable([ListItem(Paragraph(x, styles["Body"])) for x in pr_lines] or [ListItem(Paragraph("—", styles["Body"]))], bulletType="bullet", leftIndent=18))
     story.append(Spacer(1, 6))
 
     # Ethical tensions
     story.append(Paragraph("Ethical Tensions", styles["H2"]))
-    if norm_tensions:
-        story.append(ListFlowable([ListItem(Paragraph(x, styles["Body"])) for x in norm_tensions], bulletType="bullet", leftIndent=18))
-    else:
-        story.append(Paragraph("—", styles["Body"]))
+    ten_lines = [x.strip("- ").strip() for x in st.session_state.get("dl_tensions","").splitlines() if x.strip()]
+    story.append(ListFlowable([ListItem(Paragraph(x, styles["Body"])) for x in ten_lines] or [ListItem(Paragraph("—", styles["Body"]))], bulletType="bullet", leftIndent=18))
     story.append(Spacer(1, 6))
 
     # Constraints
     story.append(Paragraph("Institutional & Governance Constraints", styles["H2"]))
-    if final_constraints:
-        story.append(ListFlowable([ListItem(Paragraph(c, styles["Body"])) for c in final_constraints], bulletType="bullet", leftIndent=18))
-    else:
-        story.append(Paragraph("—", styles["Body"]))
+    con_lines = [x.strip("- ").strip() for x in st.session_state.get("dl_constraints","").splitlines() if x.strip()]
+    story.append(ListFlowable([ListItem(Paragraph(x, styles["Body"])) for x in con_lines] or [ListItem(Paragraph("—", styles["Body"]))], bulletType="bullet", leftIndent=18))
     story.append(Spacer(1, 10))
 
     # Decision block
@@ -676,36 +733,34 @@ def generate_pdf():
     story.append(Spacer(1, 6))
 
     story.append(Paragraph("Rationale / Justification", styles["H2"]))
-    story.append(Paragraph(rationale or "—", styles["Body"]))
+    story.append(Paragraph((rationale or "—").replace("\n","<br/>"), styles["Body"]))
     story.append(Spacer(1, 6))
 
     story.append(Paragraph("Key Risks", styles["H2"]))
-    story.append(Paragraph(risks or "—", styles["Body"]))
+    story.append(Paragraph((risks or "—").replace("\n","<br/>"), styles["Body"]))
     story.append(Spacer(1, 6))
 
     story.append(Paragraph("Mitigations / Safeguards", styles["H2"]))
-    story.append(Paragraph(mitigations or "—", styles["Body"]))
+    story.append(Paragraph((mitigations or "—").replace("\n","<br/>"), styles["Body"]))
     story.append(Spacer(1, 6))
 
     story.append(Paragraph("Stakeholders", styles["H2"]))
-    story.append(Paragraph(stakeholders or "—", styles["Body"]))
+    story.append(Paragraph((stakeholders or "—").replace("\n","<br/>"), styles["Body"]))
     story.append(Spacer(1, 6))
 
     story.append(Paragraph("Additional Notes", styles["H2"]))
-    story.append(Paragraph(notes or "—", styles["Body"]))
+    story.append(Paragraph((notes or "—").replace("\n","<br/>"), styles["Body"]))
 
     doc.build(story)
     buf.seek(0)
     return buf
 
-# Export button
+# Export
 if st.button("📄 Generate PDF decision log"):
     pdf_buf = generate_pdf()
     if pdf_buf:
         filename = f"decision_log_{scenario.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d_%H%M')}.pdf"
         st.download_button("Download PDF", data=pdf_buf, file_name=filename, mime="application/pdf")
-
-st.divider()
 
 # ---------- Footer ----------
 st.markdown("---")
