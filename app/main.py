@@ -502,21 +502,9 @@ for fn in NIST_FUNCTIONS:
             mark = st.checkbox(" ", value=default_marked, key=key, label_visibility="collapsed")
             matrix_state[(fn, p)] = 1 if mark else 0
 
-st.markdown("##### Matrix summary")
+# ----- Matrix summary UI removed; totals still computed and stored -----
 fn_totals = {fn: sum(matrix_state[(fn, p)] for p in PRINCIPLES) for fn in NIST_FUNCTIONS}
 pr_totals = {p: sum(matrix_state[(fn, p)] for fn in NIST_FUNCTIONS) for p in PRINCIPLES}
-
-colA, colB = st.columns(2)
-with colA:
-    st.markdown("**Totals by NIST function**")
-    for fn in NIST_FUNCTIONS:
-        st.progress(min(int((fn_totals[fn] / len(PRINCIPLES)) * 100), 100),
-                    text=f"{fn}: {fn_totals[fn]}")
-with colB:
-    st.markdown("**Totals by Ethical principle**")
-    for p in PRINCIPLES:
-        st.progress(min(int((pr_totals[p] / len(NIST_FUNCTIONS)) * 100), 100),
-                    text=f"{p}: {pr_totals[p]}")
 
 st.session_state["nist_principle_matrix"] = matrix_state
 st.session_state["nist_totals_by_function"] = fn_totals
