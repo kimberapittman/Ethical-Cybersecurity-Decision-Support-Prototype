@@ -219,8 +219,15 @@ ETHICAL_TENSIONS_BY_SCENARIO = {
 }
 
 # ---------- Sidebar ----------
-st.sidebar.header("Options")
-mode = st.sidebar.radio("Mode", ["Thesis scenarios", "Open-ended"])
+with st.sidebar:
+    st.markdown("<h3 style='margin:0 0 0.5rem 0; font-weight:700;'>Mode</h3>", unsafe_allow_html=True)
+    mode = st.radio(
+        label="",
+        options=["Thesis scenarios", "Open-ended"],
+        index=0,
+        key="mode_selector",                 # explicit key avoids collisions
+        label_visibility="collapsed",
+    )
 
 # ---------- Intro ----------
 st.markdown(
