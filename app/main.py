@@ -553,7 +553,7 @@ else:
 
 st.divider()
 
-# ---------- Documentation & Rationale ----------
+# ---------- Decision Log & Rationale ----------
 st.markdown("### Documentation & Rationale")
 # (Intentionally left blank per your request — you’ll design this later.)
 
