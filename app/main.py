@@ -5,6 +5,17 @@ from datetime import datetime
 from pathlib import Path
 import yaml
 
+# --- NEW: PDF helpers ---
+from io import BytesIO
+try:
+    from reportlab.lib.pagesizes import LETTER
+    from reportlab.lib import colors
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, ListFlowable, ListItem
+    REPORTLAB_OK = True
+except Exception:
+    REPORTLAB_OK = False
+
 # Point to your repo’s /data folder (assuming this file is in /app)
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 
@@ -502,73 +513,199 @@ for fn in NIST_FUNCTIONS:
             mark = st.checkbox(" ", value=default_marked, key=key, label_visibility="collapsed")
             matrix_state[(fn, p)] = 1 if mark else 0
 
-# ----- Matrix summary UI removed; totals still computed and stored -----
-fn_totals = {fn: sum(matrix_state[(fn, p)] for p in PRINCIPLES) for fn in NIST_FUNCTIONS}
-pr_totals = {p: sum(matrix_state[(fn, p)] for fn in NIST_FUNCTIONS) for p in PRINCIPLES}
-
-st.session_state["nist_principle_matrix"] = matrix_state
-st.session_state["nist_totals_by_function"] = fn_totals
-st.session_state["principle_totals"] = pr_totals
-
 st.divider()
 
 # ---------- 5) Institutional & Governance Constraints ----------
+st.markdown("### 5) Institutional & Governance Constraints")
+with st.expander("About Institutional & Governance Constraints"):
+    st.markdown("""
+Cybersecurity professionals in municipalities often face **institutional and governance constraints** that limit their options for action.  
+These include unclear decision rights, procurement opacity, tight budgets, limited oversight, and outdated technology.  
+Documenting these constraints makes explicit the practical limits within which professionals must operate, ensuring that technical and ethical reasoning remains grounded in real-world conditions.
+    """)
 
-# Helper must be defined BEFORE it's used
+# --- NEW: helper to read constraints for a thesis scenario from scenario_constraints.yaml
 def _get_thesis_constraints(scn: str):
     d = CONSTRAINTS_YAML or {}
     entry = None
-    # Support shapes:
-    #   { "scenarios": { "<name>": { "constraints": [...] } } }
-    #   { "<name>": { "constraints": [...] } }
-    #   { "scenarios": { "<name>": [ ... ] } }
-    #   { "<name>": [ ... ] }
     if isinstance(d.get("scenarios"), dict):
         entry = d["scenarios"].get(scn)
     if entry is None:
         entry = d.get(scn)
+
     if entry is None:
         return []
+
     if isinstance(entry, list):
         return entry
     if isinstance(entry, dict):
-        for key in ("constraints", "items"):
-            v = entry.get(key)
-            if isinstance(v, list):
-                return v
+        if isinstance(entry.get("constraints"), list):
+            return entry["constraints"]
+        if isinstance(entry.get("items"), list):
+            return entry["items"]
     return []
-
-st.markdown("### 5) Institutional & Governance Constraints")
-
-with st.expander("About Institutional & Governance Constraints"):
-    st.markdown("""
-Cybersecurity professionals in municipalities often face institutional and governance constraints that limit their options for action (e.g., decision rights, procurement opacity, budgets, oversight, and legacy tech).
-
-Documenting these constraints makes explicit the practical limits within which professionals must operate, ensuring that technical and ethical reasoning remains grounded in real-world conditions.
-    """)
 
 if mode == "Thesis scenarios":
     thesis_constraints = _get_thesis_constraints(scenario)
     if thesis_constraints:
-        st.markdown(
-            f"<div class='listbox'><ul class='tight-list'>{''.join([f'<li>{c}</li>' for c in thesis_constraints])}</ul></div>",
-            unsafe_allow_html=True
-        )
+        st.markdown(f"<div class='listbox'><ul class='tight-list'>{''.join([f'<li>{c}</li>' for c in thesis_constraints])}</ul></div>", unsafe_allow_html=True)
     else:
         st.info("No predefined constraints found for this scenario.")
+    final_constraints = thesis_constraints
 else:
-    constraints = st.multiselect(
-        "Select constraints relevant to this scenario",
-        GOV_CONSTRAINTS,
-        default=pd_defaults.get("constraints", [])
+    # Open-ended keeps the editable multiselect
+    constraints = st.multiselect("Select constraints relevant to this scenario", GOV_CONSTRAINTS, default=pd_defaults.get("constraints", []))
+    final_constraints = constraints
+
+st.divider()
+
+# ---------- 6) Decision Log & Rationale (PDF export) ----------
+st.markdown("### 6) Decision Log & Rationale")
+with st.expander("What this section is for"):
+    st.markdown("""
+Use this area to record the **decision taken**, your **rationale**, expected **risks**, and **mitigations**, anchored to the NIST CSF and Principlist analysis above.  
+When ready, click **Generate PDF** to download a timestamped decision log for documentation and accountability.
+    """)
+
+colA, colB = st.columns(2)
+with colA:
+    prepared_by = st.text_input("Prepared by (name/role)", value="")
+    decision_title = st.text_input("Decision / Action chosen", value="")
+with colB:
+    stakeholders = st.text_input("Key stakeholders (comma-separated)", value="")
+    reference_id = st.text_input("Reference ID (optional)", value="")
+
+rationale = st.text_area("Rationale / Justification", value="", height=140, placeholder="Why this option? Link to NIST functions and Principlist values you prioritized.")
+risks = st.text_area("Key Risks", value="", height=120, placeholder="What could go wrong or be harmed (technical, operational, equity)?")
+mitigations = st.text_area("Mitigations / Safeguards", value="", height=120, placeholder="Controls, governance steps, comms, monitoring, etc.")
+notes = st.text_area("Additional Notes (optional)", value="", height=100)
+
+# --- normalize tensions to strings for export ---
+def _normalize_tensions(t):
+    out = []
+    if not t:
+        return out
+    # thesis: list of (label, [principles])
+    if isinstance(t, list):
+        for item in t:
+            if isinstance(item, tuple) or isinstance(item, list):
+                label = item[0]
+                tags = ", ".join(item[1]) if len(item) > 1 and isinstance(item[1], list) else ""
+                out.append(f"{label}" + (f" — Principlist: {tags}" if tags else ""))
+            elif isinstance(item, dict):
+                lab = item.get("description", "")
+                tags = ", ".join(item.get("principles", []))
+                out.append(f"{lab}" + (f" — Principlist: {tags}" if tags else ""))
+            else:
+                out.append(str(item))
+    return out
+
+norm_tensions = _normalize_tensions(tensions)
+
+# --- PDF generator ---
+def generate_pdf():
+    if not REPORTLAB_OK:
+        st.error("PDF engine not available. Add `reportlab` to your requirements.txt to enable PDF export.")
+        return None
+
+    buf = BytesIO()
+    doc = SimpleDocTemplate(buf, pagesize=LETTER, leftMargin=54, rightMargin=54, topMargin=54, bottomMargin=54)
+    styles = getSampleStyleSheet()
+    styles.add(ParagraphStyle(name="H1", fontSize=16, leading=20, spaceAfter=10, textColor=colors.HexColor("#1f2937"), alignment=0, bold=True))
+    styles.add(ParagraphStyle(name="H2", fontSize=13, leading=16, spaceBefore=8, spaceAfter=6, textColor=colors.HexColor("#111827")))
+    styles.add(ParagraphStyle(name="Body", fontSize=10.5, leading=14))
+    styles.add(ParagraphStyle(name="Meta", fontSize=9, leading=12, textColor=colors.grey))
+
+    story = []
+
+    # Header
+    story.append(Paragraph("Municipal Ethical Cyber Decision Log", styles["H1"]))
+    meta_table = Table(
+        [
+            ["Scenario", scenario],
+            ["Prepared by", prepared_by or "—"],
+            ["Date/Time", datetime.now().strftime("%Y-%m-%d %H:%M")],
+            ["Reference ID", reference_id or "—"],
+        ],
+        colWidths=[90, 400],
+        hAlign="LEFT",
     )
-    st.caption("Tip: pick only the constraints that materially limit feasible actions for this case.")
+    meta_table.setStyle(TableStyle([
+        ("FONT", (0,0), (-1,-1), "Helvetica", 9.5),
+        ("TEXTCOLOR", (0,0), (0,-1), colors.grey),
+        ("BOTTOMPADDING", (0,0), (-1,-1), 4),
+    ]))
+    story.append(meta_table)
+    story.append(Spacer(1, 12))
 
+    # Overview
+    story.append(Paragraph("Scenario Overview", styles["H2"]))
+    story.append(Paragraph(description or "—", styles["Body"]))
+    story.append(Spacer(1, 6))
 
+    # NIST & Principlist
+    story.append(Paragraph("NIST CSF Functions Emphasized", styles["H2"]))
+    lst_nist = ListFlowable([ListItem(Paragraph(fn, styles["Body"])) for fn in (selected_nist or [])], bulletType="bullet", leftIndent=18)
+    story.append(lst_nist if selected_nist else Paragraph("—", styles["Body"]))
+    story.append(Spacer(1, 6))
 
-# ---------- Decision Log & Rationale ----------
-st.markdown("### Documentation & Rationale")
-# (Intentionally left blank per your request — you’ll design this later.)
+    story.append(Paragraph("Principlist Values Considered", styles["H2"]))
+    lst_pr = ListFlowable([ListItem(Paragraph(p, styles["Body"])) for p in (selected_principles or [])], bulletType="bullet", leftIndent=18)
+    story.append(lst_pr if selected_principles else Paragraph("—", styles["Body"]))
+    story.append(Spacer(1, 6))
+
+    # Ethical tensions
+    story.append(Paragraph("Ethical Tensions", styles["H2"]))
+    if norm_tensions:
+        story.append(ListFlowable([ListItem(Paragraph(x, styles["Body"])) for x in norm_tensions], bulletType="bullet", leftIndent=18))
+    else:
+        story.append(Paragraph("—", styles["Body"]))
+    story.append(Spacer(1, 6))
+
+    # Constraints
+    story.append(Paragraph("Institutional & Governance Constraints", styles["H2"]))
+    if final_constraints:
+        story.append(ListFlowable([ListItem(Paragraph(c, styles["Body"])) for c in final_constraints], bulletType="bullet", leftIndent=18))
+    else:
+        story.append(Paragraph("—", styles["Body"]))
+    story.append(Spacer(1, 10))
+
+    # Decision block
+    story.append(Paragraph("Decision / Action", styles["H2"]))
+    story.append(Paragraph(decision_title or "—", styles["Body"]))
+    story.append(Spacer(1, 6))
+
+    story.append(Paragraph("Rationale / Justification", styles["H2"]))
+    story.append(Paragraph(rationale or "—", styles["Body"]))
+    story.append(Spacer(1, 6))
+
+    story.append(Paragraph("Key Risks", styles["H2"]))
+    story.append(Paragraph(risks or "—", styles["Body"]))
+    story.append(Spacer(1, 6))
+
+    story.append(Paragraph("Mitigations / Safeguards", styles["H2"]))
+    story.append(Paragraph(mitigations or "—", styles["Body"]))
+    story.append(Spacer(1, 6))
+
+    story.append(Paragraph("Stakeholders", styles["H2"]))
+    story.append(Paragraph(stakeholders or "—", styles["Body"]))
+    story.append(Spacer(1, 6))
+
+    story.append(Paragraph("Additional Notes", styles["H2"]))
+    story.append(Paragraph(notes or "—", styles["Body"]))
+
+    doc.build(story)
+    buf.seek(0)
+    return buf
+
+# Export button
+if st.button("📄 Generate PDF decision log"):
+    pdf_buf = generate_pdf()
+    if pdf_buf:
+        filename = f"decision_log_{scenario.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d_%H%M')}.pdf"
+        st.download_button("Download PDF", data=pdf_buf, file_name=filename, mime="application/pdf")
+
+st.divider()
 
 # ---------- Footer ----------
 st.markdown("---")
