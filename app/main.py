@@ -515,43 +515,38 @@ st.divider()
 # ---------- 5) Institutional & Governance Constraints ----------
 st.markdown("### 5) Institutional & Governance Constraints")
 
-# --- NEW: helper to read constraints for a thesis scenario from scenario_constraints.yaml
-def _get_thesis_constraints(scn: str):
-    d = CONSTRAINTS_YAML or {}
-    # Support either:
-    #   { "scenarios": { "<name>": { "constraints": [...] } } }
-    # or { "<name>": { "constraints": [...] } }
-    # or { "scenarios": { "<name>": [ ... ] } } or { "<name>": [ ... ] }
-    entry = None
-    if isinstance(d.get("scenarios"), dict):
-        entry = d["scenarios"].get(scn)
-    if entry is None:
-        entry = d.get(scn)
+with st.expander("About Institutional & Governance Constraints"):
+    st.markdown("""
+Municipal cybersecurity professionals rarely make decisions in a vacuum.  
+Their options are shaped — and sometimes limited — by **institutional and governance constraints**, such as:
 
-    if entry is None:
-        return []
+- **Fragmented authority** (unclear or overlapping decision rights)  
+- **Procurement and vendor opacity** (unclear disclosure of risks or surveillance potential)  
+- **Limited budgets and staffing**  
+- **Political pressure or lack of public oversight**  
+- **Legacy technology and poor segmentation**  
 
-    if isinstance(entry, list):
-        return entry
-    if isinstance(entry, dict):
-        if isinstance(entry.get("constraints"), list):
-            return entry["constraints"]
-        # also allow a key like "items"
-        if isinstance(entry.get("items"), list):
-            return entry["items"]
-    return []
+These constraints are not just background noise — they **directly influence what is feasible** in a given crisis.  
+By explicitly documenting them here, the prototype ensures that ethical reasoning and technical standards are applied in the context of real-world municipal limitations.
+    """)
 
 if mode == "Thesis scenarios":
     thesis_constraints = _get_thesis_constraints(scenario)
     if thesis_constraints:
-        st.markdown(f"<div class='listbox'><ul class='tight-list'>{''.join([f'<li>{c}</li>' for c in thesis_constraints])}</ul></div>", unsafe_allow_html=True)
+        st.markdown(
+            f"<div class='listbox'><ul class='tight-list'>{''.join([f'<li>{c}</li>' for c in thesis_constraints])}</ul></div>",
+            unsafe_allow_html=True
+        )
     else:
         st.info("No predefined constraints found for this scenario.")
 else:
     # Open-ended keeps the editable multiselect
-    constraints = st.multiselect("Select constraints relevant to this scenario", GOV_CONSTRAINTS, default=pd_defaults.get("constraints", []))
+    constraints = st.multiselect(
+        "Select constraints relevant to this scenario",
+        GOV_CONSTRAINTS,
+        default=pd_defaults.get("constraints", [])
+    )
 
-st.divider()
 
 # ---------- Decision Log & Rationale ----------
 st.markdown("### Documentation & Rationale")
