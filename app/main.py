@@ -254,7 +254,7 @@ st.markdown(
 with st.expander("About this prototype"):
     st.markdown(
         """
-- **Purpose:** Support municipal cybersecurity practitioners in navigating complex ethical dilemmas. This tool is designed to guide users through high-stakes decisions in real time—aligning actions with technical standards, clarifying value conflicts, and documenting decision rationales for transparency and accountability under institutional and governance constraints.  
+- **Purpose:** Support municipal cybersecurity practitioners in navigating complex ethical dilemmas. This tool is designed to guide users through high-stakes decisions in real time—aligning actions with technical standards, clarifying value conflicts, and documenting the decision-support for transparency and accountability under institutional and governance constraints.  
 - **Backbone:** This prototype draws on the NIST Cybersecurity Framework, guiding users through six core functions: Govern, Identify, Protect, Detect, Respond, and Recover. These are integrated with Principlist ethical values—Beneficence, Non-maleficence, Autonomy, Justice, and Explicability—to help users weigh trade-offs and record ethically defensible reasoning.  
 - **Context:** Designed specifically for municipal use, the prototype accounts for real-world constraints like limited budgets, fragmented authority, and vendor opacity. It supports ethical decision-making within these practical and political realities while ensuring accountability for how decisions are reached.
         """
@@ -559,12 +559,12 @@ else:
 
 st.divider()
 
-# ---------- 6) Decision Log & Rationale (auto-filled & PDF export) ----------
-st.markdown("### 6) Decision Log & Rationale")
+# ---------- 6) Decision Support Log (auto-filled & PDF export) ----------
+st.markdown("### 6) Decision Support Log")
 with st.expander("What this section is for"):
     st.markdown("""
 This log **auto-populates** from your analysis above (scenario, NIST functions, Principlist values, ethical tensions, and constraints).
-Add the **Decision maker**, refine the **Decision**, **Rationale**, **Risks**, and **Mitigations**, then export a timestamped PDF for records.
+Add the **Decision maker** and export a timestamped PDF for records.
     """)
 
 # --- Build helpful defaults from previous sections ---
@@ -588,12 +588,6 @@ def _normalize_tensions_to_lines(t):
         else:
             out.append(str(item))
     return out
-
-_default_rationale = (
-    "This decision aligns actions with the **NIST CSF** functions emphasized above and is "
-    "guided by **Principlist** ethical values to ensure the response is technically sound and ethically defensible "
-    "within municipal constraints."
-)
 
 _default_risks = (
     "Potential operational disruption; reputational impact; equity concerns for affected groups; "
@@ -653,7 +647,6 @@ st.text_area(
 )
 
 st.markdown("##### Decision fields")
-rationale = st.text_area("Rationale / Justification", value=_default_rationale, height=140)
 risks = st.text_area("Key Risks", value=_default_risks, height=120)
 mitigations = st.text_area("Mitigations / Safeguards", value=_default_mitigations, height=120)
 stakeholders = st.text_area("Key Stakeholders (optional)", value="", height=90)
@@ -730,10 +723,6 @@ def generate_pdf():
     # Decision block
     story.append(Paragraph("Decision / Action", styles["H2"]))
     story.append(Paragraph(decision_title or "—", styles["Body"]))
-    story.append(Spacer(1, 6))
-
-    story.append(Paragraph("Rationale / Justification", styles["H2"]))
-    story.append(Paragraph((rationale or "—").replace("\n","<br/>"), styles["Body"]))
     story.append(Spacer(1, 6))
 
     story.append(Paragraph("Key Risks", styles["H2"]))
