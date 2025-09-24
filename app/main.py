@@ -19,10 +19,11 @@ def load_yaml_file(filename: str):
 
 @st.cache_data
 def load_all_data():
-    nist = load_yaml_file("nist_csf.yaml")
-    principlist = load_yaml_file("principlist.yaml")
-    dilemmas = load_yaml_file("municipal_dilemmas.yaml")
-    constraints = load_yaml_file("scenario_constraints.yaml")   # NEW
+    nist = load_yaml_file("nist_csf.yaml")              # { meta, functions: [{name, definition, illustrative_actions}] }
+    principlist = load_yaml_file("principlist.yaml")    # { meta, principles: [{name, definition, illustrative_examples}] }
+    dilemmas = load_yaml_file("municipal_dilemmas.yaml")# { <scenario>: {overview, technical, ethical_tensions: [...] } }
+    # --- NEW: load thesis constraints ---
+    constraints = load_yaml_file("scenario_constraints.yaml")  # supports several shapes; handled below
     return nist, principlist, dilemmas, constraints
 
 NIST_YAML, PRINCIPLIST_YAML, DILEMMAS_YAML, CONSTRAINTS_YAML = load_all_data()
@@ -37,18 +38,6 @@ STRICT_SOURCE_ONLY = True
 # Canonical definition maps from YAML (used in strict mode)
 NIST_DEF = {f.get("name"): f.get("definition", "") for f in NIST_YAML.get("functions", []) if f.get("name")}
 PRINCIPLE_DEF = {p.get("name"): p.get("definition", "") for p in PRINCIPLIST_YAML.get("principles", []) if p.get("name")}
-
-def get_constraints_for_scenario(scn: str):
-    """Return constraints for a scenario with forgiving matching."""
-    if not isinstance(CONSTRAINTS_YAML, dict):
-        return []
-    # 1) exact key
-    if scn in CONSTRAINTS_YAML:
-        return CONSTRAINTS_YAML[scn]
-    # 2) case/space-insensitive key
-    norm = scn.strip().lower()
-    lowered = {k.strip().lower(): v for k, v in CONSTRAINTS_YAML.items() if isinstance(k, str)}
-    return lowered.get(norm, [])
 
 # ---------- Page config ----------
 st.set_page_config(page_title="Municipal Ethical Cyber Decision-Support", layout="wide", initial_sidebar_state="expanded")
@@ -230,7 +219,6 @@ ETHICAL_TENSIONS_BY_SCENARIO = {
 }
 
 # ---------- Sidebar ----------
-# (You can remove the header if you like; keeping your current UI)
 st.sidebar.header("Options")
 mode = st.sidebar.radio("Mode", ["Thesis scenarios", "Open-ended"])
 
@@ -270,7 +258,6 @@ National Institute of Standards and Technology, 2024.
 *Computers & Security* 109 (2021): 1–15.  
 [https://doi.org/10.1016/j.cose.2021.102382](https://doi.org/10.1016/j.cose.2021.102382)  
     """)
-
 # ---------- 1) Scenario overview ----------
 if mode == "Thesis scenarios":
     scenario = st.selectbox("Choose a Municipal Cybersecurity Scenario", options=list(scenario_summaries.keys()))
@@ -530,27 +517,46 @@ st.session_state["principle_totals"] = pr_totals
 
 st.divider()
 
+# ---------- 5) Institutional & Governance Constraints ----------
 st.markdown("### 5) Institutional & Governance Constraints")
 
+# --- NEW: helper to read constraints for a thesis scenario from scenario_constraints.yaml
+def _get_thesis_constraints(scn: str):
+    d = CONSTRAINTS_YAML or {}
+    # Support either:
+    #   { "scenarios": { "<name>": { "constraints": [...] } } }
+    # or { "<name>": { "constraints": [...] } }
+    # or { "scenarios": { "<name>": [ ... ] } } or { "<name>": [ ... ] }
+    entry = None
+    if isinstance(d.get("scenarios"), dict):
+        entry = d["scenarios"].get(scn)
+    if entry is None:
+        entry = d.get(scn)
+
+    if entry is None:
+        return []
+
+    if isinstance(entry, list):
+        return entry
+    if isinstance(entry, dict):
+        if isinstance(entry.get("constraints"), list):
+            return entry["constraints"]
+        # also allow a key like "items"
+        if isinstance(entry.get("items"), list):
+            return entry["items"]
+    return []
+
 if mode == "Thesis scenarios":
-    scenario_constraints = get_constraints_for_scenario(scenario)
-    if scenario_constraints:
-        st.markdown("**Constraints for this scenario (from data/scenario_constraints.yaml):**")
-        st.markdown("<ul>" + "".join([f"<li>{c}</li>" for c in scenario_constraints]) + "</ul>", unsafe_allow_html=True)
+    thesis_constraints = _get_thesis_constraints(scenario)
+    if thesis_constraints:
+        st.markdown(f"<div class='listbox'><ul class='tight-list'>{''.join([f'<li>{c}</li>' for c in thesis_constraints])}</ul></div>", unsafe_allow_html=True)
     else:
-        # Helpful debug so you can see what keys were loaded
-        loaded_keys = []
-        if isinstance(CONSTRAINTS_YAML, dict):
-            loaded_keys = sorted(CONSTRAINTS_YAML.keys())
         st.info("No predefined constraints found for this scenario.")
-        with st.expander("Debug: keys found in scenario_constraints.yaml"):
-            st.write(loaded_keys)
 else:
-    constraints = st.multiselect(
-        "Select constraints relevant to this scenario",
-        GOV_CONSTRAINTS,
-        default=pd_defaults.get("constraints", [])
-    )
+    # Open-ended keeps the editable multiselect
+    constraints = st.multiselect("Select constraints relevant to this scenario", GOV_CONSTRAINTS, default=pd_defaults.get("constraints", []))
+
+st.divider()
 
 # ---------- Documentation & Rationale ----------
 st.markdown("### Documentation & Rationale")
