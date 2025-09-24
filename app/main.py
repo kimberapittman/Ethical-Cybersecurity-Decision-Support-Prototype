@@ -56,13 +56,41 @@ st.set_page_config(page_title="Municipal Ethical Cyber Decision-Support", layout
 # ---------- Minimal styling for list emphasis & readability (NEW, cosmetic only) ----------
 st.markdown("""
 <style>
-.listbox{background:#f9fbff;border-left:4px solid #4C8BF5;padding:10px 14px;border-radius:8px;margin:6px 0 14px;}
-.section-note{color:#6b7280;font-size:0.9rem;margin:-4px 0 10px 0;}
-.tight-list{margin:0.25rem 0 0 1.15rem;padding:0;}
-.tight-list li{margin:6px 0;}
-.sub{color:#6b7280;font-size:0.95rem;}
+/* Light defaults */
+:root{
+  --card-bg: #f9fbff;                 /* listbox background (light) */
+  --card-border: #4C8BF5;             /* accent border */
+  --muted: #6b7280;                   /* caption/subtle text (light) */
+}
+
+/* Dark overrides */
+@media (prefers-color-scheme: dark){
+  :root{
+    --card-bg: rgba(255,255,255,0.06); /* translucent dark card */
+    --card-border: var(--accent-color, #4C8BF5);
+    --muted: #a3a3a3;                  /* readable muted on dark */
+  }
+}
+
+/* Card-style lists used in sections 2, 3, and 5 */
+.listbox{
+  background: var(--card-bg);
+  border-left: 4px solid var(--card-border);
+  padding: 12px 14px;
+  border-radius: 10px;
+  margin: 6px 0 14px;
+}
+
+/* Tighter list spacing + readable text color on both themes */
+.tight-list{ margin: 0.25rem 0 0 1.15rem; padding: 0; }
+.tight-list li{ margin: 6px 0; color: var(--text-color); }
+
+/* Sub/caption text tuned for both themes */
+.section-note{ color: var(--muted); font-size: 0.9rem; margin: -4px 0 10px 0; }
+.sub{ color: var(--muted); font-size: 0.95rem; }
 </style>
 """, unsafe_allow_html=True)
+
 
 # ---------- NIST CSF 2.0 constants ----------
 # If YAML present, prefer its function names; otherwise use your original list
