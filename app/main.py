@@ -513,21 +513,37 @@ st.session_state["principle_totals"] = pr_totals
 st.divider()
 
 # ---------- 5) Institutional & Governance Constraints ----------
+
+# Helper must be defined BEFORE it's used
+def _get_thesis_constraints(scn: str):
+    d = CONSTRAINTS_YAML or {}
+    entry = None
+    # Support shapes:
+    #   { "scenarios": { "<name>": { "constraints": [...] } } }
+    #   { "<name>": { "constraints": [...] } }
+    #   { "scenarios": { "<name>": [ ... ] } }
+    #   { "<name>": [ ... ] }
+    if isinstance(d.get("scenarios"), dict):
+        entry = d["scenarios"].get(scn)
+    if entry is None:
+        entry = d.get(scn)
+    if entry is None:
+        return []
+    if isinstance(entry, list):
+        return entry
+    if isinstance(entry, dict):
+        for key in ("constraints", "items"):
+            v = entry.get(key)
+            if isinstance(v, list):
+                return v
+    return []
+
 st.markdown("### 5) Institutional & Governance Constraints")
 
 with st.expander("About Institutional & Governance Constraints"):
     st.markdown("""
-Municipal cybersecurity professionals rarely make decisions in a vacuum.  
-Their options are shaped — and sometimes limited — by **institutional and governance constraints**, such as:
-
-- **Fragmented authority** (unclear or overlapping decision rights)  
-- **Procurement and vendor opacity** (unclear disclosure of risks or surveillance potential)  
-- **Limited budgets and staffing**  
-- **Political pressure or lack of public oversight**  
-- **Legacy technology and poor segmentation**  
-
-These constraints are not just background noise — they **directly influence what is feasible** in a given crisis.  
-By explicitly documenting them here, the prototype ensures that ethical reasoning and technical standards are applied in the context of real-world municipal limitations.
+Municipal cybersecurity options are shaped by **institutional and governance constraints** (e.g., decision rights, procurement opacity, budgets, oversight, and legacy tech).  
+Documenting them ensures technical and ethical reasoning reflects real municipal limits.
     """)
 
 if mode == "Thesis scenarios":
@@ -540,12 +556,13 @@ if mode == "Thesis scenarios":
     else:
         st.info("No predefined constraints found for this scenario.")
 else:
-    # Open-ended keeps the editable multiselect
     constraints = st.multiselect(
         "Select constraints relevant to this scenario",
         GOV_CONSTRAINTS,
         default=pd_defaults.get("constraints", [])
     )
+    st.caption("Tip: pick only the constraints that materially limit feasible actions for this case.")
+
 
 
 # ---------- Decision Log & Rationale ----------
