@@ -542,8 +542,8 @@ st.markdown("### 5) Institutional & Governance Constraints")
 
 with st.expander("About Institutional & Governance Constraints"):
     st.markdown("""
-Municipal cybersecurity options are shaped by **institutional and governance constraints** (e.g., decision rights, procurement opacity, budgets, oversight, and legacy tech).  
-Documenting them ensures technical and ethical reasoning reflects real municipal limits.
+Cybersecurity professionals in municipalities often face institutional and governance constraints that limit their options for action (e.g., decision rights, procurement opacity, budgets, oversight, and legacy tech).
+Documenting these constraints makes explicit the practical limits within which professionals must operate, ensuring that technical and ethical reasoning remains grounded in real-world conditions.
     """)
 
 if mode == "Thesis scenarios":
