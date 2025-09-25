@@ -807,4 +807,4 @@ if st.button("📄 Generate PDF decision log"):
 
 # ---------- Footer ----------
 st.markdown("---")
-st.caption("Prototype created for thesis demonstration purposes – not for operational use.")
+st.caption("Prototype created for thesis demonstration purposes.")
