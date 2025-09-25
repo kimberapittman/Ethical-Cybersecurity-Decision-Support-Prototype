@@ -652,7 +652,6 @@ with colA:
 with colB:
     # Date/time is auto in PDF; show it here read-only for clarity
     st.text_input("Date & time (auto)", value=datetime.now().strftime("%Y-%m-%d %H:%M"), disabled=True)
-    reference_id = st.text_input("Reference ID (optional)", value="")
 
 st.markdown("##### Auto-filled context (edit if needed)")
 st.text_area("Scenario Overview", value=(description or "—"), height=110, key="dl_overview")
@@ -717,7 +716,6 @@ def generate_pdf():
         [
             ["Scenario", scenario],
             ["Date/Time", datetime.now().strftime("%Y-%m-%d %H:%M")],
-            ["Reference ID", reference_id or "—"],
         ],
         colWidths=[110, 380],
         hAlign="LEFT",
