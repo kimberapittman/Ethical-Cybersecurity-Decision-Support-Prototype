@@ -56,23 +56,25 @@ st.set_page_config(page_title="Municipal Ethical Cyber Decision-Support", layout
 # ---------- Minimal styling for list emphasis & readability (NEW, cosmetic only) ----------
 st.markdown("""
 <style>
-/* Light defaults */
+/* -------- base (light) -------- */
 :root{
-  --card-bg: #f9fbff;                 /* listbox background (light) */
-  --card-border: #4C8BF5;             /* accent border */
-  --muted: #6b7280;                   /* caption/subtle text (light) */
+  --card-bg: #f9fbff;
+  --card-border: #4C8BF5;
+  --text-strong: #111827;   /* near-black */
+  --text-muted: #6b7280;
 }
 
-/* Dark overrides */
+/* -------- dark overrides -------- */
 @media (prefers-color-scheme: dark){
   :root{
-    --card-bg: rgba(255,255,255,0.06); /* translucent dark card */
-    --card-border: var(--accent-color, #4C8BF5);
-    --muted: #a3a3a3;                  /* readable muted on dark */
+    --card-bg: rgba(255,255,255,0.06);
+    --card-border: #4C8BF5;
+    --text-strong: #e5e7eb;  /* slate-200 */
+    --text-muted: #cbd5e1;   /* slate-300 */
   }
 }
 
-/* Card-style lists used in sections 2, 3, and 5 */
+/* Card used in sections 2,3,5 */
 .listbox{
   background: var(--card-bg);
   border-left: 4px solid var(--card-border);
@@ -81,13 +83,20 @@ st.markdown("""
   margin: 6px 0 14px;
 }
 
-/* Tighter list spacing + readable text color on both themes */
+/* Make the list text and bullets readable in dark mode */
+.listbox, .listbox *{
+  color: var(--text-strong) !important;
+}
 .tight-list{ margin: 0.25rem 0 0 1.15rem; padding: 0; }
-.tight-list li{ margin: 6px 0; color: var(--text-color); }
+.tight-list li{ margin: 6px 0; }
 
-/* Sub/caption text tuned for both themes */
-.section-note{ color: var(--muted); font-size: 0.9rem; margin: -4px 0 10px 0; }
-.sub{ color: var(--muted); font-size: 0.95rem; }
+/* Brighten the bullet/marker color specifically */
+.tight-list li::marker{
+  color: var(--text-muted);
+}
+
+/* Sub/captions */
+.section-note, .sub{ color: var(--text-muted) !important; }
 </style>
 """, unsafe_allow_html=True)
 
