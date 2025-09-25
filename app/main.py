@@ -109,6 +109,119 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+<style>
+/* === Font (Inter) + base tokens === */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+html, body, [class^="css"] {
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji"!important;
+}
+
+/* tokens */
+:root{
+  --brand: #4C8BF5;
+  --brand-2: #7aa8ff;
+  --bg-soft: #0b1020;   /* deep navy feel in dark */
+  --text-strong: #111827;
+  --text-muted: #6b7280;
+  --card-bg: #f9fbff;
+  --card-border: var(--brand);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --text-strong: #e5e7eb;
+    --text-muted: #94a3b8;
+    --card-bg: rgba(255,255,255,0.05);
+  }
+}
+
+/* App background (feels “app-like”, not a form) */
+div[data-testid="stAppViewContainer"]{
+  background: radial-gradient(1200px 600px at 10% -10%, rgba(76,139,245,0.15), transparent 60%),
+              radial-gradient(900px 500px at 100% 0%, rgba(122,168,255,0.10), transparent 60%),
+              var(--bg-soft);
+}
+
+/* Sidebar polish */
+section[data-testid="stSidebar"]{
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+  border-right: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(6px);
+}
+section[data-testid="stSidebar"] *{
+  color: var(--text-strong) !important;
+}
+
+/* Header: subtle glass bar */
+.block-container > div:first-child{
+  backdrop-filter: blur(6px);
+  border-radius: 14px;
+  padding: 8px 14px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+}
+
+/* “Cards” used in sections 2,3,5 (glassmorphism) */
+.listbox{
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+  border-left: 4px solid var(--brand);
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.25);
+  padding: 12px 14px;
+  border-radius: 14px;
+  margin: 8px 0 16px;
+}
+.listbox, .listbox *{ color: var(--text-strong) !important; }
+.tight-list{ margin: 0.25rem 0 0 1.15rem; padding: 0; }
+.tight-list li{ margin: 6px 0; }
+.tight-list li::marker{ color: var(--text-muted); }
+
+/* Section captions / helper text */
+.section-note, .sub{ color: var(--text-muted) !important; }
+
+/* Buttons: rounded, gradient, micro-interaction */
+.stButton > button{
+  border: 0;
+  padding: 0.7rem 1rem;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--brand), var(--brand-2));
+  color: white !important;
+  box-shadow: 0 10px 20px rgba(76,139,245,0.35);
+  transition: transform .06s ease, box-shadow .15s ease, filter .15s ease;
+}
+.stButton > button:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 14px 26px rgba(76,139,245,0.45);
+  filter: brightness(1.05);
+}
+.stButton > button:active{ transform: translateY(0); }
+
+/* Inputs: cleaner fields, dark-aware */
+input, textarea, select, .stTextInput input, .stTextArea textarea{
+  background: rgba(255,255,255,0.06) !important;
+  border: 1px solid rgba(255,255,255,0.12) !important;
+  color: var(--text-strong) !important;
+  border-radius: 10px !important;
+}
+label, .stRadio, .stSelectbox, .stMultiSelect, .stExpander{
+  color: var(--text-strong) !important;
+}
+
+/* Expander headers: pill look */
+details > summary{
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 12px;
+  padding: 10px 12px;
+  color: var(--text-strong);
+}
+
+/* Checkbox / radio accent color */
+input[type="checkbox"], input[type="radio"]{ accent-color: var(--brand); }
+
+/* Hide default Streamlit chrome if you want an ultra-clean look */
+header[data-testid="stHeader"]{ background: transparent; }
+footer, #MainMenu{ visibility: hidden; }
+</style>
 
 # ---------- NIST CSF 2.0 constants ----------
 # If YAML present, prefer its function names; otherwise use your original list
