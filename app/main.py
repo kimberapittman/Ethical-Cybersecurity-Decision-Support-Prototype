@@ -55,6 +55,12 @@ PRINCIPLE_DEF = {p.get("name"): p.get("definition", "") for p in PRINCIPLIST_YAM
 
 # ---------- Page config ----------
 st.set_page_config(page_title="Municipal Ethical Cyber Decision-Support", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(
+    page_title="Municipal Ethical Cyber Decision-Support",
+    page_icon="🛡️",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
 # ---------- Minimal styling for list emphasis & readability (NEW, cosmetic only) ----------
 st.markdown("""
