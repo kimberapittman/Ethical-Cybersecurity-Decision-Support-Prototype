@@ -1,5 +1,8 @@
 import streamlit as st
 from datetime import datetime
+# --- put at the top with other imports ---
+import base64
+import streamlit.components.v1 as components
 
 # --- NEW: YAML + Path imports and loaders ---
 from pathlib import Path
@@ -776,11 +779,27 @@ def generate_pdf():
     return buf
 
 # Export
+# --- replace your current "Export" section with this ---
 if st.button("📄 Generate PDF decision log"):
     pdf_buf = generate_pdf()
     if pdf_buf:
         filename = f"decision_log_{scenario.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d_%H%M')}.pdf"
+
+        # 1) Normal Streamlit download button (fallback / accessible)
         st.download_button("Download PDF", data=pdf_buf, file_name=filename, mime="application/pdf")
+
+        # 2) Auto-trigger download via a hidden anchor
+        b64 = base64.b64encode(pdf_buf.getvalue()).decode("utf-8")
+        components.html(
+            f"""
+            <a id="autodl" href="data:application/pdf;base64,{b64}" download="{filename}"></a>
+            <script>
+              const a = document.getElementById('autodl');
+              if (a) a.click();
+            </script>
+            """,
+            height=0,
+        )
 
 # ---------- Footer ----------
 st.markdown("---")
