@@ -600,8 +600,8 @@ st.divider()
 st.markdown("### 6) Decision Support Log")
 with st.expander("What this section is for"):
     st.markdown("""
-This log **auto-populates** from your analysis above (scenario, NIST functions, Principlist values, ethical tensions, and constraints).
-Add the **Decision maker** and export a timestamped PDF for records.
+This log **auto-populates** from your analysis above (scenario, NIST functions, Principlist values, ethical tensions, and constraints),
+and lets you export a timestamped PDF for records and transparency.
     """)
 
 # --- Build helpful defaults from previous sections ---
@@ -645,8 +645,7 @@ constraints_list = final_constraints or []
 # --- User-editable but pre-populated fields ---
 colA, colB = st.columns(2)
 with colA:
-    prepared_by = st.text_input("Decision maker (name/role)", value="")
-    decision_title = st.text_input("Decision / Action chosen", value="")
+    pass
 with colB:
     # Date/time is auto in PDF; show it here read-only for clarity
     st.text_input("Date & time (auto)", value=datetime.now().strftime("%Y-%m-%d %H:%M"), disabled=True)
@@ -715,6 +714,7 @@ def generate_pdf():
         [
             ["Scenario", scenario],
             ["Date/Time", datetime.now().strftime("%Y-%m-%d %H:%M")],
+            ["Reference ID", reference_id or "—"],
         ],
         colWidths=[110, 380],
         hAlign="LEFT",
@@ -755,11 +755,7 @@ def generate_pdf():
     story.append(ListFlowable([ListItem(Paragraph(x, styles["Body"])) for x in con_lines] or [ListItem(Paragraph("—", styles["Body"]))], bulletType="bullet", leftIndent=18))
     story.append(Spacer(1, 10))
 
-    # Decision block
-    story.append(Paragraph("Decision / Action", styles["H2"]))
-    story.append(Paragraph(decision_title or "—", styles["Body"]))
-    story.append(Spacer(1, 6))
-
+    # Decision-related fields (without decision maker / decision title)
     story.append(Paragraph("Key Risks", styles["H2"]))
     story.append(Paragraph((risks or "—").replace("\n","<br/>"), styles["Body"]))
     story.append(Spacer(1, 6))
