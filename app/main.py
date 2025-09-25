@@ -714,9 +714,7 @@ def generate_pdf():
     meta_table = Table(
         [
             ["Scenario", scenario],
-            ["Decision maker", prepared_by or "—"],
             ["Date/Time", datetime.now().strftime("%Y-%m-%d %H:%M")],
-            ["Reference ID", reference_id or "—"],
         ],
         colWidths=[110, 380],
         hAlign="LEFT",
