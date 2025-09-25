@@ -65,51 +65,6 @@ st.set_page_config(
 # ---------- Minimal styling for list emphasis & readability (NEW, cosmetic only) ----------
 st.markdown("""
 <style>
-/* -------- base (light) -------- */
-:root{
-  --card-bg: #f9fbff;
-  --card-border: #4C8BF5;
-  --text-strong: #111827;   /* near-black */
-  --text-muted: #6b7280;
-}
-
-/* -------- dark overrides -------- */
-@media (prefers-color-scheme: dark){
-  :root{
-    --card-bg: rgba(255,255,255,0.06);
-    --card-border: #4C8BF5;
-    --text-strong: #e5e7eb;  /* slate-200 */
-    --text-muted: #cbd5e1;   /* slate-300 */
-  }
-}
-
-/* Card used in sections 2,3,5 */
-.listbox{
-  background: var(--card-bg);
-  border-left: 4px solid var(--card-border);
-  padding: 12px 14px;
-  border-radius: 10px;
-  margin: 6px 0 14px;
-}
-
-/* Make the list text and bullets readable in dark mode */
-.listbox, .listbox *{
-  color: var(--text-strong) !important;
-}
-.tight-list{ margin: 0.25rem 0 0 1.15rem; padding: 0; }
-.tight-list li{ margin: 6px 0; }
-
-/* Brighten the bullet/marker color specifically */
-.tight-list li::marker{
-  color: var(--text-muted);
-}
-
-/* Sub/captions */
-.section-note, .sub{ color: var(--text-muted) !important; }
-</style>
-""", unsafe_allow_html=True)
-
-<style>
 /* === Font (Inter) + base tokens === */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 html, body, [class^="css"] {
@@ -223,16 +178,6 @@ header[data-testid="stHeader"]{ background: transparent; }
 footer, #MainMenu{ visibility: hidden; }
 </style>
 
-# ---------- NIST CSF 2.0 constants ----------
-# If YAML present, prefer its function names; otherwise use your original list
-NIST_FUNCTIONS = NIST_FUNCTIONS_FROM_YAML or [
-    "Govern (GV)",
-    "Identify (ID)",
-    "Protect (PR)",
-    "Detect (DE)",
-    "Respond (RS)",
-    "Recover (RC)",
-]
 
 # ---------- Simple rule-based NLP helpers (no external deps) ----------
 # (Kept for compatibility, but bypassed in strict mode)
