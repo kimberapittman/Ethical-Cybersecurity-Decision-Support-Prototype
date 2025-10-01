@@ -177,7 +177,7 @@ input[type="checkbox"], input[type="radio"]{ accent-color: var(--brand); }
 header[data-testid="stHeader"]{ background: transparent; }
 footer, #MainMenu{ visibility: hidden; }
 </style>
-
+""", unsafe_allow_html=True)
 
 # ---------- Simple rule-based NLP helpers (no external deps) ----------
 # (Kept for compatibility, but bypassed in strict mode)
