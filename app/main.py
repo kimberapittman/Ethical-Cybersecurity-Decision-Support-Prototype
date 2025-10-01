@@ -54,7 +54,6 @@ NIST_DEF = {f.get("name"): f.get("definition", "") for f in NIST_YAML.get("funct
 PRINCIPLE_DEF = {p.get("name"): p.get("definition", "") for p in PRINCIPLIST_YAML.get("principles", []) if p.get("name")}
 
 # ---------- Page config ----------
-st.set_page_config(page_title="Municipal Ethical Cyber Decision-Support", layout="wide", initial_sidebar_state="expanded")
 st.set_page_config(
     page_title="Municipal Ethical Cyber Decision-Support",
     page_icon="🛡️",
@@ -94,6 +93,11 @@ div[data-testid="stAppViewContainer"]{
   background: radial-gradient(1200px 600px at 10% -10%, rgba(76,139,245,0.15), transparent 60%),
               radial-gradient(900px 500px at 100% 0%, rgba(122,168,255,0.10), transparent 60%),
               var(--bg-soft);
+
+  /* Force light-on-dark tokens for text visibility */
+  --text-strong: #e5e7eb;
+  --text-muted: #94a3b8;
+  --card-bg: rgba(255,255,255,0.05);
 }
 
 /* Sidebar polish */
@@ -391,6 +395,7 @@ National Institute of Standards and Technology, 2024.
 *Computers & Security* 109 (2021): 1–15.  
 [https://doi.org/10.1016/j.cose.2021.102382](https://doi.org/10.1016/j.cose.2021.102382)  
     """)
+
 # ---------- 1) Scenario overview ----------
 if mode == "Thesis scenarios":
     scenario = st.selectbox("Choose a Municipal Cybersecurity Scenario", options=list(scenario_summaries.keys()))
@@ -831,7 +836,7 @@ def generate_pdf():
     story.append(ListFlowable([ListItem(Paragraph(x, styles["Body"])) for x in con_lines] or [ListItem(Paragraph("—", styles["Body"]))], bulletType="bullet", leftIndent=18))
     story.append(Spacer(1, 10))
 
-    # Decision-related fields (without decision maker / decision title)
+    # Decision-related fields (no decision maker / title)
     story.append(Paragraph("Key Risks", styles["H2"]))
     story.append(Paragraph((risks or "—").replace("\n","<br/>"), styles["Body"]))
     story.append(Spacer(1, 6))
@@ -852,7 +857,6 @@ def generate_pdf():
     return buf
 
 # Export
-# --- replace your current "Export" section with this ---
 if st.button("📄 Generate PDF decision log"):
     pdf_buf = generate_pdf()
     if pdf_buf:
