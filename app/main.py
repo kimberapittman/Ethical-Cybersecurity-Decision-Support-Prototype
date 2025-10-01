@@ -179,6 +179,17 @@ footer, #MainMenu{ visibility: hidden; }
 </style>
 """, unsafe_allow_html=True)
 
+# ---------- NIST CSF 2.0 constants ----------
+# If YAML present, prefer its function names; otherwise use your original list
+NIST_FUNCTIONS = NIST_FUNCTIONS_FROM_YAML or [
+    "Govern (GV)",
+    "Identify (ID)",
+    "Protect (PR)",
+    "Detect (DE)",
+    "Respond (RS)",
+    "Recover (RC)",
+]
+
 # ---------- Simple rule-based NLP helpers (no external deps) ----------
 # (Kept for compatibility, but bypassed in strict mode)
 NIST_KB = {
