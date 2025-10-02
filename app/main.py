@@ -857,7 +857,7 @@ def generate_pdf():
     return buf
 
 # Export
-if st.button("📄 Generate PDF decision log"):
+if st.button("📄 Generate PDF Decision-Support Log"):
     pdf_buf = generate_pdf()
     if pdf_buf:
         filename = f"decision_log_{scenario.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d_%H%M')}.pdf"
