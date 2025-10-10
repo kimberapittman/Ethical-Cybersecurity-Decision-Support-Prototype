@@ -363,7 +363,7 @@ with st.sidebar:
 st.markdown(
     """
     <div style='text-align: center;'>
-        <h1>🛡️ Municipal Ethical Cyber Decision-Support Prototype</h1>
+        <h1>🛡️ Municipal Cyber Ethics Decision-Support Prototype</h1>
         <h4 style='color:#4C8BF5;'>Because what's secure isn't always what's right.</h4>
     </div>
     """,
