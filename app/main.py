@@ -358,6 +358,16 @@ with st.sidebar:
         key="mode_selector",                 # explicit key avoids collisions
         label_visibility="collapsed",
     )
+    # --- Reset session_state fields when switching to Open-ended mode ---
+if "last_mode" not in st.session_state:
+    st.session_state.last_mode = mode
+
+if mode != st.session_state.last_mode and mode == "Open-ended":
+    for key in ["dl_overview", "dl_nist", "dl_principlist", "dl_tensions", "dl_constraints"]:
+        if key in st.session_state:
+            st.session_state[key] = ""
+st.session_state.last_mode = mode
+
 
 # ---------- Intro ----------
 st.markdown(
