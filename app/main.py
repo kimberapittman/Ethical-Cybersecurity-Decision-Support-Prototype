@@ -373,7 +373,7 @@ st.markdown(
 with st.expander("About this prototype"):
     st.markdown(
         """
-- **Purpose:** Support municipal cybersecurity practitioners in navigating complex ethical dilemmas. This tool is designed to guide users through high-stakes decisions in real time—aligning actions with technical standards, clarifying value conflicts, and documenting the decision-support for transparency and accountability under institutional and governance constraints.  
+- **Purpose:** Support municipal cybersecurity practitioners in navigating complex ethical dilemmas. This tool guides users through high-stakes decisions in real time by bringing ethical principles and technical standards into dialogue, clarifying value conflicts, and documenting the reasoning process for transparency and accountability within institutional and governance constraints.  
 - **Backbone:** import streamlit as st
 from datetime import datetime
 # --- put at the top with other imports ---
