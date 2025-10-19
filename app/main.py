@@ -358,7 +358,15 @@ with st.sidebar:
         key="mode_selector",                 # explicit key avoids collisions
         label_visibility="collapsed",
     )
+# --- Mode reset so cached text fields clear when switching modes ---
+if "last_mode" not in st.session_state:
+    st.session_state.last_mode = mode
 
+if mode != st.session_state.last_mode:
+    for k in ["dl_overview", "dl_nist", "dl_principlist", "dl_tensions", "dl_constraints"]:
+        st.session_state[k] = ""
+    st.session_state.last_mode = mode
+    
 # ---------- Intro ----------
 st.markdown(
     """
@@ -688,6 +696,31 @@ and lets you export a timestamped PDF for records and transparency.
     """)
 
 # --- Build helpful defaults from previous sections ---
+# ✅ AUTO-FILL CONTROLLER
+if mode == "Thesis scenarios" and scenario:
+    tensions_lines = []
+    for t in ETHICAL_TENSIONS_BY_SCENARIO.get(scenario, []):
+        tensions_lines.append(f"{t[0]} — Principlist: {', '.join(t[1])}")
+    constraints_list = _get_thesis_constraints(scenario)
+    st.session_state["dl_overview"] = scenario_summaries.get(scenario, "")
+    st.session_state["dl_nist"] = "\n".join([f"- {f}" for f in NIST_FUNCTIONS])
+    st.session_state["dl_principlist"] = "\n".join([f"- {p}" for p in PRINCIPLES])
+    st.session_state["dl_tensions"] = "\n".join([f"- {t}" for t in tensions_lines])
+    st.session_state["dl_constraints"] = "\n".join([f"- {c}" for c in constraints_list])
+elif mode == "Open-ended" and scenario:
+    entry = DILEMMAS_YAML.get(scenario, {})
+    tensions = entry.get("ethical_tensions", [])
+    tensions_lines = []
+    for t in tensions:
+        label = t.get("description", "")
+        tags = ", ".join(t.get("principles", []))
+        tensions_lines.append(f"{label}" + (f" — Principlist: {tags}" if tags else ""))
+    st.session_state["dl_overview"] = entry.get("overview", "")
+    st.session_state["dl_nist"] = "\n".join([f"- {f}" for f in entry.get("technical", [])])
+    st.session_state["dl_principlist"] = "\n".join([f"- {p}" for p in PRINCIPLES])
+    st.session_state["dl_tensions"] = "\n".join([f"- {t}" for t in tensions_lines])
+    st.session_state["dl_constraints"] = "\n".join([f"- {c}" for c in entry.get("constraints", [])])
+
 def _fmt_bullets(items):
     return "\n".join([f"- {x}" for x in items]) if items else "—"
 
