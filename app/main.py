@@ -766,11 +766,10 @@ with colB:
     # Date/time is auto in PDF; show it here read-only for clarity
     st.text_input("Date & time (auto)", value=datetime.now().strftime("%Y-%m-%d %H:%M"), disabled=True)
 
-st.markdown ("##### Auto-filled context (edit if needed)")
 st.text_area("Scenario Overview", value=(description or "—"), height=110, key="dl_overview")
 
 st.text_area(
-    "NIST CSF Functions Emphasized",
+    "NIST CSF Functions Considered",
     value=_fmt_bullets(selected_nist or []),
     height=110,
     key="dl_nist"
@@ -784,22 +783,22 @@ st.text_area(
 )
 
 st.text_area(
-    "Ethical Tensions (auto from above)",
+    "Ethical Tensions",
     value=_fmt_bullets(norm_tensions),
     height=120,
     key="dl_tensions"
 )
 
 st.text_area(
-    "Institutional & Governance Constraints (auto from above)",
+    "Institutional & Governance Constraints",
     value=_fmt_bullets(constraints_list),
     height=120,
     key="dl_constraints"
 )
 
 st.markdown("##### Decision fields")
-risks = st.text_area("Key Risks", value=_default_risks, height=120)
-mitigations = st.text_area("Mitigations / Safeguards", value=_default_mitigations, height=120)
+risks = st.text_area("Key Risks (optional)", value=_default_risks, height=120)
+mitigations = st.text_area("Mitigations / Safeguards (optional)", value=_default_mitigations, height=120)
 stakeholders = st.text_area("Key Stakeholders (optional)", value="", height=90)
 notes = st.text_area("Additional Notes (optional)", value="", height=90)
 
