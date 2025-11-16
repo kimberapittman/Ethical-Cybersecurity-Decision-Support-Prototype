@@ -507,7 +507,7 @@ else:
 # ---- NEW BULLET LIST STYLE (mirrors ethical tensions section) ----
 st.markdown("#### Technical considerations in this scenario")
 st.caption("What the NIST CSF suggests focusing on for this case.")
-if mode == "Thesis scenarios":
+if mode == "Case-Based":
     selected_nist = suggested_nist[:]
     # Build clean <ul><li> list for readability
     items = []
@@ -555,7 +555,7 @@ if STRICT_SOURCE_ONLY:
 else:
     auto_principles = suggest_principles(description)
 
-if mode == "Thesis scenarios":
+if mode == "Case-Based":
     selected_principles = auto_principles[:]
 else:
     selected_principles = st.multiselect("Select relevant ethical principles (optional)", PRINCIPLES, default=auto_principles)
