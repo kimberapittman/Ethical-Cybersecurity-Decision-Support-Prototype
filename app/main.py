@@ -4,6 +4,14 @@ from datetime import datetime
 import base64
 import streamlit.components.v1 as components
 
+# Custom loaders
+from logic.loaders import load_csf_data, load_pfce_crosswalk, load_constraints
+
+# Load core data
+csf_data = load_csf_data()
+pfce = load_pfce_crosswalk()
+constraints = load_constraints()
+
 # --- NEW: YAML + Path imports and loaders ---
 from pathlib import Path
 import yaml
