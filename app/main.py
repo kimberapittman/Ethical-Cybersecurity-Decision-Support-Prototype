@@ -361,7 +361,7 @@ with st.sidebar:
     st.markdown("<h3 style='margin:0 0 0.5rem 0; font-weight:700;'>Mode</h3>", unsafe_allow_html=True)
     mode = st.radio(
         label="",
-        options=["Thesis scenarios", "Open-ended"],
+        options=["Case-Based", "Open-ended"],
         index=0,
         key="mode_selector",                 # explicit key avoids collisions
         label_visibility="collapsed",
@@ -413,7 +413,7 @@ National Institute of Standards and Technology, 2024.
     """)
 
 # ---------- 1) Scenario overview ----------
-if mode == "Thesis scenarios":
+if mode == "Case-Based":
     scenario = st.selectbox("Choose a Municipal Cybersecurity Scenario", options=list(scenario_summaries.keys()))
     st.markdown("### 1) Scenario Overview")
     st.markdown(f"**Scenario Overview:** {scenario_summaries[scenario]}")
