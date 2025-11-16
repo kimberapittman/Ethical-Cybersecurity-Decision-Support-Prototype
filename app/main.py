@@ -1,16 +1,31 @@
+import sys
+from pathlib import Path
+
+# Ensure project root is on sys.path so 'logic' can be imported
+ROOT_DIR = Path(__file__).resolve().parent.parent
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+
 import streamlit as st
 from datetime import datetime
-# --- put at the top with other imports ---
 import base64
 import streamlit.components.v1 as components
 
-# Custom loaders
-from logic.loaders import load_csf_data, load_pfce_crosswalk, load_constraints
+from logic.loaders import (
+    load_csf_data,
+    load_pfce_crosswalk,
+    load_pfce_principles,
+    load_constraints,
+)
+
+from logic.reasoning import apply_crosswalk, summarize_pfce
 
 # Load core data
-csf_data = load_csf_data()
-pfce = load_pfce_crosswalk()
-constraints = load_constraints()
+csf_data = load_csf_data()                # from csf_min.json
+pfce_crosswalk = load_pfce_crosswalk()    # from pfce_crosswalk_scaffold.yaml
+pfce_principles = load_pfce_principles()  # from pfce_principles.yaml
+constraints = load_constraints()          # governance/institutional constraints
+
 
 # --- NEW: YAML + Path imports and loaders ---
 from pathlib import Path
