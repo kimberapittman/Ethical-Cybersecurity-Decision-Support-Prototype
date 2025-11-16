@@ -2,108 +2,61 @@ from pathlib import Path
 import json
 import yaml
 
-# ---------- Base paths ----------
 
-BASE_DIR = Path(__file__).resolve().parent
-DATA_DIR = BASE_DIR.parent / "data"
+# Base directory for the project (repo root)
+BASE_DIR = Path(__file__).resolve().parents[1]
 
 
-# ---------- Internal helpers ----------
-
-def _load_yaml(filename: str):
-    path = DATA_DIR / filename
+def _load_yaml(rel_path: str, default=None):
+    """
+    Helper to safely load a YAML file relative to the repo root.
+    Returns `default` (or [] if default is None) if the file is missing.
+    """
+    path = BASE_DIR / rel_path
+    if not path.exists():
+        return [] if default is None else default
     with open(path, "r", encoding="utf-8") as f:
         return yaml.safe_load(f)
 
 
-def _load_json(filename: str):
-    path = DATA_DIR / filename
+def load_csf_data():
+    """
+    Load the compact NIST CSF 2.0 JSON (csf_min.json).
+    """
+    path = BASE_DIR / "data" / "csf_min.json"
+    if not path.exists():
+        return {}
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
-# ---------- Public loader functions ----------
-
-def load_csf_data():
-    """
-    Load the minimized NIST CSF 2.0 reference data (csf_min.json).
-    """
-    return _load_json("csf_min.json")
-
-
 def load_pfce_crosswalk():
     """
-    Load the PFCE × NIST CSF crosswalk scaffold (pfce_crosswalk_scaffold.yaml).
+    Load the PFCE–CSF crosswalk scaffold YAML.
     """
-    return _load_yaml("pfce_crosswalk_scaffold.yaml")
+    return _load_yaml("data/pfce_crosswalk_scaffold.yaml", default=[])
 
 
-def load_pfce_definitions():
+def load_pfce_principles():
     """
-    Load PFCE principle definitions (pfce_principles.yaml).
-    Returns the 'principles' mapping.
+    Load the PFCE principles (beneficence, non-maleficence, autonomy, justice, explicability).
     """
-    data = _load_yaml("pfce_principles.yaml")
-    return data.get("principles", data)
+    return _load_yaml("data/pfce_principles.yaml", default=[])
 
 
 def load_constraints():
     """
-    Load institutional and governance constraints (scenario_constraints.yaml).
+    Load institutional / governance or scenario constraints.
+
+    Note: if `scenario_constraints.yaml` does not exist, this will safely
+    return an empty list so the app still loads.
     """
-    return _load_yaml("scenario_constraints.yaml")
+    return _load_yaml("data/scenario_constraints.yaml", default=[])
 
 
 def load_municipal_dilemmas():
     """
-    Load case / dilemma metadata (municipal_dilemmas.yaml).
+    Optional: load pre-defined municipal dilemmas (case-based mode).
+    Safe if the YAML is missing – returns [].
     """
-    return _load_yaml("municipal_dilemmas.yaml")
-
-
-# ---------- Standalone test runner ----------
-
-if __name__ == "__main__":
-    print("Working directory:", BASE_DIR)
-    print("Data directory   :", DATA_DIR)
-
-    # Test CSF data
-    try:
-        csf = load_csf_data()
-        print(f"\n[OK] csf_min.json loaded. Type: {type(csf)}, length: {len(csf)}")
-        if isinstance(csf, dict):
-            print("     Keys:", list(csf.keys())[:5])
-        elif isinstance(csf, list) and csf:
-            print("     First entry sample:", csf[0])
-    except Exception as e:
-        print("\n[ERROR] Failed to load csf_min.json:", e)
-
-    # Test PFCE crosswalk
-    try:
-        crosswalk = load_pfce_crosswalk()
-        print(f"\n[OK] pfce_crosswalk_scaffold.yaml loaded. Entries: {len(crosswalk)}")
-        if crosswalk:
-            print("     First entry:", crosswalk[0])
-    except Exception as e:
-        print("\n[ERROR] Failed to load pfce_crosswalk_scaffold.yaml:", e)
-
-    # Test PFCE definitions
-    try:
-        pfce_defs = load_pfce_definitions()
-        print(f"\n[OK] pfce_principles.yaml loaded. Principles: {list(pfce_defs.keys())}")
-    except Exception as e:
-        print("\n[ERROR] Failed to load pfce_principles.yaml:", e)
-
-    # Test constraints
-    try:
-        constraints = load_constraints()
-        print(f"\n[OK] scenario_constraints.yaml loaded. Entries: {len(constraints)}")
-    except Exception as e:
-        print("\n[ERROR] Failed to load scenario_constraints.yaml:", e)
-
-    # Test municipal dilemmas
-    try:
-        dilemmas = load_municipal_dilemmas()
-        print(f"\n[OK] municipal_dilemmas.yaml loaded. Entries: {len(dilemmas)}")
-    except Exception as e:
-        print("\n[ERROR] Failed to load municipal_dilemmas.yaml:", e)
+    return _load_yaml("data/municipal_dilemmas.yaml", default=[])
