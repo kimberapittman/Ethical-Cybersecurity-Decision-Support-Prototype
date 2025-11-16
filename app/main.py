@@ -147,7 +147,7 @@ footer, #MainMenu{ visibility: hidden; }
 def main():
     # ---------- SIDEBAR ----------
     with st.sidebar:
-        # Section 1: Mode
+        # Section 1: Modes
         st.markdown(
             "<h3 style='margin:0 0 0.5rem 0; font-weight:700;'>Mode</h3>",
             unsafe_allow_html=True,
@@ -162,12 +162,12 @@ def main():
 
         st.markdown("---")
 
-        # Section 2: Prototype overview
+        # Section 2: Prototype Overview
         st.markdown(
             "<h4 style='margin:0.25rem 0 0.4rem 0; font-weight:600; font-size:0.95rem;'>Prototype overview</h4>",
             unsafe_allow_html=True,
         )
-        with st.expander("ℹ️ About this prototype"):
+        with st.expander("ℹ️ About This Prototype"):
             st.markdown(
                 """
 - **Purpose:** Support municipal cybersecurity practitioners in navigating complex ethical dilemmas. This tool guides users through high-stakes decisions in real time by bringing ethical principles and technical standards into dialogue, clarifying value conflicts, and documenting the reasoning process for transparency and accountability within institutional and governance constraints.  
@@ -178,12 +178,12 @@ def main():
 
         st.markdown("---")
 
-        # Section 3: Framework references
+        # Section 3: Appendix
         st.markdown(
             "<h4 style='margin:0.25rem 0 0.4rem 0; font-weight:600; font-size:0.95rem;'>Framework references</h4>",
             unsafe_allow_html=True,
         )
-        with st.expander("📚 Appendix: Framework Sources"):
+        with st.expander("📚 Framework References"):
             st.markdown(
                 """
 **National Institute of Standards and Technology.**  
