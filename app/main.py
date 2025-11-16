@@ -715,19 +715,51 @@ if mode == "Thesis scenarios" and scenario:
     st.session_state["dl_principlist"] = "\n".join([f"- {p}" for p in PRINCIPLES])
     st.session_state["dl_tensions"] = "\n".join([f"- {t}" for t in tensions_lines])
     st.session_state["dl_constraints"] = "\n".join([f"- {c}" for c in constraints_list])
-elif mode == "Open-ended" and scenario:
-    entry = DILEMMAS_YAML.get(scenario, {})
-    tensions = entry.get("ethical_tensions", [])
-    tensions_lines = []
-    for t in tensions:
-        label = t.get("description", "")
-        tags = ", ".join(t.get("principles", []))
-        tensions_lines.append(f"{label}" + (f" — Principlist: {tags}" if tags else ""))
-    st.session_state["dl_overview"] = entry.get("overview", "")
-    st.session_state["dl_nist"] = "\n".join([f"- {f}" for f in entry.get("technical", [])])
-    st.session_state["dl_principlist"] = "\n".join([f"- {p}" for p in PRINCIPLES])
-    st.session_state["dl_tensions"] = "\n".join([f"- {t}" for t in tensions_lines])
-    st.session_state["dl_constraints"] = "\n".join([f"- {c}" for c in entry.get("constraints", [])])
+elif mode == "Open-ended":
+    st.header("Open-ended ethical decision")
+
+    description = st.text_area(
+        "Briefly describe the incident, decision, or dilemma:",
+        height=150,
+        placeholder="Example: A ransomware attack has disrupted 911 dispatch...",
+    )
+
+    # Build a dictionary of CSF outcomes from the crosswalk
+    csf_options = {row["csf_id"]: row["csf_outcome"] for row in pfce_crosswalk}
+
+    selected_ids = st.multiselect(
+        "Which NIST CSF outcomes are most directly involved?",
+        options=list(csf_options.keys()),
+        format_func=lambda k: f"{k} – {csf_options[k]}",
+    )
+
+    if selected_ids:
+        # Use the reasoning engine to map CSF → PFCE
+        matches = apply_crosswalk(selected_ids, pfce_crosswalk)
+
+        st.subheader("Ethical implications (PFCE mapping)")
+
+        all_principles = []
+        for m in matches:
+            st.markdown(f"**{m['csf_id']} – {m['csf_outcome']}**")
+
+            if m["pfce"]:
+                st.markdown("• Principles: " + ", ".join(m["pfce"]))
+                all_principles.extend(m["pfce"])
+
+            if m["rationale"]:
+                st.markdown(f"_Why it matters_: {m['rationale']}")
+
+            st.markdown("---")
+
+        # High-level ethical summary
+        st.markdown(
+            "**Overall ethical focus:** "
+            + summarize_pfce(all_principles)
+        )
+    else:
+        st.info("Select at least one CSF outcome to see mapped PFCE principles.")
+
 
 def _fmt_bullets(items):
     return "\n".join([f"- {x}" for x in items]) if items else "—"
