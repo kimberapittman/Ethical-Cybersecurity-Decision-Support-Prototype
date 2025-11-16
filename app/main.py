@@ -20,7 +20,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# ---------- Styling (KEPT FROM YOUR ORIGINAL) ----------
+# ---------- Styling (kept from your original) ----------
 st.markdown(
     """
 <style>
@@ -79,7 +79,7 @@ section[data-testid="stSidebar"] *{
   background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
 }
 
-/* “Cards” used in sections 2,3,5 (glassmorphism) */
+/* “Cards” used in sections (glassmorphism) */
 .listbox{
   background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
   border-left: 4px solid var(--brand);
@@ -137,7 +137,7 @@ details > summary{
 /* Checkbox / radio accent color */
 input[type="checkbox"], input[type="radio"]{ accent-color: var(--brand); }
 
-/* Hide default Streamlit chrome if you want an ultra-clean look */
+/* Hide default Streamlit chrome */
 header[data-testid="stHeader"]{ background: transparent; }
 footer, #MainMenu{ visibility: hidden; }
 </style>
@@ -198,19 +198,29 @@ National Institute of Standards and Technology, 2024.
             """
         )
 
-    st.divider()
-
-    # ---------- Mode routing ----------
+    # ---------- Case selector in main area (Case-Based mode only) ----------
+    selected_case = None
     if mode == "Case-Based":
         cases = list_cases()
         if not cases:
             st.error("No cases found in data/cases.")
         else:
             case_titles = [c["title"] for c in cases]
-            selected_title = st.sidebar.selectbox("Select case", case_titles)
+            st.markdown("### Select Case")
+            selected_title = st.selectbox(
+                label="",
+                options=case_titles,
+                key="case_selector",
+                label_visibility="collapsed",
+            )
             selected_case = next(c for c in cases if c["title"] == selected_title)
-            case_based.render_case(selected_case["id"])
 
+    st.divider()
+
+    # ---------- Mode routing ----------
+    if mode == "Case-Based":
+        if selected_case:
+            case_based.render_case(selected_case["id"])
     elif mode == "Open-ended":
         open_ended.render_open_ended()
 
