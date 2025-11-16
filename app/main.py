@@ -147,7 +147,7 @@ footer, #MainMenu{ visibility: hidden; }
 
 
 def main():
-    # ---------- Sidebar: Mode + Appendix ----------
+    # ---------- Sidebar: Mode + About prototype + Appendix ----------
     with st.sidebar:
         st.markdown(
             "<h3 style='margin:0 0 0.5rem 0; font-weight:700;'>Mode</h3>",
@@ -160,6 +160,16 @@ def main():
             key="mode_selector",
             label_visibility="collapsed",
         )
+
+        # Global "About this prototype" now lives in the sidebar
+        with st.expander("ℹ️ About this prototype"):
+            st.markdown(
+                """
+- **Purpose:** Support municipal cybersecurity practitioners in navigating complex ethical dilemmas. This tool guides users through high-stakes decisions in real time by bringing ethical principles and technical standards into dialogue, clarifying value conflicts, and documenting the reasoning process for transparency and accountability within institutional and governance constraints.  
+- **Backbone:** This prototype draws on the "National Institute of Standards and Technology (NIST) Cybersecurity Framework (CSF)" to guide users through six core functions—Govern, Identify, Protect, Detect, Respond, and Recover—while concurrently referencing the "Principlist Framework for Cybersecurity Ethics" ethical values of Beneficence, Non-maleficence, Autonomy, Justice, and Explicability. By examining these frameworks in parallel, the prototype helps users reflect on ethical and technical guidance in the context of municipal constraints and generate a transparent record of the considerations that informed their decisions.  
+- **Context:** Designed specifically for municipal use, the prototype accounts for real-world constraints like limited budgets, fragmented authority, and vendor opacity. It supports ethical decision-making within these practical and political realities while ensuring accountability for how decisions are reached.
+                """
+            )
 
         st.markdown("---")
         with st.expander("📚 Appendix: Framework Sources"):
@@ -188,15 +198,48 @@ National Institute of Standards and Technology, 2024.
         unsafe_allow_html=True,
     )
 
-    # ---------- About this prototype ----------
-    with st.expander("About this prototype"):
-        st.markdown(
-            """
-- **Purpose:** Support municipal cybersecurity practitioners in navigating complex ethical dilemmas. This tool guides users through high-stakes decisions in real time by bringing ethical principles and technical standards into dialogue, clarifying value conflicts, and documenting the reasoning process for transparency and accountability within institutional and governance constraints.  
-- **Backbone:** This prototype draws on the "National Institute of Standards and Technology (NIST) Cybersecurity Framework (CSF)" to guide users through six core functions—Govern, Identify, Protect, Detect, Respond, and Recover—while concurrently referencing the "Principlist Framework for Cybersecurity Ethics" ethical values of Beneficence, Non-maleficence, Autonomy, Justice, and Explicability. By examining these frameworks in parallel, the prototype helps users reflect on ethical and technical guidance in the context of municipal constraints and generate a transparent record of the considerations that informed their decisions.  
-- **Context:** Designed specifically for municipal use, the prototype accounts for real-world constraints like limited budgets, fragmented authority, and vendor opacity. It supports ethical decision-making within these practical and political realities while ensuring accountability for how decisions are reached.
-            """
-        )
+    # ---------- Mode-specific explainers in main area ----------
+    if mode == "Case-Based":
+        with st.expander("About Case-Based Mode"):
+            st.markdown(
+                """
+This mode reconstructs municipal cybersecurity incidents from Chapter III of the thesis.
+Each case is pre-structured into eight elements:
+
+1. Technical Trigger  
+2. Technical Decision Point  
+3. Technical Mapping (NIST CSF 2.0)  
+4. Ethical Trigger  
+5. Ethical Tension  
+6. Ethical Mapping (PFCE)  
+7. Institutional and Governance Constraints  
+8. Decision Outcome and Ethical Implications  
+
+The purpose is to show how ethical reasoning and technical guidance interact in real cases,
+within institutional and governance constraints.
+                """
+            )
+
+    elif mode == "Open-ended":
+        with st.expander("About Open-Ended Mode"):
+            st.markdown(
+                """
+This mode allows practitioners to enter a new incident or dilemma while following the
+same eight-element structure used in the case reconstructions:
+
+1. Technical Trigger  
+2. Technical Decision Point  
+3. Technical Mapping (NIST CSF 2.0)  
+4. Ethical Trigger  
+5. Ethical Tension  
+6. Ethical Mapping (PFCE)  
+7. Institutional and Governance Constraints  
+8. Decision Outcome and Ethical Implications  
+
+The purpose is to support real-time ethical reasoning and generate a structured
+decision-support log for transparency and accountability.
+                """
+            )
 
     # ---------- Case selector in main area (Case-Based mode only) ----------
     selected_case = None
