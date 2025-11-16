@@ -32,3 +32,19 @@ def load_constraints():
         return []
     with open(data_path, "r") as f:
         return yaml.safe_load(f)
+
+if __name__ == "__main__":
+    print("Testing CSF crosswalk load...")
+    try:
+        csf = load_csf_crosswalk()
+        print("CSF entries:", len(csf))
+        print("First entry:", csf[0])
+    except Exception as e:
+        print("CSF load failed:", e)
+
+    print("\nTesting PFCE load...")
+    try:
+        pfce = load_pfce_principles()
+        print("PFCE principles:", pfce)
+    except Exception as e:
+        print("PFCE load failed:", e)
