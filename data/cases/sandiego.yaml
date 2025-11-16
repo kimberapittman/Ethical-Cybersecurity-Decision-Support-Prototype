@@ -1,1 +1,36 @@
+id: "san diego-2016"
+title: "City of San Diego Smart Streetlight Surveillance (2016)"
+short_summary: "TBD"
+sources:
+  - "TBD"
+
+technical:
+  trigger: "TBD"
+  decision_point: "TBD"
+  nist_csf_mapping:
+    - function: "TBD"
+      category: "TBD"
+      subcategory: "TBD"
+      rationale: "TBD"
+
+ethical:
+  trigger: "TBD"
+  tensions:
+    - id: "T1"
+      description: "TBD"
+  pfce_mapping:
+    - principle: "TBD"
+      description: "TBD"
+      stakeholders:
+        - "TBD"
+
+constraints:
+  - type: "TBD"
+    description: "TBD"
+    effect_on_decision: "TBD"
+
+decision_outcome:
+  decision: "TBD"
+  ethical_implications:
+    - "TBD"
 
