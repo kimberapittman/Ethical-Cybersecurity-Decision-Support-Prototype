@@ -1,8 +1,8 @@
 import sys
 from pathlib import Path
 
-# Ensure project root is on sys.path so 'logic' can be imported
-ROOT_DIR = Path(__file__).resolve().parent.parent
+# Ensure project root is on sys.path
+ROOT_DIR = Path(__file__).resolve().parents[1]
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
@@ -16,6 +16,7 @@ from logic.loaders import (
     load_pfce_crosswalk,
     load_pfce_principles,
     load_constraints,
+    load_municipal_dilemmas,
 )
 
 from logic.reasoning import apply_crosswalk, summarize_pfce
