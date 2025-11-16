@@ -20,7 +20,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# ---------- Styling (kept from your original) ----------
+# ---------- Styling ----------
 st.markdown(
     """
 <style>
@@ -34,7 +34,7 @@ html, body, [class^="css"] {
 :root{
   --brand: #4C8BF5;
   --brand-2: #7aa8ff;
-  --bg-soft: #0b1020;   /* deep navy feel in dark */
+  --bg-soft: #0b1020;
   --text-strong: #111827;
   --text-muted: #6b7280;
   --card-bg: #f9fbff;
@@ -48,19 +48,17 @@ html, body, [class^="css"] {
   }
 }
 
-/* App background (feels “app-like”, not a form) */
+/* App background */
 div[data-testid="stAppViewContainer"]{
   background: radial-gradient(1200px 600px at 10% -10%, rgba(76,139,245,0.15), transparent 60%),
               radial-gradient(900px 500px at 100% 0%, rgba(122,168,255,0.10), transparent 60%),
               var(--bg-soft);
-
-  /* Force light-on-dark tokens for text visibility */
   --text-strong: #e5e7eb;
   --text-muted: #94a3b8;
   --card-bg: rgba(255,255,255,0.05);
 }
 
-/* Sidebar polish */
+/* Sidebar */
 section[data-testid="stSidebar"]{
   background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
   border-right: 1px solid rgba(255,255,255,0.08);
@@ -70,7 +68,7 @@ section[data-testid="stSidebar"] *{
   color: var(--text-strong) !important;
 }
 
-/* Header: subtle glass bar */
+/* Header container */
 .block-container > div:first-child{
   backdrop-filter: blur(6px);
   border-radius: 14px;
@@ -79,7 +77,7 @@ section[data-testid="stSidebar"] *{
   background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
 }
 
-/* “Cards” used in sections (glassmorphism) */
+/* Cards */
 .listbox{
   background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
   border-left: 4px solid var(--brand);
@@ -94,10 +92,10 @@ section[data-testid="stSidebar"] *{
 .tight-list li{ margin: 6px 0; }
 .tight-list li::marker{ color: var(--text-muted); }
 
-/* Section captions / helper text */
+/* Section captions */
 .section-note, .sub{ color: var(--text-muted) !important; }
 
-/* Buttons: rounded, gradient, micro-interaction */
+/* Buttons */
 .stButton > button{
   border: 0;
   padding: 0.7rem 1rem;
@@ -114,7 +112,7 @@ section[data-testid="stSidebar"] *{
 }
 .stButton > button:active{ transform: translateY(0); }
 
-/* Inputs: cleaner fields, dark-aware */
+/* Inputs */
 input, textarea, select, .stTextInput input, .stTextArea textarea{
   background: rgba(255,255,255,0.06) !important;
   border: 1px solid rgba(255,255,255,0.12) !important;
@@ -125,7 +123,7 @@ label, .stRadio, .stSelectbox, .stMultiSelect, .stExpander{
   color: var(--text-strong) !important;
 }
 
-/* Expander headers: pill look */
+/* Expander headers */
 details > summary{
   background: rgba(255,255,255,0.06);
   border: 1px solid rgba(255,255,255,0.10);
@@ -137,7 +135,7 @@ details > summary{
 /* Checkbox / radio accent color */
 input[type="checkbox"], input[type="radio"]{ accent-color: var(--brand); }
 
-/* Hide default Streamlit chrome */
+/* Hide Streamlit chrome */
 header[data-testid="stHeader"]{ background: transparent; }
 footer, #MainMenu{ visibility: hidden; }
 </style>
@@ -147,8 +145,9 @@ footer, #MainMenu{ visibility: hidden; }
 
 
 def main():
-    # ---------- Sidebar: Mode + About prototype + Appendix ----------
+    # ---------- SIDEBAR ----------
     with st.sidebar:
+        # Section 1: Mode
         st.markdown(
             "<h3 style='margin:0 0 0.5rem 0; font-weight:700;'>Mode</h3>",
             unsafe_allow_html=True,
@@ -161,7 +160,13 @@ def main():
             label_visibility="collapsed",
         )
 
-        # Global "About this prototype" now lives in the sidebar
+        st.markdown("---")
+
+        # Section 2: Prototype overview
+        st.markdown(
+            "<h4 style='margin:0.25rem 0 0.4rem 0; font-weight:600; font-size:0.95rem;'>Prototype overview</h4>",
+            unsafe_allow_html=True,
+        )
         with st.expander("ℹ️ About this prototype"):
             st.markdown(
                 """
@@ -172,6 +177,12 @@ def main():
             )
 
         st.markdown("---")
+
+        # Section 3: Framework references
+        st.markdown(
+            "<h4 style='margin:0.25rem 0 0.4rem 0; font-weight:600; font-size:0.95rem;'>Framework references</h4>",
+            unsafe_allow_html=True,
+        )
         with st.expander("📚 Appendix: Framework Sources"):
             st.markdown(
                 """
@@ -187,7 +198,7 @@ National Institute of Standards and Technology, 2024.
                 """
             )
 
-    # ---------- Header ----------
+    # ---------- HEADER (MAIN AREA) ----------
     st.markdown(
         """
         <div style='text-align: center;'>
@@ -198,7 +209,7 @@ National Institute of Standards and Technology, 2024.
         unsafe_allow_html=True,
     )
 
-    # ---------- Mode-specific explainers in main area ----------
+    # ---------- MODE-SPECIFIC EXPLAINERS (MAIN AREA) ----------
     if mode == "Case-Based":
         with st.expander("About Case-Based Mode"):
             st.markdown(
@@ -219,8 +230,7 @@ The purpose is to show how ethical reasoning and technical guidance interact in 
 within institutional and governance constraints.
                 """
             )
-
-    elif mode == "Open-ended":
+    else:
         with st.expander("About Open-Ended Mode"):
             st.markdown(
                 """
@@ -241,7 +251,7 @@ decision-support log for transparency and accountability.
                 """
             )
 
-    # ---------- Case selector in main area (Case-Based mode only) ----------
+    # ---------- CASE SELECTOR (MAIN AREA, CASE-BASED ONLY) ----------
     selected_case = None
     if mode == "Case-Based":
         cases = list_cases()
@@ -260,14 +270,14 @@ decision-support log for transparency and accountability.
 
     st.divider()
 
-    # ---------- Mode routing ----------
+    # ---------- ROUTE TO MODE IMPLEMENTATIONS ----------
     if mode == "Case-Based":
         if selected_case:
             case_based.render_case(selected_case["id"])
-    elif mode == "Open-ended":
+    else:
         open_ended.render_open_ended()
 
-    # ---------- Footer ----------
+    # ---------- FOOTER ----------
     st.markdown("---")
     st.caption("Prototype created for thesis demonstration purposes.")
 
