@@ -524,31 +524,33 @@ def render_open_ended():
 
 # ---------------- Navigation + Summary ----------------
 
-# Make sure step is defined
-step = st.session_state.get("oe_step", 1)
+# Ensure the step is always initialized
+if "oe_step" not in st.session_state:
+    st.session_state["oe_step"] = 1
+
+step = st.session_state["oe_step"]
 
 nav_col1, nav_col2 = st.columns([1, 1])
 
-# Previous button
+# Previous button (hidden on first step)
 with nav_col1:
-    # Only show Previous if we're beyond step 1
     if step > 1:
-        if st.button("◀ Previous"):
+        if st.button("◀ Previous", key="oe_prev"):
             st.session_state["oe_step"] = max(1, step - 1)
             _safe_rerun()
     else:
-        # Keep layout aligned on first page
+        # Keep layout aligned on the first page
         st.write("")
 
 # Next / Summary button
 with nav_col2:
     if step < 9:
-        if st.button("Next ▶"):
+        if st.button("Next ▶", key="oe_next"):
             st.session_state["oe_step"] = min(9, step + 1)
             _safe_rerun()
     else:
         # On final step, generate the structured summary
-        if st.button("Generate structured summary"):
+        if st.button("Generate structured summary", key="oe_generate_summary"):
             st.success("Structured summary generated below.")
             st.markdown("#### Summary (for thesis demonstration)")
             st.write(f"**Timestamp:** {datetime.now().isoformat(timespec='minutes')}")
@@ -563,6 +565,7 @@ with nav_col2:
             st.write(f"**Role / Org:** {role or '—'} / {municipality or '—'}")
             if notes:
                 st.write(f"**Notes:** {notes}")
+
 
 
                 # Technical Trigger
