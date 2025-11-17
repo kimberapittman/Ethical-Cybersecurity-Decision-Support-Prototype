@@ -89,21 +89,45 @@ def load_pfce_principles() -> List[Dict[str, Any]]:
     """
     Load PFCE principles from data/crosswalk/pfce_principles.yaml.
 
-    Expected shape:
-    {
-      "principles": [
-        {"name": "Beneficence", "definition": "..."},
-        ...
-      ]
-    }
+    Supports shapes:
+    1) {"principles": [ {...}, {...} ]}
+    2) {"principles": {"beneficence": {...}, "non-maleficence": {...}, ...}}
+    3) [ {...}, {...} ]
     """
     path = CROSSWALK_DIR / "pfce_principles.yaml"
     data = _safe_read_yaml(path)
-    if isinstance(data, dict) and isinstance(data.get("principles"), list):
-        return data["principles"]
+
+    if data is None:
+        return []
+
+    # Shape 1 or 2: wrapped under "principles"
+    if isinstance(data, dict) and "principles" in data:
+        principles = data["principles"]
+
+        # Shape 1: list
+        if isinstance(principles, list):
+            return principles
+
+        # Shape 2: dict-of-dicts (your current YAML)
+        if isinstance(principles, dict):
+            result: List[Dict[str, Any]] = []
+            for pid, p in principles.items():
+                if isinstance(p, dict):
+                    entry = dict(p)      # copy
+                    entry.setdefault("id", pid)
+                    result.append(entry)
+            return result
+
+        # Anything else under "principles" is unusable
+        return []
+
+    # Shape 3: bare list at top level
     if isinstance(data, list):
         return data
+
+    # Fallback: unsupported shape
     return []
+
 
 
 @st.cache_data
