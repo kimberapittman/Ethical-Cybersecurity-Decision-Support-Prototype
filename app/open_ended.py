@@ -1,6 +1,11 @@
 import streamlit as st
 from datetime import datetime
 
+from io import BytesIO
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import LETTER
+import textwrap
+
 from logic.loaders import (
     load_csf_data,
     load_pfce_crosswalk,
@@ -539,115 +544,137 @@ def render_open_ended():
             if st.button("Next ▶", key=f"oe_next_{step}"):
                 st.session_state["oe_step"] = min(9, step + 1)
                 _safe_rerun()
-        else:
-            # On final step, download the reasoining summary
-            if st.button("Download Reasoning Summary", key="oe_download_summary"):
-                st.success("Reasoning Summary Generated Below.")
-                st.markdown("#### Summary (for thesis demonstration)")
-                st.write(f"**Timestamp:** {datetime.now().isoformat(timespec='minutes')}")
+     else:
+        # Final step – build a PDF reasoning summary from collected inputs
 
-                # Basic context (will be blank for now unless you add inputs later)
-                incident_title = st.session_state.get("oe_incident_title", "")
-                role = st.session_state.get("oe_role", "")
-                municipality = st.session_state.get("oe_municipality", "")
-                notes = st.session_state.get("oe_notes", "")
+        # Pull fields from session_state (defensive defaults)
+        incident_title       = st.session_state.get("oe_incident_title", "")
+        role                 = st.session_state.get("oe_role", "")
+        municipality         = st.session_state.get("oe_municipality", "")
+        notes                = st.session_state.get("oe_notes", "")
+        technical_trigger    = st.session_state.get("oe_technical_trigger", "")
+        technical_decision   = st.session_state.get("oe_technical_decision", "")
+        ethical_trigger      = st.session_state.get("oe_ethical_trigger", "")
+        ethical_tension      = st.session_state.get("oe_ethical_tension", "")
+        constraints          = st.session_state.get("oe_constraints", "")
+        decision             = st.session_state.get("oe_decision", "")
+        rationale            = st.session_state.get("oe_rationale", "")
 
-                st.write(f"**Incident Title:** {incident_title or '—'}")
-                st.write(f"**Role / Org:** {role or '—'} / {municipality or '—'}")
-                if notes:
-                    st.write(f"**Notes:** {notes}")
+        # --- Build PDF in memory ---
+        buffer = BytesIO()
+        pdf = canvas.Canvas(buffer, pagesize=LETTER)
+        width, height = LETTER
 
+        # Page layout settings
+        left_margin = 72  # 1 inch
+        right_margin = 72
+        top_margin = 72
+        bottom_margin = 72
+        line_height = 14
 
-                # Technical Trigger
-                st.markdown("**Technical Trigger**")
-                trigger_types = st.session_state.get("oe_trigger_types", [])
-                technical_trigger = st.session_state.get("oe_technical_trigger", "")
-                if trigger_types:
-                    st.write("Event type(s): " + ", ".join(trigger_types))
-                st.write(technical_trigger or "—")
+        # Title
+        pdf.setFont("Helvetica-Bold", 14)
+        pdf.drawCentredString(width / 2, height - top_margin, "Municipal Cyber Ethics Reasoning Summary")
 
-                # Technical Decision
-                st.markdown("**Technical Decision Point**")
-                decision_type = st.session_state.get("oe_decision_type", "")
-                technical_decision = st.session_state.get("oe_technical_decision", "")
-                if decision_type:
-                    st.write(f"Decision type: {decision_type}")
-                st.write(technical_decision or "—")
+        # Horizontal rule under title
+        pdf.setLineWidth(0.5)
+        pdf.line(left_margin, height - top_margin - 8, width - right_margin, height - top_margin - 8)
 
-                # NIST CSF Mapping
-                st.markdown("**NIST CSF Mapping**")
-                func_labels = {fid: lbl for fid, lbl in FUNC_OPTIONS}
-                cat_labels = {}
-                for fid, cats in CATS_BY_FUNC.items():
-                    for cid, lbl in cats:
-                        cat_labels[cid] = lbl
-                sub_labels = {}
-                for cid, subs in SUBS_BY_CAT.items():
-                    for sid, lbl in subs:
-                        sub_labels[sid] = lbl
+        y = height - top_margin - 24
 
-                selected_func_id = st.session_state.get("oe_csf_function", "")
-                selected_cat_id = st.session_state.get("oe_csf_category", "")
-                selected_sub_ids = st.session_state.get("oe_csf_subcategories", [])
-                csf_rationale = st.session_state.get("oe_csf_rationale", "")
+        # Helper to wrap and draw lines with automatic page break
+        def draw_wrapped_text(text, font_name="Helvetica", font_size=11, indent=0, wrap_width=90):
+            nonlocal y
+            pdf.setFont(font_name, font_size)
+            if not text:
+                text = "—"
+            wrapped = textwrap.wrap(text, width=wrap_width) or [""]
+            for line in wrapped:
+                if y < bottom_margin + line_height:
+                    pdf.showPage()
+                    _draw_header()  # redraw header on new page
+                pdf.drawString(left_margin + indent, y, line)
+                y -= line_height
 
-                st.write(f"- Function: {func_labels.get(selected_func_id, selected_func_id or '—')}")
-                st.write(f"- Category: {cat_labels.get(selected_cat_id, selected_cat_id or '—')}")
-                if selected_sub_ids:
-                    st.write("- Subcategories:")
-                    for sid in selected_sub_ids:
-                        st.write(f"  - {sub_labels.get(sid, sid)}")
-                else:
-                    st.write("- Subcategories: —")
-                if csf_rationale:
-                    st.write(f"- Rationale: {csf_rationale}")
+        # Helper to draw section heading
+        def draw_section_heading(title):
+            nonlocal y
+            if y < bottom_margin + 2 * line_height:
+                pdf.showPage()
+                _draw_header()
+            pdf.setFont("Helvetica-Bold", 12)
+            pdf.drawString(left_margin, y, title)
+            y -= line_height
+            pdf.setLineWidth(0.3)
+            pdf.line(left_margin, y + 4, width - right_margin, y + 4)
+            y -= line_height / 2
 
-                # Ethical Trigger
-                st.markdown("**Ethical Trigger**")
-                ethical_trigger_tags = st.session_state.get("oe_ethical_trigger_tags", [])
-                ethical_trigger = st.session_state.get("oe_ethical_trigger", "")
-                if ethical_trigger_tags:
-                    st.write("Tags: " + ", ".join(ethical_trigger_tags))
-                st.write(ethical_trigger or "—")
+        # Header re-draw for new pages
+        def _draw_header():
+            nonlocal y
+            pdf.setFont("Helvetica-Bold", 12)
+            pdf.drawCentredString(width / 2, height - top_margin + 8, "Municipal Cyber Ethics Reasoning Summary")
+            pdf.setLineWidth(0.3)
+            pdf.line(left_margin, height - top_margin - 2, width - right_margin, height - top_margin - 2)
+            y = height - top_margin - 24
 
-                # Ethical Tension
-                ethical_tension = st.session_state.get("oe_ethical_tension", "")
-                st.markdown("**Ethical Tension**")
-                st.write(ethical_tension or "—")
+        # --- Sections ---
 
-                # PFCE Principles
-                selected_pfce = st.session_state.get("oe_pfce_principles", [])
-                pfce_rationale = st.session_state.get("oe_pfce_rationale", "")
-                st.markdown("**PFCE Principles**")
-                if selected_pfce:
-                    st.write(", ".join(selected_pfce))
-                    st.write("**Overall ethical focus:** " + summarize_pfce(selected_pfce))
-                else:
-                    st.write("—")
-                if pfce_rationale:
-                    st.markdown("**PFCE Rationale**")
-                    st.write(pfce_rationale)
+        # Metadata
+        draw_section_heading("Metadata")
+        draw_wrapped_text(f"Timestamp: {datetime.now().isoformat(timespec='minutes')}", indent=10)
+        draw_wrapped_text(f"Incident Title: {incident_title or '—'}", indent=10)
+        draw_wrapped_text(f"Role / Organization: {role or '—'} / {municipality or '—'}", indent=10)
+        y -= line_height / 2
 
-                # Constraints
-                st.markdown("**Institutional & Governance Constraints**")
-                selected_constraints = st.session_state.get("oe_constraints", [])
-                other_constraints = st.session_state.get("oe_constraints_other", "")
-                if selected_constraints:
-                    for c in selected_constraints:
-                        st.write(f"- {c}")
-                else:
-                    st.write("—")
-                if other_constraints:
-                    st.write(f"Other: {other_constraints}")
+        # Technical Context
+        draw_section_heading("Technical Context")
+        draw_wrapped_text(f"Technical Trigger: {technical_trigger or '—'}", indent=10)
+        draw_wrapped_text(f"Technical Decision Point: {technical_decision or '—'}", indent=10)
+        y -= line_height / 2
 
-                # Decision Outcome
-                decision_outcome = st.session_state.get("oe_decision_outcome", "")
-                st.markdown("**Decision Outcome**")
-                st.write(decision_outcome or "—")
+        # Ethical Context
+        draw_section_heading("Ethical Context")
+        draw_wrapped_text(f"Ethical Trigger: {ethical_trigger or '—'}", indent=10)
+        draw_wrapped_text(f"Ethical Tension(s): {ethical_tension or '—'}", indent=10)
+        y -= line_height / 2
 
-                # Ethical Implications
-                ethical_implications = st.session_state.get("oe_ethical_implications", "")
-                st.markdown("**Ethical Implications**")
-                st.write(ethical_implications or "—")
+        # Institutional & Governance Constraints
+        draw_section_heading("Institutional & Governance Constraints")
+        draw_wrapped_text(constraints or "—", indent=10)
+        y -= line_height / 2
+
+        # Decision-Making Context
+        draw_section_heading("Decision-Making Context")
+        draw_wrapped_text(f"Operational Decision: {decision or '—'}", indent=10)
+        draw_wrapped_text(f"Ethical–Technical Reasoning: {rationale or '—'}", indent=10)
+        y -= line_height / 2
+
+        # Additional Notes
+        draw_section_heading("Additional Notes")
+        draw_wrapped_text(notes or "—", indent=10)
+
+        # Footer on last page
+        if y < bottom_margin + 2 * line_height:
+            pdf.showPage()
+            _draw_header()
+        pdf.setFont("Helvetica-Oblique", 9)
+        pdf.drawCentredString(
+            width / 2,
+            bottom_margin / 2,
+            "Generated via Municipal Cyber Ethics Decision-Support Prototype – Open-Ended Mode",
+        )
+
+        pdf.save()
+        buffer.seek(0)
+
+        st.success("Ethical–technical reasoning summary generated.")
+        st.download_button(
+            label="Download Reasoning Summary (PDF)",
+            data=buffer,
+            file_name="reasoning_summary.pdf",
+            mime="application/pdf",
+        )
+
 
     
