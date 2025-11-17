@@ -521,13 +521,17 @@ def render_open_ended():
         )
 
         st.markdown("---")
-    # ---------------- Navigation + Summary ----------------
+
+# ---------------- Navigation + Summary ----------------
+
+# Make sure step is defined
+step = st.session_state.get("oe_step", 1)
 
 nav_col1, nav_col2 = st.columns([1, 1])
 
 # Previous button
 with nav_col1:
-    # ❗ Only show Previous if we're beyond step 1
+    # Only show Previous if we're beyond step 1
     if step > 1:
         if st.button("◀ Previous"):
             st.session_state["oe_step"] = max(1, step - 1)
