@@ -537,119 +537,154 @@ def render_open_ended():
             if st.button("◀ Previous", key=f"oe_prev_{step}"):
                 st.session_state["oe_step"] = max(1, step - 1)
                 _safe_rerun()
-
     # Next / Summary button
     with nav_col2:
         if step < 9:
             if st.button("Next ▶", key=f"oe_next_{step}"):
                 st.session_state["oe_step"] = min(9, step + 1)
                 _safe_rerun()
-    else:
-                # Final step – build a PDF reasoning summary from collected inputs
+        else:
+            # Final step – build a PDF reasoning summary from collected inputs
 
-        # Pull fields from session_state
-        incident_title       = st.session_state.get("oe_incident_title", "")
-        role                 = st.session_state.get("oe_role", "")
-        municipality         = st.session_state.get("oe_municipality", "")
-        notes                = st.session_state.get("oe_notes", "")
-        technical_trigger    = st.session_state.get("oe_technical_trigger", "")
-        technical_decision   = st.session_state.get("oe_technical_decision", "")
-        ethical_trigger      = st.session_state.get("oe_ethical_trigger", "")
-        ethical_tension      = st.session_state.get("oe_ethical_tension", "")
-        constraints          = st.session_state.get("oe_constraints", "")
-        decision             = st.session_state.get("oe_decision", "")
-        rationale            = st.session_state.get("oe_rationale", "")
+            # Pull fields from session_state
+            incident_title       = st.session_state.get("oe_incident_title", "")
+            role                 = st.session_state.get("oe_role", "")
+            municipality         = st.session_state.get("oe_municipality", "")
+            notes                = st.session_state.get("oe_notes", "")
+            technical_trigger    = st.session_state.get("oe_technical_trigger", "")
+            technical_decision   = st.session_state.get("oe_technical_decision", "")
+            ethical_trigger      = st.session_state.get("oe_ethical_trigger", "")
+            ethical_tension      = st.session_state.get("oe_ethical_tension", "")
+            constraints          = st.session_state.get("oe_constraints", "")
+            decision             = st.session_state.get("oe_decision", "")
+            rationale            = st.session_state.get("oe_rationale", "")
 
-        # --- Build PDF ---
-        buffer = BytesIO()
-        pdf = canvas.Canvas(buffer, pagesize=LETTER)
-        width, height = LETTER
+            # --- Build PDF ---
+            buffer = BytesIO()
+            pdf = canvas.Canvas(buffer, pagesize=LETTER)
+            width, height = LETTER
 
-        left_margin  = 72
-        right_margin = 72
-        top_margin   = 72
-        bottom_margin = 72
-        line_height = 14
+            left_margin   = 72
+            right_margin  = 72
+            top_margin    = 72
+            bottom_margin = 72
+            line_height   = 14
 
-        pdf.setFont("Helvetica-Bold", 14)
-        pdf.drawCentredString(width / 2, height - top_margin, "Municipal Cyber Ethics Reasoning Summary")
+            pdf.setFont("Helvetica-Bold", 14)
+            pdf.drawCentredString(
+                width / 2,
+                height - top_margin,
+                "Municipal Cyber Ethics Reasoning Summary"
+            )
 
-        pdf.setLineWidth(0.5)
-        pdf.line(left_margin, height - top_margin - 8, width - right_margin, height - top_margin - 8)
+            pdf.setLineWidth(0.5)
+            pdf.line(
+                left_margin,
+                height - top_margin - 8,
+                width - right_margin,
+                height - top_margin - 8,
+            )
 
-        y = height - top_margin - 24
-
-        def draw_wrapped_text(text, indent=0, wrap_width=95):
-            nonlocal y
-            pdf.setFont("Helvetica", 11)
-            text = text or "—"
-            for line in textwrap.wrap(text, width=wrap_width):
-                if y < bottom_margin + line_height:
-                    pdf.showPage()
-                    _draw_header()
-                pdf.drawString(left_margin + indent, y, line)
-                y -= line_height
-
-        def draw_section_heading(title):
-            nonlocal y
-            if y < bottom_margin + 30:
-                pdf.showPage()
-                _draw_header()
-            pdf.setFont("Helvetica-Bold", 12)
-            pdf.drawString(left_margin, y, title)
-            y -= line_height
-            pdf.setLineWidth(0.3)
-            pdf.line(left_margin, y + 4, width - right_margin, y + 4)
-            y -= (line_height // 2)
-
-        def _draw_header():
-            nonlocal y
-            pdf.setFont("Helvetica-Bold", 12)
-            pdf.drawCentredString(width / 2, height - top_margin + 8, "Municipal Cyber Ethics Reasoning Summary")
-            pdf.setLineWidth(0.3)
-            pdf.line(left_margin, height - top_margin - 2, width - right_margin, height - top_margin - 2)
             y = height - top_margin - 24
 
-        # --- Sections ---
-        draw_section_heading("Metadata")
-        draw_wrapped_text(f"Timestamp: {datetime.now().isoformat(timespec='minutes')}", indent=10)
-        draw_wrapped_text(f"Incident Title: {incident_title}", indent=10)
-        draw_wrapped_text(f"Role / Organization: {role} / {municipality}", indent=10)
+            def draw_wrapped_text(text, indent=0, wrap_width=95):
+                nonlocal y
+                pdf.setFont("Helvetica", 11)
+                text = text or "—"
+                for line in textwrap.wrap(text, width=wrap_width):
+                    if y < bottom_margin + line_height:
+                        pdf.showPage()
+                        _draw_header()
+                    pdf.drawString(left_margin + indent, y, line)
+                    y -= line_height
 
-        draw_section_heading("Technical Context")
-        draw_wrapped_text(f"Technical Trigger: {technical_trigger}", indent=10)
-        draw_wrapped_text(f"Technical Decision Point: {technical_decision}", indent=10)
+            def draw_section_heading(title):
+                nonlocal y
+                if y < bottom_margin + 30:
+                    pdf.showPage()
+                    _draw_header()
+                pdf.setFont("Helvetica-Bold", 12)
+                pdf.drawString(left_margin, y, title)
+                y -= line_height
+                pdf.setLineWidth(0.3)
+                pdf.line(left_margin, y + 4, width - right_margin, y + 4)
+                y -= (line_height // 2)
 
-        draw_section_heading("Ethical Context")
-        draw_wrapped_text(f"Ethical Trigger: {ethical_trigger}", indent=10)
-        draw_wrapped_text(f"Ethical Tension(s): {ethical_tension}", indent=10)
+            def _draw_header():
+                nonlocal y
+                pdf.setFont("Helvetica-Bold", 12)
+                pdf.drawCentredString(
+                    width / 2,
+                    height - top_margin + 8,
+                    "Municipal Cyber Ethics Reasoning Summary",
+                )
+                pdf.setLineWidth(0.3)
+                pdf.line(
+                    left_margin,
+                    height - top_margin - 2,
+                    width - right_margin,
+                    height - top_margin - 2,
+                )
+                y = height - top_margin - 24
 
-        draw_section_heading("Institutional & Governance Constraints")
-        draw_wrapped_text(constraints, indent=10)
+            # --- Sections ---
+            draw_section_heading("Metadata")
+            draw_wrapped_text(
+                f"Timestamp: {datetime.now().isoformat(timespec='minutes')}",
+                indent=10,
+            )
+            draw_wrapped_text(f"Incident Title: {incident_title}", indent=10)
+            draw_wrapped_text(
+                f"Role / Organization: {role} / {municipality}", indent=10
+            )
 
-        draw_section_heading("Decision-Making Context")
-        draw_wrapped_text(f"Operational Decision: {decision}", indent=10)
-        draw_wrapped_text(f"Ethical–Technical Reasoning: {rationale}", indent=10)
+            draw_section_heading("Technical Context")
+            draw_wrapped_text(
+                f"Technical Trigger: {technical_trigger}", indent=10
+            )
+            draw_wrapped_text(
+                f"Technical Decision Point: {technical_decision}", indent=10
+            )
 
-        draw_section_heading("Additional Notes")
-        draw_wrapped_text(notes, indent=10)
+            draw_section_heading("Ethical Context")
+            draw_wrapped_text(
+                f"Ethical Trigger: {ethical_trigger}", indent=10
+            )
+            draw_wrapped_text(
+                f"Ethical Tension(s): {ethical_tension}", indent=10
+            )
 
-        # Footer
-        pdf.setFont("Helvetica-Oblique", 9)
-        pdf.drawCentredString(
-            width / 2,
-            bottom_margin / 2,
-            "Generated via Municipal Cyber Ethics Decision-Support Prototype – Open-Ended Mode"
-        )
+            draw_section_heading("Institutional & Governance Constraints")
+            draw_wrapped_text(constraints, indent=10)
 
-        pdf.save()
-        buffer.seek(0)
+            draw_section_heading("Decision-Making Context")
+            draw_wrapped_text(
+                f"Operational Decision: {decision}", indent=10
+            )
+            draw_wrapped_text(
+                f"Ethical–Technical Reasoning: {rationale}", indent=10
+            )
 
-        st.download_button(
-            label="Download Reasoning Summary (PDF)",
-            data=buffer,
-            file_name="reasoning_summary.pdf",
-            mime="application/pdf",
-        )
+            draw_section_heading("Additional Notes")
+            draw_wrapped_text(notes, indent=10)
 
+            # Footer
+            pdf.setFont("Helvetica-Oblique", 9)
+            pdf.drawCentredString(
+                width / 2,
+                bottom_margin / 2,
+                "Generated via Municipal Cyber Ethics Decision-Support Prototype – Open-Ended Mode",
+            )
 
+            pdf.save()
+            buffer.seek(0)
+
+            st.download_button(
+                label="Download Reasoning Summary (PDF)",
+                data=buffer,
+                file_name="reasoning_summary.pdf",
+                mime="application/pdf",
+            )
+
+   
+      
