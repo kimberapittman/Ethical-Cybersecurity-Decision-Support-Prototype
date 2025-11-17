@@ -540,9 +540,9 @@ def render_open_ended():
                 st.session_state["oe_step"] = min(9, step + 1)
                 _safe_rerun()
         else:
-            # On final step, export the decision summary
-            if st.button("Export Decision Summary", key="oe_export_summary"):
-                st.success("Decision Summary Generated Below.")
+            # On final step, download the reasoining summary
+            if st.button("Download Reasoning Summary", key="oe_download_summary"):
+                st.success("Reasoning Summary Generated Below.")
                 st.markdown("#### Summary (for thesis demonstration)")
                 st.write(f"**Timestamp:** {datetime.now().isoformat(timespec='minutes')}")
 
