@@ -544,10 +544,10 @@ def render_open_ended():
             if st.button("Next ▶", key=f"oe_next_{step}"):
                 st.session_state["oe_step"] = min(9, step + 1)
                 _safe_rerun()
-     else:
-        # Final step – build a PDF reasoning summary from collected inputs
+    else:
+                # Final step – build a PDF reasoning summary from collected inputs
 
-        # Pull fields from session_state (defensive defaults)
+        # Pull fields from session_state
         incident_title       = st.session_state.get("oe_incident_title", "")
         role                 = st.session_state.get("oe_role", "")
         municipality         = st.session_state.get("oe_municipality", "")
@@ -560,46 +560,39 @@ def render_open_ended():
         decision             = st.session_state.get("oe_decision", "")
         rationale            = st.session_state.get("oe_rationale", "")
 
-        # --- Build PDF in memory ---
+        # --- Build PDF ---
         buffer = BytesIO()
         pdf = canvas.Canvas(buffer, pagesize=LETTER)
         width, height = LETTER
 
-        # Page layout settings
-        left_margin = 72  # 1 inch
+        left_margin  = 72
         right_margin = 72
-        top_margin = 72
+        top_margin   = 72
         bottom_margin = 72
         line_height = 14
 
-        # Title
         pdf.setFont("Helvetica-Bold", 14)
         pdf.drawCentredString(width / 2, height - top_margin, "Municipal Cyber Ethics Reasoning Summary")
 
-        # Horizontal rule under title
         pdf.setLineWidth(0.5)
         pdf.line(left_margin, height - top_margin - 8, width - right_margin, height - top_margin - 8)
 
         y = height - top_margin - 24
 
-        # Helper to wrap and draw lines with automatic page break
-        def draw_wrapped_text(text, font_name="Helvetica", font_size=11, indent=0, wrap_width=90):
+        def draw_wrapped_text(text, indent=0, wrap_width=95):
             nonlocal y
-            pdf.setFont(font_name, font_size)
-            if not text:
-                text = "—"
-            wrapped = textwrap.wrap(text, width=wrap_width) or [""]
-            for line in wrapped:
+            pdf.setFont("Helvetica", 11)
+            text = text or "—"
+            for line in textwrap.wrap(text, width=wrap_width):
                 if y < bottom_margin + line_height:
                     pdf.showPage()
-                    _draw_header()  # redraw header on new page
+                    _draw_header()
                 pdf.drawString(left_margin + indent, y, line)
                 y -= line_height
 
-        # Helper to draw section heading
         def draw_section_heading(title):
             nonlocal y
-            if y < bottom_margin + 2 * line_height:
+            if y < bottom_margin + 30:
                 pdf.showPage()
                 _draw_header()
             pdf.setFont("Helvetica-Bold", 12)
@@ -607,9 +600,8 @@ def render_open_ended():
             y -= line_height
             pdf.setLineWidth(0.3)
             pdf.line(left_margin, y + 4, width - right_margin, y + 4)
-            y -= line_height / 2
+            y -= (line_height // 2)
 
-        # Header re-draw for new pages
         def _draw_header():
             nonlocal y
             pdf.setFont("Helvetica-Bold", 12)
@@ -619,56 +611,40 @@ def render_open_ended():
             y = height - top_margin - 24
 
         # --- Sections ---
-
-        # Metadata
         draw_section_heading("Metadata")
         draw_wrapped_text(f"Timestamp: {datetime.now().isoformat(timespec='minutes')}", indent=10)
-        draw_wrapped_text(f"Incident Title: {incident_title or '—'}", indent=10)
-        draw_wrapped_text(f"Role / Organization: {role or '—'} / {municipality or '—'}", indent=10)
-        y -= line_height / 2
+        draw_wrapped_text(f"Incident Title: {incident_title}", indent=10)
+        draw_wrapped_text(f"Role / Organization: {role} / {municipality}", indent=10)
 
-        # Technical Context
         draw_section_heading("Technical Context")
-        draw_wrapped_text(f"Technical Trigger: {technical_trigger or '—'}", indent=10)
-        draw_wrapped_text(f"Technical Decision Point: {technical_decision or '—'}", indent=10)
-        y -= line_height / 2
+        draw_wrapped_text(f"Technical Trigger: {technical_trigger}", indent=10)
+        draw_wrapped_text(f"Technical Decision Point: {technical_decision}", indent=10)
 
-        # Ethical Context
         draw_section_heading("Ethical Context")
-        draw_wrapped_text(f"Ethical Trigger: {ethical_trigger or '—'}", indent=10)
-        draw_wrapped_text(f"Ethical Tension(s): {ethical_tension or '—'}", indent=10)
-        y -= line_height / 2
+        draw_wrapped_text(f"Ethical Trigger: {ethical_trigger}", indent=10)
+        draw_wrapped_text(f"Ethical Tension(s): {ethical_tension}", indent=10)
 
-        # Institutional & Governance Constraints
         draw_section_heading("Institutional & Governance Constraints")
-        draw_wrapped_text(constraints or "—", indent=10)
-        y -= line_height / 2
+        draw_wrapped_text(constraints, indent=10)
 
-        # Decision-Making Context
         draw_section_heading("Decision-Making Context")
-        draw_wrapped_text(f"Operational Decision: {decision or '—'}", indent=10)
-        draw_wrapped_text(f"Ethical–Technical Reasoning: {rationale or '—'}", indent=10)
-        y -= line_height / 2
+        draw_wrapped_text(f"Operational Decision: {decision}", indent=10)
+        draw_wrapped_text(f"Ethical–Technical Reasoning: {rationale}", indent=10)
 
-        # Additional Notes
         draw_section_heading("Additional Notes")
-        draw_wrapped_text(notes or "—", indent=10)
+        draw_wrapped_text(notes, indent=10)
 
-        # Footer on last page
-        if y < bottom_margin + 2 * line_height:
-            pdf.showPage()
-            _draw_header()
+        # Footer
         pdf.setFont("Helvetica-Oblique", 9)
         pdf.drawCentredString(
             width / 2,
             bottom_margin / 2,
-            "Generated via Municipal Cyber Ethics Decision-Support Prototype – Open-Ended Mode",
+            "Generated via Municipal Cyber Ethics Decision-Support Prototype – Open-Ended Mode"
         )
 
         pdf.save()
         buffer.seek(0)
 
-        st.success("Ethical–technical reasoning summary generated.")
         st.download_button(
             label="Download Reasoning Summary (PDF)",
             data=buffer,
@@ -677,4 +653,3 @@ def render_open_ended():
         )
 
 
-    
