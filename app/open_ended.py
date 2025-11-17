@@ -28,6 +28,14 @@ PFCE_NAMES = [p.get("name", "") for p in PFCE_PRINCIPLES if p.get("name")]
 
 
 def _index_csf(csf_raw):
+    """
+    Normalize CSF data into three structures:
+
+    - FUNC_OPTIONS:          [(func_id, func_label), ...]
+    - CATS_BY_FUNC[func_id]: [(cat_id, cat_label), ...]
+    - SUBS_BY_CAT[cat_id]:   [(sub_id, sub_label), ...]
+    """
+
     # Accept either {"functions": [...]} or [...] as the top level
     if isinstance(csf_raw, dict):
         functions = csf_raw.get("functions", []) or []
@@ -47,10 +55,12 @@ def _index_csf(csf_raw):
 
         func_title = fn.get("title") or fn.get("name") or ""
         func_label = f"{func_id} – {func_title}" if func_title else func_id
-        func_options.append(func_label)
+
+        # store as (id, label) tuple
+        func_options.append((func_id, func_label))
 
         categories = fn.get("categories", []) or []
-        cats_by_func[func_id] = []
+        cat_tuples = []
 
         for cat in categories:
             cat_id = cat.get("id")
@@ -59,11 +69,14 @@ def _index_csf(csf_raw):
 
             cat_title = cat.get("title") or cat.get("name") or ""
             cat_label = f"{cat_id} – {cat_title}" if cat_title else cat_id
-            cats_by_func[func_id].append(cat_label)
+
+            # store category as tuple
+            cat_tuples.append((cat_id, cat_label))
 
             # Your JSON uses "outcomes" instead of "subcategories"
             outcomes = cat.get("outcomes") or cat.get("subcategories") or []
-            subs = []
+            sub_tuples = []
+
             for item in outcomes:
                 sub_id = item.get("id")
                 if not sub_id:
@@ -71,13 +84,15 @@ def _index_csf(csf_raw):
 
                 desc = item.get("outcome") or item.get("description") or ""
                 sub_label = f"{sub_id} – {desc}" if desc else sub_id
-                subs.append(sub_label)
 
-            subs_by_cat[cat_id] = subs
+                # store outcome/subcategory as tuple
+                sub_tuples.append((sub_id, sub_label))
+
+            subs_by_cat[cat_id] = sub_tuples
+
+        cats_by_func[func_id] = cat_tuples
 
     return func_options, cats_by_func, subs_by_cat
-
-
 
 
 FUNC_OPTIONS, CATS_BY_FUNC, SUBS_BY_CAT = _index_csf(CSF_DATA)
@@ -120,22 +135,28 @@ def render_open_ended():
     st.markdown("### 1. Technical Trigger")
     st.caption("Describe the event, condition, or vulnerability that triggered this decision.")
     technical_trigger = st.text_area(
-        " ",
+        "Technical trigger",                  # was " "
         key="oe_technical_trigger",
         height=120,
         label_visibility="collapsed",
-        placeholder="Example: A ransomware payload was activated on a shared file server hosting multiple city department shares..."
+        placeholder=(
+            "Example: A ransomware payload was activated on a shared file server "
+            "hosting multiple city department shares..."
+        ),
     )
 
     # 2. Technical Decision Point
     st.markdown("### 2. Technical Decision Point")
     st.caption("Specify what must be decided in technical terms (e.g., shut down, isolate, pay, disclose, reconfigure).")
     technical_decision = st.text_area(
-        "  ",
+        "Technical decision",                 # was "  "
         key="oe_technical_decision",
         height=120,
         label_visibility="collapsed",
-        placeholder="Example: Decide whether to take the permitting system fully offline for 48 hours to rebuild from backups..."
+        placeholder=(
+            "Example: Decide whether to take the permitting system fully offline "
+            "for 48 hours to rebuild from backups..."
+        ),
     )
 
     st.markdown("---")
@@ -223,7 +244,10 @@ def render_open_ended():
         "Ethical tension",
         key="oe_ethical_tension",
         height=120,
-        placeholder="Example: Restore public-facing systems as quickly as possible vs. preserve forensic evidence and avoid rewarding extortion..."
+        placeholder=(
+            "Example: Restore public-facing systems as quickly as possible vs. "
+            "preserve forensic evidence and avoid rewarding extortion..."
+        ),
     )
 
     st.markdown("---")

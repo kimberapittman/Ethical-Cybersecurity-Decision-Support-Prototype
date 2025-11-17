@@ -153,7 +153,7 @@ def main():
             unsafe_allow_html=True,
         )
         mode = st.radio(
-            label="",
+            label="Prototype mode",          # was: ""
             options=["Case-Based", "Open-ended"],
             index=0,
             key="mode_selector",
@@ -261,7 +261,7 @@ decision-support log for transparency and accountability.
             case_titles = [c["title"] for c in cases]
             st.markdown("### Select Case")
             selected_title = st.selectbox(
-                label="",
+                label="Case selection",      # was: ""
                 options=case_titles,
                 key="case_selector",
                 label_visibility="collapsed",
