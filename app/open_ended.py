@@ -523,37 +523,43 @@ def render_open_ended():
         st.markdown("---")
     # ---------------- Navigation + Summary ----------------
 
-    nav_col1, nav_col2 = st.columns([1, 1])
+nav_col1, nav_col2 = st.columns([1, 1])
 
-    # Previous button
-    with nav_col1:
-        if st.button("◀ Previous", disabled=step <= 1):
+# Previous button
+with nav_col1:
+    # ❗ Only show Previous if we're beyond step 1
+    if step > 1:
+        if st.button("◀ Previous"):
             st.session_state["oe_step"] = max(1, step - 1)
             _safe_rerun()
+    else:
+        # Keep layout aligned on first page
+        st.write("")
 
-    # Next / Summary button
-    with nav_col2:
-        if step < 9:
-            if st.button("Next ▶"):
-                st.session_state["oe_step"] = min(9, step + 1)
-                _safe_rerun()
-        else:
-            # On final step, generate the structured summary
-            if st.button("Generate structured summary"):
-                st.success("Structured summary generated below.")
-                st.markdown("#### Summary (for thesis demonstration)")
-                st.write(f"**Timestamp:** {datetime.now().isoformat(timespec='minutes')}")
+# Next / Summary button
+with nav_col2:
+    if step < 9:
+        if st.button("Next ▶"):
+            st.session_state["oe_step"] = min(9, step + 1)
+            _safe_rerun()
+    else:
+        # On final step, generate the structured summary
+        if st.button("Generate structured summary"):
+            st.success("Structured summary generated below.")
+            st.markdown("#### Summary (for thesis demonstration)")
+            st.write(f"**Timestamp:** {datetime.now().isoformat(timespec='minutes')}")
 
-                # Basic context (will be blank for now unless you add inputs later)
-                incident_title = st.session_state.get("oe_incident_title", "")
-                role = st.session_state.get("oe_role", "")
-                municipality = st.session_state.get("oe_municipality", "")
-                notes = st.session_state.get("oe_notes", "")
+            # Basic context (will be blank for now unless you add inputs later)
+            incident_title = st.session_state.get("oe_incident_title", "")
+            role = st.session_state.get("oe_role", "")
+            municipality = st.session_state.get("oe_municipality", "")
+            notes = st.session_state.get("oe_notes", "")
 
-                st.write(f"**Incident Title:** {incident_title or '—'}")
-                st.write(f"**Role / Org:** {role or '—'} / {municipality or '—'}")
-                if notes:
-                    st.write(f"**Notes:** {notes}")
+            st.write(f"**Incident Title:** {incident_title or '—'}")
+            st.write(f"**Role / Org:** {role or '—'} / {municipality or '—'}")
+            if notes:
+                st.write(f"**Notes:** {notes}")
+
 
                 # Technical Trigger
                 st.markdown("**Technical Trigger**")
