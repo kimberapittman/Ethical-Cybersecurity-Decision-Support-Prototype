@@ -170,9 +170,8 @@ def main():
         with st.expander("ℹ️ About This Prototype"):
             st.markdown(
                 """
-- **Purpose:** Support municipal cybersecurity practitioners in navigating complex ethical dilemmas. This tool guides users through high-stakes decisions in real time by bringing ethical principles and technical standards into dialogue, clarifying value conflicts, and documenting the reasoning process for transparency and accountability within institutional and governance constraints.  
-- **Backbone:** This prototype draws on the "National Institute of Standards and Technology (NIST) Cybersecurity Framework (CSF)" to guide users through six core functions—Govern, Identify, Protect, Detect, Respond, and Recover—while concurrently referencing the "Principlist Framework for Cybersecurity Ethics" ethical values of Beneficence, Non-maleficence, Autonomy, Justice, and Explicability. By examining these frameworks in parallel, the prototype helps users reflect on ethical and technical guidance in the context of municipal constraints and generate a transparent record of the considerations that informed their decisions.  
-- **Context:** Designed specifically for municipal use, the prototype accounts for real-world constraints like limited budgets, fragmented authority, and vendor opacity. It supports ethical decision-making within these practical and political realities while ensuring accountability for how decisions are reached.
+- **Purpose:** Help municipal cybersecurity practitioners reason through ethical tensions within institutional and governance constraints.  
+- **How It Works:** Uses the NIST CSF 2.0 to locate the decision procedurally and the PFCE to clarify the ethical values in tension. The tool guides practitioners through the technical trigger, the decision point, the ethical trigger, and the ethical tension.
                 """
             )
 
