@@ -522,50 +522,40 @@ def render_open_ended():
 
         st.markdown("---")
 
-# ---------------- Navigation + Summary ----------------
+    # ---------------- Navigation + Summary ----------------
 
-# Ensure the step is always initialized
-if "oe_step" not in st.session_state:
-    st.session_state["oe_step"] = 1
+    nav_col1, nav_col2 = st.columns([1, 1])
 
-step = st.session_state["oe_step"]
+    # Previous button – hidden on first step
+    with nav_col1:
+        if step > 1:
+            if st.button("◀ Previous", key=f"oe_prev_{step}"):
+                st.session_state["oe_step"] = max(1, step - 1)
+                _safe_rerun()
 
-nav_col1, nav_col2 = st.columns([1, 1])
+    # Next / Summary button
+    with nav_col2:
+        if step < 9:
+            if st.button("Next ▶", key=f"oe_next_{step}"):
+                st.session_state["oe_step"] = min(9, step + 1)
+                _safe_rerun()
+        else:
+            # On final step, generate the structured summary
+            if st.button("Generate structured summary", key="oe_generate_summary"):
+                st.success("Structured summary generated below.")
+                st.markdown("#### Summary (for thesis demonstration)")
+                st.write(f"**Timestamp:** {datetime.now().isoformat(timespec='minutes')}")
 
-# Previous button (hidden on first step)
-with nav_col1:
-    if step > 1:
-        if st.button("◀ Previous", key="oe_prev"):
-            st.session_state["oe_step"] = max(1, step - 1)
-            _safe_rerun()
-    else:
-        # Keep layout aligned on the first page
-        st.write("")
+                # Basic context (will be blank for now unless you add inputs later)
+                incident_title = st.session_state.get("oe_incident_title", "")
+                role = st.session_state.get("oe_role", "")
+                municipality = st.session_state.get("oe_municipality", "")
+                notes = st.session_state.get("oe_notes", "")
 
-# Next / Summary button
-with nav_col2:
-    if step < 9:
-        if st.button("Next ▶", key="oe_next"):
-            st.session_state["oe_step"] = min(9, step + 1)
-            _safe_rerun()
-    else:
-        # On final step, generate the structured summary
-        if st.button("Generate structured summary", key="oe_generate_summary"):
-            st.success("Structured summary generated below.")
-            st.markdown("#### Summary (for thesis demonstration)")
-            st.write(f"**Timestamp:** {datetime.now().isoformat(timespec='minutes')}")
-
-            # Basic context (will be blank for now unless you add inputs later)
-            incident_title = st.session_state.get("oe_incident_title", "")
-            role = st.session_state.get("oe_role", "")
-            municipality = st.session_state.get("oe_municipality", "")
-            notes = st.session_state.get("oe_notes", "")
-
-            st.write(f"**Incident Title:** {incident_title or '—'}")
-            st.write(f"**Role / Org:** {role or '—'} / {municipality or '—'}")
-            if notes:
-                st.write(f"**Notes:** {notes}")
-
+                st.write(f"**Incident Title:** {incident_title or '—'}")
+                st.write(f"**Role / Org:** {role or '—'} / {municipality or '—'}")
+                if notes:
+                    st.write(f"**Notes:** {notes}")
 
 
                 # Technical Trigger
