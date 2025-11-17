@@ -164,7 +164,7 @@ def main():
 
         # Section 2: Prototype Overview
         st.markdown(
-            "<h4 style='margin:0.25rem 0 0.4rem 0; font-weight:600; font-size:0.95rem;'>Prototype overview</h4>",
+            "<h3 style='margin:0 0 0.5rem 0; font-weight:700;'>Mode</h3>",
             unsafe_allow_html=True,
         )
         with st.expander("ℹ️ About This Prototype"):
@@ -180,7 +180,7 @@ def main():
 
         # Section 3: Appendix
         st.markdown(
-            "<h4 style='margin:0.25rem 0 0.4rem 0; font-weight:600; font-size:0.95rem;'>Framework references</h4>",
+            "<h3 style='margin:0 0 0.5rem 0; font-weight:700;'>Mode</h3>",
             unsafe_allow_html=True,
         )
         with st.expander("📚 Framework References"):
