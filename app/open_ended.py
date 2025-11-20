@@ -14,6 +14,52 @@ from logic.loaders import (
 )
 from logic.reasoning import apply_crosswalk, summarize_pfce
 
+# Practitioner-friendly NIST CSF 2.0 function prompts for Open-Ended Mode
+CSF_FUNCTION_OPTIONS = {
+    "GV": {
+        "label": "GOVERN (GV)",
+        "prompt": (
+            "Are you establishing, reviewing, or implementing cybersecurity policy, "
+            "governance expectations, or organizational risk strategy?"
+        ),
+    },
+    "ID": {
+        "label": "IDENTIFY (ID)",
+        "prompt": (
+            "Are you assessing vulnerabilities, reviewing system risks, or determining "
+            "what assets or stakeholders are affected?"
+        ),
+    },
+    "PR": {
+        "label": "PROTECT (PR)",
+        "prompt": (
+            "Are you applying safeguards or controls to prevent unauthorized access or "
+            "data exposure?"
+        ),
+    },
+    "DE": {
+        "label": "DETECT (DE)",
+        "prompt": (
+            "Have you observed indicators of compromise or suspicious behavior that "
+            "require investigation?"
+        ),
+    },
+    "RS": {
+        "label": "RESPOND (RS)",
+        "prompt": (
+            "Has a cybersecurity incident been detected and you must take action "
+            "immediately?"
+        ),
+    },
+    "RC": {
+        "label": "RECOVER (RC)",
+        "prompt": (
+            "Are you restoring systems, data, or services after an incident and deciding "
+            "what to prioritize or how transparent to be?"
+        ),
+    },
+}
+
 
 def _safe_rerun():
     """Compat helper for rerunning the app across Streamlit versions."""
@@ -251,9 +297,60 @@ def render_open_ended():
 
     st.progress(step / 9.0)
 
-    # ---------------- Step 1: Technical Trigger ----------------
+    # ---------------- Step 1: CSF Context + Technical Trigger ----------------
     if step >= 1:
-        st.markdown("### 1. Technical Trigger")
+        st.markdown("### 1. CSF Context and Technical Trigger")
+        st.caption(
+            "First, locate where this situation sits in the NIST CSF 2.0 lifecycle, then describe the technical event "
+            "that set the decision in motion."
+        )
+
+        st.write(
+            "What is happening in your cybersecurity situation? "
+            "Select the description that best fits. The prototype will map your choice "
+            "to the appropriate NIST CSF 2.0 function."
+        )
+
+        # Build options for display: "LABEL: prompt"
+        option_texts = []
+        codes_list = list(CSF_FUNCTION_OPTIONS.keys())
+        for code in codes_list:
+            meta = CSF_FUNCTION_OPTIONS[code]
+            option_texts.append(f"{meta['label']}: {meta['prompt']}")
+
+        # Determine default selection if one already exists in session_state
+        default_index = 0
+        current_code = st.session_state.get("oe_csf_function")
+        if current_code in CSF_FUNCTION_OPTIONS:
+            default_index = codes_list.index(current_code)
+
+        selected_option = st.radio(
+            "Select the option that best matches your current situation:",
+            options=option_texts,
+            index=default_index,
+            key="oe_csf_choice",
+        )
+
+        # Map the chosen text back to the CSF code (match on label prefix before the colon)
+        selected_label_prefix = selected_option.split(":")[0]
+        selected_code = None
+        for code, meta in CSF_FUNCTION_OPTIONS.items():
+            if meta["label"] == selected_label_prefix:
+                selected_code = code
+                break
+
+        # Store both the code and label for use in later steps / summary
+        if selected_code:
+            st.session_state["oe_csf_function"] = selected_code
+            st.session_state["oe_csf_function_label"] = CSF_FUNCTION_OPTIONS[selected_code]["label"]
+
+        st.info(
+            f"Current CSF 2.0 context: **{st.session_state.get('oe_csf_function_label', 'Not selected')}**"
+        )
+
+        st.markdown("---")
+
+        # Technical trigger (your original Step 1 content)
         st.caption(
             "What type of technical event set this decision in motion? "
             "Select one or more, then add a sentence if helpful."
@@ -273,6 +370,13 @@ def render_open_ended():
                 "Example: A ransomware payload was activated on a shared file server hosting multiple "
                 "departmental shares, locking staff out of key operational systems."
             ),
+        )
+
+        # Optional high-level incident title for summary
+        st.text_input(
+            "Optional – Brief incident title or description",
+            value=st.session_state.get("oe_incident_title", ""),
+            key="oe_incident_title",
         )
 
         st.markdown("---")
@@ -319,8 +423,12 @@ def render_open_ended():
         func_labels = {fid: lbl for fid, lbl in FUNC_OPTIONS}
 
         hinted = st.session_state.get("oe_suggested_func")
-        # Use hint only if widget not yet set
-        if "oe_csf_function" in st.session_state and st.session_state["oe_csf_function"] in func_ids:
+
+        # If we already have a CSF function from Step 1, default to that
+        if (
+            "oe_csf_function" in st.session_state
+            and st.session_state["oe_csf_function"] in func_ids
+        ):
             selected_func_id = st.selectbox(
                 "Primary CSF function for this decision",
                 options=func_ids,
@@ -362,7 +470,7 @@ def render_open_ended():
         # Subcategory selection (filtered by category)
         subs = SUBS_BY_CAT.get(selected_cat_id, [])
         sub_ids = [sid for sid, _ in subs]
-        sub_labels = {sid: lbl for sid, lbl in subs}
+        sub_labels = {sid: lbl for sid, _ in subs}
 
         selected_sub_ids = st.multiselect(
             "Subcategories (outcomes most directly involved in this decision)",
@@ -531,160 +639,124 @@ def render_open_ended():
 
     nav_col1, nav_col2 = st.columns([1, 1])
 
-    # Previous button – hidden on first step
+    # Previous button
     with nav_col1:
-        if step > 1:
-            if st.button("◀ Previous", key=f"oe_prev_{step}"):
-                st.session_state["oe_step"] = max(1, step - 1)
-                _safe_rerun()
+        if st.button("◀ Previous", disabled=step <= 1):
+            st.session_state["oe_step"] = max(1, step - 1)
+            _safe_rerun()
+
     # Next / Summary button
     with nav_col2:
         if step < 9:
-            if st.button("Next ▶", key=f"oe_next_{step}"):
+            if st.button("Next ▶"):
                 st.session_state["oe_step"] = min(9, step + 1)
                 _safe_rerun()
         else:
-            # Final step – build a PDF reasoning summary from collected inputs
+            # On final step, generate the structured summary
+            if st.button("Generate structured summary"):
+                st.success("Structured summary generated below.")
+                st.markdown("#### Summary (for thesis demonstration)")
+                st.write(f"**Timestamp:** {datetime.now().isoformat(timespec='minutes')}")
 
-            # Pull fields from session_state
-            incident_title       = st.session_state.get("oe_incident_title", "")
-            role                 = st.session_state.get("oe_role", "")
-            municipality         = st.session_state.get("oe_municipality", "")
-            notes                = st.session_state.get("oe_notes", "")
-            technical_trigger    = st.session_state.get("oe_technical_trigger", "")
-            technical_decision   = st.session_state.get("oe_technical_decision", "")
-            ethical_trigger      = st.session_state.get("oe_ethical_trigger", "")
-            ethical_tension      = st.session_state.get("oe_ethical_tension", "")
-            constraints          = st.session_state.get("oe_constraints", "")
-            decision             = st.session_state.get("oe_decision", "")
-            rationale            = st.session_state.get("oe_rationale", "")
+                # Basic context (will be blank for now unless you add inputs later)
+                incident_title = st.session_state.get("oe_incident_title", "")
+                role = st.session_state.get("oe_role", "")
+                municipality = st.session_state.get("oe_municipality", "")
+                notes = st.session_state.get("oe_notes", "")
 
-            # --- Build PDF ---
-            buffer = BytesIO()
-            pdf = canvas.Canvas(buffer, pagesize=LETTER)
-            width, height = LETTER
+                st.write(f"**Incident Title:** {incident_title or '—'}")
+                st.write(f"**Role / Org:** {role or '—'} / {municipality or '—'}")
+                if notes:
+                    st.write(f"**Notes:** {notes}")
 
-            left_margin   = 72
-            right_margin  = 72
-            top_margin    = 72
-            bottom_margin = 72
-            line_height   = 14
+                # Technical Trigger
+                st.markdown("**Technical Trigger**")
+                trigger_types = st.session_state.get("oe_trigger_types", [])
+                technical_trigger = st.session_state.get("oe_technical_trigger", "")
+                if trigger_types:
+                    st.write("Event type(s): " + ", ".join(trigger_types))
+                st.write(technical_trigger or "—")
 
-            pdf.setFont("Helvetica-Bold", 14)
-            pdf.drawCentredString(
-                width / 2,
-                height - top_margin,
-                "Municipal Cyber Ethics Reasoning Summary"
-            )
+                # Technical Decision
+                st.markdown("**Technical Decision Point**")
+                decision_type = st.session_state.get("oe_decision_type", "")
+                technical_decision = st.session_state.get("oe_technical_decision", "")
+                if decision_type:
+                    st.write(f"Decision type: {decision_type}")
+                st.write(technical_decision or "—")
 
-            pdf.setLineWidth(0.5)
-            pdf.line(
-                left_margin,
-                height - top_margin - 8,
-                width - right_margin,
-                height - top_margin - 8,
-            )
+                # NIST CSF Mapping
+                st.markdown("**NIST CSF Mapping**")
+                func_labels = {fid: lbl for fid, lbl in FUNC_OPTIONS}
+                cat_labels = {}
+                for fid, cats in CATS_BY_FUNC.items():
+                    for cid, lbl in cats:
+                        cat_labels[cid] = lbl
+                sub_labels = {}
+                for cid, subs in SUBS_BY_CAT.items():
+                    for sid, lbl in subs:
+                        sub_labels[sid] = lbl
 
-            y = height - top_margin - 24
+                selected_func_id = st.session_state.get("oe_csf_function", "")
+                selected_cat_id = st.session_state.get("oe_csf_category", "")
+                selected_sub_ids = st.session_state.get("oe_csf_subcategories", [])
+                csf_rationale = st.session_state.get("oe_csf_rationale", "")
 
-            def draw_wrapped_text(text, indent=0, wrap_width=95):
-                nonlocal y
-                pdf.setFont("Helvetica", 11)
-                text = text or "—"
-                for line in textwrap.wrap(text, width=wrap_width):
-                    if y < bottom_margin + line_height:
-                        pdf.showPage()
-                        _draw_header()
-                    pdf.drawString(left_margin + indent, y, line)
-                    y -= line_height
+                st.write(f"- Function: {func_labels.get(selected_func_id, selected_func_id or '—')}")
+                st.write(f"- Category: {cat_labels.get(selected_cat_id, selected_cat_id or '—')}")
+                if selected_sub_ids:
+                    st.write("- Subcategories:")
+                    for sid in selected_sub_ids:
+                        st.write(f"  - {sub_labels.get(sid, sid)}")
+                else:
+                    st.write("- Subcategories: —")
+                if csf_rationale:
+                    st.write(f"- Rationale: {csf_rationale}")
 
-            def draw_section_heading(title):
-                nonlocal y
-                if y < bottom_margin + 30:
-                    pdf.showPage()
-                    _draw_header()
-                pdf.setFont("Helvetica-Bold", 12)
-                pdf.drawString(left_margin, y, title)
-                y -= line_height
-                pdf.setLineWidth(0.3)
-                pdf.line(left_margin, y + 4, width - right_margin, y + 4)
-                y -= (line_height // 2)
+                # Ethical Trigger
+                st.markdown("**Ethical Trigger**")
+                ethical_trigger_tags = st.session_state.get("oe_ethical_trigger_tags", [])
+                ethical_trigger = st.session_state.get("oe_ethical_trigger", "")
+                if ethical_trigger_tags:
+                    st.write("Tags: " + ", ".join(ethical_trigger_tags))
+                st.write(ethical_trigger or "—")
 
-            def _draw_header():
-                nonlocal y
-                pdf.setFont("Helvetica-Bold", 12)
-                pdf.drawCentredString(
-                    width / 2,
-                    height - top_margin + 8,
-                    "Municipal Cyber Ethics Reasoning Summary",
-                )
-                pdf.setLineWidth(0.3)
-                pdf.line(
-                    left_margin,
-                    height - top_margin - 2,
-                    width - right_margin,
-                    height - top_margin - 2,
-                )
-                y = height - top_margin - 24
+                # Ethical Tension
+                ethical_tension = st.session_state.get("oe_ethical_tension", "")
+                st.markdown("**Ethical Tension**")
+                st.write(ethical_tension or "—")
 
-            # --- Sections ---
-            draw_section_heading("Metadata")
-            draw_wrapped_text(
-                f"Timestamp: {datetime.now().isoformat(timespec='minutes')}",
-                indent=10,
-            )
-            draw_wrapped_text(f"Incident Title: {incident_title}", indent=10)
-            draw_wrapped_text(
-                f"Role / Organization: {role} / {municipality}", indent=10
-            )
+                # PFCE Principles
+                selected_pfce = st.session_state.get("oe_pfce_principles", [])
+                pfce_rationale = st.session_state.get("oe_pfce_rationale", "")
+                st.markdown("**PFCE Principles**")
+                if selected_pfce:
+                    st.write(", ".join(selected_pfce))
+                    st.write("**Overall ethical focus:** " + summarize_pfce(selected_pfce))
+                else:
+                    st.write("—")
+                if pfce_rationale:
+                    st.markdown("**PFCE Rationale**")
+                    st.write(pfce_rationale)
 
-            draw_section_heading("Technical Context")
-            draw_wrapped_text(
-                f"Technical Trigger: {technical_trigger}", indent=10
-            )
-            draw_wrapped_text(
-                f"Technical Decision Point: {technical_decision}", indent=10
-            )
+                # Constraints
+                st.markdown("**Institutional & Governance Constraints**")
+                selected_constraints = st.session_state.get("oe_constraints", [])
+                other_constraints = st.session_state.get("oe_constraints_other", "")
+                if selected_constraints:
+                    for c in selected_constraints:
+                        st.write(f"- {c}")
+                else:
+                    st.write("—")
+                if other_constraints:
+                    st.write(f"Other: {other_constraints}")
 
-            draw_section_heading("Ethical Context")
-            draw_wrapped_text(
-                f"Ethical Trigger: {ethical_trigger}", indent=10
-            )
-            draw_wrapped_text(
-                f"Ethical Tension(s): {ethical_tension}", indent=10
-            )
+                # Decision Outcome
+                decision_outcome = st.session_state.get("oe_decision_outcome", "")
+                st.markdown("**Decision Outcome**")
+                st.write(decision_outcome or "—")
 
-            draw_section_heading("Institutional & Governance Constraints")
-            draw_wrapped_text(constraints, indent=10)
-
-            draw_section_heading("Decision-Making Context")
-            draw_wrapped_text(
-                f"Operational Decision: {decision}", indent=10
-            )
-            draw_wrapped_text(
-                f"Ethical–Technical Reasoning: {rationale}", indent=10
-            )
-
-            draw_section_heading("Additional Notes")
-            draw_wrapped_text(notes, indent=10)
-
-            # Footer
-            pdf.setFont("Helvetica-Oblique", 9)
-            pdf.drawCentredString(
-                width / 2,
-                bottom_margin / 2,
-                "Generated via Municipal Cyber Ethics Decision-Support Prototype – Open-Ended Mode",
-            )
-
-            pdf.save()
-            buffer.seek(0)
-
-            st.download_button(
-                label="Download Reasoning Summary (PDF)",
-                data=buffer,
-                file_name="reasoning_summary.pdf",
-                mime="application/pdf",
-            )
-
-   
-      
+                # Ethical Implications
+                ethical_implications = st.session_state.get("oe_ethical_implications", "")
+                st.markdown("**Ethical Implications**")
+                st.write(ethical_implications or "—")
