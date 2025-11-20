@@ -291,230 +291,153 @@ def render_open_ended():
     step = st.session_state["oe_step"]
 
     st.caption(
-        "This guided flow walks through the same eight-element structure used in the case reconstructions, "
-        "one question at a time."
+        "This guided flow walks through the same eight-element structure used in the "
+        "case reconstructions, one question at a time."
     )
 
     st.progress(step / 9.0)
 
-    # ---------------- Step 1: CSF Context + Technical Trigger ----------------
+
+    # ---------------- Step 1: Technical Trigger ----------------
     if step >= 1:
-        st.markdown("### 1. CSF Context and Technical Trigger")
+        st.markdown("### 1. Technical Trigger")
         st.caption(
-            "First, locate where this situation sits in the NIST CSF 2.0 lifecycle, then describe the technical event "
-            "that set the decision in motion."
-        )
+        "What type of technical event set this decision in motion? "
+        "Select one or more, then add a sentence if helpful."
+    )
 
-        st.write(
-            "What is happening in your cybersecurity situation? "
-            "Select the description that best fits. The prototype will map your choice "
-            "to the appropriate NIST CSF 2.0 function."
-        )
+    trigger_types = st.multiselect(
+        "Technical event type(s)",
+        options=TRIGGER_TYPE_OPTIONS,
+        key="oe_trigger_types",
+    )
 
-        # Build options for display: "LABEL: prompt"
-        option_texts = []
-        codes_list = list(CSF_FUNCTION_OPTIONS.keys())
-        for code in codes_list:
-            meta = CSF_FUNCTION_OPTIONS[code]
-            option_texts.append(f"{meta['label']}: {meta['prompt']}")
+    technical_trigger = st.text_area(
+        "Optional: Add 1–2 sentences of technical context",
+        key="oe_technical_trigger",
+        height=90,
+        placeholder=(
+            "Example: A ransomware payload was activated on a shared file server hosting multiple "
+            "departmental shares, locking staff out of key operational systems."
+        ),
+    )
 
-        # Determine default selection if one already exists in session_state
-        default_index = 0
-        current_code = st.session_state.get("oe_csf_function")
-        if current_code in CSF_FUNCTION_OPTIONS:
-            default_index = codes_list.index(current_code)
+    # Optional incident title
+    st.text_input(
+        "Optional – Brief incident title or description",
+        value=st.session_state.get("oe_incident_title", ""),
+        key="oe_incident_title",
+    )
 
-        selected_option = st.radio(
-            "Select the option that best matches your current situation:",
-            options=option_texts,
-            index=default_index,
-            key="oe_csf_choice",
-        )
+    st.markdown("---")
 
-        # Map the chosen text back to the CSF code (match on label prefix before the colon)
-        selected_label_prefix = selected_option.split(":")[0]
-        selected_code = None
-        for code, meta in CSF_FUNCTION_OPTIONS.items():
-            if meta["label"] == selected_label_prefix:
-                selected_code = code
-                break
-
-        # Store both the code and label for use in later steps / summary
-        if selected_code:
-            st.session_state["oe_csf_function"] = selected_code
-            st.session_state["oe_csf_function_label"] = CSF_FUNCTION_OPTIONS[selected_code]["label"]
-
-        st.info(
-            f"Current CSF 2.0 context: **{st.session_state.get('oe_csf_function_label', 'Not selected')}**"
-        )
-
-        st.markdown("---")
-
-        # Technical trigger (your original Step 1 content)
-        st.caption(
-            "What type of technical event set this decision in motion? "
-            "Select one or more, then add a sentence if helpful."
-        )
-
-        trigger_types = st.multiselect(
-            "Technical event type(s)",
-            options=TRIGGER_TYPE_OPTIONS,
-            key="oe_trigger_types",
-        )
-
-        technical_trigger = st.text_area(
-            "Optional: Add 1–2 sentences of technical context",
-            key="oe_technical_trigger",
-            height=90,
-            placeholder=(
-                "Example: A ransomware payload was activated on a shared file server hosting multiple "
-                "departmental shares, locking staff out of key operational systems."
-            ),
-        )
-
-        # Optional high-level incident title for summary
-        st.text_input(
-            "Optional – Brief incident title or description",
-            value=st.session_state.get("oe_incident_title", ""),
-            key="oe_incident_title",
-        )
-
-        st.markdown("---")
 
     # ---------------- Step 2: Technical Decision Point ----------------
     if step >= 2:
         st.markdown("### 2. Technical Decision Point")
         st.caption(
-            "What must be decided in technical terms? Select the decision type, then describe the specific choice."
-        )
+        "What must be decided in technical terms? Select the decision type, then describe the specific choice."
+    )
 
-        decision_type = st.selectbox(
-            "Primary decision type",
-            options=DECISION_TYPE_OPTIONS,
-            key="oe_decision_type",
-        )
+    decision_type = st.selectbox(
+        "Primary decision type",
+        options=DECISION_TYPE_OPTIONS,
+        key="oe_decision_type",
+    )
 
-        technical_decision = st.text_area(
-            "Describe the specific choice in your own words (1–2 sentences)",
-            key="oe_technical_decision",
-            height=90,
-            placeholder=(
-                "Example: Decide whether to disconnect the AI platform and revert to manual control, "
-                "or maintain limited automated operations while investigating the anomaly."
-            ),
-        )
+    technical_decision = st.text_area(
+        "Describe the specific choice in your own words (1–2 sentences)",
+        key="oe_technical_decision",
+        height=90,
+        placeholder=(
+            "Example: Decide whether to disconnect the AI platform and revert to manual control, "
+            "or maintain limited automated operations while investigating the anomaly."
+        ),
+    )
 
-        # Compute and store a CSF function hint based on the decision wording
-        suggested_func_id = guess_csf_function(technical_decision)
-        st.session_state["oe_suggested_func"] = suggested_func_id
+    # intelligent hint based on language
+    suggested_func_id = guess_csf_function(technical_decision)
+    st.session_state["oe_suggested_func"] = suggested_func_id
 
-        st.markdown("---")
+    st.markdown("---")
 
     # ---------------- Step 3: Technical Mapping (NIST CSF 2.0) ----------------
     if step >= 3:
         st.markdown("### 3. Technical Mapping (NIST CSF 2.0)")
         st.caption(
-            "Map this decision into the NIST CSF 2.0 structure. "
-            "Select the primary function, then refine to category and outcome(s)."
-        )
+        "Map this decision into the NIST CSF 2.0 structure. Begin by selecting the description "
+        "that best matches your situation."
+    )
 
-        # Function selection with hint
-        func_ids = [fid for fid, _ in FUNC_OPTIONS]
-        func_labels = {fid: lbl for fid, lbl in FUNC_OPTIONS}
+    # Practitioner-friendly CSF selection
+    option_texts = []
+    codes_list = list(CSF_FUNCTION_OPTIONS.keys())
+    for code in codes_list:
+        meta = CSF_FUNCTION_OPTIONS[code]
+        option_texts.append(f"{meta['label']}: {meta['prompt']}")
 
-        hinted = st.session_state.get("oe_suggested_func")
+    default_index = 0
+    current_code = st.session_state.get("oe_csf_function")
+    if current_code in CSF_FUNCTION_OPTIONS:
+        default_index = codes_list.index(current_code)
 
-        # If we already have a CSF function from Step 1, default to that
-        if (
-            "oe_csf_function" in st.session_state
-            and st.session_state["oe_csf_function"] in func_ids
-        ):
-            selected_func_id = st.selectbox(
-                "Primary CSF function for this decision",
-                options=func_ids,
-                format_func=lambda fid: func_labels.get(fid, fid),
-                key="oe_csf_function",
-            )
-        else:
-            # If we have a hint and it is valid, use it as the default index
-            if hinted in func_ids:
-                default_index = func_ids.index(hinted)
-            else:
-                default_index = 0
-            selected_func_id = st.selectbox(
-                "Primary CSF function for this decision",
-                options=func_ids,
-                index=default_index,
-                format_func=lambda fid: func_labels.get(fid, fid),
-                key="oe_csf_function",
-            )
+    selected_option = st.radio(
+        "Select the option that best matches your current situation:",
+        options=option_texts,
+        index=default_index,
+        key="oe_csf_choice_step3",
+    )
 
-        if hinted and hinted in func_labels:
-            st.info(
-                f"Suggested based on your decision description: **{func_labels[hinted]}**. "
-                "You can change this if it does not fit."
-            )
+    # Map text back to code
+    selected_label_prefix = selected_option.split(":")[0]
+    selected_code = None
+    for code, meta in CSF_FUNCTION_OPTIONS.items():
+        if meta["label"] == selected_label_prefix:
+            selected_code = code
+            break
 
-        # Category selection (filtered by function)
-        cat_options = CATS_BY_FUNC.get(selected_func_id, [])
-        cat_ids = [cid for cid, _ in cat_options]
-        cat_labels = {cid: lbl for cid, lbl in cat_options}
+    if selected_code:
+        st.session_state["oe_csf_function"] = selected_code
+        st.session_state["oe_csf_function_label"] = CSF_FUNCTION_OPTIONS[selected_code]["label"]
 
-        selected_cat_id = st.selectbox(
-            "Category",
-            options=cat_ids if cat_ids else ["(no categories defined)"],
-            format_func=lambda cid: cat_labels.get(cid, cid),
-            key="oe_csf_category",
-        )
+    st.info(
+        f"Current CSF 2.0 context: **{st.session_state.get('oe_csf_function_label', 'Not selected')}**"
+    )
 
-        # Subcategory selection (filtered by category)
-        subs = SUBS_BY_CAT.get(selected_cat_id, [])
-        sub_ids = [sid for sid, _ in subs]
-        sub_labels = {sid: lbl for sid, _ in subs}
+    # ------- Categories ----------
+    selected_func_id = st.session_state.get("oe_csf_function")
 
-        selected_sub_ids = st.multiselect(
-            "Subcategories (outcomes most directly involved in this decision)",
-            options=sub_ids,
-            format_func=lambda sid: sub_labels.get(sid, sid),
-            key="oe_csf_subcategories",
-        )
+    cat_options = CATS_BY_FUNC.get(selected_func_id, [])
+    cat_ids = [cid for cid, _ in cat_options]
+    cat_labels = {cid: lbl for cid, lbl in cat_options}
 
-        st.caption(
-            "Optional: briefly explain why these CSF outcomes are most relevant to this decision."
-        )
-        csf_rationale = st.text_area(
-            "CSF rationale (optional)",
-            key="oe_csf_rationale",
-            height=90,
-        )
+    selected_cat_id = st.selectbox(
+        "Category",
+        options=cat_ids if cat_ids else ["(no categories defined)"],
+        format_func=lambda cid: cat_labels.get(cid, cid),
+        key="oe_csf_category",
+    )
 
-        # 3b. Optional PFCE mapping via crosswalk
-        pfce_auto = []
-        if selected_sub_ids and PFCE_CROSSWALK:
-            matches = apply_crosswalk(selected_sub_ids, PFCE_CROSSWALK)
-            st.markdown("#### CSF → PFCE Ethical Hints")
-            for m in matches:
-                csf_id = m.get("csf_id", "")
-                outcome = m.get("csf_outcome", "")
-                pfce = m.get("pfce", []) or []
-                rationale = m.get("rationale", "")
+    # ------- Subcategories ----------
+    subs = SUBS_BY_CAT.get(selected_cat_id, [])
+    sub_labels = {sid: lbl for sid, lbl in subs}
 
-                if csf_id or outcome:
-                    st.markdown(f"**{csf_id} – {outcome}**".strip(" –"))
+    selected_sub_ids = st.multiselect(
+        "Subcategories (outcomes most directly involved in this decision)",
+        options=[sid for sid, _ in subs],
+        format_func=lambda sid: sub_labels.get(sid, sid),
+        key="oe_csf_subcategories",
+    )
 
-                if pfce:
-                    st.markdown("• Suggested principles: " + ", ".join(pfce))
-                    pfce_auto.extend(pfce)
-                if rationale:
-                    st.markdown(f"_Why this matters_: {rationale}")
-                st.markdown("---")
-        else:
-            pfce_auto = []
+    st.caption("Optional: explain why these CSF outcomes matter.")
+    csf_rationale = st.text_area(
+        "CSF rationale (optional)",
+        key="oe_csf_rationale",
+        height=90,
+    )
 
-        st.markdown("---")
-    else:
-        # If we haven't reached Step 3 yet, no auto PFCE hints
-        pfce_auto = []
+    st.markdown("---")
+
 
     # ---------------- Step 4: Ethical Trigger ----------------
     if step >= 4:
