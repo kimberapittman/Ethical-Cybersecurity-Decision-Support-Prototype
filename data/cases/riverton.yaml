@@ -1,36 +1,111 @@
-id: "riverton-2027"
-title: "City of Riverton AI-Enabled Attack (2027)"
-short_summary: "TBD"
+id: "riverton"
+title: "Case 3: Riverton – When AI-Driven Security Meets Human-Centered Obligations"
+short_summary: >
+  Riverton’s AI-managed water-treatment control platform automatically restricted chemical dosing
+  after detecting irregular remote access behavior, forcing practitioners to decide whether to maintain
+  precautionary automated restrictions or override them to restore full manual control.
+
 sources:
-  - "TBD"
+  - "TBD – Riverton hypothetical case constructed for this thesis (update with any supporting references you decide to include)."
 
 technical:
-  trigger: "TBD"
-  decision_point: "TBD"
+  trigger: >
+    The AI-managed control platform detected irregular remote access behavior targeting the plant’s
+    programmable logic controllers and automatically restricted specific chemical dosing functions
+    pending operator review.
+  decision_point: >
+    Riverton’s cybersecurity staff and plant supervisors had to decide whether to maintain the AI-initiated
+    restrictions or override the platform to restore full operator control of chemical dosing.
   nist_csf_mapping:
-    - function: "TBD"
-      category: "TBD"
-      subcategory: "TBD"
-      rationale: "TBD"
+    - function: "RS – Respond"
+      category: "RS.MI – Mitigate"
+      subcategory: "Mitigation actions for suspected incidents are executed (specific CSF 2.0 subcategory to be confirmed)."
+      rationale: >
+        The decision focused on whether to maintain or lift a precautionary restriction intended to mitigate
+        potential harm while the integrity of the control environment was under investigation.
 
 ethical:
-  trigger: "TBD"
+  trigger: >
+    The AI-imposed restrictions limited operators’ ability to adjust chemical dosing in real time while the
+    system was acting under uncertainty, raising the question of how to maintain safe and reliable water
+    treatment when human control was constrained by automated safeguards.
   tensions:
     - id: "T1"
-      description: "TBD"
+      description: >
+        Balancing beneficence—maintaining precautionary restrictions to prevent potential harm to the public—
+        against non-maleficence, given that unnecessary or prolonged restrictions could themselves affect
+        water quality or system stability.
   pfce_mapping:
-    - principle: "TBD"
-      description: "TBD"
+    - principle: "Beneficence"
+      description: >
+        Maintaining precautionary restrictions to protect public health while the integrity of the control
+        environment remained uncertain.
       stakeholders:
-        - "TBD"
+        - "Residents relying on safe drinking water."
+        - "Water-utility operators responsible for maintaining treatment quality."
+    - principle: "Non-maleficence"
+      description: >
+        Avoiding unnecessary or prolonged restrictions that could introduce new operational risks or undermine
+        water quality and system stability.
+      stakeholders:
+        - "Residents who could be harmed by degraded water quality or pressure."
+        - "Plant staff managing operational continuity."
+    - principle: "Autonomy"
+      description: >
+        Determining the appropriate balance between human operator judgment and automated AI controls in an
+        ambiguous operational environment.
+      stakeholders:
+        - "Plant operators whose professional judgment is constrained by AI-imposed restrictions."
+        - "Cybersecurity practitioners accountable for override decisions."
+    - principle: "Explicability"
+      description: >
+        Ensuring decision-makers had sufficient understanding of how the AI system interpreted the anomalous
+        activity and why it initiated restrictive actions before relying on or overriding its behavior.
+      stakeholders:
+        - "Municipal leaders who must justify decisions to the public."
+        - "Residents who may demand explanations if service or safety are affected."
 
 constraints:
-  - type: "TBD"
-    description: "TBD"
-    effect_on_decision: "TBD"
+  - type: "Regulatory obligations"
+    description: >
+      Water-utility regulations required maintaining chemical balances within defined thresholds and
+      documenting any deviations from normal treatment operations.
+    effect_on_decision: >
+      Limited tolerance for prolonged uncertainty and pushed practitioners to resolve the incident in a way
+      that preserved regulatory compliance while avoiding premature overrides.
+  - type: "Fragmented authority"
+    description: >
+      Cybersecurity and utilities teams operated under parallel authorities, creating ambiguity about who
+      held final decision rights when automated controls restricted operations.
+    effect_on_decision: >
+      Slowed coordinated action and made it harder to decisively override or sustain AI-imposed restrictions
+      without cross-team agreement.
+  - type: "Vendor dependency"
+    description: >
+      Key diagnostic tools and detailed AI classification logs were controlled by the external platform vendor.
+    effect_on_decision: >
+      Delayed practitioners’ ability to interpret the anomaly and increased reliance on precautionary
+      restrictions while waiting for vendor input.
+  - type: "Risk-governance policies"
+    description: >
+      Municipal risk-governance policies favored caution in critical infrastructure operations, especially
+      when potential threats to public health were involved.
+    effect_on_decision: >
+      Made it difficult to justify overriding automated restrictions without clear technical evidence that
+      doing so would not increase risk.
 
 decision_outcome:
-  decision: "TBD"
+  decision: >
+    Practitioners maintained the AI-initiated restrictions while conducting additional log reviews, vendor
+    consultation, and targeted network diagnostics, then restored full manual control once the anomalous
+    activity was traced to a misconfigured remote monitoring module.
   ethical_implications:
-    - "TBD"
-
+    - >
+      The decision preserved a precautionary posture that prioritized public safety while allowing operators
+      to maintain stable water treatment through manual workarounds.
+    - >
+      The incident highlighted the operational costs of sustaining restrictions under uncertainty but reinforced
+      the importance of maintaining protective measures until credible technical evidence supports their removal.
+    - >
+      The case exposed ongoing tensions between trusting AI-driven controls and preserving meaningful human
+      oversight in critical infrastructure operations.
