@@ -44,10 +44,7 @@ def render_case(case_id: str):
     # ---------------------
     # Title + Summary
     # ---------------------
-    st.markdown(
-        "<h2 style='text-align: center; margin-top: 0.25rem;'>Case-Based Mode</h2>",
-        unsafe_allow_html=True,
-    )
+
 
     st.subheader(case.get("title", case_id))
     st.caption(case.get("short_summary", ""))

@@ -147,13 +147,9 @@ footer, #MainMenu{ visibility: hidden; }
 def main():
     # ---------- SIDEBAR ----------
     with st.sidebar:
-        # Section 1: Modes
-        st.markdown(
-            "<h3 style='margin:0 0 0.5rem 0; font-weight:700;'>Mode</h3>",
-            unsafe_allow_html=True,
-        )
+        st.markdown("<h3 style='margin:0 0 0.5rem 0; font-weight:700;'>Mode</h3>", unsafe_allow_html=True)
         mode = st.radio(
-            label="Prototype mode",          # was: ""
+            label="Prototype mode",
             options=["Case-Based", "Open-ended"],
             index=0,
             key="mode_selector",
@@ -162,42 +158,32 @@ def main():
 
         st.markdown("---")
 
-        # Section 2: Prototype Overview
-        st.markdown(
-            "<h3 style='margin:0 0 0.5rem 0; font-weight:700;'>Prototype Overview</h3>",
-            unsafe_allow_html=True,
-        )
+        # Prototype Overview
+        st.markdown("<h3 style='margin:0 0 0.5rem 0; font-weight:700;'>Prototype Overview</h3>", unsafe_allow_html=True)
         with st.expander("ℹ️ About This Prototype"):
             st.markdown(
                 """
 - **Purpose:** Help municipal cybersecurity practitioners reason through ethical tensions within institutional and governance constraints.  
-- **How It Works:** Uses the NIST CSF 2.0 to locate the decision procedurally and the PFCE to clarify the ethical values in tension. The tool guides practitioners through the technical trigger, the decision point, the ethical trigger, and the ethical tension.
+- **How It Works:** Uses the NIST CSF 2.0 to locate the decision procedurally and the PFCE to clarify ethical values in tension.
                 """
             )
 
         st.markdown("---")
 
-        # Section 3: Appendix
-        st.markdown(
-            "<h3 style='margin:0 0 0.5rem 0; font-weight:700;'>Appendix</h3>",
-            unsafe_allow_html=True,
-        )
+        # Appendix
+        st.markdown("<h3 style='margin:0 0 0.5rem 0; font-weight:700;'>Appendix</h3>", unsafe_allow_html=True)
         with st.expander("📚 Framework References"):
             st.markdown(
                 """
 **National Institute of Standards and Technology.**  
-*The NIST Cybersecurity Framework (CSF) 2.0.*  
-National Institute of Standards and Technology, 2024.  
-[https://doi.org/10.6028/NIST.CSWP.29](https://doi.org/10.6028/NIST.CSWP.29)  
+*The NIST Cybersecurity Framework (CSF) 2.0.* (2024)  
 
 **Formosa, Paul, Michael Wilson, and Deborah Richards.**  
-"A Principlist Framework for Cybersecurity Ethics."  
-*Computers & Security* 109 (2021): 1–15.  
-[https://doi.org/10.1016/j.cose.2021.102382](https://doi.org/10.1016/j.cose.2021.102382)  
+"A Principlist Framework for Cybersecurity Ethics." (2021)
                 """
             )
 
-    # ---------- HEADER (MAIN AREA) ----------
+    # ---------- MAIN HEADER ----------
     st.markdown(
         """
         <div style='text-align: center;'>
@@ -208,49 +194,32 @@ National Institute of Standards and Technology, 2024.
         unsafe_allow_html=True,
     )
 
-    # ---------- MODE-SPECIFIC EXPLAINERS (MAIN AREA) ----------
+    # ---------- MODE INTRODUCTION ----------
     if mode == "Case-Based":
+
+        # ⭐ ADD CASE-BASED HEADER HERE (new)
+        st.markdown(
+            "<h2 style='text-align:center; margin-top:0.25rem;'>Case-Based Mode</h2>",
+            unsafe_allow_html=True,
+        )
+        st.caption("Walk through the structured nine-step reconstruction of each thesis case.")
+
         with st.expander("About Case-Based Mode"):
             st.markdown(
                 """
-This mode reconstructs municipal cybersecurity incidents from Chapter III of the thesis.
-Each case is pre-structured into eight elements:
-
-1. Technical Trigger  
-2. Technical Decision Point  
-3. Technical Mapping (NIST CSF 2.0)  
-4. Ethical Trigger  
-5. Ethical Tension  
-6. Ethical Mapping (PFCE)  
-7. Institutional and Governance Constraints  
-8. Decision Outcome and Ethical Implications  
-
-The purpose is to show how ethical reasoning and technical guidance interact in real cases,
-within institutional and governance constraints.
+This mode reconstructs municipal cybersecurity incidents from Chapter III using the same structured reasoning process as the prototype's Open-Ended Mode.
                 """
             )
+
     else:
         with st.expander("About Open-Ended Mode"):
             st.markdown(
                 """
-This mode allows practitioners to enter a new incident or dilemma while following the
-same eight-element structure used in the case reconstructions:
-
-1. Technical Trigger  
-2. Technical Decision Point  
-3. Technical Mapping (NIST CSF 2.0)  
-4. Ethical Trigger  
-5. Ethical Tension  
-6. Ethical Mapping (PFCE)  
-7. Institutional and Governance Constraints  
-8. Decision Outcome and Ethical Implications  
-
-The purpose is to support real-time ethical reasoning and generate a structured
-decision-support log for transparency and accountability.
+Use this mode to analyze a new cybersecurity dilemma using the same nine-step ethical–technical reasoning structure.
                 """
             )
 
-    # ---------- CASE SELECTOR (MAIN AREA, CASE-BASED ONLY) ----------
+    # ---------- CASE SELECTOR (Case-Based Only) ----------
     selected_case = None
     if mode == "Case-Based":
         cases = list_cases()
@@ -260,7 +229,7 @@ decision-support log for transparency and accountability.
             case_titles = [c["title"] for c in cases]
             st.markdown("### Select Case")
             selected_title = st.selectbox(
-                label="Case selection",      # was: ""
+                label="Case selection",
                 options=case_titles,
                 key="case_selector",
                 label_visibility="collapsed",
@@ -269,14 +238,13 @@ decision-support log for transparency and accountability.
 
     st.divider()
 
-    # ---------- ROUTE TO MODE IMPLEMENTATIONS ----------
+    # ---------- ROUTING ----------
     if mode == "Case-Based":
         if selected_case:
             case_based.render_case(selected_case["id"])
     else:
         open_ended.render_open_ended()
 
-    # ---------- FOOTER ----------
     st.markdown("---")
     st.caption("Prototype created for thesis demonstration purposes.")
 
