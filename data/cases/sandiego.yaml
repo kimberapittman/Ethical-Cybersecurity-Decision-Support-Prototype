@@ -1,36 +1,179 @@
 id: "sandiego"
-title: "Case 2: San Diego – When Data Protection Meets Public Autonomy"
-short_summary: "TBD"
+
+title: "CASE 2: SAN DIEGO – WHEN DATA PROTECTION MEETS PUBLIC AUTONOMY"
+
+short_summary: >
+  The San Diego smart streetlight program presents a case in which municipal cybersecurity
+  practitioners confronted a decision about continued system access with implications for
+  data governance and public oversight. The decision examined in this case centers on whether
+  to maintain or restrict access to smart streetlight footage once practitioners became aware
+  that the system was being used beyond its originally documented scope and in the absence of
+  clearly defined governance procedures.
+
 sources:
-  - "TBD"
+  - "23–40: Sources cited in Chapter III case reconstruction text."
+
+background:
+  technical_operational_background: >
+    In 2016, the San Diego City Council approved a smart streetlight initiative framed as an
+    energy-efficiency and urban-analytics program.23 The initiative retrofitted thousands of
+    streetlights with energy-efficient LEDs integrated with cameras and sensor-equipped units
+    capable of collecting environmental and mobility data.24 The smart network’s sensors were
+    designed to cover roughly half of the city, creating a wide geographic footprint for data
+    collection.25 The system operated through a vendor-supported platform in which the vendor
+    owned the processed data while city agencies were provided access to the underlying data.26
+    Day-to-day management of the platform involved coordination across municipal departments
+    and external vendors, particularly for data integration and maintenance support.27 Taken
+    together, these operational features formed the technological environment in which later
+    concerns arose regarding municipal access to system footage.
+
+  triggering_condition_key_events: >
+    Beginning in 2018, the San Diego Police Department began requesting and using footage from
+    the smart streetlight cameras to support criminal investigations, despite the program
+    having been implemented for energy-efficiency and urban-analytics purposes.28 Over time,
+    the number of access requests increased, and by 2019 footage was being used in a range of
+    cases, including investigations of violent crimes and vandalism and looting during
+    protests.29 Public awareness of SDPD’s use of the system expanded in 2019 after media
+    reporting highlighted the scale of law-enforcement access, prompting questions about how
+    the data was being governed and under what authority departments could retrieve footage.30
+    These developments drew attention to how the system’s data was being accessed and governed,
+    creating the operational conditions within which municipal staff would later assess
+    whether existing access practices aligned with the program’s established scope and
+    governance structures.
 
 technical:
-  trigger: "TBD"
-  decision_point: "TBD"
+  decision_context: >
+    The onset of expanded law-enforcement access to smart streetlight footage created a
+    decision context in which system administrators and relevant municipal staff had to
+    determine how the platform’s access configurations should be managed once it became clear
+    that the system was being used for purposes beyond its originally documented scope. Because
+    the platform did not operate under a fully articulated governance structure specifying
+    when and how video data could be retrieved, staff were required to assess whether existing
+    permissions should remain in place or whether adjustments were necessary while questions
+    about appropriate use were being addressed through administrative channels.
+
   nist_csf_mapping:
-    - function: "TBD"
-      category: "TBD"
-      subcategory: "TBD"
-      rationale: "TBD"
+    - function: "PR – Protect"
+      categories:
+        - "PR.AA – Identity Management, Authentication, and Access Control"
+      rationale: >
+        This decision context aligns with the Protect function of the NIST CSF because the
+        operational task involved evaluating how access rights to the platform should be
+        configured in the absence of defined governance procedures. Framing the situation
+        through the Protect function clarifies that the central operational question involved
+        determining what access posture was defensible while the scope and authority of data
+        retrieval practices were under review. This procedural framing defined the boundaries
+        within which staff assessed whether to maintain existing permissions or modify them
+        pending further clarification.
 
 ethical:
-  trigger: "TBD"
+  pfce_analysis: >
+    Viewed through the PFCE, the decision context introduced ethical tension once it became
+    clear that smart streetlight footage was being accessed through pathways not explicitly
+    articulated in the program’s publicly documented governance policies. Within this context,
+    beneficence was implicated insofar as access to footage could support investigative efforts
+    that advance public safety, while autonomy was simultaneously implicated because residents
+    had not been provided clear information about the circumstances under which video data
+    might be retrieved for purposes beyond the system’s original energy- and
+    analytics-oriented framing. Justice became relevant because ambiguities in access
+    procedures can shape how different communities experience or perceive the governance of
+    municipal data systems, particularly when surveillance-adjacent technologies are involved.
+    Explicability was salient because staff required a clearer understanding of how access
+    requests were made, what authority supported them, and what oversight mechanisms existed
+    to ensure appropriate use. Taken together, these obligations clarify the ethical
+    significance of the situation before any operational decision regarding future access
+    configurations was made.
+
   tensions:
     - id: "T1"
-      description: "TBD"
+      description: >
+        Maintaining access to system footage to support investigative and public-safety
+        purposes versus limiting access to respect resident autonomy and undocumented
+        expectations about how municipal data systems would be used.
+
   pfce_mapping:
-    - principle: "TBD"
-      description: "TBD"
-      stakeholders:
-        - "TBD"
+    - principle: "Beneficence"
+      description: >
+        Access to footage could support investigative efforts that advance public safety.
+    - principle: "Autonomy"
+      description: >
+        Residents had not been provided clear information about the circumstances under which
+        video data might be retrieved beyond the program’s original framing.
+    - principle: "Justice"
+      description: >
+        Ambiguities in access procedures could shape how different communities experience or
+        perceive the governance of municipal data systems.
+    - principle: "Explicability"
+      description: >
+        Staff required clearer understanding of how access requests were made, what authority
+        supported them, and what oversight mechanisms existed to ensure appropriate use.
 
 constraints:
-  - type: "TBD"
-    description: "TBD"
-    effect_on_decision: "TBD"
+  - type: "Program design limitations"
+    description: >
+      The initiative was designed as an energy-efficiency and urban-analytics program and did
+      not anticipate law-enforcement use, creating gaps in documentation and oversight once
+      access requests expanded.31
+    effect_on_decision: >
+      Practitioners lacked clearly defined governance procedures when evaluating whether
+      existing access practices aligned with the program’s scope.
+
+  - type: "Absence of surveillance policy"
+    description: >
+      The city had not adopted a formal surveillance policy specifying when and under what
+      authority law-enforcement access to smart streetlight footage could occur.32
+    effect_on_decision: >
+      Practitioners lacked procedural guardrails when assessing whether to maintain or modify
+      access configurations.
+
+  - type: "Lack of cross-departmental review process"
+    description: >
+      The city lacked a cross-departmental process for evaluating secondary uses of municipal
+      data systems.33
+    effect_on_decision: >
+      This governance gap complicated efforts to determine whether interim technical
+      restrictions were appropriate while policy guidance was being developed.
+
+  - type: "Distributed operational responsibility"
+    description: >
+      Operational responsibility for the system was distributed across multiple departments
+      and vendor partners.34
+    effect_on_decision: >
+      This limited the city’s ability to form a unified understanding of how footage was
+      stored, retained, and accessed.
+
+  - type: "Funding and procurement arrangements"
+    description: >
+      Much of the infrastructure was financed through energy-efficiency bonds and vendor
+      agreements, reducing awareness among city council members and community stakeholders
+      regarding the system’s surveillance capabilities.35
+    effect_on_decision: >
+      These arrangements shaped governance capacity and constrained how quickly oversight
+      mechanisms could be clarified.
 
 decision_outcome:
-  decision: "TBD"
-  ethical_implications:
-    - "TBD"
+  decision: >
+    San Diego suspended new installations of the smart streetlight system and implemented a
+    temporary halt to law-enforcement access while the city conducted a broader review of
+    governance policies and data-management practices.36
 
+  outcomes_implications: >
+    Suspending access and installations introduced immediate constraints on investigative
+    workflows and urban-analytics activities, while the development of new governance
+    structures reshaped expectations for how municipal data systems should be evaluated and
+    managed. The moratorium and subsequent policy reforms also influenced public trust, as
+    residents and community groups assessed how the city responded to concerns about
+    undocumented access pathways. Taken together, these developments carried implications for
+    institutional legitimacy by clarifying where prior governance gaps had existed and how the
+    city intended to oversee data-generating technologies moving forward.
+
+  ethical_implications:
+    - >
+      Suspending access constrained investigative and analytical workflows while governance
+      questions were addressed.
+    - >
+      Governance reforms reshaped expectations for oversight and management of municipal data
+      systems.
+    - >
+      Public trust and institutional legitimacy were influenced by how the city responded to
+      concerns about undocumented access pathways.

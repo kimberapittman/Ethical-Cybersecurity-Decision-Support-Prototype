@@ -1,36 +1,178 @@
 id: "baltimore"
-title: "Case 1: Baltimore – When Protecting Systems Meets Protecting the Public"
-short_summary: "TBD"
+
+title: "CASE 1: BALTIMORE – WHEN PROTECTING SYSTEMS MEETS PROTECTING THE PUBLIC"
+
+short_summary: >
+  The Baltimore ransomware attack presents a case in which municipal cybersecurity practitioners
+  confronted a decision with immediate consequences for service continuity across the city. The
+  decision examined in this case centers on whether to disconnect additional municipal systems to
+  limit further spread of the ransomware while the scope of the compromise remained unclear.
+
 sources:
-  - "TBD"
+  - "2–22: Sources cited in Chapter III case reconstruction text."
+
+background:
+  technical_operational_background: >
+    In 2019, the City of Baltimore operated a distributed municipal IT environment supporting
+    essential administrative and public-service functions across multiple departments.2 The
+    city’s technology systems operated on a wide variety of systems and aging infrastructure
+    and was described in city documents as requiring ongoing modernization efforts.3 The city
+    also faced documented cybersecurity capability and staffing challenges, as the city’s Chief
+    Information Officer reported that Baltimore was “woefully behind in cybersecurity
+    capabilities, staff needs and infrastructure”.4 In the years prior, external assessments
+    had described Baltimore’s aging technology environment as presenting elevated exposure to
+    cyber threats.5 Earlier cyber incidents, including a 2018 intrusion into Baltimore’s 911
+    and 311 systems caused by a firewall being temporarily disabled during maintenance,
+    highlighted procedural vulnerabilities in system configuration and change-management
+    processes.6 Taken together, these operational conditions formed the technological backdrop
+    against which Baltimore confronted the 2019 RobbinHood ransomware attack.
+
+  triggering_condition_key_events: >
+    In May 2019, multiple municipal systems in Baltimore abruptly became inaccessible after
+    RobbinHood ransomware was deployed across portions of the city’s network.7 The malware
+    encrypted files on affected servers and displayed a ransom note demanding payment in
+    cryptocurrency, reportedly equivalent to approximately 13 Bitcoin (about $76,280).8 City
+    employees attempting to access departmental applications encountered locked systems, and
+    services began to fail across email, phone lines, and online payment platforms.9 Because
+    the city did not maintain continuous cybersecurity monitoring, it took several hours for
+    officials to identify the scope of the incident once systems began failing.10 Once IT staff
+    identified that the attack had affected servers supporting key administrative functions, an
+    internal shutdown of additional systems was initiated to prevent further spread.11 As
+    systems were taken offline, nearly every department experienced disruptions: employees lost
+    access to email; online payment services for water bills, property taxes, and traffic
+    citations were disabled; and non-emergency police communications systems were temporarily
+    knocked offline.12 Real-estate transactions were also affected as title companies could not
+    obtain lien certificates required to complete property sales.13 Over the following days,
+    departments reported continued service interruptions while technical teams worked to assess
+    the extent of the compromise.
 
 technical:
-  trigger: "TBD"
-  decision_point: "TBD"
+  decision_context: >
+    The onset of the ransomware attack created a decision context in which Baltimore’s
+    cybersecurity practitioners had to determine whether to maintain system connectivity while
+    assessing the scope of the compromise or disconnect additional systems to prevent further
+    spread. Because multiple municipal systems had already become encrypted and inaccessible,
+    practitioners faced a decision about whether leaving unaffected systems online introduced
+    continued risk or whether additional isolation would better limit potential propagation.
+
   nist_csf_mapping:
-    - function: "TBD"
-      category: "TBD"
-      subcategory: "TBD"
-      rationale: "TBD"
+    - function: "RS – Respond"
+      categories:
+        - "RS.MI – Mitigation"
+      rationale: >
+        This decision aligns with the Respond function of the NIST CSF because practitioners
+        had to decide between preserving service continuity or implementing containment
+        measures. Framing the situation through the Respond function clarifies that the
+        operational task at this stage involved determining whether additional isolation was
+        necessary to limit potential impact while system recovery remained ongoing. This
+        decision context defined the procedural boundaries within which practitioners assessed
+        their response options.
 
 ethical:
-  trigger: "TBD"
+  pfce_analysis: >
+    Viewed through the PFCE, the decision context itself introduced ethical tension, as
+    disconnecting additional systems to contain the ransomware risk meant reducing or
+    suspending access to municipal services that residents and departments relied on for daily
+    operations. Within this context, the potential containment action placed beneficence and
+    non-maleficence into direct tension, as efforts to prevent further ransomware spread
+    introduced concurrent risks of disrupting essential services. Autonomy was implicated
+    because departmental staff temporarily lost the ability to access or manage their systems.
+    Justice was implicated because service interruptions in areas such as payment processing
+    and administrative functions had uneven effects on residents and businesses depending on
+    their reliance on timely municipal services. Explicability was implicated because limited
+    information about the ransomware’s propagation path constrained practitioners’ ability to
+    determine whether further isolation was necessary or overly precautionary. Taken together,
+    these obligations clarify the ethical significance of the situation before any specific
+    operational course of action was selected.
+
   tensions:
     - id: "T1"
-      description: "TBD"
+      description: >
+        Preventing further ransomware spread through additional system isolation versus the
+        risk of disrupting essential municipal services relied on for daily operations.
+
   pfce_mapping:
-    - principle: "TBD"
-      description: "TBD"
-      stakeholders:
-        - "TBD"
+    - principle: "Beneficence"
+      description: >
+        Efforts to prevent further ransomware spread by considering containment actions.
+    - principle: "Non-maleficence"
+      description: >
+        The risk that containment actions could disrupt essential services and introduce harm
+        through service interruption.
+    - principle: "Autonomy"
+      description: >
+        Departmental staff temporarily lost the ability to access or manage their systems.
+    - principle: "Justice"
+      description: >
+        Service interruptions had uneven effects on residents and businesses depending on
+        their reliance on timely municipal services.
+    - principle: "Explicability"
+      description: >
+        Limited information about ransomware propagation constrained the ability to determine
+        whether further isolation was necessary or overly precautionary.
 
 constraints:
-  - type: "TBD"
-    description: "TBD"
-    effect_on_decision: "TBD"
+  - type: "Organizational transition"
+    description: >
+      At the time of the attack, the city was in the early stages of a transition toward
+      centralized technology functions.14
+    effect_on_decision: >
+      This shaped how practitioners understood the incident and the options available to them
+      at the time containment decisions had to be made.
+
+  - type: "Decentralized IT structure"
+    description: >
+      IT operations were organized under a decentralized structure, with system administration
+      responsibilities distributed across multiple departments.14
+    effect_on_decision: >
+      This limited the ability to form a unified operational picture of system interdependencies
+      during the early response.
+
+  - type: "Staffing and resource limitations"
+    description: >
+      The city faced documented staffing and resource limitations, as officials acknowledged
+      that constrained personnel and funding affected Baltimore’s overall cybersecurity
+      capacity at the time of the incident.15
+    effect_on_decision: >
+      These limitations shaped how practitioners assessed the situation and which containment
+      actions were realistically feasible.
+
+  - type: "Lack of incident-specific continuity plan"
+    description: >
+      The city did not have a formalized incident-specific continuity plan, resulting in
+      departments relying on ad-hoc workarounds during early recovery efforts.16
+    effect_on_decision: >
+      This limited the predictability of any containment strategy under consideration.
 
 decision_outcome:
-  decision: "TBD"
-  ethical_implications:
-    - "TBD"
+  decision: >
+    The containment decision ultimately taken involved disconnecting additional systems as a
+    precautionary measure while the scope of the ransomware deployment was still being
+    assessed.17
 
+  outcomes_implications: >
+    The operational consequences of the containment decision had uneven effects across
+    municipal services and the residents who relied on them, illustrating how wide-ranging
+    disruptions—to internal communication, billing functions, property transactions, and other
+    routine services—carry implications beyond their immediate administrative impact. These
+    accumulated effects created practical burdens for departments and residents who depended
+    on timely access to city systems, and their uneven distribution underscored longstanding
+    questions about equity in service availability during municipal disruptions. The scale and
+    duration of these disruptions also influenced public trust, as residents and businesses
+    assessed the city’s ability to maintain essential functions under cyberattack conditions.
+    Taken together, these impacts carried implications for institutional legitimacy by
+    revealing how fragile or fragmented system dependencies can affect perceptions of
+    municipal reliability during a crisis.
+
+  ethical_implications:
+    - >
+      Wide-ranging service disruptions carried implications beyond immediate administrative
+      impact, creating practical burdens for departments and residents who depended on timely
+      access to city systems.
+    - >
+      The uneven distribution of disruptions underscored questions about equity in service
+      availability during municipal disruptions.
+    - >
+      The scale and duration of disruptions influenced public trust and carried implications
+      for institutional legitimacy by shaping perceptions of municipal reliability during a
+      crisis.
