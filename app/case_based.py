@@ -1,5 +1,3 @@
-CASE-BASED MODE 12/16
-
 import streamlit as st
 from logic.loaders import load_case
 
