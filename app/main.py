@@ -202,12 +202,25 @@ def main():
             "<h2 style='text-align:center; margin-top:0.25rem;'>Case-Based Mode</h2>",
             unsafe_allow_html=True,
         )
-        st.caption("Walk through the structured nine-step reconstruction of each thesis case.")
 
         with st.expander("About Case-Based Mode"):
             st.markdown(
                 """
-This mode reconstructs municipal cybersecurity incidents from Chapter III using the same structured reasoning process as the prototype's Open-Ended Mode.
+This mode presents analytically reconstructed municipal cybersecurity cases that are used to
+demonstrate how ethical reasoning can be supported within real-world technical and institutional contexts.
+
+Each case has been structured around a concrete cybersecurity decision context and organized into
+a consistent set of analytical elements, including the technical condition that triggered concern,
+the decision context as situated within the NIST Cybersecurity Framework (CSF 2.0), the ethically
+significant conditions examined through the Principlist Framework for Cybersecurity Ethics (PFCE),
+and the institutional and governance constraints that shaped the range of feasible actions.
+
+Users can walk through each case step-by-step to observe how technical decision contexts,
+ethical tensions, and organizational constraints interact over the course of a cybersecurity incident.
+The purpose of this mode is not to evaluate historical decisions or prescribe outcomes, but to
+illustrate how structured, context-sensitive ethical reasoning can be made explicit and traceable
+when cybersecurity decisions are examined in a systematic way.
+
                 """
             )
 
@@ -215,7 +228,11 @@ This mode reconstructs municipal cybersecurity incidents from Chapter III using 
         with st.expander("About Open-Ended Mode"):
             st.markdown(
                 """
-Use this mode to analyze a new cybersecurity dilemma using the same nine-step ethical–technical reasoning structure.
+This mode allows users to apply the same structured analytical framework used in the case reconstructions to new or hypothetical municipal cybersecurity decision contexts. Rather than presenting a predefined case, Open-Ended Mode supports practitioner-defined situations in which ethical and technical considerations must be examined as they arise.
+
+User-entered scenarios are organized around a concrete cybersecurity decision context and guided through a consistent set of analytical elements, including the operational conditions that prompted concern, the procedural context as situated within the NIST Cybersecurity Framework (CSF 2.0), the ethically significant conditions examined through the Principlist Framework for Cybersecurity Ethics (PFCE), and the institutional and governance constraints that shape feasible courses of action.
+
+As users move step-by-step through the framework, the mode makes explicit how technical decision contexts, ethical tensions, and organizational constraints interact within a single decision episode. The purpose of Open-Ended Mode is not to determine correct decisions or optimize outcomes, but to demonstrate how structured, context-sensitive ethical reasoning can be surfaced, documented, and made transparent when practitioners confront cybersecurity decisions outside of predefined case material.
                 """
             )
 
@@ -227,7 +244,7 @@ Use this mode to analyze a new cybersecurity dilemma using the same nine-step et
             st.error("No cases found in data/cases.")
         else:
             case_titles = [c["title"] for c in cases]
-            st.markdown("### Select Case")
+            st.markdown("### Select A Case")
             selected_title = st.selectbox(
                 label="Case selection",
                 options=case_titles,
