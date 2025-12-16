@@ -206,7 +206,7 @@ def main():
             """
 Case-Based Mode presents analytically structured municipal cybersecurity cases used to demonstrate how the prototype’s decision-support logic operates.
 
-Each case is derived from a Chapter III analysis and organized to surface the decision-relevant elements necessary for structured reasoning, rather than to reproduce the full narrative detail of the dissertation. Users can step through each case to observe how technical context, ethical significance, and organizational conditions interact within a single cybersecurity decision process.
+Each case is derived from the Chapter III analysis and organized to surface the decision-relevant elements necessary for structured reasoning, rather than to reproduce the full narrative detail of the dissertation. Users can step through each case to observe how technical context, ethical significance, and organizational conditions interact within a single cybersecurity decision process.
 
 The purpose of this mode is not to evaluate historical decisions or prescribe outcomes, but to illustrate how ethical reasoning can be made explicit, structured, and traceable when cybersecurity decisions are examined systematically.
             """
