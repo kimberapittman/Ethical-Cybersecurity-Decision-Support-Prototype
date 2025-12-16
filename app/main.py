@@ -206,20 +206,11 @@ def main():
         with st.expander("About Case-Based Mode"):
             st.markdown(
                 """
-This mode presents analytically reconstructed municipal cybersecurity cases that are used to
-demonstrate how ethical reasoning can be supported within real-world technical and institutional contexts.
+Case-Based Mode presents analytically structured municipal cybersecurity cases used to demonstrate how the prototype’s decision-support logic operates.
 
-Each case has been structured around a concrete cybersecurity decision context and organized into
-a consistent set of analytical elements, including the technical condition that triggered concern,
-the decision context as situated within the NIST Cybersecurity Framework (CSF 2.0), the ethically
-significant conditions examined through the Principlist Framework for Cybersecurity Ethics (PFCE),
-and the institutional and governance constraints that shaped the range of feasible actions.
+Each case is derived from a Chapter III analysis and organized to surface the decision-relevant elements necessary for structured reasoning, rather than to reproduce the full narrative detail of the dissertation. Users can step through each case to observe how technical context, ethical significance, and organizational conditions interact within a single cybersecurity decision process.
 
-Users can walk through each case step-by-step to observe how technical decision contexts,
-ethical tensions, and organizational constraints interact over the course of a cybersecurity incident.
-The purpose of this mode is not to evaluate historical decisions or prescribe outcomes, but to
-illustrate how structured, context-sensitive ethical reasoning can be made explicit and traceable
-when cybersecurity decisions are examined in a systematic way.
+The purpose of this mode is not to evaluate historical decisions or prescribe outcomes, but to illustrate how ethical reasoning can be made explicit, structured, and traceable when cybersecurity decisions are examined systematically.
 
                 """
             )
@@ -228,11 +219,11 @@ when cybersecurity decisions are examined in a systematic way.
         with st.expander("About Open-Ended Mode"):
             st.markdown(
                 """
-This mode allows users to apply the same structured analytical framework used in the case reconstructions to new or hypothetical municipal cybersecurity decision contexts. Rather than presenting a predefined case, Open-Ended Mode supports practitioner-defined situations in which ethical and technical considerations must be examined as they arise.
+Open-Ended Mode allows users to apply the prototype’s reasoning structure to new or unfolding cybersecurity situations.
 
-User-entered scenarios are organized around a concrete cybersecurity decision context and guided through a consistent set of analytical elements, including the operational conditions that prompted concern, the procedural context as situated within the NIST Cybersecurity Framework (CSF 2.0), the ethically significant conditions examined through the Principlist Framework for Cybersecurity Ethics (PFCE), and the institutional and governance constraints that shape feasible courses of action.
+Rather than working from a pre-constructed case, users enter decision-specific information drawn from their own operational context and are guided through the same structured reasoning sequence demonstrated in Case-Based Mode. This enables exploration of how ethical significance, technical context, and institutional conditions interact within decisions that may not yet be fully defined or resolved.
 
-As users move step-by-step through the framework, the mode makes explicit how technical decision contexts, ethical tensions, and organizational constraints interact within a single decision episode. The purpose of Open-Ended Mode is not to determine correct decisions or optimize outcomes, but to demonstrate how structured, context-sensitive ethical reasoning can be surfaced, documented, and made transparent when practitioners confront cybersecurity decisions outside of predefined case material.
+The purpose of this mode is not to generate decisions or recommendations, but to support disciplined ethical reasoning by making assumptions, constraints, and value tensions explicit as cybersecurity practitioners work through complex situations.
                 """
             )
 
