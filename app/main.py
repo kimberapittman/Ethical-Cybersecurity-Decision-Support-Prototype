@@ -211,7 +211,7 @@ Each case is derived from a Chapter III analysis and organized to surface the de
 The purpose of this mode is not to evaluate historical decisions or prescribe outcomes, but to illustrate how ethical reasoning can be made explicit, structured, and traceable when cybersecurity decisions are examined systematically.
             """
         )
-
+      st.divider()
     else:
        st.markdown(
         "<h2 style='text-align: center; margin-top: 0.25rem;'>Open-Ended Mode</h2>",
