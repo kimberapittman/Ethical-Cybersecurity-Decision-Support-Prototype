@@ -289,11 +289,6 @@ def _build_pdf(title: str, lines: list[str]) -> BytesIO:
 
 
 def render_open_ended():
-    st.markdown(
-        "<h2 style='text-align: center; margin-top: 0.25rem;'>Open-Ended Mode</h2>",
-        unsafe_allow_html=True,
-    )
-    st.caption("Use this mode to walk a new dilemma through the same nine-component structure as the thesis cases.")
 
     if "oe_step" not in st.session_state:
         st.session_state["oe_step"] = 1

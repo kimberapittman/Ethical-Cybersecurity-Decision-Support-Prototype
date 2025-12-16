@@ -150,7 +150,7 @@ def main():
         st.markdown("<h3 style='margin:0 0 0.5rem 0; font-weight:700;'>Mode</h3>", unsafe_allow_html=True)
         mode = st.radio(
             label="Prototype mode",
-            options=["Case-Based", "Open-ended"],
+            options=["Case-Based", "Open-Ended"],
             index=0,
             key="mode_selector",
             label_visibility="collapsed",
@@ -194,38 +194,40 @@ def main():
         unsafe_allow_html=True,
     )
 
-    # ---------- MODE INTRODUCTION ----------
+# ---------- MODE-SPECIFIC EXPLAINERS (MAIN AREA) ----------
     if mode == "Case-Based":
+      st.markdown(
+        "<h2 style='text-align: center; margin-top: 0.25rem;'>Case-Based Mode</h2>",
+        unsafe_allow_html=True,
+    )
 
-        # ⭐ ADD CASE-BASED HEADER HERE (new)
+      with st.expander("About Case-Based Mode"):
         st.markdown(
-            "<h2 style='text-align:center; margin-top:0.25rem;'>Case-Based Mode</h2>",
-            unsafe_allow_html=True,
-        )
-
-        with st.expander("About Case-Based Mode"):
-            st.markdown(
-                """
+            """
 Case-Based Mode presents analytically structured municipal cybersecurity cases used to demonstrate how the prototype’s decision-support logic operates.
 
 Each case is derived from a Chapter III analysis and organized to surface the decision-relevant elements necessary for structured reasoning, rather than to reproduce the full narrative detail of the dissertation. Users can step through each case to observe how technical context, ethical significance, and organizational conditions interact within a single cybersecurity decision process.
 
 The purpose of this mode is not to evaluate historical decisions or prescribe outcomes, but to illustrate how ethical reasoning can be made explicit, structured, and traceable when cybersecurity decisions are examined systematically.
-
-                """
-            )
+            """
+        )
 
     else:
-        with st.expander("About Open-Ended Mode"):
-            st.markdown(
-                """
+       st.markdown(
+        "<h2 style='text-align: center; margin-top: 0.25rem;'>Open-Ended Mode</h2>",
+        unsafe_allow_html=True,
+        )
+
+       with st.expander("About Open-Ended Mode"):
+          st.markdown(
+            """
 Open-Ended Mode allows users to apply the prototype’s reasoning structure to new or unfolding cybersecurity situations.
 
 Rather than working from a pre-constructed case, users enter decision-specific information drawn from their own operational context and are guided through the same structured reasoning sequence demonstrated in Case-Based Mode. This enables exploration of how ethical significance, technical context, and institutional conditions interact within decisions that may not yet be fully defined or resolved.
 
 The purpose of this mode is not to generate decisions or recommendations, but to support disciplined ethical reasoning by making assumptions, constraints, and value tensions explicit as cybersecurity practitioners work through complex situations.
-                """
-            )
+            """
+        )
 
     # ---------- CASE SELECTOR (Case-Based Only) ----------
     selected_case = None
