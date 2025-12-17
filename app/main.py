@@ -1,6 +1,8 @@
 import sys
 from pathlib import Path
 
+# -*- coding: utf-8 -*-
+
 # Ensure project root is on sys.path
 ROOT_DIR = Path(__file__).resolve().parents[1]
 if str(ROOT_DIR) not in sys.path:
@@ -8,9 +10,10 @@ if str(ROOT_DIR) not in sys.path:
 
 import streamlit as st
 
-# App-level modules
-from app import case_based, open_ended
 from logic.loaders import list_cases
+from app import case_based, open_ended
+
+# App-level modules
 
 # ---------- Page config ----------
 st.set_page_config(
@@ -147,7 +150,10 @@ footer, #MainMenu{ visibility: hidden; }
 def main():
     # ---------- SIDEBAR ----------
     with st.sidebar:
-        st.markdown("<h3 style='margin:0 0 0.5rem 0; font-weight:700;'>Mode</h3>", unsafe_allow_html=True)
+        st.markdown(
+            "<h3 style='margin:0 0 0.5rem 0; font-weight:700;'>Mode</h3>",
+            unsafe_allow_html=True,
+        )
         mode = st.radio(
             label="Prototype mode",
             options=["Case-Based", "Open-Ended"],
@@ -180,9 +186,9 @@ def main():
         with st.expander("ℹ️ About This Prototype"):
             st.markdown(
                 """
-**Purpose:** Help municipal cybersecurity practitioners reason through ethical tensions within institutional and governance constraints.
+**Purpose:** This prototype is a software-based decision-support artifact designed to help municipal cybersecurity practitioners reason through ethical tensions that arise within cybersecurity decision-making. It supports structured ethical reasoning alongside technical decision-making by making ethically significant conditions, competing obligations, and institutional and governance constraints explicit. The prototype does not prescribe decisions or evaluate outcomes; instead, it provides a structured means of documenting and justifying ethical reasoning within real-world municipal cybersecurity contexts.
 
-**How it works:** Uses the NIST CSF 2.0 to locate the decision procedurally and the PFCE to clarify ethically significant conditions and obligations.
+**How it works:** The prototype integrates the procedural logic of the NIST Cybersecurity Framework (CSF) 2.0 with the normative, non-prescriptive reasoning of the Principlist Framework for Cybersecurity Ethics (PFCE). The CSF is used to situate decisions within the cybersecurity lifecycle and clarify the technical decision context, while the PFCE is used to surface ethically significant principles, tensions, and obligations associated with that context.
                 """
             )
 
@@ -197,24 +203,26 @@ def main():
         with st.expander("📚 Framework References"):
             st.markdown(
                 """
-**National Institute of Standards and Technology.**  
-*The NIST Cybersecurity Framework (CSF) 2.0.* (2024)
+        **National Institute of Standards and Technology.**  
+        [*The NIST Cybersecurity Framework (CSF) 2.0* (2024)](https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf)
 
-**Formosa, Paul, Michael Wilson, and Deborah Richards.**  
-“A Principlist Framework for Cybersecurity Ethics.” (2021)
+        **Formosa, Paul, Michael Wilson, and Deborah Richards.**  
+        [*A Principlist Framework for Cybersecurity Ethics* (2021)](https://doi.org/10.1016/j.cose.2021.102382)
+        Access to the full text may depend on institutional or publisher subscriptions.
                 """
             )
 
-    # ---------- MAIN HEADER ----------
+# ---------- MAIN HEADER ----------
     st.markdown(
         """
-        <div style='text-align: center;'>
-            <h1>🛡️ Municipal Cyber Ethics Decision-Support Prototype</h1>
-            <h4 style='color:#4C8BF5;'>Because what's secure isn't always what's right.</h4>
-        </div>
-        """,
+    <div style='text-align: center;'>
+    <h1>🛡️ Municipal Cyber Ethics Decision-Support Prototype</h1>
+    <h4 style='color:#4C8BF5;'>Because what's secure isn't always what's right.</h4>
+    </div>
+    """,
         unsafe_allow_html=True,
     )
+
 
     # ---------- MODE-SPECIFIC EXPLAINERS (MAIN AREA) ----------
     if mode == "Case-Based":
@@ -265,7 +273,9 @@ The purpose of this mode is not to generate decisions or recommendations, but to
             if "cb_case_title" not in st.session_state:
                 st.session_state["cb_case_title"] = case_titles[0]
             if "cb_case_id" not in st.session_state:
-                first = next(c for c in cases if c["title"] == st.session_state["cb_case_title"])
+                first = next(
+                    c for c in cases if c["title"] == st.session_state["cb_case_title"]
+                )
                 st.session_state["cb_case_id"] = first["id"]
 
             def _on_case_change():
