@@ -156,30 +156,52 @@ def main():
             label_visibility="collapsed",
         )
 
+        # --- Reset state when switching modes ---
+        if "last_mode" not in st.session_state:
+            st.session_state["last_mode"] = mode
+
+        if st.session_state["last_mode"] != mode:
+            # Clear Case-Based state when leaving/entering Case-Based
+            for k in list(st.session_state.keys()):
+                if k.startswith("cb_"):
+                    del st.session_state[k]
+
+            st.session_state["last_mode"] = mode
+            st.rerun()
+
         st.markdown("---")
 
         # Prototype Overview
-        st.markdown("<h3 style='margin:0 0 0.5rem 0; font-weight:700;'>Prototype Overview</h3>", unsafe_allow_html=True)
+        st.markdown(
+            "<h3 style='margin:0 0 0.5rem 0; font-weight:700;'>Prototype Overview</h3>",
+            unsafe_allow_html=True,
+        )
+
         with st.expander("ℹ️ About This Prototype"):
             st.markdown(
                 """
-- **Purpose:** Help municipal cybersecurity practitioners reason through ethical tensions within institutional and governance constraints.  
-- **How It Works:** Uses the NIST CSF 2.0 to locate the decision procedurally and the PFCE to clarify ethical values in tension.
+**Purpose:** Help municipal cybersecurity practitioners reason through ethical tensions within institutional and governance constraints.
+
+**How it works:** Uses the NIST CSF 2.0 to locate the decision procedurally and the PFCE to clarify ethically significant conditions and obligations.
                 """
             )
 
         st.markdown("---")
 
         # Appendix
-        st.markdown("<h3 style='margin:0 0 0.5rem 0; font-weight:700;'>Appendix</h3>", unsafe_allow_html=True)
+        st.markdown(
+            "<h3 style='margin:0 0 0.5rem 0; font-weight:700;'>Appendix</h3>",
+            unsafe_allow_html=True,
+        )
+
         with st.expander("📚 Framework References"):
             st.markdown(
                 """
 **National Institute of Standards and Technology.**  
-*The NIST Cybersecurity Framework (CSF) 2.0.* (2024)  
+*The NIST Cybersecurity Framework (CSF) 2.0.* (2024)
 
 **Formosa, Paul, Michael Wilson, and Deborah Richards.**  
-"A Principlist Framework for Cybersecurity Ethics." (2021)
+“A Principlist Framework for Cybersecurity Ethics.” (2021)
                 """
             )
 
@@ -194,57 +216,62 @@ def main():
         unsafe_allow_html=True,
     )
 
-# ---------- MODE-SPECIFIC EXPLAINERS (MAIN AREA) ----------
+    # ---------- MODE-SPECIFIC EXPLAINERS (MAIN AREA) ----------
     if mode == "Case-Based":
-      st.markdown(
-        "<h2 style='text-align: center; margin-top: 0.25rem;'>Case-Based Mode</h2>",
-        unsafe_allow_html=True,
-    )
-
-      with st.expander("About Case-Based Mode"):
         st.markdown(
-            """
+            "<h2 style='text-align: center; margin-top: 0.25rem;'>Case-Based Mode</h2>",
+            unsafe_allow_html=True,
+        )
+
+        with st.expander("About Case-Based Mode"):
+            st.markdown(
+                """
 Case-Based Mode presents analytically structured municipal cybersecurity cases used to demonstrate how the prototype’s decision-support logic operates.
 
 Each case is derived from the Chapter III analysis and organized to surface the decision-relevant elements necessary for structured reasoning, rather than to reproduce the full narrative detail of the dissertation. Users can step through each case to observe how technical context, ethical significance, and organizational conditions interact within a single cybersecurity decision process.
 
 The purpose of this mode is not to evaluate historical decisions or prescribe outcomes, but to illustrate how ethical reasoning can be made explicit, structured, and traceable when cybersecurity decisions are examined systematically.
-            """
-        )
-      st.divider()
+                """
+            )
+        st.divider()
     else:
-       st.markdown(
-        "<h2 style='text-align: center; margin-top: 0.25rem;'>Open-Ended Mode</h2>",
-        unsafe_allow_html=True,
+        st.markdown(
+            "<h2 style='text-align: center; margin-top: 0.25rem;'>Open-Ended Mode</h2>",
+            unsafe_allow_html=True,
         )
 
-       with st.expander("About Open-Ended Mode"):
-          st.markdown(
-            """
+        with st.expander("About Open-Ended Mode"):
+            st.markdown(
+                """
 Open-Ended Mode allows users to apply the prototype’s reasoning structure to new or unfolding cybersecurity situations.
 
 Rather than working from a pre-constructed case, users enter decision-specific information drawn from their own operational context and are guided through the same structured reasoning sequence demonstrated in Case-Based Mode. This enables exploration of how ethical significance, technical context, and institutional conditions interact within decisions that may not yet be fully defined or resolved.
 
 The purpose of this mode is not to generate decisions or recommendations, but to support disciplined ethical reasoning by making assumptions, constraints, and value tensions explicit as cybersecurity practitioners work through complex situations.
-            """
+                """
+            )
+
+# ---------- CASE SELECTOR (Case-Based Only) ----------
+if mode == "Case-Based":
+    cases = list_cases()
+
+    if not cases:
+        st.error("No cases found in data/cases.")
+    else:
+        case_titles = [c["title"] for c in cases]
+
+        st.markdown("### Select A Case")
+        selected_title = st.selectbox(
+            "Case selection",
+            options=case_titles,
+            key="cb_case_title",
+            label_visibility="collapsed",
         )
 
-    # ---------- CASE SELECTOR (Case-Based Only) ----------
-    selected_case = None
-    if mode == "Case-Based":
-        cases = list_cases()
-        if not cases:
-            st.error("No cases found in data/cases.")
-        else:
-            case_titles = [c["title"] for c in cases]
-            st.markdown("### Select A Case")
-            selected_title = st.selectbox(
-                label="Case selection",
-                options=case_titles,
-                key="case_selector",
-                label_visibility="collapsed",
-            )
-            selected_case = next(c for c in cases if c["title"] == selected_title)
+        selected_case = next(c for c in cases if c["title"] == selected_title)
+
+        # Store case ID so case_based.py can detect case changes
+        st.session_state["cb_case_id"] = selected_case["id"]
 
     st.divider()
 
