@@ -251,29 +251,32 @@ The purpose of this mode is not to generate decisions or recommendations, but to
                 """
             )
 
-# ---------- CASE SELECTOR (Case-Based Only) ----------
-if mode == "Case-Based":
-    cases = list_cases()
+    # ---------- CASE SELECTOR (Case-Based Only) ----------
+    if mode == "Case-Based":
+        cases = list_cases()
 
-    if not cases:
-        st.error("No cases found in data/cases.")
+        if not cases:
+            st.error("No cases found in data/cases.")
+            selected_case = None
+        else:
+            case_titles = [c["title"] for c in cases]
+
+            st.markdown("### Select A Case")
+            selected_title = st.selectbox(
+                "Case selection",
+                options=case_titles,
+                key="cb_case_title",
+                label_visibility="collapsed",
+            )
+
+            selected_case = next(c for c in cases if c["title"] == selected_title)
+
+            # Store case ID so case_based.py can detect case changes
+            st.session_state["cb_case_id"] = selected_case["id"]
+
+        st.divider()
     else:
-        case_titles = [c["title"] for c in cases]
-
-        st.markdown("### Select A Case")
-        selected_title = st.selectbox(
-            "Case selection",
-            options=case_titles,
-            key="cb_case_title",
-            label_visibility="collapsed",
-        )
-
-        selected_case = next(c for c in cases if c["title"] == selected_title)
-
-        # Store case ID so case_based.py can detect case changes
-        st.session_state["cb_case_id"] = selected_case["id"]
-
-    st.divider()
+        selected_case = None
 
     # ---------- ROUTING ----------
     if mode == "Case-Based":
