@@ -252,36 +252,45 @@ The purpose of this mode is not to generate decisions or recommendations, but to
             )
 
     # ---------- CASE SELECTOR (Case-Based Only) ----------
+    selected_case = None
     if mode == "Case-Based":
         cases = list_cases()
 
         if not cases:
             st.error("No cases found in data/cases.")
-            selected_case = None
         else:
             case_titles = [c["title"] for c in cases]
 
+            # Initialize selection + id once
+            if "cb_case_title" not in st.session_state:
+                st.session_state["cb_case_title"] = case_titles[0]
+            if "cb_case_id" not in st.session_state:
+                first = next(c for c in cases if c["title"] == st.session_state["cb_case_title"])
+                st.session_state["cb_case_id"] = first["id"]
+
+            def _on_case_change():
+                new_title = st.session_state["cb_case_title"]
+                new_case = next(c for c in cases if c["title"] == new_title)
+
+                # Store id + reset navigation immediately
+                st.session_state["cb_case_id"] = new_case["id"]
+                st.session_state["cb_step"] = 1
+                st.session_state["cb_prev_case_id"] = new_case["id"]
+
             st.markdown("### Select A Case")
-            selected_title = st.selectbox(
+            st.selectbox(
                 "Case selection",
                 options=case_titles,
                 key="cb_case_title",
                 label_visibility="collapsed",
+                on_change=_on_case_change,
             )
 
-            selected_case = next(c for c in cases if c["title"] == selected_title)
-
-            # Store case ID so case_based.py can detect case changes
-            st.session_state["cb_case_id"] = selected_case["id"]
-
         st.divider()
-    else:
-        selected_case = None
 
     # ---------- ROUTING ----------
     if mode == "Case-Based":
-        if selected_case:
-            case_based.render_case(selected_case["id"])
+        case_based.render_case(st.session_state.get("cb_case_id"))
     else:
         open_ended.render_open_ended()
 

@@ -26,16 +26,19 @@ def render_case(case_id: str):
     case["ethical"].setdefault("tensions", [])
     case["ethical"].setdefault("pfce_mapping", [])
     case["decision_outcome"].setdefault("ethical_implications", [])
-# Reset to step 1 when a new case is selected
+
+# --- Reset to step 1 when a new case is selected ---
 prev_case = st.session_state.get("cb_prev_case_id")
+
 if prev_case != case_id:
     st.session_state["cb_step"] = 1
     st.session_state["cb_prev_case_id"] = case_id
 
-    # --- step navigation ---
-    if "cb_step" not in st.session_state:
-        st.session_state["cb_step"] = 1
-    step = st.session_state["cb_step"]
+# --- step navigation ---
+if "cb_step" not in st.session_state:
+    st.session_state["cb_step"] = 1
+
+step = st.session_state["cb_step"]
 
     # --- Title + Summary ---
 
