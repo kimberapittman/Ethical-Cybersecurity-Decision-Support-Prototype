@@ -305,7 +305,7 @@ The purpose of this mode is not to generate decisions or recommendations, but to
         open_ended.render_open_ended()
 
     st.markdown("---")
-    st.caption("Prototype created for thesis demonstration purposes.")
+    st.caption("This prototype is designed for research and demonstration purposes and is not intended for operational deployment")
 
 
 if __name__ == "__main__":
