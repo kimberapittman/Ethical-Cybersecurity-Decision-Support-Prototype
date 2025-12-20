@@ -13,10 +13,9 @@ at_a_glance:
     Whether to disconnect additional municipal systems to limit further ransomware spread while the scope of the compromise remained unclear.
 
   technical_framing: >
-    Respond (RS) — Mitigation (RS.MI). The decision is situated within incident response, focusing on containment actions during an active ransomware event while recovery remained ongoing.
-
+    Respond (RS) — Mitigation (RS.MI). 
   ethical_tension: >
-    Tension between preventing further ransomware harm and maintaining access to essential municipal services relied upon by residents and departments.
+    Preventing further ransomware harm and maintaining access to essential municipal services relied upon by residents and departments.
 
   constraints:
     - "Decentralized IT structure limiting visibility into system interdependencies."
