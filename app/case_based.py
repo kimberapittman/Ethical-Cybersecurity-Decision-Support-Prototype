@@ -296,7 +296,7 @@ def render_case(case_id: str):
         # Navigation controls
         colA, colB, colC = st.columns([1, 1, 1])
         with colA:
-            if st.button("◀ Back to At-a-Glance", key=f"cb_back_glance_{case_id}"):
+            if st.button("◀ Back to At A Glance", key=f"cb_back_glance_{case_id}"):
                 st.session_state["cb_view"] = "collapsed"
                 _safe_rerun()
 
