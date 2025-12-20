@@ -1,6 +1,6 @@
 import streamlit as st
 from logic.loaders import load_case
-from html import escape
+import html
 
 
 def _safe_rerun():
@@ -22,6 +22,7 @@ def render_case(case_id: str):
     case.setdefault("ethical", {})
     case.setdefault("constraints", [])
     case.setdefault("decision_outcome", {})
+    case.setdefault("at_a_glance", {})  # <-- ensure at_a_glance exists
 
     case["technical"].setdefault("nist_csf_mapping", [])
     case["ethical"].setdefault("tensions", [])
@@ -53,28 +54,41 @@ def render_case(case_id: str):
         if case.get("short_summary"):
             st.caption(case.get("short_summary", ""))
 
-        # At-a-glance (tight, decision-relevant)
-        decision_context = case["technical"].get("decision_context", "")
-        mapping = case["technical"].get("nist_csf_mapping", [])
-        tensions = case["ethical"].get("tensions", [])
+        # ----------------------------------------------------------
+        # At-a-glance should pull from YAML: case["at_a_glance"]
+        # with fallback to existing fields if needed
+        # ----------------------------------------------------------
+        glance = case.get("at_a_glance", {}) or {}
 
-        # pull constraints from at_a_glance.constraints (YAML)
-        at_a_glance = case.get("at_a_glance", {}) or {}
-        constraints = at_a_glance.get("constraints", [])
+        decision_context = glance.get("decision_context") or case["technical"].get("decision_context", "")
 
-        # Technical framing line (first mapping entry)
-        csf_line = "TBD"
-        if mapping:
-            fn = mapping[0].get("function", "TBD")
-            cats = mapping[0].get("categories", [])
-            if isinstance(cats, str):
-                cats = [cats]
-            csf_line = f"{fn}" + (f" — {', '.join(cats)}" if cats else "")
+        technical_framing = glance.get("technical_framing", "")
+        ethical_tension = glance.get("ethical_tension", "")
 
-        # Ethical tension line (first tension entry)
-        tension_line = "TBD"
-        if tensions:
-            tension_line = tensions[0].get("description", "TBD")
+        # Constraints for At-a-glance:
+        # Prefer YAML at_a_glance.constraints if present, otherwise fall back to case.constraints
+        constraints = glance.get("constraints")
+        if constraints is None:
+            constraints = case.get("constraints", [])
+
+        # If technical_framing wasn't provided in at_a_glance, derive a compact line from mapping (existing behavior)
+        if not technical_framing:
+            mapping = case["technical"].get("nist_csf_mapping", [])
+            csf_line = "TBD"
+            if mapping:
+                fn = mapping[0].get("function", "TBD")
+                cats = mapping[0].get("categories", [])
+                if isinstance(cats, str):
+                    cats = [cats]
+                csf_line = f"{fn}" + (f" — {', '.join(cats)}" if cats else "")
+            technical_framing = csf_line
+
+        # If ethical_tension wasn't provided in at_a_glance, fall back to first tension description (existing behavior)
+        if not ethical_tension:
+            tensions = case["ethical"].get("tensions", [])
+            ethical_tension = "TBD"
+            if tensions:
+                ethical_tension = tensions[0].get("description", "TBD")
 
         # Constraints listed as bullets (not a count)
         constraints_html = "<span class='sub'>TBD</span>"
@@ -87,7 +101,7 @@ def render_case(case_id: str):
                 else:
                     items.append(str(c))
             constraints_html = "<ul class='tight-list'>" + "".join(
-                f"<li>{escape(i)}</li>" for i in items
+                f"<li>{html.escape(i)}</li>" for i in items
             ) + "</ul>"
 
         st.markdown(
@@ -96,8 +110,8 @@ def render_case(case_id: str):
   <div style="font-weight:700; margin-bottom:6px;">At a glance</div>
   <ul class="tight-list">
     <li><span class="sub">Decision context:</span> {decision_context[:220] + ("…" if len(decision_context) > 220 else "") if decision_context else "TBD"}</li>
-    <li><span class="sub">Technical framing (NIST CSF 2.0):</span> {csf_line}</li>
-    <li><span class="sub">Ethical tension (PFCE):</span> {tension_line[:220] + ("…" if len(tension_line) > 220 else "") if tension_line else "TBD"}</li>
+    <li><span class="sub">Technical framing (NIST CSF 2.0):</span> {technical_framing[:220] + ("…" if len(technical_framing) > 220 else "") if technical_framing else "TBD"}</li>
+    <li><span class="sub">Ethical tension (PFCE):</span> {ethical_tension[:220] + ("…" if len(ethical_tension) > 220 else "") if ethical_tension else "TBD"}</li>
     <li><span class="sub">Institutional and governance constraints:</span> {constraints_html}</li>
   </ul>
 </div>
