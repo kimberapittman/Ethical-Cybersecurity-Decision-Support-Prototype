@@ -9,6 +9,22 @@ short_summary: >
   AI-imposed operational restrictions or override them to restore full manual control while
   the integrity of the system remained uncertain.
 
+at_a_glance:
+  decision_context:
+    - "Whether to maintain AI-imposed operational restrictions or override them to restore full manual control while the integrity of the water-treatment system remained uncertain."
+
+  technical_framing:
+    - "Detect (DE) — Adverse Event Analysis (DE.AE) and Continuous Monitoring (DE.CM)"
+
+  ethical_tension:
+    - "Maintaining precautionary, AI-initiated restrictions to prevent potential harm versus restoring human operator authority to support reliable and continuous water-treatment operations."
+
+  constraints:
+    - "Regulatory requirements governing chemical-treatment processes limited operational flexibility while the system remained in a restricted state."
+    - "Parallel authority structures between cybersecurity staff and utility operators complicated determination of the appropriate operational posture."
+    - "Vendor dependency constrained access to diagnostic information needed to interpret automated alerts."
+    - "Municipal risk-governance policies emphasized precaution in critical infrastructure operations, elevating the threshold for modifying automated restrictions."
+
 sources:
   - "Constructed for this thesis as a hypothetical municipal cybersecurity scenario."
 
