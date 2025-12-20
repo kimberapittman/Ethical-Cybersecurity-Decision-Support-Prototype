@@ -10,6 +10,23 @@ short_summary: >
   that the system was being used beyond its originally documented scope and in the absence of
   clearly defined governance procedures.
 
+at_a_glance:
+  decision_context:
+    - "Whether to maintain or restrict access to smart streetlight footage once it became clear the system was being used beyond its originally documented scope."
+
+  technical_framing:
+    - "Protect (PR) — Identity Management, Authentication, and Access Control (PR.AA)"
+
+  ethical_tension:
+    - "Supporting public safety through footage access versus preserving public autonomy and oversight when surveillance-adjacent use pathways were not clearly documented or publicly articulated."
+
+  constraints:
+    - "Governance policies did not anticipate law-enforcement use, creating gaps in documentation and oversight."
+    - "No formal surveillance policy defining when and under what authority law-enforcement access could occur."
+    - "No cross-departmental process for evaluating secondary uses of municipal data systems."
+    - "Distributed operational responsibility across departments and vendor partners, limiting unified understanding of storage, retention, and access."
+    - "Financing and vendor arrangements reduced broad awareness and oversight of surveillance capabilities."
+
 sources:
   - "23–40: Sources cited in Chapter III case reconstruction text."
 
