@@ -10,7 +10,7 @@ short_summary: >
 
 at_a_glance:
   decision_context: >
-    Whether to disconnect additional municipal systems to limit further ransomware spread while the scope of the compromise remained unclear.
+    Whether to disconnect additional municipal systems to limit further ransomware spread while the scope of the compromise remaines unclear.
 
   technical_framing: >
     Respond (RS) — Mitigation (RS.MI). 
@@ -18,9 +18,9 @@ at_a_glance:
     Preventing further ransomware harm and maintaining access to essential municipal services relied upon by residents and departments.
 
   constraints:
-    - "Decentralized IT structure limiting visibility into system interdependencies."
-    - "Documented staffing and resource limitations affecting response capacity."
-    - "Absence of an incident-specific continuity plan, increasing uncertainty around containment impacts."
+    - "Decentralized IT structure."
+    - "Staffing and resource limitations."
+    - "Absence of an incident-specific continuity plan."
 
 
 sources:
