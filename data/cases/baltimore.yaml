@@ -8,6 +8,22 @@ short_summary: >
   decision examined in this case centers on whether to disconnect additional municipal systems to
   limit further spread of the ransomware while the scope of the compromise remained unclear.
 
+at_a_glance:
+  decision_context: >
+    Whether to disconnect additional municipal systems to limit further ransomware spread while the scope of the compromise remained unclear.
+
+  technical_framing: >
+    Respond (RS) — Mitigation (RS.MI). The decision is situated within incident response, focusing on containment actions during an active ransomware event while recovery remained ongoing.
+
+  ethical_tension: >
+    Tension between preventing further ransomware harm and maintaining access to essential municipal services relied upon by residents and departments.
+
+  constraints:
+    - "Decentralized IT structure limiting visibility into system interdependencies."
+    - "Documented staffing and resource limitations affecting response capacity."
+    - "Absence of an incident-specific continuity plan, increasing uncertainty around containment impacts."
+
+
 sources:
   - "2–22: Sources cited in Chapter III case reconstruction text."
 

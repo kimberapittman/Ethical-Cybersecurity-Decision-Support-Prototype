@@ -47,44 +47,36 @@ def render_case(case_id: str):
 
     view = st.session_state["cb_view"]
 
-    # ==========================================================
-    # VIEW 1: COLLAPSED CASE CARD (DEFAULT)
-    # ==========================================================
-    if view == "collapsed":
-        st.subheader(case.get("title", case_id))
-        if case.get("short_summary"):
-            st.caption(case.get("short_summary", ""))
+        # ----------------------------------------------------------
+        # At-a-Glance (decision-relevant summary)
+        # ----------------------------------------------------------
+        atag = case.get("at_a_glance", {}) or {}
 
-        # At-a-glance (tight, decision-relevant)
-        decision_context = case["technical"].get("decision_context", "")
-        mapping = case["technical"].get("nist_csf_mapping", [])
-        tensions = case["ethical"].get("tensions", [])
-        constraints = case.get("constraints", [])
+        decision_context = atag.get("decision_context", "TBD")
+        technical_framing = atag.get("technical_framing", "TBD")
+        ethical_tension = atag.get("ethical_tension", "TBD")
+        constraints = atag.get("constraints", []) or []
 
-        csf_line = "TBD"
-        if mapping:
-            fn = mapping[0].get("function", "TBD")
-            cats = mapping[0].get("categories", [])
-            csf_line = f"{fn}" + (f" | {', '.join(cats)}" if cats else "")
-
-        tension_line = "TBD"
-        if tensions:
-            tension_line = tensions[0].get("description", "TBD")
+        def _trim(text: str, limit: int = 220) -> str:
+            if not text:
+                return "TBD"
+            return text[:limit] + ("…" if len(text) > limit else "")
 
         st.markdown(
             f"""
 <div class="listbox">
   <div style="font-weight:700; margin-bottom:6px;">At a glance</div>
   <ul class="tight-list">
-    <li><span class="sub">Decision context:</span> {decision_context[:220] + ("…" if len(decision_context) > 220 else "") if decision_context else "TBD"}</li>
-    <li><span class="sub">CSF framing:</span> {csf_line}</li>
-    <li><span class="sub">Primary ethical tension:</span> {tension_line[:220] + ("…" if len(tension_line) > 220 else "") if tension_line else "TBD"}</li>
-    <li><span class="sub">Constraints captured:</span> {len(constraints)}</li>
+    <li><span class="sub">Decision context:</span> {_trim(decision_context)}</li>
+    <li><span class="sub">Technical framing (NIST CSF 2.0):</span> {_trim(technical_framing)}</li>
+    <li><span class="sub">Ethical tension (PFCE):</span> {_trim(ethical_tension)}</li>
+    <li><span class="sub">Institutional and governance constraints:</span> {len(constraints)}</li>
   </ul>
 </div>
             """,
             unsafe_allow_html=True,
         )
+
 
         col1, col2 = st.columns(2)
         with col1:
