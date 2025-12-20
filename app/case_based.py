@@ -13,6 +13,23 @@ def _safe_rerun():
         pass
 
 
+def _as_text(value) -> str:
+    """
+    Normalize YAML values that may be a string or a list into a display-safe string.
+    - None -> ""
+    - str -> str
+    - list -> first item as str (or "" if empty)
+    - other -> str(value)
+    """
+    if value is None:
+        return ""
+    if isinstance(value, list):
+        return str(value[0]) if value else ""
+    if isinstance(value, str):
+        return value
+    return str(value)
+
+
 def render_case(case_id: str):
     case = load_case(case_id) or {}
 
@@ -90,6 +107,11 @@ def render_case(case_id: str):
             if tensions:
                 ethical_tension = tensions[0].get("description", "TBD")
 
+        # Normalize at-a-glance fields to strings (supports YAML list or str)
+        decision_context_text = _as_text(decision_context)
+        technical_framing_text = _as_text(technical_framing)
+        ethical_tension_text = _as_text(ethical_tension)
+
         # Constraints listed as bullets (not a count)
         constraints_html = "<span class='sub'>TBD</span>"
         if constraints:
@@ -109,9 +131,9 @@ def render_case(case_id: str):
 <div class="listbox">
   <div style="font-weight:700; margin-bottom:6px;">At a glance</div>
   <ul class="tight-list">
-    <li><span class="sub">Decision context:</span> {decision_context[:220] + ("…" if len(decision_context) > 220 else "") if decision_context else "TBD"}</li>
-    <li><span class="sub">Technical framing (NIST CSF 2.0):</span> {technical_framing[:220] + ("…" if len(technical_framing) > 220 else "") if technical_framing else "TBD"}</li>
-    <li><span class="sub">Ethical tension (PFCE):</span> {ethical_tension[:220] + ("…" if len(ethical_tension) > 220 else "") if ethical_tension else "TBD"}</li>
+    <li><span class="sub">Decision context:</span> {decision_context_text[:220] + ("…" if len(decision_context_text) > 220 else "") if decision_context_text else "TBD"}</li>
+    <li><span class="sub">Technical framing (NIST CSF 2.0):</span> {technical_framing_text[:220] + ("…" if len(technical_framing_text) > 220 else "") if technical_framing_text else "TBD"}</li>
+    <li><span class="sub">Ethical tension (PFCE):</span> {ethical_tension_text[:220] + ("…" if len(ethical_tension_text) > 220 else "") if ethical_tension_text else "TBD"}</li>
     <li><span class="sub">Institutional and governance constraints:</span> {constraints_html}</li>
   </ul>
 </div>
