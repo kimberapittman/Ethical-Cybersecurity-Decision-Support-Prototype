@@ -13,10 +13,6 @@ def _safe_rerun():
 
 
 def render_case(case_id: str):
-    if not case_id:
-        st.error("No case selected.")
-        return
-
     case = load_case(case_id) or {}
 
     # --- normalize expected top-level sections ---
@@ -31,52 +27,79 @@ def render_case(case_id: str):
     case["ethical"].setdefault("pfce_mapping", [])
     case["decision_outcome"].setdefault("ethical_implications", [])
 
-    # --- view state defaults ---
-    if "cb_view" not in st.session_state:
-        st.session_state["cb_view"] = "collapsed"  # collapsed | walkthrough | narrative
-    if "cb_step" not in st.session_state:
-        st.session_state["cb_step"] = 1
-
-    # --- reset when case changes (defensive; main.py also resets) ---
+    # ==========================================================
+    # RESET NAVIGATION WHEN CASE CHANGES
+    # ==========================================================
     prev_case = st.session_state.get("cb_prev_case_id")
     if prev_case != case_id:
-        st.session_state["cb_prev_case_id"] = case_id
         st.session_state["cb_step"] = 1
+        st.session_state["cb_prev_case_id"] = case_id
         st.session_state["cb_view"] = "collapsed"
-        # no rerun needed; current render will continue in collapsed view
+        _safe_rerun()
 
+    # ==========================================================
+    # VIEW STATE
+    # ==========================================================
+    if "cb_view" not in st.session_state:
+        st.session_state["cb_view"] = "collapsed"
     view = st.session_state["cb_view"]
 
-        # ----------------------------------------------------------
-        # At-a-Glance (decision-relevant summary)
-        # ----------------------------------------------------------
-        atag = case.get("at_a_glance", {}) or {}
+    # ==========================================================
+    # VIEW 1: COLLAPSED CASE CARD (DEFAULT)
+    # ==========================================================
+    if view == "collapsed":
+        st.subheader(case.get("title", case_id))
+        if case.get("short_summary"):
+            st.caption(case.get("short_summary", ""))
 
-        decision_context = atag.get("decision_context", "TBD")
-        technical_framing = atag.get("technical_framing", "TBD")
-        ethical_tension = atag.get("ethical_tension", "TBD")
-        constraints = atag.get("constraints", []) or []
+        # At-a-glance (tight, decision-relevant)
+        decision_context = case["technical"].get("decision_context", "")
+        mapping = case["technical"].get("nist_csf_mapping", [])
+        tensions = case["ethical"].get("tensions", [])
+        constraints = case.get("constraints", [])
 
-        def _trim(text: str, limit: int = 220) -> str:
-            if not text:
-                return "TBD"
-            return text[:limit] + ("…" if len(text) > limit else "")
+        # Technical framing line (first mapping entry)
+        csf_line = "TBD"
+        if mapping:
+            fn = mapping[0].get("function", "TBD")
+            cats = mapping[0].get("categories", [])
+            if isinstance(cats, str):
+                cats = [cats]
+            csf_line = f"{fn}" + (f" — {', '.join(cats)}" if cats else "")
+
+        # Ethical tension line (first tension entry)
+        tension_line = "TBD"
+        if tensions:
+            tension_line = tensions[0].get("description", "TBD")
+
+        # Constraints listed as bullets (not a count)
+        constraints_html = "<span class='sub'>TBD</span>"
+        if constraints:
+            # support either list[str] OR list[dict]
+            items = []
+            for c in constraints:
+                if isinstance(c, dict):
+                    items.append(c.get("description") or c.get("type") or "TBD")
+                else:
+                    items.append(str(c))
+            constraints_html = "<ul class='tight-list'>" + "".join(
+                f"<li>{st._escape_html(i)}</li>" for i in items
+            ) + "</ul>"
 
         st.markdown(
             f"""
 <div class="listbox">
   <div style="font-weight:700; margin-bottom:6px;">At a glance</div>
   <ul class="tight-list">
-    <li><span class="sub">Decision context:</span> {_trim(decision_context)}</li>
-    <li><span class="sub">Technical framing (NIST CSF 2.0):</span> {_trim(technical_framing)}</li>
-    <li><span class="sub">Ethical tension (PFCE):</span> {_trim(ethical_tension)}</li>
-    <li><span class="sub">Institutional and governance constraints:</span> {len(constraints)}</li>
+    <li><span class="sub">Decision context:</span> {decision_context[:220] + ("…" if len(decision_context) > 220 else "") if decision_context else "TBD"}</li>
+    <li><span class="sub">Technical framing (NIST CSF 2.0):</span> {csf_line}</li>
+    <li><span class="sub">Ethical tension (PFCE):</span> {tension_line[:220] + ("…" if len(tension_line) > 220 else "") if tension_line else "TBD"}</li>
+    <li><span class="sub">Institutional and governance constraints:</span> {constraints_html}</li>
   </ul>
 </div>
             """,
             unsafe_allow_html=True,
         )
-
 
         col1, col2 = st.columns(2)
         with col1:
@@ -92,160 +115,175 @@ def render_case(case_id: str):
         return
 
     # ==========================================================
-    # VIEW 2: WALKTHROUGH (6 STEPS)
+    # VIEW 2: WALKTHROUGH (STEP-BASED)
     # ==========================================================
     if view == "walkthrough":
-        if st.button("← Back to collapsed view", key=f"cb_back_collapsed_from_walk_{case_id}"):
-            st.session_state["cb_view"] = "collapsed"
-            _safe_rerun()
+        if "cb_step" not in st.session_state:
+            st.session_state["cb_step"] = 1
+        step = st.session_state["cb_step"]
 
         st.subheader(case.get("title", case_id))
-        st.caption("Structured walkthrough (6 steps).")
+        if case.get("short_summary"):
+            st.caption(case.get("short_summary", ""))
 
-        step = int(st.session_state.get("cb_step", 1))
-        step = max(1, min(6, step))
-        st.session_state["cb_step"] = step
+        st.progress(step / 9.0)
 
-        st.progress(step / 6.0)
-
-        # STEP 1 — Background (compressed)
         if step == 1:
-            st.header("1. Background")
-            st.markdown("**Technical and operational background**")
+            st.header("1. Technical and Operational Background")
             st.write(case["background"].get("technical_operational_background", "TBD"))
-            st.markdown("**Triggering condition and key events**")
-            st.write(case["background"].get("triggering_condition_key_events", "TBD"))
+            st.markdown("---")
 
-        # STEP 2 — Decision context + CSF
-        elif step == 2:
-            st.header("2. Decision Context and CSF Framing")
-            st.markdown("**Decision context**")
+        if step == 2:
+            st.header("2. Triggering Condition and Key Events")
+            st.write(case["background"].get("triggering_condition_key_events", "TBD"))
+            st.markdown("---")
+
+        if step == 3:
+            st.header("3. Decision Context & NIST CSF Mapping")
+            st.markdown("**Decision Context**")
             st.write(case["technical"].get("decision_context", "TBD"))
 
-            st.markdown("**NIST CSF mapping**")
+            st.markdown("**NIST CSF Mapping**")
             mapping = case["technical"].get("nist_csf_mapping", [])
             if mapping:
                 for m in mapping:
                     st.markdown(f"- **Function:** {m.get('function', 'TBD')}")
                     cats = m.get("categories", [])
+                    if isinstance(cats, str):
+                        cats = [cats]
                     if cats:
                         st.markdown("  - **Categories:**")
                         for c in cats:
                             st.markdown(f"    - {c}")
+                    else:
+                        st.markdown("  - **Categories:** TBD")
                     st.markdown(f"  _Rationale_: {m.get('rationale', 'TBD')}")
             else:
                 st.write("TBD")
 
-        # STEP 3 — Ethical significance + tension
-        elif step == 3:
-            st.header("3. Ethical Significance and Tension")
-            st.markdown("**PFCE analysis (ethical significance)**")
-            st.write(case["ethical"].get("pfce_analysis", "TBD"))
+            st.markdown("---")
 
-            st.markdown("**Ethical tension(s)**")
+        if step == 4:
+            st.header("4. PFCE Analysis")
+            st.write(case["ethical"].get("pfce_analysis", "TBD"))
+            st.markdown("---")
+
+        if step == 5:
+            st.header("5. Ethical Tension")
             tensions = case["ethical"].get("tensions", [])
             if tensions:
                 for t in tensions:
                     st.markdown(f"- {t.get('description', 'TBD')}")
             else:
                 st.write("TBD")
+            st.markdown("---")
 
-        # STEP 4 — PFCE principle mapping
-        elif step == 4:
-            st.header("4. PFCE Principle Mapping")
+        if step == 6:
+            st.header("6. PFCE Principle Mapping")
             pfce = case["ethical"].get("pfce_mapping", [])
             if pfce:
                 for p in pfce:
                     st.markdown(f"- **{p.get('principle','TBD')}** – {p.get('description','TBD')}")
             else:
                 st.write("TBD")
+            st.markdown("---")
 
-        # STEP 5 — Constraints
-        elif step == 5:
-            st.header("5. Institutional and Governance Constraints")
+        if step == 7:
+            st.header("7. Institutional and Governance Constraints")
             constraints = case.get("constraints", [])
             if constraints:
                 for c in constraints:
-                    st.markdown(
-                        f"- **{c.get('type','TBD')}** – {c.get('description','TBD')}  \n"
-                        f"  _Effect on decision_: {c.get('effect_on_decision','TBD')}"
-                    )
+                    if isinstance(c, dict):
+                        st.markdown(f"- **{c.get('type','TBD')}** – {c.get('description','TBD')}")
+                        if c.get("effect_on_decision"):
+                            st.markdown(f"  \n  _Effect on decision_: {c.get('effect_on_decision')}")
+                    else:
+                        st.markdown(f"- {c}")
             else:
                 st.write("TBD")
+            st.markdown("---")
 
-        # STEP 6 — Outcome + implications
-        elif step == 6:
-            st.header("6. Decision Outcome and Implications")
-            st.markdown("**Decision**")
+        if step == 8:
+            st.header("8. Decision")
             st.write(case["decision_outcome"].get("decision", "TBD"))
+            st.markdown("---")
 
-            st.markdown("**Outcomes and implications**")
+        if step == 9:
+            st.header("9. Outcomes and Implications")
             st.write(case["decision_outcome"].get("outcomes_implications", "TBD"))
 
             implications = case["decision_outcome"].get("ethical_implications", [])
             if implications:
-                st.markdown("**Ethical implications:**")
+                st.markdown("**Ethical Implications:**")
                 for i in implications:
                     st.markdown(f"- {i}")
 
-        st.markdown("---")
+            st.markdown("---")
 
-        # navigation
-        col1, col2 = st.columns([1, 1])
-        with col1:
-            if step > 1 and st.button("◀ Previous", key=f"cb_prev_{case_id}_{step}"):
-                st.session_state["cb_step"] = step - 1
+        # Navigation controls
+        colA, colB, colC = st.columns([1, 1, 1])
+        with colA:
+            if st.button("◀ Back to At-a-Glance", key=f"cb_back_glance_{case_id}"):
+                st.session_state["cb_view"] = "collapsed"
                 _safe_rerun()
-        with col2:
-            if step < 6:
-                if st.button("Next ▶", key=f"cb_next_{case_id}_{step}"):
-                    st.session_state["cb_step"] = step + 1
+
+        with colB:
+            if step > 1 and st.button("◀ Previous", key=f"cb_prev_{step}_{case_id}"):
+                st.session_state["cb_step"] = max(1, step - 1)
+                _safe_rerun()
+
+        with colC:
+            if step < 9:
+                if st.button("Next ▶", key=f"cb_next_{step}_{case_id}"):
+                    st.session_state["cb_step"] = min(9, step + 1)
                     _safe_rerun()
             else:
-                st.info("End of walkthrough. Return to collapsed view or open the full narrative.")
+                st.info("End of case. Switch cases above or return to At-a-Glance.")
 
         return
 
     # ==========================================================
-    # VIEW 3: FULL NARRATIVE (EXPANDERS)
+    # VIEW 3: FULL NARRATIVE (OPTIONAL)
     # ==========================================================
     if view == "narrative":
-        if st.button("← Back to collapsed view", key=f"cb_back_collapsed_from_narr_{case_id}"):
+        st.subheader(case.get("title", case_id))
+        if case.get("short_summary"):
+            st.caption(case.get("short_summary", ""))
+
+        if st.button("◀ Back to At-a-Glance", key=f"cb_back_glance_narr_{case_id}"):
             st.session_state["cb_view"] = "collapsed"
             _safe_rerun()
 
-        st.subheader(case.get("title", case_id))
-        st.caption("Full narrative (expand sections as needed).")
+        st.markdown("---")
 
-        with st.expander("Technical and operational background", expanded=False):
+        # Show narrative blocks if you have them; otherwise show what exists
+        with st.expander("Technical and Operational Background", expanded=True):
             st.write(case["background"].get("technical_operational_background", "TBD"))
 
-        with st.expander("Triggering condition and key events", expanded=False):
+        with st.expander("Triggering Condition and Key Events"):
             st.write(case["background"].get("triggering_condition_key_events", "TBD"))
 
-        with st.expander("Decision context and CSF mapping", expanded=False):
-            st.markdown("**Decision context**")
+        with st.expander("Decision Context and NIST CSF Mapping"):
             st.write(case["technical"].get("decision_context", "TBD"))
-
-            st.markdown("**NIST CSF mapping**")
             mapping = case["technical"].get("nist_csf_mapping", [])
             if mapping:
+                st.markdown("**NIST CSF Mapping**")
                 for m in mapping:
                     st.markdown(f"- **Function:** {m.get('function', 'TBD')}")
                     cats = m.get("categories", [])
+                    if isinstance(cats, str):
+                        cats = [cats]
                     if cats:
                         st.markdown("  - **Categories:**")
                         for c in cats:
                             st.markdown(f"    - {c}")
-                    st.markdown(f"  _Rationale_: {m.get('rationale', 'TBD')}")
-            else:
-                st.write("TBD")
+                    if m.get("rationale"):
+                        st.markdown(f"  _Rationale_: {m.get('rationale')}")
 
-        with st.expander("PFCE analysis, tensions, and principle mapping", expanded=False):
-            st.markdown("**PFCE analysis**")
+        with st.expander("PFCE Analysis"):
             st.write(case["ethical"].get("pfce_analysis", "TBD"))
 
-            st.markdown("**Ethical tension(s)**")
+        with st.expander("Ethical Tensions"):
             tensions = case["ethical"].get("tensions", [])
             if tensions:
                 for t in tensions:
@@ -253,36 +291,19 @@ def render_case(case_id: str):
             else:
                 st.write("TBD")
 
-            st.markdown("**PFCE principle mapping**")
-            pfce = case["ethical"].get("pfce_mapping", [])
-            if pfce:
-                for p in pfce:
-                    st.markdown(f"- **{p.get('principle','TBD')}** – {p.get('description','TBD')}")
-            else:
-                st.write("TBD")
-
-        with st.expander("Institutional and governance constraints", expanded=False):
+        with st.expander("Institutional and Governance Constraints"):
             constraints = case.get("constraints", [])
             if constraints:
                 for c in constraints:
-                    st.markdown(
-                        f"- **{c.get('type','TBD')}** – {c.get('description','TBD')}  \n"
-                        f"  _Effect on decision_: {c.get('effect_on_decision','TBD')}"
-                    )
+                    if isinstance(c, dict):
+                        st.markdown(f"- **{c.get('type','TBD')}** – {c.get('description','TBD')}")
+                    else:
+                        st.markdown(f"- {c}")
             else:
                 st.write("TBD")
 
-        with st.expander("Decision outcome and implications", expanded=False):
-            st.markdown("**Decision**")
+        with st.expander("Decision, Outcomes, and Implications"):
             st.write(case["decision_outcome"].get("decision", "TBD"))
-
-            st.markdown("**Outcomes and implications**")
             st.write(case["decision_outcome"].get("outcomes_implications", "TBD"))
-
-            implications = case["decision_outcome"].get("ethical_implications", [])
-            if implications:
-                st.markdown("**Ethical implications:**")
-                for i in implications:
-                    st.markdown(f"- {i}")
 
         return
