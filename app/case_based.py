@@ -112,30 +112,63 @@ def render_case(case_id: str):
         technical_framing_text = _as_text(technical_framing)
         ethical_tension_text = _as_text(ethical_tension)
 
-        # Constraints listed as bullets (not a count)
-        constraints_html = "<span class='sub'>TBD</span>"
-        if constraints:
-            # support either list[str] OR list[dict]
-            items = []
-            for c in constraints:
+        def _as_list(value):
+            if value is None:
+                return []
+            if isinstance(value, list):
+                return [str(v) for v in value if v is not None and str(v).strip()]
+            if isinstance(value, str):
+                v = value.strip()
+                return [v] if v else []
+            return [str(value)]
+
+        def _render_glance_section(title: str, items):
+            items = _as_list(items)
+            if not items:
+                return f"""
+<div style="margin: 10px 0 14px 0;">
+  <div style="font-weight:700; margin-bottom:6px;">{html.escape(title)}</div>
+  <div class="sub">TBD</div>
+</div>
+"""
+            bullets = "".join(f"<li>{html.escape(i)}</li>" for i in items)
+            return f"""
+<div style="margin: 10px 0 14px 0;">
+  <div style="font-weight:700; margin-bottom:6px;">{html.escape(title)}</div>
+  <ul class="tight-list" style="margin-top:0; padding-left:22px;">{bullets}</ul>
+
+</div>
+"""
+
+        # Build the new "At a glance" layout: heading + bullets under each
+        decision_items = _as_list(glance.get("decision_context") or case["technical"].get("decision_context", ""))
+        tech_items = _as_list(glance.get("technical_framing") or technical_framing_text)
+        ethical_items = _as_list(glance.get("ethical_tension") or ethical_tension_text)
+
+        # Constraints: prefer at_a_glance.constraints, else fallback to case.constraints (existing behavior)
+        raw_constraints = glance.get("constraints")
+        if raw_constraints is None:
+            raw_constraints = case.get("constraints", [])
+
+        # Normalize constraints to list[str] for display
+        constraint_items = []
+        if raw_constraints:
+            for c in raw_constraints:
                 if isinstance(c, dict):
-                    items.append(c.get("description") or c.get("type") or "TBD")
+                    constraint_items.append(c.get("description") or c.get("type") or "TBD")
                 else:
-                    items.append(str(c))
-            constraints_html = "<ul class='tight-list'>" + "".join(
-                f"<li>{html.escape(i)}</li>" for i in items
-            ) + "</ul>"
+                    constraint_items.append(str(c))
 
         st.markdown(
             f"""
 <div class="listbox">
-  <div style="font-weight:700; margin-bottom:6px;">At a glance</div>
-  <ul class="tight-list">
-    <li><span class="sub">Decision context:</span> {decision_context_text[:220] + ("…" if len(decision_context_text) > 220 else "") if decision_context_text else "TBD"}</li>
-    <li><span class="sub">Technical framing (NIST CSF 2.0):</span> {technical_framing_text[:220] + ("…" if len(technical_framing_text) > 220 else "") if technical_framing_text else "TBD"}</li>
-    <li><span class="sub">Ethical tension (PFCE):</span> {ethical_tension_text[:220] + ("…" if len(ethical_tension_text) > 220 else "") if ethical_tension_text else "TBD"}</li>
-    <li><span class="sub">Institutional and governance constraints:</span> {constraints_html}</li>
-  </ul>
+  <div style="font-weight:700; margin-bottom:10px;">At A Glance:</div>
+
+  {_render_glance_section("Decision Context", decision_items)}
+  {_render_glance_section("Technical Framing (NIST CSF 2.0)", tech_items)}
+  {_render_glance_section("Ethical Tension (PFCE)", ethical_items)}
+  {_render_glance_section("Institutional and Governance Constraints", constraint_items)}
+
 </div>
             """,
             unsafe_allow_html=True,
