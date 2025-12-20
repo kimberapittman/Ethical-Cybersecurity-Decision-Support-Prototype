@@ -1,5 +1,6 @@
 import streamlit as st
 from logic.loaders import load_case
+from html import escape
 
 
 def _safe_rerun():
@@ -57,7 +58,7 @@ def render_case(case_id: str):
         mapping = case["technical"].get("nist_csf_mapping", [])
         tensions = case["ethical"].get("tensions", [])
 
-        # >>> ONLY CHANGE: pull constraints from at_a_glance.constraints (YAML) <<<
+        # pull constraints from at_a_glance.constraints (YAML)
         at_a_glance = case.get("at_a_glance", {}) or {}
         constraints = at_a_glance.get("constraints", [])
 
@@ -86,7 +87,7 @@ def render_case(case_id: str):
                 else:
                     items.append(str(c))
             constraints_html = "<ul class='tight-list'>" + "".join(
-                f"<li>{st._escape_html(i)}</li>" for i in items
+                f"<li>{escape(i)}</li>" for i in items
             ) + "</ul>"
 
         st.markdown(
