@@ -56,7 +56,10 @@ def render_case(case_id: str):
         decision_context = case["technical"].get("decision_context", "")
         mapping = case["technical"].get("nist_csf_mapping", [])
         tensions = case["ethical"].get("tensions", [])
-        constraints = case.get("constraints", [])
+
+        # >>> ONLY CHANGE: pull constraints from at_a_glance.constraints (YAML) <<<
+        at_a_glance = case.get("at_a_glance", {}) or {}
+        constraints = at_a_glance.get("constraints", [])
 
         # Technical framing line (first mapping entry)
         csf_line = "TBD"
