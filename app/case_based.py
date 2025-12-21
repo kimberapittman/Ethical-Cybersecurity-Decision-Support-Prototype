@@ -54,6 +54,7 @@ def render_case(case_id: str):
         st.session_state["cb_step"] = 1
         st.session_state["cb_prev_case_id"] = case_id
         st.session_state["cb_view"] = "collapsed"
+        st.session_state.pop("cb_step_return", None)
         _safe_rerun()
 
     # ==========================================================
@@ -136,7 +137,6 @@ def render_case(case_id: str):
 <div style="margin: 10px 0 14px 0;">
   <div style="font-weight:700; margin-bottom:6px;">{html.escape(title)}</div>
   <ul class="tight-list" style="margin-top:0; padding-left:22px;">{bullets}</ul>
-
 </div>
 """
 
@@ -162,28 +162,24 @@ def render_case(case_id: str):
         st.markdown(
             f"""
 <div class="listbox">
-  <div style="font-weight:700; margin-bottom:10px;">At A Glance:</div>
+  <div style="font-weight:700; margin-bottom:10px;">At a glance</div>
 
-  {_render_glance_section("Decision Context", decision_items)}
-  {_render_glance_section("Technical Framing (NIST CSF 2.0)", tech_items)}
-  {_render_glance_section("Ethical Tension (PFCE)", ethical_items)}
-  {_render_glance_section("Institutional and Governance Constraints", constraint_items)}
+  {_render_glance_section("Decision context", decision_items)}
+  {_render_glance_section("Technical framing (NIST CSF 2.0)", tech_items)}
+  {_render_glance_section("Ethical tension (PFCE)", ethical_items)}
+  {_render_glance_section("Institutional and governance constraints", constraint_items)}
 
 </div>
             """,
             unsafe_allow_html=True,
         )
 
-        col1, col2 = st.columns(2)
-        with col1:
-            if st.button("Open structured walkthrough", key=f"cb_open_walkthrough_{case_id}"):
-                st.session_state["cb_view"] = "walkthrough"
-                st.session_state["cb_step"] = 1
-                _safe_rerun()
-        with col2:
-            if st.button("View full narrative", key=f"cb_view_narrative_{case_id}"):
-                st.session_state["cb_view"] = "narrative"
-                _safe_rerun()
+        # Single primary entry point
+        if st.button("Open structured walkthrough", key=f"cb_open_walkthrough_{case_id}"):
+            st.session_state["cb_view"] = "walkthrough"
+            st.session_state["cb_step"] = 1
+            st.session_state.pop("cb_step_return", None)
+            _safe_rerun()
 
         return
 
@@ -200,6 +196,20 @@ def render_case(case_id: str):
             st.caption(case.get("short_summary", ""))
 
         st.progress(step / 9.0)
+
+        # Secondary option: narrative is accessible from within the walkthrough
+        colX, colY = st.columns([1, 1])
+        with colX:
+            if st.button("◀ Back to At A Glance", key=f"cb_back_glance_top_{case_id}"):
+                st.session_state["cb_view"] = "collapsed"
+                _safe_rerun()
+        with colY:
+            if st.button("View full narrative", key=f"cb_view_narrative_from_walk_{case_id}_{step}"):
+                st.session_state["cb_step_return"] = step
+                st.session_state["cb_view"] = "narrative"
+                _safe_rerun()
+
+        st.markdown("---")
 
         if step == 1:
             st.header("1. Technical and Operational Background")
@@ -296,16 +306,11 @@ def render_case(case_id: str):
         # Navigation controls
         colA, colB, colC = st.columns([1, 1, 1])
         with colA:
-            if st.button("◀ Back to At A Glance", key=f"cb_back_glance_{case_id}"):
-                st.session_state["cb_view"] = "collapsed"
-                _safe_rerun()
-
-        with colB:
             if step > 1 and st.button("◀ Previous", key=f"cb_prev_{step}_{case_id}"):
                 st.session_state["cb_step"] = max(1, step - 1)
                 _safe_rerun()
 
-        with colC:
+        with colB:
             if step < 9:
                 if st.button("Next ▶", key=f"cb_next_{step}_{case_id}"):
                     st.session_state["cb_step"] = min(9, step + 1)
@@ -313,19 +318,32 @@ def render_case(case_id: str):
             else:
                 st.info("End of case. Switch cases above or return to At-a-Glance.")
 
+        with colC:
+            # keep layout symmetric; no additional action needed here
+            st.write("")
+
         return
 
     # ==========================================================
-    # VIEW 3: FULL NARRATIVE (OPTIONAL)
+    # VIEW 3: FULL NARRATIVE (SUBORDINATE / REFERENCE)
     # ==========================================================
     if view == "narrative":
         st.subheader(case.get("title", case_id))
         if case.get("short_summary"):
             st.caption(case.get("short_summary", ""))
 
-        if st.button("◀ Back to At-a-Glance", key=f"cb_back_glance_narr_{case_id}"):
-            st.session_state["cb_view"] = "collapsed"
-            _safe_rerun()
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("◀ Back to structured walkthrough", key=f"cb_back_walkthrough_{case_id}"):
+                st.session_state["cb_view"] = "walkthrough"
+                # return to the step the user came from (if available)
+                if "cb_step_return" in st.session_state:
+                    st.session_state["cb_step"] = st.session_state.get("cb_step_return", 1)
+                _safe_rerun()
+        with col2:
+            if st.button("◀ Back to At-a-Glance", key=f"cb_back_glance_narr_{case_id}"):
+                st.session_state["cb_view"] = "collapsed"
+                _safe_rerun()
 
         st.markdown("---")
 
