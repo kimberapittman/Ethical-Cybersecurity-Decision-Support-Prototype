@@ -54,6 +54,7 @@ def render_case(case_id: str):
         st.session_state["cb_step"] = 1
         st.session_state["cb_prev_case_id"] = case_id
         st.session_state["cb_view"] = "collapsed"
+        # narrative removed; no need to track return-step
         st.session_state.pop("cb_step_return", None)
         _safe_rerun()
 
@@ -178,6 +179,7 @@ def render_case(case_id: str):
         if st.button("Open structured walkthrough", key=f"cb_open_walkthrough_{case_id}"):
             st.session_state["cb_view"] = "walkthrough"
             st.session_state["cb_step"] = 1
+            # narrative removed; no need to track return-step
             st.session_state.pop("cb_step_return", None)
             _safe_rerun()
 
@@ -197,17 +199,10 @@ def render_case(case_id: str):
 
         st.progress(step / 9.0)
 
-        # Secondary option: narrative is accessible from within the walkthrough
-        colX, colY = st.columns([1, 1])
-        with colX:
-            if st.button("◀ Back to At A Glance", key=f"cb_back_glance_top_{case_id}"):
-                st.session_state["cb_view"] = "collapsed"
-                _safe_rerun()
-        with colY:
-            if st.button("View full narrative", key=f"cb_view_narrative_from_walk_{case_id}_{step}"):
-                st.session_state["cb_step_return"] = step
-                st.session_state["cb_view"] = "narrative"
-                _safe_rerun()
+        # Narrative removed; only keep the back control
+        if st.button("◀ Back to At A Glance", key=f"cb_back_glance_top_{case_id}"):
+            st.session_state["cb_view"] = "collapsed"
+            _safe_rerun()
 
         st.markdown("---")
 
@@ -321,80 +316,5 @@ def render_case(case_id: str):
         with colC:
             # keep layout symmetric; no additional action needed here
             st.write("")
-
-        return
-
-    # ==========================================================
-    # VIEW 3: FULL NARRATIVE (SUBORDINATE / REFERENCE)
-    # ==========================================================
-    if view == "narrative":
-        st.subheader(case.get("title", case_id))
-        if case.get("short_summary"):
-            st.caption(case.get("short_summary", ""))
-
-        col1, col2 = st.columns(2)
-        with col1:
-            if st.button("◀ Back to structured walkthrough", key=f"cb_back_walkthrough_{case_id}"):
-                st.session_state["cb_view"] = "walkthrough"
-                # return to the step the user came from (if available)
-                if "cb_step_return" in st.session_state:
-                    st.session_state["cb_step"] = st.session_state.get("cb_step_return", 1)
-                _safe_rerun()
-        with col2:
-            if st.button("◀ Back to At-a-Glance", key=f"cb_back_glance_narr_{case_id}"):
-                st.session_state["cb_view"] = "collapsed"
-                _safe_rerun()
-
-        st.markdown("---")
-
-        # Show narrative blocks if you have them; otherwise show what exists
-        with st.expander("Technical and Operational Background", expanded=True):
-            st.write(case["background"].get("technical_operational_background", "TBD"))
-
-        with st.expander("Triggering Condition and Key Events"):
-            st.write(case["background"].get("triggering_condition_key_events", "TBD"))
-
-        with st.expander("Decision Context and NIST CSF Mapping"):
-            st.write(case["technical"].get("decision_context", "TBD"))
-            mapping = case["technical"].get("nist_csf_mapping", [])
-            if mapping:
-                st.markdown("**NIST CSF Mapping**")
-                for m in mapping:
-                    st.markdown(f"- **Function:** {m.get('function', 'TBD')}")
-                    cats = m.get("categories", [])
-                    if isinstance(cats, str):
-                        cats = [cats]
-                    if cats:
-                        st.markdown("  - **Categories:**")
-                        for c in cats:
-                            st.markdown(f"    - {c}")
-                    if m.get("rationale"):
-                        st.markdown(f"  _Rationale_: {m.get('rationale')}")
-
-        with st.expander("PFCE Analysis"):
-            st.write(case["ethical"].get("pfce_analysis", "TBD"))
-
-        with st.expander("Ethical Tensions"):
-            tensions = case["ethical"].get("tensions", [])
-            if tensions:
-                for t in tensions:
-                    st.markdown(f"- {t.get('description', 'TBD')}")
-            else:
-                st.write("TBD")
-
-        with st.expander("Institutional and Governance Constraints"):
-            constraints = case.get("constraints", [])
-            if constraints:
-                for c in constraints:
-                    if isinstance(c, dict):
-                        st.markdown(f"- **{c.get('type','TBD')}** – {c.get('description','TBD')}")
-                    else:
-                        st.markdown(f"- {c}")
-            else:
-                st.write("TBD")
-
-        with st.expander("Decision, Outcomes, and Implications"):
-            st.write(case["decision_outcome"].get("decision", "TBD"))
-            st.write(case["decision_outcome"].get("outcomes_implications", "TBD"))
 
         return
