@@ -74,7 +74,7 @@ def render_case(case_id: str):
             st.caption(case.get("short_summary", ""))
 
         # ----------------------------------------------------------
-        # At-a-glance should pull from YAML: case["at_a_glance"]
+        # At A Glance should pull from YAML: case["at_a_glance"]
         # with fallback to existing fields if needed
         # ----------------------------------------------------------
         glance = case.get("at_a_glance", {}) or {}
@@ -84,7 +84,7 @@ def render_case(case_id: str):
         technical_framing = glance.get("technical_framing", "")
         ethical_tension = glance.get("ethical_tension", "")
 
-        # Constraints for At-a-glance:
+        # Constraints for At A Glance:
         # Prefer YAML at_a_glance.constraints if present, otherwise fall back to case.constraints
         constraints = glance.get("constraints")
         if constraints is None:
@@ -109,7 +109,7 @@ def render_case(case_id: str):
             if tensions:
                 ethical_tension = tensions[0].get("description", "TBD")
 
-        # Normalize at-a-glance fields to strings (supports YAML list or str)
+        # Normalize at a glance fields to strings (supports YAML list or str)
         decision_context_text = _as_text(decision_context)
         technical_framing_text = _as_text(technical_framing)
         ethical_tension_text = _as_text(ethical_tension)
@@ -179,9 +179,6 @@ def render_case(case_id: str):
         if st.button("Open structured walkthrough", key=f"cb_open_walkthrough_{case_id}"):
             st.session_state["cb_view"] = "walkthrough"
             st.session_state["cb_step"] = 1
-            # narrative removed; no need to track return-step
-            st.session_state.pop("cb_step_return", None)
-            _safe_rerun()
 
         return
 
@@ -199,12 +196,6 @@ def render_case(case_id: str):
 
         st.progress(step / 9.0)
 
-        # Narrative removed; only keep the back control
-        if st.button("◀ Back to At A Glance", key=f"cb_back_glance_top_{case_id}"):
-            st.session_state["cb_view"] = "collapsed"
-            _safe_rerun()
-
-        st.markdown("---")
 
         if step == 1:
             st.header("1. Technical and Operational Background")
@@ -298,23 +289,27 @@ def render_case(case_id: str):
 
             st.markdown("---")
 
-        # Navigation controls
-        colA, colB, colC = st.columns([1, 1, 1])
-        with colA:
+        # Navigation controls (single row)
+        col_prev, col_next, col_exit = st.columns([1, 1, 1])
+
+        with col_prev:
             if step > 1 and st.button("◀ Previous", key=f"cb_prev_{step}_{case_id}"):
                 st.session_state["cb_step"] = max(1, step - 1)
                 _safe_rerun()
 
-        with colB:
+        with col_next:
             if step < 9:
                 if st.button("Next ▶", key=f"cb_next_{step}_{case_id}"):
                     st.session_state["cb_step"] = min(9, step + 1)
                     _safe_rerun()
             else:
-                st.info("End of case. Switch cases above or return to At-a-Glance.")
+                st.info("End of case.")
 
-        with colC:
-            # keep layout symmetric; no additional action needed here
-            st.write("")
+        with col_exit:
+            if st.button("Exit walkthrough", key=f"cb_exit_walkthrough_{case_id}"):
+                st.session_state["cb_view"] = "collapsed"
+                _safe_rerun()
 
         return
+
+
