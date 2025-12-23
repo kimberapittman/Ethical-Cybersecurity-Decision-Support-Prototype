@@ -64,7 +64,7 @@ technical:
 
   nist_csf_mapping:
     - function: "RS – Respond"
-      categories: "RS.MI – Mitigation"
+    - categories: "RS.MI – Mitigation"
       rationale: >
         This decision aligns with the Respond function of the NIST CSF because practitioners
         had to decide between preserving service continuity or implementing containment
