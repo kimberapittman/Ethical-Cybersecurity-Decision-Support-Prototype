@@ -250,7 +250,7 @@ def render_case(case_id: str):
 
         if step == 4:
             st.header("4. PFCE Analysis")
-            st.write(case["ethical"].get("pfce_analysis", "TBD"))
+            _render_bullets(case["ethical"].get("pfce_analysis"))
             st.markdown("---")
 
         if step == 5:
@@ -290,18 +290,12 @@ def render_case(case_id: str):
 
         if step == 8:
             st.header("8. Decision")
-            st.write(case["decision_outcome"].get("decision", "TBD"))
+            _render_bullets(case["decision_outcome"].get("decision"))
             st.markdown("---")
 
         if step == 9:
             st.header("9. Outcomes and Implications")
-            st.write(case["decision_outcome"].get("outcomes_implications", "TBD"))
-
-            implications = case["decision_outcome"].get("ethical_implications", [])
-            if implications:
-                st.markdown("**Ethical Implications:**")
-                for i in implications:
-                    st.markdown(f"- {i}")
+            _render_bullets(case["decision_outcome"].get("outcomes_implications"))
 
             st.markdown("---")
 
