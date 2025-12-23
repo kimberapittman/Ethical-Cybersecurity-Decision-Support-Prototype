@@ -290,7 +290,7 @@ def render_case(case_id: str):
 
         if step == 8:
             st.header("8. Decision")
-            _render_bullets(case["decision_outcome"].get("decision"))
+            st.write(case["decision_outcome"].get("decision"))
             st.markdown("---")
 
         if step == 9:
