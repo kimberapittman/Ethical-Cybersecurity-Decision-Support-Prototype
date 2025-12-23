@@ -48,7 +48,6 @@ background:
     - Earlier incidents, including a 2018 intrusion affecting the city’s 911 and 311 systems during firewall maintenance, exposed procedural vulnerabilities in system configuration and change-management processes.
 
 
-background:
   triggering_condition_key_events:
     - In May 2019, RobbinHood ransomware was deployed across portions of Baltimore’s network, rendering multiple municipal systems inaccessible.
     - The ransomware encrypted files on affected servers and displayed a ransom demand in cryptocurrency.
@@ -84,7 +83,6 @@ ethical:
     - Explicability was implicated because limited information about ransomware propagation constrained practitioners’ ability to determine whether additional isolation was necessary.
 
 
-ethical:
   tensions:
     - id: T1
       description: >
