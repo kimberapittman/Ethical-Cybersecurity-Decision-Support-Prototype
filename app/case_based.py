@@ -12,6 +12,22 @@ def _safe_rerun():
     except Exception:
         pass
 
+def _render_bullets(value):
+    """
+    Render a YAML value as bullets if it's a list,
+    otherwise render as plain text.
+    """
+    if value is None:
+        st.write("TBD")
+    elif isinstance(value, list):
+        if not value:
+            st.write("TBD")
+        else:
+            for item in value:
+                st.markdown(f"- {item}")
+    else:
+        st.write(value)
+
 
 def _as_text(value) -> str:
     """
