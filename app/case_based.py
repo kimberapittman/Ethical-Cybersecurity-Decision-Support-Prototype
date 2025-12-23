@@ -199,18 +199,18 @@ def render_case(case_id: str):
 
         if step == 1:
             st.header("1. Technical and Operational Background")
-            st.write(case["background"].get("technical_operational_background", "TBD"))
+            _render_bullets(case["background"].get("technical_operational_background"))
             st.markdown("---")
 
         if step == 2:
             st.header("2. Triggering Condition and Key Events")
-            st.write(case["background"].get("triggering_condition_key_events", "TBD"))
+            _render_bullets(case["background"].get("triggering_condition_key_events"))
             st.markdown("---")
 
         if step == 3:
             st.header("3. Decision Context & NIST CSF Mapping")
             st.markdown("**Decision Context**")
-            st.write(case["technical"].get("decision_context", "TBD"))
+            _render_bullets(case["technical"].get("decision_context"))
 
             st.markdown("**NIST CSF Mapping**")
             mapping = case["technical"].get("nist_csf_mapping", [])
