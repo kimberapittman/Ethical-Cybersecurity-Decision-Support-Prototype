@@ -63,9 +63,8 @@ technical:
     - The decision involved assessing whether leaving unaffected systems online introduced continued risk or whether additional isolation would better limit propagation.
 
   nist_csf_mapping:
-    - function: "RS – Respond"
-      category: 
-        - "RS.MI – Mitigation"
+    - function: "Respond (RS)"
+    - category: "Mitigation (MI)"
       rationale: >
         This decision aligns with the Respond function of the NIST CSF because practitioners
         had to decide between preserving service continuity or implementing containment
