@@ -64,8 +64,8 @@ technical:
 
   nist_csf_mapping:
     - function: "RS – Respond"
-    - categories: "RS.MI – Mitigation"
-      rationale: >
+    - category: "RS.MI – Mitigation"
+    - rationale: >
         This decision aligns with the Respond function of the NIST CSF because practitioners
         had to decide between preserving service continuity or implementing containment
         measures. Framing the situation through the Respond function clarifies that the
@@ -122,7 +122,6 @@ decision_outcome:
     - The containment decision involved disconnecting additional systems as a precautionary measure while the scope of the ransomware deployment was assessed.
 
 
-decision_outcome:
   outcomes_implications:
     - More than 10,000 city employees lost access to email accounts.
     - Online payment systems for water bills, property taxes, and vehicle citations were disabled.

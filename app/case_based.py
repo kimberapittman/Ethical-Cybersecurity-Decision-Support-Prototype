@@ -296,7 +296,6 @@ def render_case(case_id: str):
         if step == 9:
             st.header("9. Outcomes and Implications")
             _render_bullets(case["decision_outcome"].get("outcomes_implications"))
-
             st.markdown("---")
 
         # Navigation controls (single row)
