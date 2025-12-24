@@ -233,15 +233,15 @@ def render_case(case_id: str):
             if mapping:
                 for m in mapping:
                     st.markdown(f"- **Function:** {m.get('function', 'TBD')}")
-                    cats = m.get("categories", [])
+                    cats = m.get("category", [])
                     if isinstance(cats, str):
                         cats = [cats]
                     if cats:
-                        st.markdown("  - **Categories:**")
+                        st.markdown("  - **Category:**")
                         for c in cats:
                             st.markdown(f"    - {c}")
                     else:
-                        st.markdown("  - **Categories:** TBD")
+                        st.markdown("  - **Category:** TBD")
                     st.markdown(f"  _Rationale_: {m.get('rationale', 'TBD')}")
             else:
                 st.write("TBD")
