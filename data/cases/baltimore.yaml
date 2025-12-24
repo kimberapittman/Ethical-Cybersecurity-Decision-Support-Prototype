@@ -64,8 +64,9 @@ technical:
 
   nist_csf_mapping:
     - function: "RS – Respond"
-    - category: "RS.MI – Mitigation"
-    - rationale: >
+      category: 
+        - "RS.MI – Mitigation"
+      rationale: >
         This decision aligns with the Respond function of the NIST CSF because practitioners
         had to decide between preserving service continuity or implementing containment
         measures. Framing the situation through the Respond function clarifies that the
@@ -75,18 +76,18 @@ technical:
         their response options.
 
 ethical:
+  tension:
+    - id: T1
+      description: >
+        Preventing further ransomware spread through additional system isolation while maintaining access to essential municipal services relied upon for daily operations.
+
+
   pfce_analysis:
     - Beneficence was implicated by efforts to prevent further ransomware spread.
     - Non-maleficence was implicated by the risk that containment actions would disrupt essential services.
     - Autonomy was implicated because departmental staff temporarily lost access to or control over their systems.
     - Justice was implicated due to uneven effects of service disruptions on residents and businesses.
     - Explicability was implicated because limited information about ransomware propagation constrained practitioners’ ability to determine whether additional isolation was necessary.
-
-
-  tensions:
-    - id: T1
-      description: >
-        Preventing further ransomware spread through additional system isolation while maintaining access to essential municipal services relied upon for daily operations.
 
 
   pfce_mapping:
@@ -119,15 +120,15 @@ constraints:
 
 decision_outcome:
   decision:
-    - The containment decision involved disconnecting additional systems as a precautionary measure while the scope of the ransomware deployment was assessed.
+  - The containment decision involved disconnecting additional systems as a precautionary measure while the scope of the ransomware deployment was assessed.
 
 
-  outcomes_implications:
-    - More than 10,000 city employees lost access to email accounts.
-    - Online payment systems for water bills, property taxes, and vehicle citations were disabled.
-    - Departments implemented manual workarounds, including in-person payment processing and paper recordkeeping.
-    - Real-estate transactions were delayed due to inaccessibility of property records and lien certification systems.
-    - The Department of Public Works was unable to bill over 14,000 customers for sewer charges during the outage.
-    - More than 1,500 home sales were stalled due to lien certification delays.
-    - Recovery progressed unevenly, and the incident contributed to approximately $18.2 million in associated costs.
-    - The scale and duration of disruptions influenced public trust and carried implications for institutional legitimacy.
+outcomes_implications:
+  - More than 10,000 city employees lost access to email accounts.
+  - Online payment systems for water bills, property taxes, and vehicle citations were disabled.
+  - Departments implemented manual workarounds, including in-person payment processing and paper recordkeeping.
+  - Real-estate transactions were delayed due to inaccessibility of property records and lien certification systems.
+  - The Department of Public Works was unable to bill over 14,000 customers for sewer charges during the outage.
+  - More than 1,500 home sales were stalled due to lien certification delays.
+  - Recovery progressed unevenly, and the incident contributed to approximately $18.2 million in associated costs.
+  - The scale and duration of disruptions influenced public trust and carried implications for institutional legitimacy.

@@ -248,20 +248,23 @@ def render_case(case_id: str):
 
             st.markdown("---")
 
-        if step == 4:
-            st.header("4. PFCE Analysis")
-            _render_bullets(case["ethical"].get("pfce_analysis"))
-            st.markdown("---")
-
-        if step == 5:
-            st.header("5. Ethical Tension")
-            tensions = case["ethical"].get("tensions", [])
+ 
+         if step == 4:
+            st.header("4. Ethical Tension")
+            tensions = case["ethical"].get("tension", [])
             if tensions:
                 for t in tensions:
                     st.markdown(f"- {t.get('description', 'TBD')}")
             else:
                 st.write("TBD")
             st.markdown("---")
+
+
+        if step == 5:
+            st.header("5. PFCE Analysis")
+            _render_bullets(case["ethical"].get("pfce_analysis"))
+            st.markdown("---")
+
 
         if step == 6:
             st.header("6. PFCE Principle Mapping")
