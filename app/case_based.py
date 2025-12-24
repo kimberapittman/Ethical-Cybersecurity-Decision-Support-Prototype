@@ -28,6 +28,14 @@ def _render_bullets(value):
     else:
         st.write(value)
 
+PFCE_DEFINITIONS = {
+    "Beneficence": "Obligation to act in ways that promote well-being and prevent harm.",
+    "Non-maleficence": "Obligation to avoid actions that cause harm.",
+    "Autonomy": "Respect for individuals’ ability to make informed decisions about matters affecting them.",
+    "Justice": "Fair and equitable distribution of benefits, burdens, and risks.",
+    "Explicability": "Obligation to ensure decisions and systems can be understood, explained, and justified.",
+}
+
 
 def _as_text(value) -> str:
     """
@@ -276,7 +284,18 @@ def render_case(case_id: str):
             pfce = case["ethical"].get("pfce_mapping", [])
             if pfce:
                 for p in pfce:
-                    st.markdown(f"- **{p.get('principle','TBD')}** – {p.get('description','TBD')}")
+                    principle = p.get("principle", "TBD")
+                    definition = PFCE_DEFINITIONS.get(principle, "")
+                    desc = p.get("description", "TBD")
+
+                    if definition:
+                        st.markdown(
+                            f"- <strong title='{html.escape(definition)}'>{html.escape(principle)}</strong> – {html.escape(desc)}",
+                            unsafe_allow_html=True
+                        )
+                    else:
+                        st.markdown(f"- **{principle}** – {desc}")
+
             else:
                 st.write("TBD")
             st.markdown("---")
