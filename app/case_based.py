@@ -236,30 +236,30 @@ def render_case(case_id: str):
             st.markdown("**Decision Context**")
             _render_bullets(case["technical"].get("decision_context"))
 
-        st.markdown("**NIST CSF Framing**")
+            st.markdown("**NIST CSF Framing**")
 
-        mapping = case["technical"].get("nist_csf_mapping", [])
+            mapping = case["technical"].get("nist_csf_mapping", [])
 
-        if mapping:
-            for m in mapping:
-                fn = m.get("function", "TBD")
+            if mapping:
+                for m in mapping:
+                    fn = m.get("function", "TBD")
 
-                cats = m.get("categories", [])
-                if isinstance(cats, str):
-                    cats = [cats]
+                    cats = m.get("categories", [])
+                    if isinstance(cats, str):
+                        cats = [cats]
 
-                cat_text = ", ".join(cats) if cats else "TBD"
+                    cat_text = ", ".join(cats) if cats else "TBD"
 
-                st.markdown(f"- **{fn} — {cat_text}**")
+                    st.markdown(f"- **{fn} — {cat_text}**")
 
-                if m.get("rationale"):
-                    st.markdown(f"_Rationale_: {m.get('rationale')}")
-        else:
-            st.write("TBD")
+                    if m.get("rationale"):
+                        st.markdown(f"_Rationale_: {m.get('rationale')}")
+            else:
+                st.write("TBD")
 
 
 
-            st.markdown("---")
+                st.markdown("---")
 
  
         if step == 4:
