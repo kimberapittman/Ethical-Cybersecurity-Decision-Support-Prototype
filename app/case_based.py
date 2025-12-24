@@ -249,7 +249,7 @@ def render_case(case_id: str):
             st.markdown("---")
 
  
-         if step == 4:
+        if step == 4:
             st.header("4. Ethical Tension")
             tensions = case["ethical"].get("tension", [])
             if tensions:
