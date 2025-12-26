@@ -196,10 +196,8 @@ def render_case(case_id: str):
                     if definition:
                         st.markdown(
                             f"""
-                    - <span title="{html.escape(definition)}"
-                            style="font-weight:700; text-decoration: underline dotted; cursor: help;">
-                            {html.escape(principle)}
-                    </span> – {html.escape(desc)}
+                        - <span title="{html.escape(definition)}"
+                            style="font-weight:700; text-decoration: underline dotted; cursor: help;">{html.escape(principle)}</span>: {html.escape(desc)}
                             """,
                             unsafe_allow_html=True
                         )
