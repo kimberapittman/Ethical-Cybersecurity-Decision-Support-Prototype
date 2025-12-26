@@ -1,3 +1,5 @@
+main.py 12.26
+
 import sys
 from pathlib import Path
 
@@ -226,72 +228,26 @@ def main():
     # ---------- MODE-SPECIFIC EXPLAINERS (MAIN AREA) ----------
     cb_view = st.session_state.get("cb_view", "collapsed")
 
-    # Case-Based: show "About" + selector ONLY on collapsed landing view,
-    # but ALWAYS route to case_based.render_case() so the walkthrough opens on the first click.
-    if mode == "Case-Based":
-        if cb_view == "collapsed":
-            st.markdown(
-                "<h2 style='text-align: center; margin-top: 0.25rem;'>Case-Based Mode</h2>",
-                unsafe_allow_html=True,
-            )
+    if mode == "Case-Based" and cb_view == "collapsed":
+        st.markdown(
+            "<h2 style='text-align: center; margin-top: 0.25rem;'>Case-Based Mode</h2>",
+            unsafe_allow_html=True,
+        )
 
-            with st.expander("About Case-Based Mode"):
-                st.markdown(
-                    """
+        with st.expander("About Case-Based Mode"):
+            st.markdown(
+                """
 Case-Based Mode presents analytically structured municipal cybersecurity cases used to demonstrate how the prototype’s decision-support logic operates.
 
 Each case is derived from the Chapter III analysis and organized to surface the decision-relevant elements necessary for structured reasoning, rather than to reproduce the full narrative detail of the dissertation. Users can step through each case to observe how technical context, ethical significance, and organizational conditions interact within a single cybersecurity decision process.
 
 The purpose of this mode is not to evaluate historical decisions or prescribe outcomes, but to illustrate how ethical reasoning can be made explicit, structured, and traceable when cybersecurity decisions are examined systematically.
-                    """
-                )
+                """
+            )
 
-            st.divider()
+        st.divider()
 
-            # ---------- CASE SELECTOR (Case-Based Only) ----------
-            cases = list_cases()
-
-            if not cases:
-                st.error("No cases found in data/cases.")
-            else:
-                case_titles = [c["title"] for c in cases]
-
-                # Initialize selection + id once
-                if "cb_case_title" not in st.session_state:
-                    st.session_state["cb_case_title"] = case_titles[0]
-
-                if "cb_case_id" not in st.session_state:
-                    first = next(
-                        c for c in cases if c["title"] == st.session_state["cb_case_title"]
-                    )
-                    st.session_state["cb_case_id"] = first["id"]
-
-                def _on_case_change():
-                    new_title = st.session_state["cb_case_title"]
-                    new_case = next(c for c in cases if c["title"] == new_title)
-
-                    # Store id + reset navigation immediately
-                    st.session_state["cb_case_id"] = new_case["id"]
-                    st.session_state["cb_step"] = 1
-                    st.session_state["cb_prev_case_id"] = new_case["id"]
-                    # Ensure we return to the landing view after changing cases
-                    st.session_state["cb_view"] = "collapsed"
-
-                st.markdown("### Select A Case")
-                st.selectbox(
-                    "Case selection",
-                    options=case_titles,
-                    key="cb_case_title",
-                    label_visibility="collapsed",
-                    on_change=_on_case_change,
-                )
-
-            st.divider()
-
-        # ---------- ROUTING (ALWAYS RUN IN CASE-BASED) ----------
-        case_based.render_case(st.session_state.get("cb_case_id"))
-
-    else:
+    elif mode != "Case-Based":
         st.markdown(
             "<h2 style='text-align: center; margin-top: 0.25rem;'>Open-Ended Mode</h2>",
             unsafe_allow_html=True,
@@ -308,7 +264,51 @@ The purpose of this mode is not to generate decisions or recommendations, but to
                 """
             )
 
-        # ---------- ROUTING ----------
+    # ---------- CASE SELECTOR (Case-Based Only) ----------
+    selected_case = None
+
+    if mode == "Case-Based" and cb_view == "collapsed":
+        cases = list_cases()
+
+        if not cases:
+            st.error("No cases found in data/cases.")
+        else:
+            case_titles = [c["title"] for c in cases]
+
+            # Initialize selection + id once
+            if "cb_case_title" not in st.session_state:
+                st.session_state["cb_case_title"] = case_titles[0]
+
+            if "cb_case_id" not in st.session_state:
+                first = next(
+                    c for c in cases if c["title"] == st.session_state["cb_case_title"]
+                )
+                st.session_state["cb_case_id"] = first["id"]
+
+            def _on_case_change():
+                new_title = st.session_state["cb_case_title"]
+                new_case = next(c for c in cases if c["title"] == new_title)
+
+                # Store id + reset navigation immediately
+                st.session_state["cb_case_id"] = new_case["id"]
+                st.session_state["cb_step"] = 1
+                st.session_state["cb_prev_case_id"] = new_case["id"]
+
+            st.markdown("### Select A Case")
+            st.selectbox(
+                "Case selection",
+                options=case_titles,
+                key="cb_case_title",
+                label_visibility="collapsed",
+                on_change=_on_case_change,
+            )
+
+        st.divider()
+
+    # ---------- ROUTING ----------
+    if mode == "Case-Based":
+        case_based.render_case(st.session_state.get("cb_case_id"))
+    else:
         open_ended.render_open_ended()
 
     st.markdown("---")
