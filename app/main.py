@@ -217,11 +217,20 @@ def main():
         """
     <div style='text-align: center;'>
     <h1>🛡️ Municipal Cyber Ethics Decision-Support Prototype</h1>
-    <h4 style='color:#4C8BF5;'>Because what's secure isn't always what's right.</h4>
+    <div style="
+        font-size: 2.0rem;
+        font-weight: 800;
+        letter-spacing: 0.01em;
+        color: #4C8BF5;
+        margin-top: 0.25rem;
+    ">
+        Because what's secure isn't always what's right.
+    </div>
     </div>
     """,
         unsafe_allow_html=True,
     )
+
 
     # ---------- MODE-SPECIFIC EXPLAINERS (MAIN AREA) ----------
     cb_view = st.session_state.get("cb_view", "collapsed")
