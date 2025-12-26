@@ -70,17 +70,22 @@ def render_case(case_id: str):
     case["ethical"].setdefault("pfce_mapping", [])
     case["decision_outcome"].setdefault("ethical_implications", [])
 
-    # ==========================================================
-    # RESET NAVIGATION WHEN CASE CHANGES
-    # ==========================================================
-    prev_case = st.session_state.get("cb_prev_case_id")
-    if prev_case != case_id:
-        st.session_state["cb_step"] = 1
-        st.session_state["cb_prev_case_id"] = case_id
-        st.session_state["cb_view"] = "collapsed"
-        # narrative removed; no need to track return-step
-        st.session_state.pop("cb_step_return", None)
-        _safe_rerun()
+# ==========================================================
+# RESET NAVIGATION WHEN CASE CHANGES
+# ==========================================================
+prev_case = st.session_state.get("cb_prev_case_id")
+
+# First time a case is loaded, just store it (no rerun)
+if prev_case is None:
+    st.session_state["cb_prev_case_id"] = case_id
+
+# Only reset/rerun if the user actually switched cases
+elif prev_case != case_id:
+    st.session_state["cb_step"] = 1
+    st.session_state["cb_prev_case_id"] = case_id
+    st.session_state["cb_view"] = "collapsed"
+    st.session_state.pop("cb_step_return", None)
+    _safe_rerun()
 
     # ==========================================================
     # VIEW STATE
