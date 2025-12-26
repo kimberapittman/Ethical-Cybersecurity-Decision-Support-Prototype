@@ -79,13 +79,13 @@ def render_case(case_id: str):
     if prev_case is None:
         st.session_state["cb_prev_case_id"] = case_id
 
-    # Only reset/rerun if the user actually switched cases
+    # Only reset state if the user actually switched cases (no rerun)
     elif prev_case != case_id:
         st.session_state["cb_step"] = 1
         st.session_state["cb_prev_case_id"] = case_id
         st.session_state["cb_view"] = "collapsed"
         st.session_state.pop("cb_step_return", None)
-        _safe_rerun()
+        # IMPORTANT: do NOT call _safe_rerun() here
 
     # ==========================================================
     # VIEW STATE
@@ -204,12 +204,16 @@ def render_case(case_id: str):
             unsafe_allow_html=True,
         )
 
-        # Single primary entry point
+        st.markdown("<div style='height:6px;'></div>", unsafe_allow_html=True)
+
         if st.button("Open structured walkthrough", key=f"cb_open_walkthrough_{case_id}"):
             st.session_state["cb_view"] = "walkthrough"
             st.session_state["cb_step"] = 1
+            st.session_state.pop("cb_step_return", None)
+            st.rerun()
 
         return
+
 
     # ==========================================================
     # VIEW 2: WALKTHROUGH (STEP-BASED)

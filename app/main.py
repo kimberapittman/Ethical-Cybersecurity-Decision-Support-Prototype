@@ -1,5 +1,3 @@
-main.py 12.26
-
 import sys
 from pathlib import Path
 
