@@ -102,118 +102,22 @@ def render_case(case_id: str):
         if case.get("short_summary"):
             st.caption(case.get("short_summary", ""))
 
-        # ----------------------------------------------------------
-        # At A Glance should pull from YAML: case["at_a_glance"]
-        # with fallback to existing fields if needed
-        # ----------------------------------------------------------
-        glance = case.get("at_a_glance", {}) or {}
-
-        decision_context = glance.get("decision_context") or case["technical"].get("decision_context", "")
-
-        technical_framing = glance.get("technical_framing", "")
-        ethical_tension = glance.get("ethical_tension", "")
-
-        # Constraints for At A Glance:
-        # Prefer YAML at_a_glance.constraints if present, otherwise fall back to case.constraints
-        constraints = glance.get("constraints")
-        if constraints is None:
-            constraints = case.get("constraints", [])
-
-        # If technical_framing wasn't provided in at_a_glance, derive a compact line from mapping (existing behavior)
-        if not technical_framing:
-            mapping = case["technical"].get("nist_csf_mapping", [])
-            csf_line = "TBD"
-            if mapping:
-                fn = mapping[0].get("function", "TBD")
-                cats = mapping[0].get("categories", [])
-                if isinstance(cats, str):
-                    cats = [cats]
-                csf_line = f"{fn}" + (f" — {', '.join(cats)}" if cats else "")
-            technical_framing = csf_line
-
-        # If ethical_tension wasn't provided in at_a_glance, fall back to first tension description (existing behavior)
-        if not ethical_tension:
-            tensions = case["ethical"].get("tensions", [])
-            ethical_tension = "TBD"
-            if tensions:
-                ethical_tension = tensions[0].get("description", "TBD")
-
-        # Normalize at a glance fields to strings (supports YAML list or str)
-        decision_context_text = _as_text(decision_context)
-        technical_framing_text = _as_text(technical_framing)
-        ethical_tension_text = _as_text(ethical_tension)
-
-        def _as_list(value):
-            if value is None:
-                return []
-            if isinstance(value, list):
-                return [str(v) for v in value if v is not None and str(v).strip()]
-            if isinstance(value, str):
-                v = value.strip()
-                return [v] if v else []
-            return [str(value)]
-
-        def _render_glance_section(title: str, items):
-            items = _as_list(items)
-            if not items:
-                return f"""
-<div style="margin: 10px 0 14px 0;">
-  <div style="font-weight:700; margin-bottom:6px;">{html.escape(title)}</div>
-  <div class="sub">TBD</div>
-</div>
-"""
-            bullets = "".join(f"<li>{html.escape(i)}</li>" for i in items)
-            return f"""
-<div style="margin: 10px 0 14px 0;">
-  <div style="font-weight:700; margin-bottom:6px;">{html.escape(title)}</div>
-  <ul class="tight-list" style="margin-top:0; padding-left:22px;">{bullets}</ul>
-</div>
-"""
-
-        # Build the new "At a glance" layout: heading + bullets under each
-        decision_items = _as_list(glance.get("decision_context") or case["technical"].get("decision_context", ""))
-        tech_items = _as_list(glance.get("technical_framing") or technical_framing_text)
-        ethical_items = _as_list(glance.get("ethical_tension") or ethical_tension_text)
-
-        # Constraints: prefer at_a_glance.constraints, else fallback to case.constraints (existing behavior)
-        raw_constraints = glance.get("constraints")
-        if raw_constraints is None:
-            raw_constraints = case.get("constraints", [])
-
-        # Normalize constraints to list[str] for display
-        constraint_items = []
-        if raw_constraints:
-            for c in raw_constraints:
-                if isinstance(c, dict):
-                    constraint_items.append(c.get("description") or c.get("type") or "TBD")
-                else:
-                    constraint_items.append(str(c))
-
-        st.markdown(
-            f"""
-<div class="listbox">
-  <div style="font-weight:700; margin-bottom:10px;">At a glance</div>
-
-  {_render_glance_section("Decision context", decision_items)}
-  {_render_glance_section("Technical framing (NIST CSF 2.0)", tech_items)}
-  {_render_glance_section("Ethical tension (PFCE)", ethical_items)}
-  {_render_glance_section("Institutional and governance constraints", constraint_items)}
-
-</div>
-            """,
-            unsafe_allow_html=True,
-        )
-
         st.markdown("<div style='height:6px;'></div>", unsafe_allow_html=True)
 
-        if st.button("Open structured walkthrough", key=f"cb_open_walkthrough_{case_id}"):
-            st.session_state["cb_view"] = "walkthrough"
-            st.session_state["cb_step"] = 1
-            st.session_state.pop("cb_step_return", None)
-            st.rerun()
+        # Centered primary action (collapsed view only)
+        col_left, col_center, col_right = st.columns([1, 2, 1])
+        with col_center:
+            if st.button(
+                "Open Structured Walkthrough",
+                key=f"cb_open_walkthrough_{case_id}",
+                use_container_width=True,
+            ):
+                st.session_state["cb_view"] = "walkthrough"
+                st.session_state["cb_step"] = 1
+                st.session_state.pop("cb_step_return", None)
+                st.rerun()
 
-        return
-
+        return  # <-- IMPORTANT: stop here so walkthrough doesn't render on same run
 
     # ==========================================================
     # VIEW 2: WALKTHROUGH (STEP-BASED)
@@ -228,7 +132,6 @@ def render_case(case_id: str):
             st.caption(case.get("short_summary", ""))
 
         st.progress(step / 9.0)
-
 
         if step == 1:
             st.header("1. Technical and Operational Background")
@@ -266,11 +169,8 @@ def render_case(case_id: str):
             else:
                 st.write("TBD")
 
-
-
                 st.markdown("---")
 
- 
         if step == 4:
             st.header("4. Ethical Tension")
             tensions = case["ethical"].get("tension", [])
@@ -281,12 +181,10 @@ def render_case(case_id: str):
                 st.write("TBD")
             st.markdown("---")
 
-
         if step == 5:
             st.header("5. PFCE Analysis")
             _render_bullets(case["ethical"].get("pfce_analysis"))
             st.markdown("---")
-
 
         if step == 6:
             st.header("6. PFCE Principle Mapping")
@@ -309,7 +207,6 @@ def render_case(case_id: str):
                         )
                     else:
                         st.markdown(f"- **{principle}** – {desc}")
-
 
             else:
                 st.write("TBD")
@@ -357,10 +254,8 @@ def render_case(case_id: str):
                 st.info("End of case.")
 
         with col_exit:
-            if st.button("Exit walkthrough", key=f"cb_exit_walkthrough_{case_id}"):
+            if st.button("Exit Walkthrough", key=f"cb_exit_walkthrough_{case_id}"):
                 st.session_state["cb_view"] = "collapsed"
                 _safe_rerun()
 
         return
-
-
