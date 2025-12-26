@@ -125,11 +125,16 @@ def render_case(case_id: str):
             st.session_state["cb_step"] = 1
         step = st.session_state["cb_step"]
 
+        # --- Visual separation to match collapsed view ---
+        st.markdown("<hr style='margin: 12px 0 16px 0; opacity: 0.35;'>", unsafe_allow_html=True)
+
         st.subheader(case.get("title", case_id))
+
         if case.get("short_summary"):
             st.caption(case.get("short_summary", ""))
 
         st.progress(step / 9.0)
+
 
         if step == 1:
             st.header("1. Technical and Operational Background")
@@ -247,7 +252,7 @@ def render_case(case_id: str):
                     st.session_state["cb_step"] = min(9, step + 1)
                     _safe_rerun()
             else:
-                st.info("End of case.")
+                st.info("End of Case.")
 
         with col_exit:
             if st.button("Exit Walkthrough", key=f"cb_exit_walkthrough_{case_id}"):
