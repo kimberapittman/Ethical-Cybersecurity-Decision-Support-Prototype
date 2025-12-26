@@ -2,40 +2,6 @@ id: "baltimore"
 
 title: "CASE 1: BALTIMORE – WHEN PROTECTING SYSTEMS MEETS PROTECTING THE PUBLIC"
 
-short_summary: >
-  The Baltimore ransomware attack presents a case in which municipal cybersecurity practitioners
-  confronted a decision with immediate consequences for service continuity across the city. The
-  decision examined in this case centers on whether to disconnect additional municipal systems to
-  limit further spread of the ransomware while the scope of the compromise remained unclear.
-
-at_a_glance:
-  decision_context:
-    - "Whether to disconnect additional municipal systems to limit further ransomware spread while the scope of the compromise remained unclear."
-
-  technical_framing:
-    - "Respond (RS) — Mitigation (RS.MI)"
-
-  ethical_tension:
-    - "Preventing further ransomware harm versus maintaining access to essential municipal services relied upon by residents and departments."
-
-  constraints:
-    - "Decentralized IT structure"
-    - "Staffing and resource limitations"
-    - "Absence of an incident-specific continuity plan"
-  decision_context:
-    - "Whether to disconnect additional municipal systems to limit further ransomware spread while the scope of the compromise remained unclear."
-
-  technical_framing (NIST CSF):
-      - "Respond (RS) — Mitigation (RS.MI)"
-
-  ethical_tension (PFCE):
-    - "Preventing further ransomware harm versus maintaining access to essential municipal services relied upon by residents and departments."
-
-  institutional_and_governance_constraints:
-    - "Decentralized IT structure"
-    - "Staffing and resource limitations"
-    - "Absence of an incident-specific continuity plan"
-
 sources:
   - "2–22: Sources cited in Chapter III case reconstruction text."
 
