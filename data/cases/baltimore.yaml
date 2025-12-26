@@ -86,7 +86,7 @@ constraints:
 
 decision_outcome:
   decision: >
-    The containment decision involved disconnecting additional systems as a precautionary measure while the scope of the ransomware deployment was assessed.
+    The decision involved disconnecting additional systems as a precautionary measure while the scope of the ransomware deployment was assessed.
 
 
   outcomes_implications:
