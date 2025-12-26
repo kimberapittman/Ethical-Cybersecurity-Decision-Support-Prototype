@@ -212,7 +212,7 @@ def main():
                 """
             )
 
-# ---------- MAIN HEADER ----------
+    # ---------- MAIN HEADER ----------
     st.markdown(
         """
     <div style='text-align: center;'>
@@ -223,9 +223,10 @@ def main():
         unsafe_allow_html=True,
     )
 
-
     # ---------- MODE-SPECIFIC EXPLAINERS (MAIN AREA) ----------
-    if mode == "Case-Based":
+    cb_view = st.session_state.get("cb_view", "collapsed")
+
+    if mode == "Case-Based" and cb_view == "collapsed":
         st.markdown(
             "<h2 style='text-align: center; margin-top: 0.25rem;'>Case-Based Mode</h2>",
             unsafe_allow_html=True,
@@ -241,8 +242,10 @@ Each case is derived from the Chapter III analysis and organized to surface the 
 The purpose of this mode is not to evaluate historical decisions or prescribe outcomes, but to illustrate how ethical reasoning can be made explicit, structured, and traceable when cybersecurity decisions are examined systematically.
                 """
             )
+
         st.divider()
-    else:
+
+    elif mode != "Case-Based":
         st.markdown(
             "<h2 style='text-align: center; margin-top: 0.25rem;'>Open-Ended Mode</h2>",
             unsafe_allow_html=True,
@@ -261,7 +264,8 @@ The purpose of this mode is not to generate decisions or recommendations, but to
 
     # ---------- CASE SELECTOR (Case-Based Only) ----------
     selected_case = None
-    if mode == "Case-Based":
+
+    if mode == "Case-Based" and cb_view == "collapsed":
         cases = list_cases()
 
         if not cases:
@@ -272,6 +276,7 @@ The purpose of this mode is not to generate decisions or recommendations, but to
             # Initialize selection + id once
             if "cb_case_title" not in st.session_state:
                 st.session_state["cb_case_title"] = case_titles[0]
+
             if "cb_case_id" not in st.session_state:
                 first = next(
                     c for c in cases if c["title"] == st.session_state["cb_case_title"]
@@ -305,7 +310,9 @@ The purpose of this mode is not to generate decisions or recommendations, but to
         open_ended.render_open_ended()
 
     st.markdown("---")
-    st.caption("This prototype is designed for research and demonstration purposes and is not intended for operational deployment")
+    st.caption(
+        "This prototype is designed for research and demonstration purposes and is not intended for operational deployment"
+    )
 
 
 if __name__ == "__main__":
