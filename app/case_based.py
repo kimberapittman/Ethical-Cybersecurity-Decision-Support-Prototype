@@ -98,9 +98,6 @@ def render_case(case_id: str):
     # VIEW 1: COLLAPSED CASE CARD (DEFAULT)
     # ==========================================================
     if view == "collapsed":
-        st.subheader(case.get("title", case_id))
-        if case.get("short_summary"):
-            st.caption(case.get("short_summary", ""))
 
         st.markdown("<div style='height:6px;'></div>", unsafe_allow_html=True)
 
@@ -117,7 +114,8 @@ def render_case(case_id: str):
                 st.session_state.pop("cb_step_return", None)
                 st.rerun()
 
-        return  # <-- IMPORTANT: stop here so walkthrough doesn't render on same run
+        return  # IMPORTANT: stop here so walkthrough doesn't render on same run
+
 
     # ==========================================================
     # VIEW 2: WALKTHROUGH (STEP-BASED)
@@ -237,8 +235,8 @@ def render_case(case_id: str):
             _render_bullets(case["decision_outcome"].get("outcomes_implications"))
             st.markdown("---")
 
-        # Navigation controls (single row)
-        col_prev, col_next, col_exit = st.columns([1, 1, 1])
+        # Navigation controls (centered layout)
+        col_prev, col_spacer_left, col_next, col_spacer_right, col_exit = st.columns([1, 2, 1, 2, 1])
 
         with col_prev:
             if step > 1 and st.button("◀ Previous", key=f"cb_prev_{step}_{case_id}"):
@@ -247,7 +245,7 @@ def render_case(case_id: str):
 
         with col_next:
             if step < 9:
-                if st.button("Next ▶", key=f"cb_next_{step}_{case_id}"):
+                if st.button("Next ▶", key=f"cb_next_{step}_{case_id}", use_container_width=True):
                     st.session_state["cb_step"] = min(9, step + 1)
                     _safe_rerun()
             else:
@@ -257,5 +255,6 @@ def render_case(case_id: str):
             if st.button("Exit Walkthrough", key=f"cb_exit_walkthrough_{case_id}"):
                 st.session_state["cb_view"] = "collapsed"
                 _safe_rerun()
+
 
         return
