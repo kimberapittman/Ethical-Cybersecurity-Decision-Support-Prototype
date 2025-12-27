@@ -87,7 +87,7 @@ def render_case(case_id: str):
 
     case["technical"].setdefault("nist_csf_mapping", [])
     case["ethical"].setdefault("tensions", [])
-    case["ethical"].setdefault("pfce_mapping", [])
+    case["ethical"].setdefault("pfce_analysis", [])
     case["decision_outcome"].setdefault("ethical_implications", [])
 
     # ==========================================================
@@ -155,7 +155,7 @@ def render_case(case_id: str):
         if case.get("short_summary"):
             st.caption(case.get("short_summary", ""))
 
-        st.progress(step / 10.0)
+        st.progress(step / 9.0)
 
         if step == 1:
             st.header("1. Technical and Operational Background")
@@ -208,14 +208,11 @@ def render_case(case_id: str):
 
         if step == 6:
             st.header("6. PFCE Analysis")
-            _render_bullets(case["ethical"].get("pfce_analysis"))
-            st.markdown("---")
 
-        if step == 7:
-            st.header("7. PFCE Principle Mapping")
-            pfce = case["ethical"].get("pfce_mapping", [])
-            if pfce:
-                for p in pfce:
+            pfce_items = case["ethical"].get("pfce_analysis", [])
+
+            if isinstance(pfce_items, list) and pfce_items and isinstance(pfce_items[0], dict):
+                for p in pfce_items:
                     principle = p.get("principle", "TBD")
                     definition = PFCE_DEFINITIONS.get(principle, "")
                     desc = p.get("description", "TBD")
@@ -223,20 +220,20 @@ def render_case(case_id: str):
                     if definition:
                         st.markdown(
                             f"""
-                        - <span title="{html.escape(definition)}"
-                            style="font-weight:700; text-decoration: underline dotted; cursor: help;">{html.escape(principle)}</span>: {html.escape(desc)}
+- <span title="{html.escape(definition)}"
+    style="font-weight:700; text-decoration: underline dotted; cursor: help;">{html.escape(principle)}</span>: {html.escape(desc)}
                             """,
                             unsafe_allow_html=True,
                         )
                     else:
-                        st.markdown(f"- **{principle}** – {desc}")
-
+                        st.markdown(f"- **{principle}**: {desc}")
             else:
-                st.write("TBD")
+                _render_bullets(pfce_items)
+
             st.markdown("---")
 
-        if step == 8:
-            st.header("8. Institutional and Governance Constraints")
+        if step == 7:
+            st.header("7. Institutional and Governance Constraints")
             constraints = case.get("constraints", [])
             if constraints:
                 for c in constraints:
@@ -254,13 +251,13 @@ def render_case(case_id: str):
                 st.write("TBD")
             st.markdown("---")
 
-        if step == 9:
-            st.header("9. Decision")
+        if step == 8:
+            st.header("8. Decision")
             st.write(case["decision_outcome"].get("decision"))
             st.markdown("---")
 
-        if step == 10:
-            st.header("10. Outcomes and Implications")
+        if step == 9:
+            st.header("9. Outcomes and Implications")
             _render_bullets(case["decision_outcome"].get("outcomes_implications"))
             st.markdown("---")
 
@@ -275,13 +272,13 @@ def render_case(case_id: str):
                 _safe_rerun()
 
         with col_next:
-            if step < 10:
+            if step < 9:
                 if st.button(
                     "Next ▶",
                     key=f"cb_next_{step}_{case_id}",
                     use_container_width=True,
                 ):
-                    st.session_state["cb_step"] = min(10, step + 1)
+                    st.session_state["cb_step"] = min(9, step + 1)
                     _safe_rerun()
             else:
                 st.info("End of Case.")
