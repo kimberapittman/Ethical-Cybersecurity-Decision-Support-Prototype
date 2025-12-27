@@ -45,32 +45,30 @@ ethical:
 
 
   pfce_analysis:
-    - Beneficence was implicated by efforts to prevent further ransomware spread.
-    - Non-maleficence was implicated by the risk that containment actions would disrupt essential services.
-    - Autonomy was implicated because departmental staff temporarily lost access to or control over their systems.
-    - Justice was implicated due to uneven effects of service disruptions on residents and businesses.
-    - Explicability was implicated because limited information about ransomware propagation constrained practitioners’ ability to determine whether additional isolation was necessary.
-
-
-  pfce_mapping:
     - principle: "Beneficence"
-      description: >
-        Efforts to prevent further ransomware spread by considering containment actions.
+      analysis: >
+        Containment actions were considered as a means of limiting further ransomware spread
+        and reducing potential harm to municipal systems and services.
+
     - principle: "Non-maleficence"
-      description: >
-        The risk that containment actions could disrupt essential services and introduce harm
-        through service interruption.
+      analysis: >
+        Disconnecting additional systems introduced the risk of harm through disruption of
+        essential municipal services relied upon by residents and departments.
+
     - principle: "Autonomy"
-      description: >
-        Departmental staff temporarily lost the ability to access or manage their systems.
+      analysis: >
+        System isolation temporarily limited departmental staff’s ability to access or manage
+        systems necessary for routine operational decision-making.
+
     - principle: "Justice"
-      description: >
-        Service interruptions had uneven effects on residents and businesses depending on
-        their reliance on timely municipal services.
+      analysis: >
+        Service disruptions affected residents and businesses unevenly, depending on their
+        reliance on timely access to municipal services.
+
     - principle: "Explicability"
-      description: >
-        Limited information about ransomware propagation constrained the ability to determine
-        whether further isolation was necessary or overly precautionary.
+      analysis: >
+        Limited visibility into ransomware propagation constrained practitioners’ ability to
+        justify whether additional system isolation was necessary or overly precautionary.
 
 
 constraints:
@@ -82,7 +80,7 @@ constraints:
 
 decision_outcome:
   decision: >
-    Additional municipal systems were disconnected as a precautionary measure while the scope of the ransomware deployment was assessed.
+    - Additional municipal systems were disconnected as a precautionary measure while the scope of the ransomware deployment was assessed.
 
 
   outcomes_implications:
