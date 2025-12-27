@@ -9,24 +9,21 @@ background:
   technical_operational_background:
     - In 2019, the City of Baltimore operated a distributed municipal IT environment supporting administrative and public-service functions across multiple departments.
     - The city’s technology environment included a wide variety of systems and aging infrastructure and was undergoing ongoing modernization efforts.
-    - Baltimore faced documented cybersecurity capability and staffing challenges at the time of the incident.
+    - Baltimore faced documented cybersecurity capability and staffing challenges.
     - External assessments conducted prior to 2019 identified elevated exposure to cyber threats.
     - Earlier incidents, including a 2018 intrusion affecting the city’s 911 and 311 systems during firewall maintenance, exposed procedural vulnerabilities in system configuration and change-management processes.
 
 
   triggering_condition_key_events:
-    - In May 2019, RobbinHood ransomware was deployed across portions of Baltimore’s network, rendering multiple municipal systems inaccessible.
+    - In May 2019, RobbinHood ransomware was deployed across portions of Baltimore’s network, rendering multiple municipal systems inaccessible and affecting nearly every department.
     - The ransomware encrypted files on affected servers and displayed a ransom demand in cryptocurrency.
     - City employees encountered locked systems, and disruptions occurred across email, phone lines, and online payment platforms.
     - The city did not maintain continuous cybersecurity monitoring, resulting in several hours passing before the scope of the incident was identified.
-    - After identifying that servers supporting key administrative functions were affected, IT staff initiated shutdowns of additional systems to prevent further spread.
-    - Service disruptions affected nearly all departments while the extent of the compromise was assessed.
 
 
 technical:
   decision_context:
-    - Practitioners were required to determine whether to maintain system connectivity while assessing the scope of the ransomware deployment or to disconnect additional systems to limit potential further spread.
-    - The decision involved assessing whether leaving unaffected systems online introduced continued risk or whether additional isolation would better limit propagation.
+    - After identifying that servers supporting key administrative functions were affected, the cybersecurity practitioners faced a decision to maintain system connectivity while assessing the scope of the ransomware deployment or to disconnect additional systems to limit potential further spread.
 
   nist_csf_mapping:
     - function: "Respond (RS)"
@@ -37,9 +34,8 @@ technical:
         had to decide between preserving service continuity or implementing containment
         measures. Framing the situation through the Respond function clarifies that the
         operational task at this stage involved determining whether additional isolation was
-        necessary to limit potential impact while system recovery remained ongoing. This
-        decision context defined the procedural boundaries within which practitioners assessed
-        their response options.
+        necessary to limit potential impact while system recovery remained ongoing.
+
 
 ethical:
   tension:
@@ -76,17 +72,17 @@ ethical:
         Limited information about ransomware propagation constrained the ability to determine
         whether further isolation was necessary or overly precautionary.
 
+
 constraints:
   - The city was in the early stages of transitioning toward centralized technology functions.
   - IT operations were organized under a decentralized structure, with system administration distributed across departments.
   - Staffing and resource limitations constrained Baltimore’s cybersecurity capacity.
   - The city lacked an incident-specific continuity plan, resulting in reliance on ad-hoc workarounds during early recovery efforts.
-  - These conditions limited the predictability and feasibility of containment strategies during the response.
 
 
 decision_outcome:
   decision: >
-    The decision involved disconnecting additional systems as a precautionary measure while the scope of the ransomware deployment was assessed.
+    - Additional municipal systems were disconnected as a precautionary measure while the scope of the ransomware deployment was assessed.
 
 
   outcomes_implications:
@@ -97,4 +93,4 @@ decision_outcome:
     - The Department of Public Works was unable to bill over 14,000 customers for sewer charges during the outage.
     - More than 1,500 home sales were stalled due to lien certification delays.
     - Recovery progressed unevenly, and the incident contributed to approximately $18.2 million in associated costs.
-    - The scale and duration of disruptions influenced public trust and carried implications for institutional legitimacy.
+    - The scale and duration of service disruptions affected public trust and had downstream implications for institutional legitimacy.
