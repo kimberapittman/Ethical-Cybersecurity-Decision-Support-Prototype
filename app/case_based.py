@@ -57,6 +57,46 @@ PFCE_DEFINITIONS = {
 }
 
 
+NIST_CSF_URL = "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf"
+PFCE_URL = "https://doi.org/10.1016/j.cose.2021.102382"
+
+NIST_CSF_HOVER = (
+    "National Institute of Standards and Technology (NIST) Cybersecurity Framework (CSF): "
+    "A voluntary framework that provides a common structure for identifying, assessing, and "
+    "managing cybersecurity activities across the cybersecurity lifecycle. In this prototype, "
+    "the CSF is used to situate decisions procedurally, not to prescribe actions."
+)
+
+PFCE_HOVER = (
+    "Principlist Framework for Cybersecurity Ethics (PFCE): "
+    "A normative, non-prescriptive framework that supports ethical reasoning by identifying "
+    "ethically relevant principles and tensions within cybersecurity decision contexts."
+)
+
+def _step_title_with_framework(step_num: int, title_prefix: str, acronym: str, hover: str, url: str):
+    """
+    Render a step title where the framework acronym is:
+    - bold
+    - underlined (dotted) to signal hover
+    - shows a tooltip on hover
+    - links out to the reference
+    """
+    st.markdown(
+        f"""
+<h2 style="margin: 0.2rem 0 0.8rem 0;">
+  {step_num}. {html.escape(title_prefix)} 
+  <a href="{html.escape(url)}" target="_blank" style="text-decoration: none;">
+    <span title="{html.escape(hover)}"
+          style="font-weight: 800; text-decoration: underline dotted; cursor: help;">
+      {html.escape(acronym)}
+    </span>
+  </a>
+</h2>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 def _as_text(value) -> str:
     """
     Normalize YAML values that may be a string or a list into a display-safe string.
@@ -173,7 +213,14 @@ def render_case(case_id: str):
             st.markdown("---")
 
         if step == 4:
-            st.header("4. NIST CSF Mapping")
+            _step_title_with_framework(
+                4,
+                "NIST CSF Mapping",
+                "NIST CSF",
+                NIST_CSF_HOVER,
+                NIST_CSF_URL,
+            )
+
 
             mapping = case["technical"].get("nist_csf_mapping", [])
 
@@ -207,7 +254,13 @@ def render_case(case_id: str):
             st.markdown("---")
 
         if step == 6:
-            st.header("6. PFCE Analysis")
+            _step_title_with_framework(
+                6,
+                "PFCE Analysis",
+                "PFCE",
+                PFCE_HOVER,
+                PFCE_URL,
+            )
 
             pfce_items = case["ethical"].get("pfce_analysis", [])
 
