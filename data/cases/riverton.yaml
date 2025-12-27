@@ -6,157 +6,84 @@ sources:
   - "Constructed for this thesis as a hypothetical municipal cybersecurity scenario."
 
 background:
-  technical_operational_background: >
-    The City of Riverton operates a unified water-treatment and distribution network supported
-    by an AI-managed control platform designed to optimize chemical dosing, pump pressure, and
-    reservoir flow. The platform’s algorithms were trained on historical operational data and
-    programmed to autonomously adjust output in response to sensor feedback, reducing manual
-    intervention and enhancing real-time responsiveness. While the system improved operational
-    efficiency, it also introduced dependencies on automated adjustments for functions with
-    direct implications for public health and infrastructure stability. Taken together, these
-    operational conditions formed the technological environment in which Riverton later
-    confronted an anomalous system event involving its AI-managed water-treatment functions.
+  technical_operational_background:
+    - The City of Riverton operates a unified water-treatment and distribution network supported by an AI-managed control platform.
+    - The platform autonomously adjusts chemical dosing, pump pressure, and reservoir flow based on sensor feedback.
+    - Algorithms were trained on historical operational data to reduce manual intervention and enhance responsiveness.
+    - Core treatment functions with direct public health implications were partially dependent on automated control.
+    - These operational conditions created reliance on AI-generated classifications for system integrity and safety.
 
-  triggering_condition_key_events: >
-    The incident began when the AI system flagged an abrupt deviation in remote access activity
-    targeting the plant’s programmable logic controllers. Because these controllers regulate
-    core chemical-treatment functions, any irregular access pattern affecting them carried
-    immediate operational significance. The platform classified the anomaly as high risk and
-    automatically restricted certain chemical-dosing adjustments pending operator review.
-    When operators arrived on shift, they found segments of the control interface in a
-    restricted state and notified Riverton’s cybersecurity team. As analysts reviewed system
-    logs, a second alert indicated irregular sensor-feedback patterns that the AI associated
-    with potential unauthorized influence on dosing commands. Although water quality and
-    pressure levels remained stable, the combination of automated restrictions and successive
-    alerts signaled a possible compromise of the control environment and outlined the
-    operational conditions within which practitioners would later assess whether to maintain
-    or override the AI-imposed restrictions.
+  triggering_condition_key_events:
+    - The AI platform flagged an abrupt deviation in remote-access activity targeting programmable logic controllers.
+    - Because PLCs regulate chemical-treatment functions, the anomaly carried immediate operational significance.
+    - The system classified the deviation as high risk and automatically restricted certain chemical-dosing adjustments.
+    - When operators arrived on shift, portions of the control interface were inaccessible or restricted.
+    - A second alert indicated irregular sensor-feedback patterns associated with potential unauthorized influence.
+    - Although water quality and pressure remained stable, the alerts signaled a possible compromise of the control environment.
 
 technical:
-  decision_context: >
-    The onset of the anomalous activity created a decision context in which Riverton’s
-    cybersecurity staff and plant supervisors had to determine whether to maintain the
-    AI-initiated restrictions or restore full operator control while analysts reviewed the
-    alerts. Because the AI platform had autonomously classified deviations in remote-access
-    activity and sensor-feedback patterns as high risk—and had imposed restrictive actions on
-    that basis—the immediate task for practitioners involved establishing how these alerts
-    should guide their operational posture.
+  decision_context:
+    - Riverton’s cybersecurity staff and plant supervisors had to determine whether to maintain AI-initiated restrictions or restore full operator control.
+    - The AI system had autonomously classified activity as high risk and imposed restrictive actions.
+    - Practitioners were required to decide how the alerts should guide operational posture while analysis continued.
 
   nist_csf_mapping:
-    - function: "DE – Detect"
+    - function: "Detect (DE)"
       categories:
         - "DE.AE – Adverse Event Analysis"
         - "DE.CM – Continuous Monitoring"
       rationale: >
-        This decision context aligns with the Detect function of the NIST CSF because
-        practitioners were required to evaluate whether the automated alerts indicated
-        potential unauthorized influence or reflected a non-malicious system irregularity.
-        Framing the situation through the Detect function clarifies that the operational task
-        at this stage involved assessing the significance of the alerts rather than initiating
-        containment or mitigation actions. This procedural framing defined the boundaries
-        within which practitioners assessed whether the AI-initiated restrictions should
-        remain in place pending further analysis or be reconsidered.
+        This decision aligns with the Detect function of the NIST CSF because practitioners were
+        required to evaluate whether automated alerts reflected malicious activity or benign
+        system irregularities. Framing the situation through Detect clarifies that the
+        operational task involved assessing the significance of alerts rather than initiating
+        containment or mitigation actions.
 
 ethical:
-  pfce_analysis: >
-    Viewed through the PFCE, the decision context introduced ethical tension as the
-    AI-initiated restrictions limited operators’ ability to adjust chemical-treatment
-    functions while automated alerts were still being reviewed. Within this context,
-    maintaining the restrictive state implicated beneficence, as the precautionary posture
-    was intended to prevent potential harm, while simultaneously engaging non-maleficence
-    because prolonged restrictions could affect the reliability of treatment operations.
-    Autonomy was implicated because operators temporarily lacked full authority over system
-    controls during a period when manual adjustments might otherwise have been considered.
-    Justice was implicated insofar as any disruption to water-treatment processes could have
-    uneven downstream effects on communities that rely on consistent service delivery.
-    Explicability was implicated because practitioners were working with limited insight into
-    how the system classified the anomalous activity and why specific restrictions were
-    triggered. Taken together, these obligations clarify the ethical significance of the
-    situation before any operational decision regarding the AI-initiated restrictions was
-    made.
-
-  tensions:
+  tension:
     - id: "T1"
       description: >
         Maintaining AI-imposed restrictions as a precautionary measure to prevent potential
-        harm to public health versus the risk that prolonged restrictions could themselves
-        affect the reliability of water-treatment operations.
+        harm to public health versus the risk that prolonged restrictions could affect the
+        reliability of water-treatment operations.
 
-  pfce_mapping:
+  pfce_analysis:
     - principle: "Beneficence"
       description: >
         Maintaining a precautionary operational posture intended to prevent potential harm
         while the integrity of the control environment remained uncertain.
     - principle: "Non-maleficence"
       description: >
-        Avoiding harm that could arise if prolonged operational restrictions affected the
-        reliability of chemical-treatment processes.
+        Prolonged operational restrictions risked affecting the reliability of
+        chemical-treatment processes and introducing downstream harm.
     - principle: "Autonomy"
       description: >
-        The temporary limitation on operators’ authority to adjust system controls while
-        automated restrictions remained in effect.
+        Operators temporarily lacked full authority to adjust system controls while automated
+        restrictions remained in effect.
     - principle: "Justice"
       description: >
-        The potential for uneven downstream effects on communities that rely on consistent
-        water-treatment service delivery.
+        Any disruption to water-treatment processes could produce uneven downstream effects
+        on communities dependent on consistent service delivery.
     - principle: "Explicability"
       description: >
-        The need for sufficient understanding of how the AI system classified the anomalous
-        activity and why specific restrictions were triggered.
+        Limited insight into how the AI system classified anomalous activity constrained
+        practitioners’ ability to interpret and justify the imposed restrictions.
 
 constraints:
-  - type: "Regulatory requirements"
-    description: >
-      The water utility operated under regulatory requirements governing chemical-treatment
-      processes and documentation practices.
-    effect_on_decision: >
-      These requirements limited the range of operational adjustments that could be made
-      while the system remained in a restricted state.
-
-  - type: "Parallel authorities"
-    description: >
-      The city’s cybersecurity and utilities teams operated under parallel authorities.
-    effect_on_decision: >
-      This created structural challenges in determining which operational posture should
-      guide actions when automated controls were limited.
-
-  - type: "Vendor dependency"
-    description: >
-      Access to portions of the AI platform’s diagnostic logs and analysis tools required
-      external vendor support.
-    effect_on_decision: >
-      Vendor dependency constrained Riverton’s ability to independently review certain
-      diagnostic information during the incident.
-
-  - type: "Risk-governance policies"
-    description: >
-      Municipal risk-governance policies emphasized precaution in critical infrastructure
-      operations.
-    effect_on_decision: >
-      These policies elevated the threshold for modifying automated restrictions even when
-      those restrictions affected routine workflows.
+  - The water utility operated under regulatory requirements governing chemical-treatment processes.
+  - Cybersecurity and utilities teams functioned under parallel authorities.
+  - Diagnostic access to portions of the AI platform required vendor involvement.
+  - Municipal risk-governance policies emphasized precaution in critical infrastructure operations.
 
 decision_outcome:
   decision: >
-    Riverton maintained the AI-initiated restrictions while technical staff continued
-    reviewing the anomalous activity, then restored full manual control once subsequent log
-    analysis, vendor consultation, and targeted diagnostics indicated the behavior stemmed
-    from a misconfiguration rather than malicious activity.
+    Riverton maintained the AI-initiated restrictions while analysts reviewed the anomalous
+    activity, then restored full manual control after diagnostics and vendor consultation
+    indicated a misconfiguration rather than malicious activity.
 
-  outcomes_implications: >
-    Maintaining the restrictions preserved a precautionary posture but introduced short-term
-    operational inefficiencies, requiring additional staff effort and limiting access to the
-    platform’s full range of automated adjustments. These effects influenced the continuity
-    of essential municipal operations and shaped how residents might assess the reliability
-    and dependability of water-treatment services.
-
-  ethical_implications:
-    - >
-      The decision illustrates how precautionary technical measures can impose operational
-      burdens that affect the continuity of essential municipal services.
-    - >
-      Shifts in standard workflows resulting from protective measures can influence public
-      perceptions of institutional dependability.
-    - >
-      Decisions intended to preserve system safety can produce downstream impacts relevant
-      to public trust and institutional legitimacy.
+  outcomes_implications:
+    - The precautionary posture preserved system safety during uncertainty.
+    - Temporary operational inefficiencies increased staff workload.
+    - Access to the platform’s full range of automated adjustments was restricted.
+    - Continuity of essential municipal services was maintained but under constrained conditions.
+    - The incident shaped perceptions of system reliability and institutional dependability.
