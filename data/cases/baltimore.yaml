@@ -43,30 +43,26 @@ ethical:
       description: >
         Preventing further ransomware spread through additional system isolation while maintaining access to essential municipal services relied upon for daily operations.
 
-
+  
   pfce_analysis:
     - principle: "Beneficence"
-      analysis: >
+      description: >
         Containment actions were considered as a means of limiting further ransomware spread
         and reducing potential harm to municipal systems and services.
-
     - principle: "Non-maleficence"
-      analysis: >
+      description: >
         Disconnecting additional systems introduced the risk of harm through disruption of
         essential municipal services relied upon by residents and departments.
-
     - principle: "Autonomy"
-      analysis: >
+      description: >
         System isolation temporarily limited departmental staff’s ability to access or manage
         systems necessary for routine operational decision-making.
-
     - principle: "Justice"
-      analysis: >
+      description: >
         Service disruptions affected residents and businesses unevenly, depending on their
         reliance on timely access to municipal services.
-
     - principle: "Explicability"
-      analysis: >
+      description: >
         Limited visibility into ransomware propagation constrained practitioners’ ability to
         justify whether additional system isolation was necessary or overly precautionary.
 
