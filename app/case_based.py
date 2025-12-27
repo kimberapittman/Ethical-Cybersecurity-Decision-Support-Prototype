@@ -73,24 +73,32 @@ PFCE_HOVER = (
     "ethically relevant principles and tensions within cybersecurity decision contexts."
 )
 
-def _step_title_with_framework(step_num: int, title_prefix: str, acronym: str, hover: str, url: str):
+def _step_title_with_framework(step_num: int, title: str, acronym: str, hover: str, url: str):
     """
-    Render a step title where the framework acronym is:
+    Render a step title where the framework acronym inside the title is:
     - bold
     - underlined (dotted) to signal hover
     - shows a tooltip on hover
     - links out to the reference
+
+    IMPORTANT: `title` should contain `acronym` somewhere (e.g., "NIST CSF Mapping").
     """
+    tooltip_link = (
+        f'<a href="{html.escape(url)}" target="_blank" style="text-decoration: none;">'
+        f'  <span title="{html.escape(hover)}" '
+        f'        style="font-weight: 800; text-decoration: underline dotted; cursor: help;">'
+        f'    {html.escape(acronym)}'
+        f'  </span>'
+        f'</a>'
+    )
+
+    # Replace only the first occurrence of the acronym in the title
+    safe_title = html.escape(title).replace(html.escape(acronym), tooltip_link, 1)
+
     st.markdown(
         f"""
 <h2 style="margin: 0.2rem 0 0.8rem 0;">
-  {step_num}. {html.escape(title_prefix)} 
-  <a href="{html.escape(url)}" target="_blank" style="text-decoration: none;">
-    <span title="{html.escape(hover)}"
-          style="font-weight: 800; text-decoration: underline dotted; cursor: help;">
-      {html.escape(acronym)}
-    </span>
-  </a>
+  {step_num}. {safe_title}
 </h2>
         """,
         unsafe_allow_html=True,
@@ -261,6 +269,7 @@ def render_case(case_id: str):
                 PFCE_HOVER,
                 PFCE_URL,
             )
+
 
             pfce_items = case["ethical"].get("pfce_analysis", [])
 
