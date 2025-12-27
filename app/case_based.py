@@ -77,7 +77,7 @@ def _step_title_with_framework(step_num: int, title: str, acronym: str, hover: s
     """
     Render a step title where the framework acronym inside the title is:
     - bold
-    - underlined (dotted) to signal hover
+    - underlined to signal hover
     - shows a tooltip on hover
     - links out to the reference
 
@@ -86,7 +86,7 @@ def _step_title_with_framework(step_num: int, title: str, acronym: str, hover: s
     tooltip_link = (
         f'<a href="{html.escape(url)}" target="_blank" style="text-decoration: none;">'
         f'  <span title="{html.escape(hover)}" '
-        f'        style="font-weight: 800; text-decoration: underline dotted; cursor: help;">'
+        f'        style="font-weight: 800; text-decoration: underline; cursor: help;">'
         f'    {html.escape(acronym)}'
         f'  </span>'
         f'</a>'
@@ -283,7 +283,7 @@ def render_case(case_id: str):
                         st.markdown(
                             f"""
 - <span title="{html.escape(definition)}"
-    style="font-weight:700; text-decoration: underline dotted; cursor: help;">{html.escape(principle)}</span>: {html.escape(desc)}
+    style="font-weight:700; text-decoration: underline; cursor: help;">{html.escape(principle)}</span>: {html.escape(desc)}
                             """,
                             unsafe_allow_html=True,
                         )
