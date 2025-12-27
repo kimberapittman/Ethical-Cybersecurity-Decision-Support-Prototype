@@ -12,6 +12,7 @@ def _safe_rerun():
     except Exception:
         pass
 
+
 def _render_bullets(value):
     """
     Render a YAML value as bullets if it's a list,
@@ -27,6 +28,7 @@ def _render_bullets(value):
                 st.markdown(f"- {item}")
     else:
         st.write(value)
+
 
 PFCE_DEFINITIONS = {
     "Beneficence": "Obligation to act in ways that promote well-being and prevent harm.",
@@ -116,7 +118,6 @@ def render_case(case_id: str):
 
         return  # IMPORTANT: stop here so walkthrough doesn't render on same run
 
-
     # ==========================================================
     # VIEW 2: WALKTHROUGH (STEP-BASED)
     # ==========================================================
@@ -126,15 +127,17 @@ def render_case(case_id: str):
         step = st.session_state["cb_step"]
 
         # --- Visual separation to match collapsed view ---
-        st.markdown("<hr style='margin: 12px 0 16px 0; opacity: 0.35;'>", unsafe_allow_html=True)
+        st.markdown(
+            "<hr style='margin: 12px 0 16px 0; opacity: 0.35;'>",
+            unsafe_allow_html=True,
+        )
 
         st.subheader(case.get("title", case_id))
 
         if case.get("short_summary"):
             st.caption(case.get("short_summary", ""))
 
-        st.progress(step / 9.0)
-
+        st.progress(step / 10.0)
 
         if step == 1:
             st.header("1. Technical and Operational Background")
@@ -147,10 +150,12 @@ def render_case(case_id: str):
             st.markdown("---")
 
         if step == 3:
-            st.header("3. Decision Context & NIST CSF Mapping")
-            st.markdown("**Decision Context**")
+            st.header("3. Decision Context")
             _render_bullets(case["technical"].get("decision_context"))
+            st.markdown("---")
 
+        if step == 4:
+            st.header("4. NIST CSF Mapping")
             st.markdown("**NIST CSF Framing**")
 
             mapping = case["technical"].get("nist_csf_mapping", [])
@@ -172,10 +177,10 @@ def render_case(case_id: str):
             else:
                 st.write("TBD")
 
-                st.markdown("---")
+            st.markdown("---")
 
-        if step == 4:
-            st.header("4. Ethical Tension")
+        if step == 5:
+            st.header("5. Ethical Tension")
             tensions = case["ethical"].get("tension", [])
             if tensions:
                 for t in tensions:
@@ -184,13 +189,13 @@ def render_case(case_id: str):
                 st.write("TBD")
             st.markdown("---")
 
-        if step == 5:
-            st.header("5. PFCE Analysis")
+        if step == 6:
+            st.header("6. PFCE Analysis")
             _render_bullets(case["ethical"].get("pfce_analysis"))
             st.markdown("---")
 
-        if step == 6:
-            st.header("6. PFCE Principle Mapping")
+        if step == 7:
+            st.header("7. PFCE Principle Mapping")
             pfce = case["ethical"].get("pfce_mapping", [])
             if pfce:
                 for p in pfce:
@@ -204,7 +209,7 @@ def render_case(case_id: str):
                         - <span title="{html.escape(definition)}"
                             style="font-weight:700; text-decoration: underline dotted; cursor: help;">{html.escape(principle)}</span>: {html.escape(desc)}
                             """,
-                            unsafe_allow_html=True
+                            unsafe_allow_html=True,
                         )
                     else:
                         st.markdown(f"- **{principle}** – {desc}")
@@ -213,33 +218,39 @@ def render_case(case_id: str):
                 st.write("TBD")
             st.markdown("---")
 
-        if step == 7:
-            st.header("7. Institutional and Governance Constraints")
+        if step == 8:
+            st.header("8. Institutional and Governance Constraints")
             constraints = case.get("constraints", [])
             if constraints:
                 for c in constraints:
                     if isinstance(c, dict):
-                        st.markdown(f"- **{c.get('type','TBD')}** – {c.get('description','TBD')}")
+                        st.markdown(
+                            f"- **{c.get('type','TBD')}** – {c.get('description','TBD')}"
+                        )
                         if c.get("effect_on_decision"):
-                            st.markdown(f"  \n  _Effect on decision_: {c.get('effect_on_decision')}")
+                            st.markdown(
+                                f"  \n  _Effect on decision_: {c.get('effect_on_decision')}"
+                            )
                     else:
                         st.markdown(f"- {c}")
             else:
                 st.write("TBD")
             st.markdown("---")
 
-        if step == 8:
-            st.header("8. Decision")
+        if step == 9:
+            st.header("9. Decision")
             st.write(case["decision_outcome"].get("decision"))
             st.markdown("---")
 
-        if step == 9:
-            st.header("9. Outcomes and Implications")
+        if step == 10:
+            st.header("10. Outcomes and Implications")
             _render_bullets(case["decision_outcome"].get("outcomes_implications"))
             st.markdown("---")
 
         # Navigation controls (centered layout)
-        col_prev, col_spacer_left, col_next, col_spacer_right, col_exit = st.columns([1, 2, 1, 2, 1])
+        col_prev, col_spacer_left, col_next, col_spacer_right, col_exit = st.columns(
+            [1, 2, 1, 2, 1]
+        )
 
         with col_prev:
             if step > 1 and st.button("◀ Previous", key=f"cb_prev_{step}_{case_id}"):
@@ -247,9 +258,13 @@ def render_case(case_id: str):
                 _safe_rerun()
 
         with col_next:
-            if step < 9:
-                if st.button("Next ▶", key=f"cb_next_{step}_{case_id}", use_container_width=True):
-                    st.session_state["cb_step"] = min(9, step + 1)
+            if step < 10:
+                if st.button(
+                    "Next ▶",
+                    key=f"cb_next_{step}_{case_id}",
+                    use_container_width=True,
+                ):
+                    st.session_state["cb_step"] = min(10, step + 1)
                     _safe_rerun()
             else:
                 st.info("End of Case.")
@@ -258,6 +273,5 @@ def render_case(case_id: str):
             if st.button("Exit Walkthrough", key=f"cb_exit_walkthrough_{case_id}"):
                 st.session_state["cb_view"] = "collapsed"
                 _safe_rerun()
-
 
         return
