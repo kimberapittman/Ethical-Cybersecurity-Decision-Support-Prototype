@@ -31,11 +31,29 @@ def _render_bullets(value):
 
 
 PFCE_DEFINITIONS = {
-    "Beneficence": "Obligation to act in ways that promote well-being and prevent harm.",
-    "Non-maleficence": "Obligation to avoid actions that cause harm.",
-    "Autonomy": "Respect for individuals’ ability to make informed decisions about matters affecting them.",
-    "Justice": "Fair and equitable distribution of benefits, burdens, and risks.",
-    "Explicability": "Obligation to ensure decisions and systems can be understood, explained, and justified.",
+    "Beneficence": (
+        "Cybersecurity technologies should be used to benefit humans, "
+        "promote human well-being, and make our lives better overall."
+    ),
+    "Non-maleficence": (
+        "Cybersecurity technologies should not be used to intentionally harm humans "
+        "or to make our lives worse overall."
+    ),
+    "Autonomy": (
+        "Cybersecurity technologies should be used in ways that respect human autonomy. "
+        "Humans should be able to make informed decisions for themselves about how that "
+        "technology is used in their lives."
+    ),
+    "Justice": (
+        "Cybersecurity technologies should be used to promote fairness, equality, "
+        "and impartiality. They should not be used to unfairly discriminate, "
+        "undermine solidarity, or prevent equal access."
+    ),
+    "Explicability": (
+        "Cybersecurity technologies should be used in ways that are intelligible, "
+        "transparent, and comprehensible, and it should be clear who is accountable "
+        "and responsible for their use."
+    ),
 }
 
 
@@ -156,7 +174,6 @@ def render_case(case_id: str):
 
         if step == 4:
             st.header("4. NIST CSF Mapping")
-            st.markdown("**NIST CSF Framing**")
 
             mapping = case["technical"].get("nist_csf_mapping", [])
 
