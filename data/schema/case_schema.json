@@ -7,7 +7,6 @@
   "required": [
     "id",
     "title",
-    "short_summary",
     "sources",
     "background",
     "technical",
@@ -27,11 +26,6 @@
       "minLength": 1
     },
 
-    "short_summary": {
-      "type": "string",
-      "minLength": 1
-    },
-
     "sources": {
       "type": "array",
       "minItems": 1,
@@ -47,12 +41,14 @@
       ],
       "properties": {
         "technical_operational_background": {
-          "type": "string",
-          "minLength": 1
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
         },
         "triggering_condition_key_events": {
-          "type": "string",
-          "minLength": 1
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
         }
       }
     },
@@ -66,8 +62,9 @@
       ],
       "properties": {
         "decision_context": {
-          "type": "string",
-          "minLength": 1
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
         },
 
         "nist_csf_mapping": {
@@ -103,17 +100,14 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
+        "tension",
         "pfce_analysis",
         "pfce_mapping"
       ],
       "properties": {
-        "pfce_analysis": {
-          "type": "string",
-          "minLength": 1
-        },
-
-        "tensions": {
+        "tension": {
           "type": "array",
+          "minItems": 1,
           "items": {
             "type": "object",
             "additionalProperties": false,
@@ -123,6 +117,12 @@
               "description": { "type": "string", "minLength": 1 }
             }
           }
+        },
+
+        "pfce_analysis": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
         },
 
         "pfce_mapping": {
@@ -157,16 +157,7 @@
     "constraints": {
       "type": "array",
       "minItems": 1,
-      "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": ["type", "description", "effect_on_decision"],
-        "properties": {
-          "type": { "type": "string", "minLength": 1 },
-          "description": { "type": "string", "minLength": 1 },
-          "effect_on_decision": { "type": "string", "minLength": 1 }
-        }
-      }
+      "items": { "type": "string", "minLength": 1 }
     },
 
     "decision_outcome": {
@@ -174,8 +165,7 @@
       "additionalProperties": false,
       "required": [
         "decision",
-        "outcomes_implications",
-        "ethical_implications"
+        "outcomes_implications"
       ],
       "properties": {
         "decision": {
@@ -184,8 +174,9 @@
         },
 
         "outcomes_implications": {
-          "type": "string",
-          "minLength": 1
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
         },
 
         "ethical_implications": {
