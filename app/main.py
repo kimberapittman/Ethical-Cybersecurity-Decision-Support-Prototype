@@ -13,8 +13,6 @@ import streamlit as st
 from logic.loaders import list_cases
 from app import case_based, open_ended
 
-# App-level modules
-
 # ---------- Page config ----------
 st.set_page_config(
     page_title="Municipal Cyber Ethics Decision-Support",
@@ -147,37 +145,88 @@ footer, #MainMenu{ visibility: hidden; }
 )
 
 
-def main():
-    # ---------- SIDEBAR ----------
-    with st.sidebar:
+def _enter_mode(mode: str):
+    st.session_state["active_mode"] = mode
+    st.session_state["landing_complete"] = True
+    st.rerun()
+
+
+def _render_landing_page():
+    st.markdown(
+        """
+<div style='text-align:center; margin-top: 0.5rem;'>
+  <h2 style='margin-bottom:0.35rem;'>Select a Mode</h2>
+</div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown("<hr style='margin: 12px 0 16px 0; opacity: 0.25;'>", unsafe_allow_html=True)
+
+    col1, col2 = st.columns(2, gap="large")
+
+    with col1:
         st.markdown(
-            "<h3 style='margin:0 0 0.5rem 0; font-weight:700;'>Mode</h3>",
+            """
+<div class="listbox">
+  <div style="font-weight:700; font-size:1.1rem; margin-bottom:6px;">Case-Based Mode</div>
+  <div class="sub" style="margin-bottom:10px;">
+    Use reconstructed cases to see how the decision-support structure works end-to-end.
+  </div>
+  <ul class="tight-list">
+    <li>Pre-filled case data from Chapter III</li>
+    <li>Structured walkthrough across steps</li>
+    <li>Demonstrates the prototype’s logic and framing</li>
+  </ul>
+</div>
+            """,
             unsafe_allow_html=True,
         )
-        mode = st.radio(
-            label="Prototype mode",
-            options=["Case-Based", "Open-Ended"],
-            index=0,
-            key="mode_selector",
-            label_visibility="collapsed",
+        if st.button("Enter Case-Based Mode", use_container_width=True, key="enter_case_based"):
+            _enter_mode("Case-Based")
+
+    with col2:
+        st.markdown(
+            """
+<div class="listbox">
+  <div style="font-weight:700; font-size:1.1rem; margin-bottom:6px;">Open-Ended Mode</div>
+  <div class="sub" style="margin-bottom:10px;">
+    Apply the structured walkthrough to a new or unfolding cybersecurity dilemma.
+  </div>
+  <ul class="tight-list">
+    <li>User-entered inputs (no prebuilt case)</li>
+    <li>CSF procedural framing + PFCE ethical reasoning</li>
+    <li>Documents reasoning without prescribing actions</li>
+  </ul>
+</div>
+            """,
+            unsafe_allow_html=True,
         )
+        if st.button("Enter Open-Ended Mode", use_container_width=True, key="enter_open_ended"):
+            _enter_mode("Open-Ended")
 
-        # --- Reset state when switching modes ---
-        if "last_mode" not in st.session_state:
-            st.session_state["last_mode"] = mode
+    st.stop()
 
-        if st.session_state["last_mode"] != mode:
-            # Clear Case-Based state when leaving/entering Case-Based
-            for k in list(st.session_state.keys()):
-                if k.startswith("cb_"):
-                    del st.session_state[k]
 
-            st.session_state["last_mode"] = mode
-            st.rerun()
+def main():
+    # ---------- SESSION STATE DEFAULTS ----------
+    if "landing_complete" not in st.session_state:
+        st.session_state["landing_complete"] = False
+
+    if "active_mode" not in st.session_state:
+        st.session_state["active_mode"] = "Case-Based"
+
+    # ---------- SIDEBAR ----------
+    with st.sidebar:
+        # Optional: allow switching modes without nuking their progress
+        if st.session_state.get("landing_complete"):
+            if st.button("Change mode", use_container_width=True, key="back_to_landing"):
+                st.session_state["landing_complete"] = False
+                st.rerun()
 
         st.markdown("---")
 
-        # Prototype Overview
+        # Prototype Overview (always visible)
         st.markdown(
             "<h3 style='margin:0 0 0.5rem 0; font-weight:700;'>Prototype Overview</h3>",
             unsafe_allow_html=True,
@@ -194,7 +243,7 @@ def main():
 
         st.markdown("---")
 
-        # Appendix
+        # Appendix (always visible)
         st.markdown(
             "<h3 style='margin:0 0 0.5rem 0; font-weight:700;'>Appendix</h3>",
             unsafe_allow_html=True,
@@ -203,34 +252,31 @@ def main():
         with st.expander("📚 Framework References"):
             st.markdown(
                 """
-        **National Institute of Standards and Technology.**  
-        [*The NIST Cybersecurity Framework (CSF) 2.0* (2024)](https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf)
+**National Institute of Standards and Technology.**  
+[*The NIST Cybersecurity Framework (CSF) 2.0* (2024)](https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf)
 
-        **Formosa, Paul, Michael Wilson, and Deborah Richards.**  
-        [*A Principlist Framework for Cybersecurity Ethics* (2021)](https://doi.org/10.1016/j.cose.2021.102382)
-        Access to the full text may depend on institutional or publisher subscriptions.
+**Formosa, Paul, Michael Wilson, and Deborah Richards.**  
+[*A Principlist Framework for Cybersecurity Ethics* (2021)](https://doi.org/10.1016/j.cose.2021.102382)
+Access to the full text may depend on institutional or publisher subscriptions.
                 """
             )
 
     # ---------- MAIN HEADER ----------
     st.markdown(
         """
-    <div style='text-align: center;'>
-    <h1>🛡️ Municipal Cyber Ethics Decision-Support Prototype</h1>
-    <div style="
-        font-size: 2.0rem;
-        font-weight: 800;
-        letter-spacing: 0.01em;
-        color: #4C8BF5;
-        margin-top: 0.25rem;
-    ">
-        Because what's secure isn't always what's right.
-    </div>
-    </div>
-    """,
+<div style='text-align: center;'>
+  <h1>🛡️ Municipal Cyber Ethics Decision-Support Prototype</h1>
+  <h4 style='color:#4C8BF5;'>Because what's secure isn't always what's right.</h4>
+</div>
+        """,
         unsafe_allow_html=True,
     )
 
+    # ---------- LANDING GATE (shown on fresh app load; not on reruns after selection) ----------
+    if not st.session_state["landing_complete"]:
+        _render_landing_page()
+
+    mode = st.session_state.get("active_mode", "Case-Based")
 
     # ---------- MODE-SPECIFIC EXPLAINERS (MAIN AREA) ----------
     cb_view = st.session_state.get("cb_view", "collapsed")
@@ -240,17 +286,7 @@ def main():
             "<h2 style='text-align: center; margin-top: 0.25rem;'>Case-Based Mode</h2>",
             unsafe_allow_html=True,
         )
-
-        with st.expander("About Case-Based Mode"):
-            st.markdown(
-                """
-Case-Based Mode presents analytically structured municipal cybersecurity cases used to demonstrate how the prototype’s decision-support logic operates.
-
-Each case is derived from the Chapter III analysis and organized to surface the decision-relevant elements necessary for structured reasoning, rather than to reproduce the full narrative detail of the dissertation. Users can step through each case to observe how technical context, ethical significance, and organizational conditions interact within a single cybersecurity decision process.
-
-The purpose of this mode is not to evaluate historical decisions or prescribe outcomes, but to illustrate how ethical reasoning can be made explicit, structured, and traceable when cybersecurity decisions are examined systematically.
-                """
-            )
+        st.divider()
 
     elif mode != "Case-Based":
         st.markdown(
@@ -258,20 +294,7 @@ The purpose of this mode is not to evaluate historical decisions or prescribe ou
             unsafe_allow_html=True,
         )
 
-        with st.expander("About Open-Ended Mode"):
-            st.markdown(
-                """
-Open-Ended Mode allows users to apply the prototype’s reasoning structure to new or unfolding cybersecurity situations.
-
-Rather than working from a pre-constructed case, users enter decision-specific information drawn from their own operational context and are guided through the same structured reasoning sequence demonstrated in Case-Based Mode. This enables exploration of how ethical significance, technical context, and institutional conditions interact within decisions that may not yet be fully defined or resolved.
-
-The purpose of this mode is not to generate decisions or recommendations, but to support disciplined ethical reasoning by making assumptions, constraints, and value tensions explicit as cybersecurity practitioners work through complex situations.
-                """
-            )
-
     # ---------- CASE SELECTOR (Case-Based Only) ----------
-    selected_case = None
-
     if mode == "Case-Based" and cb_view == "collapsed":
         cases = list_cases()
 
@@ -285,9 +308,7 @@ The purpose of this mode is not to generate decisions or recommendations, but to
                 st.session_state["cb_case_title"] = case_titles[0]
 
             if "cb_case_id" not in st.session_state:
-                first = next(
-                    c for c in cases if c["title"] == st.session_state["cb_case_title"]
-                )
+                first = next(c for c in cases if c["title"] == st.session_state["cb_case_title"])
                 st.session_state["cb_case_id"] = first["id"]
 
             def _on_case_change():
