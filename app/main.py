@@ -252,8 +252,6 @@ The purpose of this mode is not to evaluate historical decisions or prescribe ou
                 """
             )
 
-        st.divider()
-
     elif mode != "Case-Based":
         st.markdown(
             "<h2 style='text-align: center; margin-top: 0.25rem;'>Open-Ended Mode</h2>",
