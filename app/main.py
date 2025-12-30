@@ -272,39 +272,35 @@ def main():
         with st.expander("ℹ️ About This Prototype"):
             st.markdown(
                 """
-        <span style="font-weight:700; border-bottom:2px solid rgba(76,139,245,0.6);">
+        <span style="font-weight:700; border-bottom:2px solid rgba(255,255,255,0.6); padding-bottom:2px;">
         What it is
-        </span>  
-        This prototype is a decision-support tool designed to help municipal cybersecurity practitioners reason through ethical tensions that arise during cybersecurity decision-making.
+        </span>
 
-        <br><br>
+        This prototype is a decision-support tool designed to help municipal cybersecurity practitioners reason through ethically significant cybersecurity decisions.
 
-        <span style="font-weight:700; border-bottom:2px solid rgba(76,139,245,0.6);">
-        What it does
-        </span>  
         It provides a structured walkthrough that helps practitioners:
-        - Identify ethically significant conditions,
-        - Clarify competing obligations,
-        - Account for institutional and governance constraints, and
-        - Document ethical reasoning alongside technical decisions.
+        - Identify the triggering condition and decision context
+        - Recognize why the situation is ethically significant
+        - Surface relevant ethical obligations and tensions
+        - Account for institutional and governance constraints
+        - Document ethical reasoning alongside technical decisions
 
-        <br><br>
+        <br>
 
-        <span style="font-weight:700; border-bottom:2px solid rgba(76,139,245,0.6);">
-        What it does not do
-        </span>  
-        This prototype does not recommend actions, determine outcomes, or evaluate decisions. It supports ethical reasoning—not decision authority.
-
-        <br><br>
-
-        <span style="font-weight:700; border-bottom:2px solid rgba(76,139,245,0.6);">
+        <span style="font-weight:700; border-bottom:2px solid rgba(255,255,255,0.6); padding-bottom:2px;">
         How it works
-        </span>  
-        The prototype integrates two established frameworks:
-        - **NIST Cybersecurity Framework (CSF) 2.0** to situate decisions within the cybersecurity lifecycle and clarify the technical decision context, and  
-        - **Principlist Framework for Cybersecurity Ethics (PFCE)** to surface ethically significant principles and tensions associated with that context.
+        </span>
 
-        Together, these frameworks make ethical reasoning explicit, traceable, and defensible within real-world municipal cybersecurity environments.
+        The prototype guides practitioners through a step-by-step reasoning process that mirrors real-world cybersecurity decision-making.
+
+        Each step prompts the user to articulate:
+        - What triggered the situation and what decision is being faced  
+        - How the decision fits procedurally within the cybersecurity lifecycle  
+        - Why the situation carries ethical significance  
+        - Which ethical principles and tensions are implicated  
+        - What institutional or governance conditions constrain feasible responses  
+
+        Technical context is structured using the **NIST Cybersecurity Framework (CSF) 2.0**, while ethical reasoning is supported using the **Principlist Framework for Cybersecurity Ethics (PFCE)**. Together, these frameworks are used to organize and document reasoning—not to prescribe actions or determine outcomes.
                 """,
                 unsafe_allow_html=True,
             )
