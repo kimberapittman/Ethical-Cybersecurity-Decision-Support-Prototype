@@ -208,6 +208,52 @@ def _render_landing_page():
     st.stop()
 
 
+def render_app_header(compact: bool = False):
+    if compact:
+        st.markdown(
+            """
+            <div style='text-align:center;'>
+              <h2 style='margin-bottom:0.25rem;'>🛡️ Municipal Cyber Ethics Decision-Support Prototype</h2>
+              <div style="font-size:0.75rem; font-weight:800; letter-spacing:0.01em; color:#4C8BF5; margin-top:0.1rem;">
+                Because what's secure isn't always what's right.
+              </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    else:
+        st.markdown(
+            """
+            <div style='text-align:center;'>
+              <h1>🛡️ Municipal Cyber Ethics Decision-Support Prototype</h1>
+              <div style="font-size:2.0rem; font-weight:800; letter-spacing:0.01em; color:#4C8BF5; margin-top:0.25rem;">
+                Because what's secure isn't always what's right.
+              </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+    # one consistent divider everywhere
+    st.markdown(
+        """
+        <hr style='
+            margin: 14px 0 20px 0;
+            border: none;
+            height: 2px;
+            background: linear-gradient(
+                90deg,
+                rgba(76,139,245,0.15),
+                rgba(76,139,245,0.55),
+                rgba(76,139,245,0.15)
+            );
+        '>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+
 def main():
     # ---------- SESSION STATE DEFAULTS ----------
     if "landing_complete" not in st.session_state:
@@ -260,20 +306,16 @@ def main():
 Access to the full text may depend on institutional or publisher subscriptions.
                 """
             )
+        st.markdown("---")
 
-    # ---------- MAIN HEADER ----------
-    st.markdown(
-        """
-<div style='text-align: center;'>
-  <h1>🛡️ Municipal Cyber Ethics Decision-Support Prototype</h1>
-  <h4 style='color:#4C8BF5;'>Because what's secure isn't always what's right.</h4>
-</div>
-        """,
-        unsafe_allow_html=True,
-    )
+    # ---------- HEADER (ALWAYS) ----------
+    in_case_walkthrough = st.session_state.get("cb_view") == "walkthrough"
+    in_open_walkthrough = st.session_state.get("oe_step", 0) > 0
+
+    render_app_header(compact=in_case_walkthrough or in_open_walkthrough)
 
     # ---------- LANDING GATE (shown on fresh app load; not on reruns after selection) ----------
-    if not st.session_state["landing_complete"]:
+    if not st.session_state.get("landing_complete", False):
         _render_landing_page()
 
     mode = st.session_state.get("active_mode", "Case-Based")
@@ -286,7 +328,6 @@ Access to the full text may depend on institutional or publisher subscriptions.
             "<h2 style='text-align: center; margin-top: 0.25rem;'>Case-Based Mode</h2>",
             unsafe_allow_html=True,
         )
-        st.divider()
 
     elif mode != "Case-Based":
         st.markdown(
