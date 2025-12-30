@@ -161,7 +161,6 @@ def _render_landing_page():
         unsafe_allow_html=True,
     )
 
-    st.markdown("<hr style='margin: 12px 0 16px 0; opacity: 0.25;'>", unsafe_allow_html=True)
 
     col1, col2 = st.columns(2, gap="large")
 
@@ -262,16 +261,8 @@ def main():
     if "active_mode" not in st.session_state:
         st.session_state["active_mode"] = "Case-Based"
 
-    # ---------- SIDEBAR ----------
+    # ---------- SIDEBAR (ALWAYS) ----------
     with st.sidebar:
-        # Optional: allow switching modes without nuking their progress
-        if st.session_state.get("landing_complete"):
-            if st.button("Change mode", use_container_width=True, key="back_to_landing"):
-                st.session_state["landing_complete"] = False
-                st.rerun()
-
-        st.markdown("---")
-
         # Prototype Overview (always visible)
         st.markdown(
             "<h3 style='margin:0 0 0.5rem 0; font-weight:700;'>Prototype Overview</h3>",
@@ -312,7 +303,16 @@ Access to the full text may depend on institutional or publisher subscriptions.
     in_case_walkthrough = st.session_state.get("cb_view") == "walkthrough"
     in_open_walkthrough = st.session_state.get("oe_step", 0) > 0
 
+    # Show "Change mode" ONLY when not in a walkthrough
+    if st.session_state.get("landing_complete", False) and not (in_case_walkthrough or in_open_walkthrough):
+        colA, colB, colC = st.columns([1, 2, 1])
+        with colC:
+            if st.button("Change mode", key="change_mode_main"):
+                st.session_state["landing_complete"] = False
+                st.rerun()
+
     render_app_header(compact=in_case_walkthrough or in_open_walkthrough)
+
 
     # ---------- LANDING GATE (shown on fresh app load; not on reruns after selection) ----------
     if not st.session_state.get("landing_complete", False):
