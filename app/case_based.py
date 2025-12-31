@@ -171,18 +171,19 @@ def render_case(case_id: str):
                 st.markdown(
                     _html_block(
                         f"""
-                        <a href="?cb_case_id={html.escape(cid)}" target="_self" style="text-decoration:none; color: inherit; display:block;">
-                          <div class="listbox" style="cursor:pointer;">
+                        <a href="?cb_case_id={html.escape(id)}" target="_self" style="text-decoration:none; color: inherit; display:block;">
+                        <div class="listbox" style="cursor:pointer;">
                             <div style="font-weight:700; font-size:1.05rem; margin-bottom:6px; text-align:center;">
-                              {html.escape(title)}
+                            {html.escape(title)}
                             </div>
-                            {"<div class='sub' style='text-align:center;'>" + html.escape(short_summary) + "</div>" if short_summary else ""}
-                          </div>
+                            {f"<div class='sub' style='text-align:center;'>{html.escape(short_summary)}</div>" if short_summary else ""}
+                        </div>
                         </a>
                         """
                     ),
                     unsafe_allow_html=True,
                 )
+
 
         # Handle tile click via query params (same tab)
         try:

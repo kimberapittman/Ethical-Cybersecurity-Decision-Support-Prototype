@@ -361,33 +361,53 @@ def main():
     # ---------- URL PARAM MODE ENTRY (tile click) ----------
     try:
         qp = st.query_params
+
+        # existing params
         mode_qp = qp.get("mode", None)
         start_qp = qp.get("start", None)
 
-        if mode_qp in ("Case-Based", "Open-Ended"):
-            st.session_state["active_mode"] = mode_qp
+        # NEW: case tile selection param
+        cb_case_id_qp = qp.get("cb_case_id", None)
+
+        # If a case was clicked, force Case-Based walkthrough for that case
+        if cb_case_id_qp:
+            st.session_state["active_mode"] = "Case-Based"
             st.session_state["landing_complete"] = True
 
-            if mode_qp == "Case-Based":
-                st.session_state["cb_view"] = "collapsed"
+            st.session_state["cb_case_id"] = cb_case_id_qp
+            st.session_state["cb_prev_case_id"] = cb_case_id_qp
 
-            if start_qp == "walkthrough":
-                if mode_qp == "Case-Based":
-                    # Force user to select a case first (tile selector lives in case_based.py)
-                    st.session_state["cb_view"] = "select"
-                    st.session_state.pop("cb_case_id", None)
-                    st.session_state.pop("cb_case_title", None)
-                else:
-                    if st.session_state.get("oe_step", 0) == 0:
-                        st.session_state["oe_step"] = 1
-
+            # go straight into walkthrough
+            st.session_state["cb_view"] = "walkthrough"
+            st.session_state["cb_step"] = 1
+            st.session_state.pop("cb_step_return", None)
 
             try:
                 st.query_params.clear()
             except Exception:
                 pass
+
+        # Otherwise, handle your existing mode tiles
+        elif mode_qp in ("Case-Based", "Open-Ended"):
+            st.session_state["active_mode"] = mode_qp
+            st.session_state["landing_complete"] = True
+
+            if start_qp == "walkthrough":
+                if mode_qp == "Case-Based":
+                    # Case-Based must select a case first (tile selector lives in case_based.py)
+                    st.session_state["cb_view"] = "select"
+                else:
+                    if st.session_state.get("oe_step", 0) == 0:
+                        st.session_state["oe_step"] = 1
+
+            try:
+                st.query_params.clear()
+            except Exception:
+                pass
+
     except Exception:
         pass
+    
 
     # ---------- SIDEBAR (ALWAYS) ----------
     with st.sidebar:
