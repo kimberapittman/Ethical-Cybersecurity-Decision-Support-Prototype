@@ -171,12 +171,17 @@ def render_case(case_id: str):
                 st.markdown(
                     _html_block(
                         f"""
-                        <a href="?cb_case_id={html.escape(id)}" target="_self" style="text-decoration:none; color: inherit; display:block;">
+                        <a href="?cb_case_id={html.escape(str(cid))}" target="_self"
+                        style="text-decoration:none; color: inherit; display:block;">
                         <div class="listbox" style="cursor:pointer;">
                             <div style="font-weight:700; font-size:1.05rem; margin-bottom:6px; text-align:center;">
                             {html.escape(title)}
                             </div>
-                            {f"<div class='sub' style='text-align:center;'>{html.escape(short_summary)}</div>" if short_summary else ""}
+                            {(
+                                '<div class="sub" style="text-align:center;">'
+                                + html.escape(short_summary)
+                                + '</div>'
+                            ) if short_summary else ""}
                         </div>
                         </a>
                         """
@@ -377,14 +382,18 @@ def render_case(case_id: str):
             _render_bullets(case["decision_outcome"].get("outcomes_implications"))
             st.markdown("---")
 
-        # Navigation controls (centered layout)
-        col_prev, col_spacer_left, col_next, col_spacer_right, col_exit = st.columns(
-            [1, 2, 1, 2, 1]
-        )
+        # Navigation controls (Previous | Exit | Next)
+        col_prev, col_spacer1, col_exit, col_spacer2, col_next = st.columns([1, 2, 1.2, 2, 1])
+
 
         with col_prev:
             if step > 1 and st.button("◀ Previous", key=f"cb_prev_{step}_{case_id}"):
                 st.session_state["cb_step"] = max(1, step - 1)
+                _safe_rerun()
+
+        with col_exit:
+            if st.button("Exit Walkthrough", key=f"cb_exit_walkthrough_{case_id}", use_container_width=True):
+                st.session_state["cb_view"] = "select"
                 _safe_rerun()
 
         with col_next:
@@ -399,9 +408,5 @@ def render_case(case_id: str):
             else:
                 st.info("End of Case.")
 
-        with col_exit:
-            if st.button("Exit Walkthrough", key=f"cb_exit_walkthrough_{case_id}"):
-                st.session_state["cb_view"] = "select"
-                _safe_rerun()
 
         return
