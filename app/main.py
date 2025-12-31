@@ -392,14 +392,8 @@ def main():
         What It Is
         </span>
 
-        This prototype is a decision-support tool designed to help municipal cybersecurity practitioners reason through ethically significant cybersecurity decisions.
-
-        It provides a structured walkthrough that helps practitioners:
-        - Identify the triggering condition and decision context
-        - Recognize why the situation is ethically significant
-        - Surface relevant ethical obligations and tensions
-        - Account for institutional and governance constraints
-        - Document ethical reasoning alongside technical decisions
+        - A decision-support prototype designed to help municipal cybersecurity practitioners surface and reason through ethical tensions that may arise within cybersecurity decision-making  
+        - Focused on structuring ethical and technical reasoning, not prescribing actions or determining outcomes  
 
         <br>
 
@@ -407,19 +401,23 @@ def main():
         How It Works
         </span>
 
-        The prototype guides practitioners through a step-by-step reasoning process that mirrors real-world cybersecurity decision-making.
+        - Guides practitioners through a structured, step-by-step reasoning walkthrough implemented in two complementary modes:  
 
-        Each step prompts the user to articulate:
-        - What triggered the situation and what decision is being faced  
-        - How the decision fits procedurally within the cybersecurity lifecycle  
-        - Why the situation carries ethical significance  
-        - Which ethical principles and tensions are implicated  
-        - What institutional or governance conditions constrain feasible responses  
+          <strong>Case-Based Mode</strong>  
+          Uses reconstructed municipal cybersecurity cases to demonstrate the walkthrough and illustrate how the prototype was developed through analysis of real-world incidents.
 
-        Technical context is structured using the **NIST Cybersecurity Framework (CSF) 2.0**, while ethical reasoning is supported using the **Principlist Framework for Cybersecurity Ethics (PFCE)**. Together, these frameworks are used to organize and document reasoning—not to prescribe actions or determine outcomes.
+          <strong>Open-Ended Mode</strong>  
+          Applies the same walkthrough to a user-defined cybersecurity decision context and represents the intended use of the prototype.
+
+        - Across both modes, the walkthrough is structured to surface and document:  
+          - A triggering condition and decision context  
+          - Where the decision sits procedurally within the <strong>NIST Cybersecurity Framework (CSF) 2.0</strong>  
+          - The ethical tension raised by the decision context and how it can be articulated using the <strong>Principlist Framework for Cybersecurity Ethics (PFCE)</strong>  
+          - Institutional and governance constraints that shape feasible response options  
                 """,
                 unsafe_allow_html=True,
             )
+
 
         st.markdown("---")
 
