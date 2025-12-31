@@ -148,7 +148,7 @@ footer, #MainMenu{ visibility: hidden; }
 def _enter_mode(mode: str):
     st.session_state["active_mode"] = mode
     st.session_state["landing_complete"] = True
-    st.rerun()
+    # no st.rerun() — Streamlit reruns automatically on button click
 
 
 def _render_landing_page():
@@ -317,12 +317,15 @@ def main():
         with st.expander("📚 Framework References"):
             st.markdown(
                 """
-**National Institute of Standards and Technology.**  
-[*The NIST Cybersecurity Framework (CSF) 2.0* (2024)](https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf)
+**NIST Cybersecurity Framework (CSF) 2.0**  
+National Institute of Standards and Technology (2024)  
+https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf
 
-**Formosa, Paul, Michael Wilson, and Deborah Richards.**  
-[*A Principlist Framework for Cybersecurity Ethics* (2021)](https://doi.org/10.1016/j.cose.2021.102382)
+**Principlist Framework for Cybersecurity Ethics (PFCE)**  
+Formosa, Paul; Michael Wilson; Deborah Richards (2021)  
+https://doi.org/10.1016/j.cose.2021.102382  
 Access to the full text may depend on institutional or publisher subscriptions.
+
                 """
             )
         st.markdown("---")
@@ -331,13 +334,14 @@ Access to the full text may depend on institutional or publisher subscriptions.
     in_case_walkthrough = st.session_state.get("cb_view") == "walkthrough"
     in_open_walkthrough = st.session_state.get("oe_step", 0) > 0
 
-    # Show "Change mode" ONLY when not in a walkthrough
+    # Show "Change Mode" ONLY when not in a walkthrough
     if st.session_state.get("landing_complete", False) and not (in_case_walkthrough or in_open_walkthrough):
         colA, colB, colC = st.columns([1, 2, 1])
         with colC:
-            if st.button("Change mode", key="change_mode_main"):
+            if st.button("Change Mode", key="change_mode_main"):
                 st.session_state["landing_complete"] = False
-                st.rerun()
+                # no st.rerun() — Streamlit reruns automatically on button click
+
 
     render_app_header(compact=in_case_walkthrough or in_open_walkthrough)
 
