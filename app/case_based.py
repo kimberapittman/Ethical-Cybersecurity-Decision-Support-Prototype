@@ -1,5 +1,5 @@
 import streamlit as st
-from logic.loaders import load_case
+from logic.loaders import load_case, list_cases
 import html
 
 
@@ -73,6 +73,7 @@ PFCE_HOVER = (
     "ethically relevant principles and tensions within cybersecurity decision contexts."
 )
 
+
 def _step_title_with_framework(step_num: int, title: str, acronym: str, hover: str, url: str):
     """
     Render a step title where the framework acronym inside the title is:
@@ -122,7 +123,79 @@ def _as_text(value) -> str:
     return str(value)
 
 
+def _html_block(s: str) -> str:
+    # Prevent Markdown from treating indented HTML as a code block.
+    return "\n".join(line.lstrip() for line in s.splitlines())
+
+
 def render_case(case_id: str):
+    # ==========================================================
+    # VIEW STATE (default to "select" to avoid dropdown + open button)
+    # ==========================================================
+    if "cb_view" not in st.session_state:
+        st.session_state["cb_view"] = "select"
+    view = st.session_state["cb_view"]
+
+    # ==========================================================
+    # VIEW 0: SELECT (three tiles, landing-page styling)
+    # ==========================================================
+    if view == "select":
+        cases = list_cases() or []
+        top_cases = cases[:3]
+
+        st.markdown("<div style='height:6px;'></div>", unsafe_allow_html=True)
+
+        if not top_cases:
+            st.error("No cases found in data/cases.")
+            return
+
+        cols = st.columns(3, gap="large")
+
+        for col, c in zip(cols, top_cases):
+            cid = c.get("id", "")
+            title = c.get("title", "TBD")
+            short_summary = c.get("short_summary", "")
+
+            with col:
+                st.markdown(
+                    _html_block(
+                        f"""
+                        <a href="?cb_case_id={html.escape(cid)}" target="_self" style="text-decoration:none; color: inherit; display:block;">
+                          <div class="listbox" style="cursor:pointer;">
+                            <div style="font-weight:700; font-size:1.05rem; margin-bottom:6px; text-align:center;">
+                              {html.escape(title)}
+                            </div>
+                            {"<div class='sub' style='text-align:center;'>" + html.escape(short_summary) + "</div>" if short_summary else ""}
+                          </div>
+                        </a>
+                        """
+                    ),
+                    unsafe_allow_html=True,
+                )
+
+        # Handle tile click via query params (same tab)
+        try:
+            qp = st.query_params
+            picked = qp.get("cb_case_id", None)
+            if picked:
+                st.session_state["cb_case_id"] = picked
+                st.session_state["cb_prev_case_id"] = picked
+                st.session_state["cb_view"] = "walkthrough"
+                st.session_state["cb_step"] = 1
+                st.session_state.pop("cb_step_return", None)
+                try:
+                    st.query_params.clear()
+                except Exception:
+                    pass
+                st.rerun()
+        except Exception:
+            pass
+
+        return
+
+    # ==========================================================
+    # WALKTHROUGH: load selected case
+    # ==========================================================
     case = load_case(case_id) or {}
 
     # --- normalize expected top-level sections ---
@@ -151,38 +224,9 @@ def render_case(case_id: str):
     elif prev_case != case_id:
         st.session_state["cb_step"] = 1
         st.session_state["cb_prev_case_id"] = case_id
-        st.session_state["cb_view"] = "collapsed"
+        st.session_state["cb_view"] = "walkthrough"
         st.session_state.pop("cb_step_return", None)
         # IMPORTANT: do NOT call _safe_rerun() here
-
-    # ==========================================================
-    # VIEW STATE
-    # ==========================================================
-    if "cb_view" not in st.session_state:
-        st.session_state["cb_view"] = "collapsed"
-    view = st.session_state["cb_view"]
-
-    # ==========================================================
-    # VIEW 1: COLLAPSED CASE CARD (DEFAULT)
-    # ==========================================================
-    if view == "collapsed":
-
-        st.markdown("<div style='height:6px;'></div>", unsafe_allow_html=True)
-
-        # Centered primary action (collapsed view only)
-        col_left, col_center, col_right = st.columns([1, 2, 1])
-        with col_center:
-            if st.button(
-                "Open Structured Walkthrough",
-                key=f"cb_open_walkthrough_{case_id}",
-                use_container_width=True,
-            ):
-                st.session_state["cb_view"] = "walkthrough"
-                st.session_state["cb_step"] = 1
-                st.session_state.pop("cb_step_return", None)
-                st.rerun()
-
-        return  # IMPORTANT: stop here so walkthrough doesn't render on same run
 
     # ==========================================================
     # VIEW 2: WALKTHROUGH (STEP-BASED)
@@ -229,7 +273,6 @@ def render_case(case_id: str):
                 NIST_CSF_URL,
             )
 
-
             mapping = case["technical"].get("nist_csf_mapping", [])
 
             if mapping:
@@ -269,7 +312,6 @@ def render_case(case_id: str):
                 PFCE_HOVER,
                 PFCE_URL,
             )
-
 
             pfce_items = case["ethical"].get("pfce_analysis", [])
 
@@ -347,7 +389,7 @@ def render_case(case_id: str):
 
         with col_exit:
             if st.button("Exit Walkthrough", key=f"cb_exit_walkthrough_{case_id}"):
-                st.session_state["cb_view"] = "collapsed"
+                st.session_state["cb_view"] = "select"
                 _safe_rerun()
 
         return
