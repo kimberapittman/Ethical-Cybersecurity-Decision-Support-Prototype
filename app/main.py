@@ -289,7 +289,7 @@ def _render_landing_page():
                     </div>
 
                     <ul class="tight-list">
-                      <li>User-defined decision context (no pre-built case)</li>
+                      <li>User-defined decision context</li>
                       <li>Supports identification of ethical significance and competing obligations</li>
                       <li>Structures reasoning using CSF procedural context and PFCE principles</li>
                       <li>Documents ethical reasoning to support transparency and defensibility</li>
