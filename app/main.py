@@ -373,7 +373,11 @@ def main():
 
             if start_qp == "walkthrough":
                 if mode_qp == "Case-Based":
-                    st.session_state["cb_view"] = "walkthrough"
+                    # Force user to select a case first
+                    st.session_state["cb_view"] = "collapsed"
+                    st.session_state.pop("cb_case_id", None)
+                    st.session_state.pop("cb_case_title", None)
+
                 else:
                     if st.session_state.get("oe_step", 0) == 0:
                         st.session_state["oe_step"] = 1
@@ -468,7 +472,7 @@ def main():
         </a><br>
         Formosa, Paul; Michael Wilson; Deborah Richards (2021)<br>
 
-        <em>Access to the full text may depend on institutional or publisher subscriptions.</em>
+        <em>(Access to the full text may depend on institutional or publisher subscriptions.)</em>
                 """,
                 unsafe_allow_html=True,
             )
