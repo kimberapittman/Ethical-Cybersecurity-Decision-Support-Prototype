@@ -1,6 +1,9 @@
 import sys
 from pathlib import Path
 
+import textwrap
+
+
 # -*- coding: utf-8 -*-
 
 # Ensure project root is on sys.path
@@ -155,6 +158,11 @@ footer, #MainMenu{ visibility: hidden; }
 )
 
 
+def html_block(s: str) -> str:
+    # Prevent Markdown from treating indented HTML as a code block.
+    return "\n".join(line.lstrip() for line in textwrap.dedent(s).splitlines())
+
+
 def _enter_mode(mode: str):
     st.session_state["active_mode"] = mode
     st.session_state["landing_complete"] = True
@@ -173,62 +181,92 @@ def _render_landing_page():
         unsafe_allow_html=True,
     )
 
-
     col1, col2 = st.columns(2, gap="large")
-
     with col1:
+        # --- Primary selection tile ---
         st.markdown(
-            """
-        <div class="listbox">
-          <div style="font-weight:700; font-size:1.1rem; margin-bottom:6px; text-align:center;">
-            Case-Based Mode
-          </div>
-          <div class="sub" style="margin-bottom:6px; text-align:center;">
-            <em>Start here to see how the prototype works.</em>
-          </div>
-          <div class="sub" style="margin-bottom:10px;">
-            Uses reconstructed municipal cybersecurity cases to demonstrate how the decision-support prototype structures ethical reasoning and technical decision-making across an entire decision process.
-          </div>
-          <ul class="tight-list">
-            <li>Pre-structured cases reconstructed from documented municipal incidents</li>
-            <li>Walks through defined decision points and ethical triggers</li>
-            <li>Shows how CSF procedural logic and PFCE reasoning are applied in practice</li>
-            <li>Establishes a shared reference point for how the prototype is intended to be used</li>
-          </ul>
-        </div>
-            """,
+            html_block(
+                """
+                <a href="?mode=Case-Based" target="_self" style="text-decoration:none; color: inherit; display:block;">
+                  <div class="listbox" style="cursor:pointer;">
+                    <div style="font-weight:700; font-size:1.1rem; margin-bottom:6px; text-align:center;">
+                      Case-Based Mode
+                    </div>
+
+                    <div class="sub" style="text-align:center;">
+                      <em>Explore the prototype through reconstructed case demonstrations.</em>
+                    </div>
+                  </div>
+                </a>
+                """
+            ),
             unsafe_allow_html=True,
         )
-        if st.button("Enter Case-Based Mode", use_container_width=True, key="enter_case_based"):
-            _enter_mode("Case-Based")
 
-        with col2:
-            st.markdown(
+        # --- Details tile ---
+        st.markdown(
+            html_block(
                 """
-        <div class="listbox">
-          <div style="font-weight:700; font-size:1.1rem; margin-bottom:6px; text-align:center;">
-            Open-Ended Mode
-          </div>
-          <div class="sub" style="margin-bottom:6px; text-align:center;">
-            <em>Use this when you have a real decision to reason through.</em>
-          </div>
-          <div class="sub" style="margin-bottom:10px;">
-            Provides a structured walkthrough for analyzing the ethical significance of a user-defined cybersecurity decision, without prescribing outcomes.
-          </div>
-          <ul class="tight-list">
-            <li>User-defined decision context (no pre-built case)</li>
-            <li>Supports identification of ethical significance and competing obligations</li>
-            <li>Structures reasoning using CSF procedural context and PFCE principles</li>
-            <li>Documents ethical reasoning to support transparency and defensibility</li>
-          </ul>
-        </div>
-                """,
-                unsafe_allow_html=True,
-            )
-            if st.button("Enter Open-Ended Mode", use_container_width=True, key="enter_open_ended"):
-                _enter_mode("Open-Ended")
+                <div class="listbox">
+                  <div class="sub" style="margin-bottom:10px;">
+                    Uses reconstructed municipal cybersecurity cases to demonstrate how the decision-support prototype structures ethical reasoning and technical decision-making across an entire decision process.
+                  </div>
 
-        st.stop()
+                  <ul class="tight-list">
+                    <li>Pre-structured cases reconstructed from documented municipal incidents</li>
+                    <li>Walks through defined decision points and ethical triggers</li>
+                    <li>Shows how CSF procedural logic and PFCE reasoning are applied in practice</li>
+                    <li>Establishes a shared reference point for how the prototype is intended to be used</li>
+                  </ul>
+                </div>
+                """
+            ),
+            unsafe_allow_html=True,
+        )
+
+    with col2:
+        # --- Primary selection tile ---
+        st.markdown(
+            html_block(
+                """
+                <a href="?mode=Open-Ended&start=walkthrough" target="_self" style="text-decoration:none; color: inherit; display:block;">
+                  <div class="listbox" style="cursor:pointer;">
+                    <div style="font-weight:700; font-size:1.1rem; margin-bottom:6px; text-align:center;">
+                      Open-Ended Mode
+                    </div>
+
+                    <div class="sub" style="text-align:center;">
+                      <em>Apply the walkthrough to a decision context you define.</em>
+                    </div>
+                  </div>
+                </a>
+                """
+            ),
+            unsafe_allow_html=True,
+        )
+
+        # --- Details tile ---
+        st.markdown(
+            html_block(
+                """
+                <div class="listbox">
+                  <div class="sub" style="margin-bottom:10px;">
+                    Provides a structured walkthrough for analyzing the ethical significance of a user-defined cybersecurity decision, without prescribing outcomes.
+                  </div>
+
+                  <ul class="tight-list">
+                    <li>User-defined decision context (no pre-built case)</li>
+                    <li>Supports identification of ethical significance and competing obligations</li>
+                    <li>Structures reasoning using CSF procedural context and PFCE principles</li>
+                    <li>Documents ethical reasoning to support transparency and defensibility</li>
+                  </ul>
+                </div>
+                """
+            ),
+            unsafe_allow_html=True,
+        )
+
+    st.stop()
 
 
 def render_app_header(compact: bool = False):
@@ -283,6 +321,33 @@ def main():
 
     if "active_mode" not in st.session_state:
         st.session_state["active_mode"] = "Case-Based"
+
+    # ---------- URL PARAM MODE ENTRY (tile click) ----------
+    try:
+        qp = st.query_params
+        mode_qp = qp.get("mode", None)
+        start_qp = qp.get("start", None)
+
+        if mode_qp in ("Case-Based", "Open-Ended"):
+            st.session_state["active_mode"] = mode_qp
+            st.session_state["landing_complete"] = True
+
+            if mode_qp == "Case-Based":
+                st.session_state["cb_view"] = "collapsed"
+
+            if start_qp == "walkthrough":
+                if mode_qp == "Case-Based":
+                    st.session_state["cb_view"] = "walkthrough"
+                else:
+                    if st.session_state.get("oe_step", 0) == 0:
+                        st.session_state["oe_step"] = 1
+
+            try:
+                st.query_params.clear()
+            except Exception:
+                pass
+    except Exception:
+        pass
 
     # ---------- SIDEBAR (ALWAYS) ----------
     with st.sidebar:
@@ -436,6 +501,7 @@ def main():
                 st.session_state["cb_case_id"] = new_case["id"]
                 st.session_state["cb_step"] = 1
                 st.session_state["cb_prev_case_id"] = new_case["id"]
+                st.session_state["cb_view"] = "walkthrough"
 
             st.markdown("### Select A Case")
             st.selectbox(
