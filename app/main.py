@@ -137,6 +137,29 @@ label, .stRadio, .stSelectbox, .stMultiSelect, .stExpander{
   color: var(--text-strong) !important;
 }
 
+/* === Clickable tile affordances === */
+.listbox {
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    border-color 0.12s ease,
+    background 0.12s ease;
+}
+
+/* Hover = discoverable click */
+.listbox:hover {
+  cursor: pointer;
+  transform: translateY(-2px);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.35);
+  border-color: rgba(76, 139, 245, 0.65);
+}
+
+/* Active = confirmation of click */
+.listbox:active {
+  transform: translateY(0);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+}
+
 /* Expander headers */
 details > summary{
   background: rgba(255,255,255,0.06);
@@ -210,85 +233,70 @@ def _render_landing_page():
     )
 
     col1, col2 = st.columns(2, gap="large")
+
     with col1:
-        # --- Primary selection tile ---
         st.markdown(
             html_block(
                 """
-                <a href="?mode=Case-Based" target="_self" style="text-decoration:none; color: inherit; display:block;">
+                <a href="?mode=Case-Based&start=walkthrough" target="_self"
+                  style="text-decoration:none; color: inherit; display:block;">
                   <div class="listbox" style="cursor:pointer;">
+
                     <div style="font-weight:700; font-size:1.1rem; margin-bottom:6px; text-align:center;">
                       Case-Based Mode
                     </div>
 
-                    <div class="sub" style="text-align:center;">
+                    <div class="sub" style="text-align:center; margin-bottom:12px;">
                       <em>Explore the prototype through reconstructed case demonstrations.</em>
                     </div>
+
+                    <div class="sub" style="margin-bottom:10px;">
+                      Uses reconstructed municipal cybersecurity cases to demonstrate how the decision-support prototype structures ethical reasoning and technical decision-making across an entire decision process.
+                    </div>
+
+                    <ul class="tight-list">
+                      <li>Pre-structured cases reconstructed from documented municipal incidents</li>
+                      <li>Walks through defined decision points and ethical triggers</li>
+                      <li>Shows how CSF procedural logic and PFCE reasoning are applied in practice</li>
+                      <li>Establishes a shared reference point for how the prototype is intended to be used</li>
+                    </ul>
+
                   </div>
                 </a>
-                """
-            ),
-            unsafe_allow_html=True,
-        )
-
-        # --- Details tile ---
-        st.markdown(
-            html_block(
-                """
-                <div class="listbox">
-                  <div class="sub" style="margin-bottom:10px;">
-                    Uses reconstructed municipal cybersecurity cases to demonstrate how the decision-support prototype structures ethical reasoning and technical decision-making across an entire decision process.
-                  </div>
-
-                  <ul class="tight-list">
-                    <li>Pre-structured cases reconstructed from documented municipal incidents</li>
-                    <li>Walks through defined decision points and ethical triggers</li>
-                    <li>Shows how CSF procedural logic and PFCE reasoning are applied in practice</li>
-                    <li>Establishes a shared reference point for how the prototype is intended to be used</li>
-                  </ul>
-                </div>
                 """
             ),
             unsafe_allow_html=True,
         )
 
     with col2:
-        # --- Primary selection tile ---
         st.markdown(
             html_block(
                 """
-                <a href="?mode=Open-Ended&start=walkthrough" target="_self" style="text-decoration:none; color: inherit; display:block;">
+                <a href="?mode=Open-Ended&start=walkthrough" target="_self"
+                  style="text-decoration:none; color: inherit; display:block;">
                   <div class="listbox" style="cursor:pointer;">
+
                     <div style="font-weight:700; font-size:1.1rem; margin-bottom:6px; text-align:center;">
                       Open-Ended Mode
                     </div>
 
-                    <div class="sub" style="text-align:center;">
+                    <div class="sub" style="text-align:center; margin-bottom:12px;">
                       <em>Utilize the prototype for a decision context you define.</em>
                     </div>
+
+                    <div class="sub" style="margin-bottom:10px;">
+                      Provides a structured walkthrough for analyzing the ethical significance of a user-defined cybersecurity decision, without prescribing outcomes.
+                    </div>
+
+                    <ul class="tight-list">
+                      <li>User-defined decision context (no pre-built case)</li>
+                      <li>Supports identification of ethical significance and competing obligations</li>
+                      <li>Structures reasoning using CSF procedural context and PFCE principles</li>
+                      <li>Documents ethical reasoning to support transparency and defensibility</li>
+                    </ul>
+
                   </div>
                 </a>
-                """
-            ),
-            unsafe_allow_html=True,
-        )
-
-        # --- Details tile ---
-        st.markdown(
-            html_block(
-                """
-                <div class="listbox">
-                  <div class="sub" style="margin-bottom:10px;">
-                    Provides a structured walkthrough for analyzing the ethical significance of a user-defined cybersecurity decision, without prescribing outcomes.
-                  </div>
-
-                  <ul class="tight-list">
-                    <li>User-defined decision context (no pre-built case)</li>
-                    <li>Supports identification of ethical significance and competing obligations</li>
-                    <li>Structures reasoning using CSF procedural context and PFCE principles</li>
-                    <li>Documents ethical reasoning to support transparency and defensibility</li>
-                  </ul>
-                </div>
                 """
             ),
             unsafe_allow_html=True,
@@ -404,7 +412,7 @@ def main():
         - Guides practitioners through a structured, step-by-step reasoning walkthrough implemented in two complementary modes:  
 
           <strong>Case-Based Mode</strong>  
-          Uses reconstructed municipal cybersecurity cases to demonstrate the walkthrough and illustrate how the prototype was developed through analysis of real-world incidents.
+          Uses reconstructed municipal cybersecurity cases to demonstrate the walkthrough and illustrate how the prototype was developed through analysis of real-world incidents. 
 
           <strong>Open-Ended Mode</strong>  
           Applies the same walkthrough to a user-defined cybersecurity decision context and represents the intended use of the prototype.
