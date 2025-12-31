@@ -380,7 +380,7 @@ def main():
                 else:
                     if st.session_state.get("oe_step", 0) == 0:
                         st.session_state["oe_step"] = 1
-                        
+
 
             try:
                 st.query_params.clear()
@@ -497,15 +497,6 @@ def main():
         st.session_state["cb_view"] = "select"
 
 
-    # Show "Change Mode" ONLY when not in a walkthrough
-    if not (in_case_walkthrough or in_open_walkthrough):
-        colA, colB, colC = st.columns([1, 2, 1])
-        with colC:
-            if st.button("Change Mode", key="change_mode_main"):
-                st.session_state["landing_complete"] = False
-                # no st.rerun() — Streamlit reruns automatically on button click
-
-
     # ---------- MODE-SPECIFIC EXPLAINERS (MAIN AREA) ----------
     cb_view = st.session_state.get("cb_view", "collapsed")
 
@@ -566,9 +557,20 @@ def main():
         open_ended.render_open_ended()
 
     st.markdown("---")
-    st.caption(
-        "This prototype is designed for research and demonstration purposes and is not intended for operational deployment"
-    )
+
+    col_left, col_right = st.columns([6, 1])
+    with col_left:
+        st.caption(
+            "This prototype is designed for research and demonstration purposes and is not intended for operational deployment"
+        )
+
+    with col_right:
+        if (
+            st.session_state.get("landing_complete", False)
+            and not (in_case_walkthrough or in_open_walkthrough)
+        ):
+            if st.button("Change Mode", key="change_mode_main", use_container_width=True):
+                st.session_state["landing_complete"] = False
 
 
 if __name__ == "__main__":
