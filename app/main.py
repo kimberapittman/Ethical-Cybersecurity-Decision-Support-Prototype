@@ -69,6 +69,16 @@ section[data-testid="stSidebar"] *{
   color: var(--text-strong) !important;
 }
 
+/* --- FIX: allow long sidebar text/URLs to wrap so the resizer doesn't "snap" --- */
+section[data-testid="stSidebar"] a,
+section[data-testid="stSidebar"] p,
+section[data-testid="stSidebar"] li,
+section[data-testid="stSidebar"] div{
+  overflow-wrap: anywhere !important;
+  word-break: break-word !important;
+  white-space: normal !important;
+}
+
 /* Header container */
 .block-container > div:first-child{
   backdrop-filter: blur(6px);
@@ -161,7 +171,6 @@ def _render_landing_page():
         unsafe_allow_html=True,
     )
 
-
     col1, col2 = st.columns(2, gap="large")
 
     with col1:
@@ -252,7 +261,6 @@ def render_app_header(compact: bool = False):
     )
 
 
-
 def main():
     # ---------- SESSION STATE DEFAULTS ----------
     if "landing_complete" not in st.session_state:
@@ -305,7 +313,6 @@ def main():
                 unsafe_allow_html=True,
             )
 
-
         st.markdown("---")
 
         # Appendix (always visible)
@@ -342,9 +349,7 @@ Access to the full text may depend on institutional or publisher subscriptions.
                 st.session_state["landing_complete"] = False
                 # no st.rerun() — Streamlit reruns automatically on button click
 
-
     render_app_header(compact=in_case_walkthrough or in_open_walkthrough)
-
 
     # ---------- LANDING GATE (shown on fresh app load; not on reruns after selection) ----------
     if not st.session_state.get("landing_complete", False):
