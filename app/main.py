@@ -169,6 +169,34 @@ def _enter_mode(mode: str):
     # no st.rerun() — Streamlit reruns automatically on button click
 
 
+def _open_sidebar_once():
+    if st.session_state.get("_sidebar_opened_once", False):
+        return
+    st.session_state["_sidebar_opened_once"] = True
+
+    st.markdown(
+        """
+        <script>
+        (function () {
+          const btn = window.parent.document.querySelector('button[data-testid="collapsedControl"]');
+          if (btn) btn.click();
+        })();
+        </script>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def main():
+    if "landing_complete" not in st.session_state:
+        st.session_state["landing_complete"] = False
+
+    if "active_mode" not in st.session_state:
+        st.session_state["active_mode"] = "Case-Based"
+
+    _open_sidebar_once()
+
+
 def _render_landing_page():
     st.markdown(
         """
@@ -236,7 +264,7 @@ def _render_landing_page():
                     </div>
 
                     <div class="sub" style="text-align:center;">
-                      <em>Apply the walkthrough to a decision context you define.</em>
+                      <em>Utilize the prototype for a decision context you define.</em>
                     </div>
                   </div>
                 </a>
@@ -445,13 +473,6 @@ def main():
     in_case_walkthrough = st.session_state.get("cb_view") == "walkthrough"
     in_open_walkthrough = st.session_state.get("oe_step", 0) > 0
 
-    # Show "Change Mode" ONLY when not in a walkthrough
-    if st.session_state.get("landing_complete", False) and not (in_case_walkthrough or in_open_walkthrough):
-        colA, colB, colC = st.columns([1, 2, 1])
-        with colC:
-            if st.button("Change Mode", key="change_mode_main"):
-                st.session_state["landing_complete"] = False
-                # no st.rerun() — Streamlit reruns automatically on button click
 
     render_app_header(compact=in_case_walkthrough or in_open_walkthrough)
 
@@ -460,6 +481,15 @@ def main():
         _render_landing_page()
 
     mode = st.session_state.get("active_mode", "Case-Based")
+
+    # Show "Change Mode" ONLY when not in a walkthrough
+    if not (in_case_walkthrough or in_open_walkthrough):
+        colA, colB, colC = st.columns([1, 2, 1])
+        with colC:
+            if st.button("Change Mode", key="change_mode_main"):
+                st.session_state["landing_complete"] = False
+                # no st.rerun() — Streamlit reruns automatically on button click
+
 
     # ---------- MODE-SPECIFIC EXPLAINERS (MAIN AREA) ----------
     cb_view = st.session_state.get("cb_view", "collapsed")
