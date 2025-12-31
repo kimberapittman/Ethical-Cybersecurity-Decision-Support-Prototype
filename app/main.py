@@ -373,14 +373,14 @@ def main():
 
             if start_qp == "walkthrough":
                 if mode_qp == "Case-Based":
-                    # Force user to select a case first
-                    st.session_state["cb_view"] = "collapsed"
+                    # Force user to select a case first (tile selector lives in case_based.py)
+                    st.session_state["cb_view"] = "select"
                     st.session_state.pop("cb_case_id", None)
                     st.session_state.pop("cb_case_title", None)
-
                 else:
                     if st.session_state.get("oe_step", 0) == 0:
                         st.session_state["oe_step"] = 1
+                        
 
             try:
                 st.query_params.clear()
@@ -491,6 +491,11 @@ def main():
         _render_landing_page()
 
     mode = st.session_state.get("active_mode", "Case-Based")
+
+    # Ensure Case-Based uses tile selector by default (prevents dropdown page)
+    if mode == "Case-Based" and "cb_view" not in st.session_state:
+        st.session_state["cb_view"] = "select"
+
 
     # Show "Change Mode" ONLY when not in a walkthrough
     if not (in_case_walkthrough or in_open_walkthrough):
