@@ -164,56 +164,71 @@ def _enter_mode(mode: str):
 def _render_landing_page():
     st.markdown(
         """
-<div style='text-align:center; margin-top: 0.5rem;'>
-  <h2 style='margin-bottom:0.35rem;'>Select a Mode</h2>
-</div>
+    <div style='text-align:center; margin-top: 0.5rem;'>
+      <h2 style='margin-bottom:0.35rem; display:inline-block;'>
+        Select a Mode
+      </h2>
+    </div>
         """,
         unsafe_allow_html=True,
     )
+
 
     col1, col2 = st.columns(2, gap="large")
 
     with col1:
         st.markdown(
             """
-<div class="listbox">
-  <div style="font-weight:700; font-size:1.1rem; margin-bottom:6px;">Case-Based Mode</div>
-  <div class="sub" style="margin-bottom:10px;">
-    Uses reconstructed cases to see how the decision-support structure works end-to-end.
-  </div>
-  <ul class="tight-list">
-    <li>Pre-filled case data from Chapter III</li>
-    <li>Structured walkthrough across steps</li>
-    <li>Demonstrates the prototype’s logic and framing</li>
-  </ul>
-</div>
+        <div class="listbox">
+          <div style="font-weight:700; font-size:1.1rem; margin-bottom:6px; text-align:center;">
+            Case-Based Mode
+          </div>
+          <div class="sub" style="margin-bottom:6px; text-align:center;">
+            <em>Start here to see how the prototype works.</em>
+          </div>
+          <div class="sub" style="margin-bottom:10px;">
+            Uses reconstructed municipal cybersecurity cases to demonstrate how the decision-support prototype structures ethical reasoning and technical decision-making across an entire decision process.
+          </div>
+          <ul class="tight-list">
+            <li>Pre-structured cases reconstructed from documented municipal incidents</li>
+            <li>Walks through defined decision points and ethical triggers</li>
+            <li>Shows how CSF procedural logic and PFCE reasoning are applied in practice</li>
+            <li>Establishes a shared reference point for how the prototype is intended to be used</li>
+          </ul>
+        </div>
             """,
             unsafe_allow_html=True,
         )
         if st.button("Enter Case-Based Mode", use_container_width=True, key="enter_case_based"):
             _enter_mode("Case-Based")
 
-    with col2:
-        st.markdown(
-            """
-<div class="listbox">
-  <div style="font-weight:700; font-size:1.1rem; margin-bottom:6px;">Open-Ended Mode</div>
-  <div class="sub" style="margin-bottom:10px;">
-    Apply the structured walkthrough to a new or unfolding cybersecurity dilemma.
-  </div>
-  <ul class="tight-list">
-    <li>User-entered inputs (no prebuilt case)</li>
-    <li>CSF procedural framing + PFCE ethical reasoning</li>
-    <li>Documents reasoning without prescribing actions</li>
-  </ul>
-</div>
-            """,
-            unsafe_allow_html=True,
-        )
-        if st.button("Enter Open-Ended Mode", use_container_width=True, key="enter_open_ended"):
-            _enter_mode("Open-Ended")
+        with col2:
+            st.markdown(
+                """
+        <div class="listbox">
+          <div style="font-weight:700; font-size:1.1rem; margin-bottom:6px; text-align:center;">
+            Open-Ended Mode
+          </div>
+          <div class="sub" style="margin-bottom:6px; text-align:center;">
+            <em>Use this when you have a real decision to reason through.</em>
+          </div>
+          <div class="sub" style="margin-bottom:10px;">
+            Provides a structured walkthrough for analyzing the ethical significance of a user-defined cybersecurity decision, without prescribing outcomes.
+          </div>
+          <ul class="tight-list">
+            <li>User-defined decision context (no pre-built case)</li>
+            <li>Supports identification of ethical significance and competing obligations</li>
+            <li>Structures reasoning using CSF procedural context and PFCE principles</li>
+            <li>Documents ethical reasoning to support transparency and defensibility</li>
+          </ul>
+        </div>
+                """,
+                unsafe_allow_html=True,
+            )
+            if st.button("Enter Open-Ended Mode", use_container_width=True, key="enter_open_ended"):
+                _enter_mode("Open-Ended")
 
-    st.stop()
+        st.stop()
 
 
 def render_app_header(compact: bool = False):
@@ -281,7 +296,7 @@ def main():
             st.markdown(
                 """
         <span style="font-weight:700; border-bottom:2px solid rgba(255,255,255,0.6); padding-bottom:2px;">
-        What it is
+        What It Is
         </span>
 
         This prototype is a decision-support tool designed to help municipal cybersecurity practitioners reason through ethically significant cybersecurity decisions.
@@ -296,7 +311,7 @@ def main():
         <br>
 
         <span style="font-weight:700; border-bottom:2px solid rgba(255,255,255,0.6); padding-bottom:2px;">
-        How it works
+        How It Works
         </span>
 
         The prototype guides practitioners through a step-by-step reasoning process that mirrors real-world cybersecurity decision-making.
@@ -326,6 +341,7 @@ def main():
                 """
         <a href="https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf"
           target="_blank"
+          title="Open the NIST Cybersecurity Framework (CSF) 2.0 (PDF)"
           style="
             font-weight:800;
             color: white;
@@ -340,6 +356,7 @@ def main():
 
         <a href="https://doi.org/10.1016/j.cose.2021.102382"
           target="_blank"
+          title="Open the Principlist Framework for Cybersecurity Ethics journal article"
           style="
             font-weight:800;
             color: white;
@@ -351,7 +368,7 @@ def main():
         Principlist Framework for Cybersecurity Ethics (PFCE)
         </a><br>
         Formosa, Paul; Michael Wilson; Deborah Richards (2021)<br>
-        
+
         <em>Access to the full text may depend on institutional or publisher subscriptions.</em>
                 """,
                 unsafe_allow_html=True,
