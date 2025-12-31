@@ -324,17 +324,17 @@ def main():
         with st.expander("📚 Framework References"):
             st.markdown(
                 """
-**NIST Cybersecurity Framework (CSF) 2.0**  
-National Institute of Standards and Technology (2024)  
-https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf
+        **NIST Cybersecurity Framework (CSF) 2.0**  
+        National Institute of Standards and Technology (2024)  
+        [View NIST CSF 2.0 (PDF)](https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf)
 
-**Principlist Framework for Cybersecurity Ethics (PFCE)**  
-Formosa, Paul; Michael Wilson; Deborah Richards (2021)  
-https://doi.org/10.1016/j.cose.2021.102382  
-Access to the full text may depend on institutional or publisher subscriptions.
-
+        **Principlist Framework for Cybersecurity Ethics (PFCE)**  
+        Formosa, Paul; Michael Wilson; Deborah Richards (2021)  
+        [View PFCE Journal Article (Computers & Security)](https://doi.org/10.1016/j.cose.2021.102382)  
+        Access to the full text may depend on institutional or publisher subscriptions.
                 """
             )
+
         st.markdown("---")
 
     # ---------- HEADER (ALWAYS) ----------
