@@ -243,15 +243,53 @@ div[data-testid="stVerticalBlock"]:has(.step-tile-anchor){
   margin: 8px 0 8px;
 }
 
-/* === Disclaimer footer === */
-.disclaimer-footer hr{
-  margin: 8px 0 6px 0 !important;
-  border: none !important;
-  height: 1px !important;
-  background: rgba(255,255,255,0.15) !important;
-  opacity: 1 !important;
+/* =========================
+   DISCLAIMER FOOTER
+   ========================= */
+
+/* Inline disclaimer (normal flow) */
+.disclaimer-inline{
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.25);
+  border-radius: 14px;
+  padding: 10px 14px;
+  text-align: center;
+  color: rgba(229,231,235,0.85);
+  margin-top: 18px;
 }
-.disclaimer-footer{ margin: 0 !important; padding: 0 !important; }
+
+/* Pinned disclaimer (only when pinned=True) */
+.disclaimer-fixed{
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 14px;
+  width: min(1100px, calc(100% - 48px));
+  z-index: 9999;
+
+  /* CRITICAL: prevent page overlay */
+  height: auto !important;
+  max-height: none !important;
+  pointer-events: none;
+}
+
+/* Visible pill */
+.disclaimer-fixed .disclaimer-inner{
+  pointer-events: auto;
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.25);
+  border-radius: 14px;
+  padding: 10px 14px;
+  text-align: center;
+  color: rgba(229,231,235,0.85);
+}
+
+/* Spacer so content never hides behind footer */
+.disclaimer-spacer{
+  height: 84px;
+}
 
 /* === Hide Streamlit chrome === */
 header[data-testid="stHeader"]{ background: transparent; }
@@ -316,24 +354,63 @@ def main():
     _open_sidebar_once()
 
 
-def render_disclaimer_footer():
-    st.markdown(
-        """
-        <div class="disclaimer-footer">
-          <hr>
-          <div style="
-              text-align:center;
-              opacity:0.7;
-              font-size:0.85rem;
-              margin: 0;
-              padding: 0 0 0.75rem 0;
-          ">
-              This prototype is designed for research and demonstration purposes and is not intended for operational deployment
-          </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+def render_disclaimer_footer(pinned: bool = False):
+    if pinned:
+        st.markdown(
+            """
+            <style>
+              .disclaimer-fixed {
+                position: fixed;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 9999;
+                padding: 0.75rem 1rem;
+                background: linear-gradient(180deg, rgba(10,16,32,0.55), rgba(10,16,32,0.92));
+                border-top: 1px solid rgba(255,255,255,0.10);
+                backdrop-filter: blur(8px);
+              }
+              .disclaimer-fixed .txt {
+                text-align: center;
+                opacity: 0.75;
+                font-size: 0.85rem;
+                color: #e5e7eb;
+                margin: 0;
+              }
+              /* Add space so fixed bar doesn't cover bottom content */
+              .disclaimer-spacer {
+                height: 56px;
+              }
+            </style>
+
+            <div class="disclaimer-spacer"></div>
+
+            <div class="disclaimer-fixed">
+              <div class="txt">
+                This prototype is designed for research and demonstration purposes and is not intended for operational deployment
+              </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    else:
+        st.markdown(
+            """
+            <div class="disclaimer-footer">
+              <hr>
+              <div style="
+                  text-align:center;
+                  opacity:0.7;
+                  font-size:0.85rem;
+                  margin: 0;
+                  padding: 0 0 0.75rem 0;
+              ">
+                  This prototype is designed for research and demonstration purposes and is not intended for operational deployment
+              </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
 
 def _render_landing_page():
@@ -450,9 +527,7 @@ def _render_landing_page():
 
     # ✅ close wrapper
     st.markdown("</div>", unsafe_allow_html=True)
-
-    render_disclaimer_footer()
-    st.stop()
+st.stop()
 
 
 def render_app_header(compact: bool = False):
@@ -759,10 +834,11 @@ def main():
     else:
         open_ended.render_open_ended()
 
-    if not (in_case_walkthrough or in_open_walkthrough):
+# ---------- DISCLAIMER (PINNED ONLY ON NON-WALKTHROUGH SCREENS) ----------
+in_case_walkthrough = st.session_state.get("cb_view") == "walkthrough"
+in_open_walkthrough = st.session_state.get("oe_step", 0) > 0
 
-
-        render_disclaimer_footer()
+render_disclaimer_footer(pinned=not (in_case_walkthrough or in_open_walkthrough))
 
 if __name__ == "__main__":
     main()
