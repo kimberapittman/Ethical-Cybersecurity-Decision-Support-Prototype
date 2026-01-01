@@ -356,7 +356,7 @@ def render_app_header(compact: bool = False):
     if in_case_walkthrough:
         case_id = st.session_state.get("cb_case_id")
         case = load_case(case_id) or {}
-        case_title = case.get("title", case_id) if case_id else ""
+        case_title = case.get("ui_title", case_id) if case_id else ""
 
         st.markdown(
             f"""
