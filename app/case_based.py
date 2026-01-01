@@ -127,6 +127,13 @@ def _html_block(s: str) -> str:
     return "\n".join(line.lstrip() for line in s.splitlines())
 
 
+CASE_HOOKS = {
+    "baltimore": "Preventing harm while sustaining essential public services",
+    "sandiego": "Protecting public safety while respecting autonomy and public oversight",
+    "riverton": "Delegating control to automated systems without relinquishing human responsibility",
+}
+
+
 def render_case(case_id: str):
     # ==========================================================
     # VIEW STATE (default to "select" to avoid dropdown + open button)
@@ -164,7 +171,9 @@ def render_case(case_id: str):
         for col, c in zip(cols, top_cases):
             cid = c.get("id", "")
             title = c.get("ui_title") or c.get("title", "TBD")
-            short_summary = c.get("short_summary", "")
+            cid_norm = str(cid).strip().lower()
+            hook = CASE_HOOKS.get(cid_norm, "")
+
 
             with col:        
                 # Badge selection (based on case id)
@@ -199,10 +208,10 @@ def render_case(case_id: str):
                             {html.escape(title)}
                             </div>
                             {(
-                                '<div class="sub" style="text-align:center;">'
-                                + html.escape(short_summary)
+                                '<div class="sub" style="text-align:center; margin-top:6px; font-size:0.95rem; line-height:1.25;">'
+                                + html.escape(hook)
                                 + '</div>'
-                            ) if short_summary else ""}
+                            ) if hook else ""}
                         </div>
                         </a>
                         """

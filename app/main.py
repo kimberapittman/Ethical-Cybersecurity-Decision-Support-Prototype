@@ -36,10 +36,8 @@ html, body, [class^="css"] {
 
 /* tokens */
 :root{
-  --brand: #4C8BF5;
-  --brand-2: #7aa8ff;
-  --shield-blue-dark: var(--brand);    
-  --shield-blue-light: var(--brand-2); 
+  --brand: #378AED;     /* Real-World Incident */
+  --brand-2: #55CAFF;   /* Hypothetical Scenario */
   --bg-soft: #0b1020;
   --text-strong: #111827;
   --text-muted: #6b7280;
@@ -163,24 +161,22 @@ label, .stRadio, .stSelectbox, .stMultiSelect, .stExpander{
   font-size:0.72rem !important;
   font-weight:800 !important;
   letter-spacing:0.02em !important;
-  padding:6px 12px !important;
+  padding:7px 14px !important;
   border-radius:999px !important;
   white-space:nowrap !important;
-  background: rgba(255,255,255,0.04) !important;
+  color:#ffffff !important;
 }
 
-/* Real-World Incident = darker shield blue */
+/* Real-World Incident = darker blue */
 .case-badge.real{
-  background: rgba(76, 139, 245, 0.22) !important;  /* --brand */
-  border: 1px solid rgba(76, 139, 245, 0.70) !important;
-  color: #e0f2ff !important;
+  background-color:#378AED !important;
+  border:1px solid #378AED !important;
 }
 
-/* Hypothetical Scenario = lighter shield blue */
+/* Hypothetical Scenario = lighter blue */
 .case-badge.hypo{
-  background: rgba(122, 168, 255, 0.20) !important; /* --brand-2 */
-  border: 1px solid rgba(122, 168, 255, 0.70) !important;
-  color: #f0f7ff !important;
+  background-color:#55CAFF !important;
+  border:1px solid #55CAFF !important;
 }
 
 /* Hover = discoverable click */
