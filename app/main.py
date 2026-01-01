@@ -147,37 +147,40 @@ label, .stRadio, .stSelectbox, .stMultiSelect, .stExpander{
 }
 
 /* --- Case type badges (Real-World / Hypothetical) --- */
-.case-badge{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  font-size:0.72rem;
-  font-weight:800;
-  letter-spacing:0.02em;
-  padding:6px 10px;
-  border-radius:999px;
-  border:1px solid rgba(255,255,255,0.18);
-  background: rgba(255,255,255,0.06);
-  color: var(--text-strong);
-  white-space:nowrap;
-}
-
-/* position badge inside your existing .listbox tile */
 .case-badge-wrap{
-  display:flex;
-  justify-content:flex-end;
-  margin:-2px 0 8px 0; /* pulls badge toward top without changing tile padding */
+  width:100% !important;
+  display:flex !important;
+  justify-content:center !important;   /* center badge */
+  margin: 0 0 10px 0 !important;
 }
 
-/* optional: subtle tint differences */
+.case-badge{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  font-size:0.72rem !important;
+  font-weight:800 !important;
+  letter-spacing:0.02em !important;
+  padding:6px 10px !important;
+  border-radius:999px !important;
+  white-space:nowrap !important;
+  border:1px solid rgba(255,255,255,0.18) !important;
+  background: rgba(255,255,255,0.06) !important;
+  color: var(--text-strong) !important;
+}
+
+/* Real-world = match shield blue */
 .case-badge.real{
-  background: rgba(76,139,245,0.18);
-  border-color: rgba(76,139,245,0.35);
+  background: rgba(76,139,245,0.18) !important;
+  border-color: rgba(76,139,245,0.55) !important;
+  color: #e0f2ff !important;
 }
 
+/* Hypo = slightly darker shield blue */
 .case-badge.hypo{
-  background: rgba(167,139,250,0.18);
-  border-color: rgba(167,139,250,0.35);
+  background: rgba(37,99,235,0.18) !important;
+  border-color: rgba(37,99,235,0.55) !important;
+  color: #dbeafe !important;
 }
 
 /* Hover = discoverable click */

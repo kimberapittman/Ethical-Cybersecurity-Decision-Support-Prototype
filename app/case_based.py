@@ -1,67 +1,7 @@
 import streamlit as st
 from logic.loaders import load_case, list_cases
 import html
-
 import textwrap
-
-st.markdown(
-    textwrap.dedent(
-        """
-        <style>
-        /* ---------- BADGE CENTERING + COLOR OVERRIDES (high specificity) ---------- */
-
-        .case-badge-wrap,
-        .listbox .case-badge-wrap {
-            width: 100% !important;
-            display: block !important;
-            text-align: center !important;
-            margin: 0 0 10px 0 !important;
-        }
-
-        .case-badge,
-        .listbox .case-badge {
-            display: inline-block !important;
-            margin: 0 auto !important;
-            padding: 4px 12px !important;
-            border-radius: 999px !important;
-            font-size: 0.75rem !important;
-            font-weight: 600 !important;
-            letter-spacing: 0.02em !important;
-            white-space: nowrap !important;
-        }
-
-        /* Real-world cases: primary shield blue */
-        .case-badge.real,
-        .listbox .case-badge.real {
-            background-color: rgba(59, 130, 246, 0.22) !important;
-            border: 1px solid rgba(59, 130, 246, 0.65) !important;
-            color: #e0f2ff !important;
-        }
-
-        /* Hypothetical case: darker shield blue */
-        .case-badge.hypo,
-        .listbox .case-badge.hypo {
-            background-color: rgba(37, 99, 235, 0.18) !important;
-            border: 1px solid rgba(37, 99, 235, 0.55) !important;
-            color: #dbeafe !important;
-        }
-
-        .case-badge,
-        .listbox .case-badge {
-            transition: box-shadow 0.15s ease, transform 0.15s ease;
-        }
-
-        .case-badge:hover,
-        .listbox .case-badge:hover {
-            box-shadow: 0 0 0 2px rgba(255,255,255,0.08);
-            transform: translateY(-1px);
-        }
-        </style>
-        """
-    ),
-    unsafe_allow_html=True,
-)
-
 
 def _safe_rerun():
     try:
@@ -230,29 +170,18 @@ def render_case(case_id: str):
                 # Badge selection (based on case id)
                 if str(cid).lower() == "riverton":
                     badge_html = (
-                        '<div class="case-badge-wrap" '
-                        'style="width:100%; display:block; text-align:center; margin:0 0 10px 0;">'
+                        '<div class="case-badge-wrap">'
                         '<span class="case-badge hypo" '
-                        'title="Constructed scenario used to demonstrate forward-looking reasoning." '
-                        'style="display:inline-block; margin:0 auto; padding:4px 12px; border-radius:999px; '
-                        'font-size:0.75rem; font-weight:600; letter-spacing:0.02em; white-space:nowrap; '
-                        'background-color:rgba(59, 130, 246, 0.12); border:1px solid rgba(59, 130, 246, 0.35); '
-                        'color:#bfdbfe;">'
+                        'title="Constructed scenario used to demonstrate forward-looking reasoning.">'
                         'Hypothetical Scenario'
                         '</span>'
                         '</div>'
                     )
-
                 else:
                     badge_html = (
-                        '<div class="case-badge-wrap" '
-                        'style="width:100%; display:block; text-align:center; margin:0 0 10px 0;">'
+                        '<div class="case-badge-wrap">'
                         '<span class="case-badge real" '
-                        'title="Reconstructed from documented municipal incidents." '
-                        'style="display:inline-block; margin:0 auto; padding:4px 12px; border-radius:999px; '
-                        'font-size:0.75rem; font-weight:600; letter-spacing:0.02em; white-space:nowrap; '
-                        'background-color:rgba(96, 165, 250, 0.18); border:1px solid rgba(96, 165, 250, 0.55); '
-                        'color:#dbeafe;">'
+                        'title="Reconstructed from documented municipal incidents.">'
                         'Real-World Incident'
                         '</span>'
                         '</div>'
