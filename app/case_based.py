@@ -167,14 +167,11 @@ def render_case(case_id: str):
         st.markdown(
             """
             <div style='text-align:center; margin-top: 0; margin-bottom: 0;'>
-            <h2 style='margin-bottom:0.1rem; display:inline-block;'>
+            <h2 style='margin:0 0 0.1rem 0; display:inline-block;'>
                 Select a Case
             </h2>
             </div>
-
-            <div class="case-tiles">
             <div class="case-tiles-anchor"></div>
-            </div>
             """,
             unsafe_allow_html=True,
         )

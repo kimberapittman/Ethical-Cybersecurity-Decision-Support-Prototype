@@ -159,6 +159,12 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) div[data-testid="stHo
   padding-top: 0 !important;
 }
 
+/* === Select-a-Case: remove Streamlit element spacing between header markdown and columns === */
+div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) div.element-container:has(div[data-testid="stHorizontalBlock"]) {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
 @media (max-width: 900px){
   /* When columns stack, don't force tall empty cards */
   .listbox{
@@ -433,9 +439,9 @@ def _render_landing_page():
     st.markdown(
         """
     <div style='text-align:center; margin-top: 0; margin-bottom: 0;'>
-      <h2 style='margin-bottom:0.1rem; display:inline-block;'>
+    <h2 style='margin:0 0 0.1rem 0; display:inline-block;'>
         Select a Mode
-      </h2>
+    </h2>
     </div>
 
     <div class="mode-tiles">
