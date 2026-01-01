@@ -124,7 +124,7 @@ section[data-testid="stSidebar"] span{
   box-shadow: 0 10px 24px rgba(0,0,0,0.25);
   padding: 12px 14px;
   border-radius: 14px;
-  margin: 8px 0 8px;
+  margin: 0 0 8px
 }
 .listbox, .listbox *{ color: var(--text-strong) !important; }
 .tight-list{ margin: 0.25rem 0 0 1.15rem; padding: 0; }
