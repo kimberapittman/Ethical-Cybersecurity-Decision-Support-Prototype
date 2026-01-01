@@ -1,8 +1,7 @@
 import sys
 from pathlib import Path
-
 import textwrap
-
+import html
 
 # -*- coding: utf-8 -*-
 
@@ -13,7 +12,7 @@ if str(ROOT_DIR) not in sys.path:
 
 import streamlit as st
 
-from logic.loaders import list_cases
+from logic.loaders import list_cases, load_case
 from app import case_based, open_ended
 
 # ---------- Page config ----------
@@ -352,32 +351,49 @@ def _render_landing_page():
 
 
 def render_app_header(compact: bool = False):
-    if compact:
+    # Case walkthrough header: show CASE TITLE only, then the same blue divider
+    in_case_walkthrough = st.session_state.get("cb_view") == "walkthrough"
+    if in_case_walkthrough:
+        case_id = st.session_state.get("cb_case_id")
+        case = load_case(case_id) or {}
+        case_title = case.get("title", case_id) if case_id else ""
+
         st.markdown(
-            """
+            f"""
             <div style='text-align:center;'>
-              <h2 style='margin-bottom:0.25rem;'>🛡️ Municipal Cyber Ethics Decision-Support Prototype</h2>
-              <div style="font-size:0.75rem; font-weight:800; letter-spacing:0.01em; color:#4C8BF5; margin-top:0.1rem;">
-                Because what's secure isn't always what's right.
-              </div>
+              <h2 style='margin-bottom:0.25rem;'>{html.escape(str(case_title))}</h2>
             </div>
             """,
             unsafe_allow_html=True,
         )
     else:
-        st.markdown(
-            """
-            <div style='text-align:center;'>
-              <h1>🛡️ Municipal Cyber Ethics Decision-Support Prototype</h1>
-              <div style="font-size:2.0rem; font-weight:800; letter-spacing:0.01em; color:#4C8BF5; margin-top:0.25rem;">
-                Because what's secure isn't always what's right.
-              </div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+        # Existing header behavior (unchanged)
+        if compact:
+            st.markdown(
+                """
+                <div style='text-align:center;'>
+                  <h2 style='margin-bottom:0.25rem;'>🛡️ Municipal Cyber Ethics Decision-Support Prototype</h2>
+                  <div style="font-size:0.75rem; font-weight:800; letter-spacing:0.01em; color:#4C8BF5; margin-top:0.1rem;">
+                    Because what's secure isn't always what's right.
+                  </div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+        else:
+            st.markdown(
+                """
+                <div style='text-align:center;'>
+                  <h1>🛡️ Municipal Cyber Ethics Decision-Support Prototype</h1>
+                  <div style="font-size:2.0rem; font-weight:800; letter-spacing:0.01em; color:#4C8BF5; margin-top:0.25rem;">
+                    Because what's secure isn't always what's right.
+                  </div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
 
-    # one consistent divider everywhere
+    # one consistent divider everywhere (UNCHANGED)
     st.markdown(
         """
         <hr style='
