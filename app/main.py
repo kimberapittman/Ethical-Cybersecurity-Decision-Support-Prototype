@@ -126,37 +126,26 @@ div[data-testid="stHorizontalBlock"]{
   align-items: stretch !important;
 }
 
-/* === Select-a-Mode: force equal-height tiles (Streamlit-safe) === */
+/* === Select-a-Mode: equal height without forced giant tiles === */
+div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) div[data-testid="stHorizontalBlock"]{
+  align-items: stretch !important;
+}
+
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) div[data-testid="column"]{
   display: flex !important;
   flex-direction: column !important;
 }
 
-div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) div[data-testid="column"] > div{
-  height: 100% !important; /* make the column's inner container stretch */
-}
-
-/* Make the clickable <a> wrapper stretch */
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) a{
   display: block !important;
   height: 100% !important;
 }
 
-/* Make the tile itself stretch + enforce a consistent minimum height */
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) .listbox{
-  height: 100% !important;
-  min-height: 520px !important;  /* adjust up/down to taste */
-}
-
-/* Make the column itself allow its child to stretch */
-div[data-testid="column"]{
   display: flex !important;
   flex-direction: column !important;
-}
-
-/* Make the tile (listbox) consume available height inside the column */
-div[data-testid="column"] .listbox{
-  height: 100% !important;
+  height: 100% !important;          /* stretch to match the other tile */
+  min-height: unset !important;      /* remove the forced tall height */
 }
 
 @media (max-width: 900px){
@@ -333,6 +322,11 @@ footer, #MainMenu{ visibility: hidden; }
 .disclaimer-footer{
   margin: 0 !important;
   padding: 0 !important;
+}
+
+/* Hide Streamlit header anchor (paperclip/link icon) */
+a.header-anchor {
+  display: none !important;
 }
 </style>
 """,
