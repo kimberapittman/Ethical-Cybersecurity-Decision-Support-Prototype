@@ -244,6 +244,15 @@ input[type="checkbox"], input[type="radio"]{ accent-color: var(--brand); }
 /* Hide Streamlit chrome */
 header[data-testid="stHeader"]{ background: transparent; }
 footer, #MainMenu{ visibility: hidden; }
+
+/* === Consistent faint divider (for st.markdown("---")) === */
+div[data-testid="stMarkdownContainer"] hr {
+  border: none !important;
+  height: 1px !important;
+  background: rgba(255,255,255,0.14) !important;
+  margin: 22px 0 18px 0 !important;
+  opacity: 1 !important;
+}
 </style>
 """,
     unsafe_allow_html=True,
