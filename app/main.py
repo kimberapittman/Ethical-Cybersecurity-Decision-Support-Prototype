@@ -326,7 +326,7 @@ def render_disclaimer_footer():
 def _render_landing_page():
     st.markdown(
         """
-    <div style='text-align:center; margin-top: 0.5rem;'>
+    <div style='text-align:center; margin-top: 0; margin-bottom: 0;'>
       <h2 style='margin-bottom:0.35rem; display:inline-block;'>
         Select a Mode
       </h2>
@@ -334,6 +334,12 @@ def _render_landing_page():
         """,
         unsafe_allow_html=True,
     )
+
+    st.markdown(
+        "<div style='margin-top:-18px'></div>",
+        unsafe_allow_html=True,
+    )
+
 
     col1, col2 = st.columns(2, gap="large")
 
