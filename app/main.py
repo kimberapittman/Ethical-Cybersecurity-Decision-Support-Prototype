@@ -126,6 +126,28 @@ div[data-testid="stHorizontalBlock"]{
   align-items: stretch !important;
 }
 
+/* === Select-a-Mode: force equal-height tiles (Streamlit-safe) === */
+div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) div[data-testid="column"]{
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) div[data-testid="column"] > div{
+  height: 100% !important; /* make the column's inner container stretch */
+}
+
+/* Make the clickable <a> wrapper stretch */
+div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) a{
+  display: block !important;
+  height: 100% !important;
+}
+
+/* Make the tile itself stretch + enforce a consistent minimum height */
+div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) .listbox{
+  height: 100% !important;
+  min-height: 520=px !important;  /* adjust up/down to taste */
+}
+
 /* Make the column itself allow its child to stretch */
 div[data-testid="column"]{
   display: flex !important;
@@ -154,9 +176,21 @@ div[data-testid="column"] .listbox{
   display: flex !important;
   flex-direction: column !important;
 
-  /* Pick the height you want */
-  min-height: 460px !important;   /* adjust up/down until it looks perfect */
-  height: 100% !important;
+  /* Pick ONE approach */
+
+  /* Option A: fixed equal height (most consistent) */
+  height: 460px !important;
+
+  /* Option B: minimum height (allows growth if content needs it) */
+  /* min-height: 460px !important; */
+}
+
+.listbox{
+  display: block;
+}
+
+div[data-testid="column"]{
+  align-items: flex-start !important;
 }
 
 /* Cards */
@@ -388,6 +422,8 @@ def _render_landing_page():
     #     "<div style='margin-top:-18px'></div>",
     #     unsafe_allow_html=True,
     # )
+
+    st.markdown('<div class="mode-tiles-anchor"></div>', unsafe_allow_html=True)
 
     col1, col2 = st.columns(2, gap="large")
 
