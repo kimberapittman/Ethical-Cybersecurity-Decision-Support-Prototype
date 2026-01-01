@@ -66,6 +66,12 @@ div[data-testid="stButton"]{
   width: 100% !important;
 }
 
+/* Force buttons to truly occupy the full column width (prevents shrink-to-fit in narrow layouts) */
+div[data-testid="stButton"] > button {
+  min-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
 /* Navigation buttons: Previous / Next should size to content */
 .nav-button > div[data-testid="stButton"] > button {
   width: auto !important;

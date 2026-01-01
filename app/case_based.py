@@ -438,7 +438,13 @@ def render_case(case_id: str):
         col_prev, col_spacer1, col_exit, col_spacer2, col_next = st.columns([1, 2, 2.2, 2, 1])
 
         with col_prev:
-            if step > 1 and st.button("◀ Previous", key=f"cb_prev_{step}_{case_id}", use_container_width=True):
+            prev_clicked = st.button(
+                "◀ Previous",
+                key=f"cb_prev_{step}_{case_id}",
+                use_container_width=True,
+                disabled=(step <= 1),
+            )
+            if prev_clicked:
                 st.session_state["cb_step"] = max(1, step - 1)
                 _safe_rerun()
 
@@ -446,21 +452,20 @@ def render_case(case_id: str):
             if st.button(
                 "Exit Walkthrough",
                 key=f"cb_exit_walkthrough_{case_id}",
-                use_container_width=True
+                use_container_width=True,
             ):
                 st.session_state["cb_view"] = "select"
                 _safe_rerun()
 
         with col_next:
-            st.markdown('<div class="nav-button">', unsafe_allow_html=True)
-
             if step < 9:
-                if st.button("Next ▶", key=f"cb_next_{step}_{case_id}"):
+                next_clicked = st.button(
+                    "Next ▶",
+                    key=f"cb_next_{step}_{case_id}",
+                    use_container_width=True,
+                )
+                if next_clicked:
                     st.session_state["cb_step"] = min(9, step + 1)
                     _safe_rerun()
             else:
-                st.info("End of Case.")
-
-            st.markdown('</div>', unsafe_allow_html=True)
-
-    return
+                st.info("End of Case")
