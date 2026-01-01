@@ -274,7 +274,7 @@ label, .stRadio, .stSelectbox, .stMultiSelect, .stExpander{
   font-size:0.72rem !important;
   font-weight:800 !important;
   letter-spacing:0.02em !important;
-  padding:7px 14px !important;
+  padding:10px 14px !important;
   border-radius:999px !important;
   white-space:nowrap !important;
   color:#ffffff !important;
@@ -413,12 +413,6 @@ def _render_landing_page():
         unsafe_allow_html=True,
     )
 
-    # REMOVE this once you add the wrapper + CSS below
-    # st.markdown(
-    #     "<div style='margin-top:-18px'></div>",
-    #     unsafe_allow_html=True,
-    # )
-
     st.markdown('<div class="mode-tiles-anchor"></div>', unsafe_allow_html=True)
 
     col1, col2 = st.columns(2, gap="large")
@@ -439,16 +433,29 @@ def _render_landing_page():
                       <em>Explore the prototype through reconstructed case demonstrations.</em>
                     </div>
 
-                    <div class="sub" style="margin-bottom:10px;">
-                      Uses reconstructed municipal cybersecurity cases to demonstrate how the decision-support prototype structures ethical reasoning and technical decision-making across an entire decision process.
-                    </div>
+                    <!-- Collapsible details (inside tile) -->
+                    <details
+                      style="margin-top: 8px;"
+                      onclick="event.stopPropagation();"
+                    >
+                      <summary
+                        style="user-select:none;"
+                        onclick="event.stopPropagation();"
+                      >
+                        About Case-Based Mode
+                      </summary>
 
-                    <ul class="tight-list">
-                      <li>Pre-structured cases reconstructed from documented municipal incidents</li>
-                      <li>Walks through defined decision points and ethical triggers</li>
-                      <li>Shows how CSF procedural logic and PFCE reasoning are applied in practice</li>
-                      <li>Establishes a shared reference point for how the prototype is intended to be used</li>
-                    </ul>
+                      <div class="sub" style="margin-top:10px; margin-bottom:10px;">
+                        Uses reconstructed municipal cybersecurity cases to demonstrate how the decision-support prototype structures ethical reasoning and technical decision-making across an entire decision process.
+                      </div>
+
+                      <ul class="tight-list">
+                        <li>Pre-structured cases reconstructed from documented municipal incidents</li>
+                        <li>Walks through defined decision points and ethical triggers</li>
+                        <li>Shows how CSF procedural logic and PFCE reasoning are applied in practice</li>
+                        <li>Establishes a shared reference point for how the prototype is intended to be used</li>
+                      </ul>
+                    </details>
 
                   </div>
                 </a>
@@ -473,16 +480,29 @@ def _render_landing_page():
                       <em>Utilize the prototype for a decision context you define.</em>
                     </div>
 
-                    <div class="sub" style="margin-bottom:10px;">
-                      Provides a structured walkthrough for analyzing the ethical significance of a user-defined cybersecurity decision, without prescribing outcomes.
-                    </div>
+                    <!-- Collapsible details (inside tile) -->
+                    <details
+                      style="margin-top: 8px;"
+                      onclick="event.stopPropagation();"
+                    >
+                      <summary
+                        style="user-select:none;"
+                        onclick="event.stopPropagation();"
+                      >
+                        About Open-Ended Mode
+                      </summary>
 
-                    <ul class="tight-list">
-                      <li>User-defined decision context</li>
-                      <li>Supports identification of ethical significance and competing obligations</li>
-                      <li>Structures reasoning using CSF procedural context and PFCE principles</li>
-                      <li>Documents ethical reasoning to support transparency and defensibility</li>
-                    </ul>
+                      <div class="sub" style="margin-top:10px; margin-bottom:10px;">
+                        Provides a structured walkthrough for analyzing the ethical significance of a user-defined cybersecurity decision, without prescribing outcomes.
+                      </div>
+
+                      <ul class="tight-list">
+                        <li>User-defined decision context</li>
+                        <li>Supports identification of ethical significance and competing obligations</li>
+                        <li>Structures reasoning using CSF procedural context and PFCE principles</li>
+                        <li>Documents ethical reasoning to support transparency and defensibility</li>
+                      </ul>
+                    </details>
 
                   </div>
                 </a>
@@ -621,12 +641,12 @@ def main():
 
     # ---------- SIDEBAR (ALWAYS) ----------
     with st.sidebar:
+        st.markdown("---")
         # Prototype Overview (always visible)
         st.markdown(
             "<h3 style='margin:0 0 0.5rem 0; font-weight:700;'>Prototype Overview</h3>",
             unsafe_allow_html=True,
         )
-
         with st.expander("ℹ️ About This Prototype"):
             st.markdown(
                 """
@@ -637,8 +657,7 @@ def main():
         - A decision-support prototype designed to help municipal cybersecurity practitioners surface and reason through ethical tensions that may arise within cybersecurity decision-making  
         - Focused on structuring ethical and technical reasoning, not prescribing actions or determining outcomes  
 
-        <br>
-
+        
         <span style="font-weight:700; border-bottom:2px solid rgba(255,255,255,0.6); padding-bottom:2px;">
         How It Works
         </span>
@@ -662,13 +681,11 @@ def main():
 
 
         st.markdown("---")
-
         # Appendix (always visible)
         st.markdown(
             "<h3 style='margin:0 0 0.5rem 0; font-weight:700;'>Appendix</h3>",
             unsafe_allow_html=True,
         )
-
         with st.expander("📚 Framework References"):
             st.markdown(
                 """
