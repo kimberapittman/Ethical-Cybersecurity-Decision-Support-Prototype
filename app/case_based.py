@@ -164,7 +164,7 @@ def render_case(case_id: str):
 
         for col, c in zip(cols, top_cases):
             cid = c.get("id", "")
-            title = c.get("title", "TBD")
+            title = c.get("ui_title") or c.get("title", "TBD")
             short_summary = c.get("short_summary", "")
 
             with col:
