@@ -5,39 +5,39 @@ import html
 st.markdown(
     """
     <style>
-    .case-badge-wrap {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        margin-bottom: 10px;
+    .case-badge-wrap{
+    display: block !important;
+    width: 100% !important;
+    text-align: center !important;
+    margin: 0 0 10px 0 !important;
     }
 
-    .case-badge {
-        display: inline-flex;
-        align-items: center;
-        padding: 4px 12px;
-        border-radius: 999px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        letter-spacing: 0.02em;
-        white-space: nowrap;
+    .case-badge{
+    display: inline-block !important;
+    margin: 0 auto !important;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
     }
 
     .case-badge.real {
-        background: rgba(59, 130, 246, 0.15);   /* muted blue */
-        border: 1px solid rgba(59, 130, 246, 0.45);
-        color: #cfe2ff;
+        background: rgba(96, 165, 250, 0.18);   /* primary blue */
+        border: 1px solid rgba(96, 165, 250, 0.55);
+        color: #dbeafe;
     }
 
     .case-badge.hypo {
-        background: rgba(148, 163, 184, 0.15);  /* neutral slate */
-        border: 1px solid rgba(148, 163, 184, 0.45);
-        color: #e5e7eb;
+        background: rgba(59, 130, 246, 0.12);   /* softer blue */
+        border: 1px solid rgba(59, 130, 246, 0.35);
+        color: #bfdbfe;
     }
+
     .case-badge {
     transition: box-shadow 0.15s ease, transform 0.15s ease;
-}
+    }
 
     .case-badge:hover {
         box-shadow: 0 0 0 2px rgba(255,255,255,0.08);
