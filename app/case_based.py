@@ -5,43 +5,51 @@ import html
 st.markdown(
     """
     <style>
-    .case-badge-wrap {
-        width: 100%;
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
+    /* ---------- BADGE CENTERING + COLOR OVERRIDES (high specificity) ---------- */
+
+    /* Center reliably even if .listbox uses flex/grid/align rules */
+    .case-badge-wrap,
+    .listbox .case-badge-wrap {
+        width: 100% !important;
+        display: block !important;
         text-align: center !important;
-        margin-bottom: 10px;
+        margin: 0 0 10px 0 !important;
     }
 
-    .case-badge{
-    display: inline-block !important;
-    margin: 0 auto !important;
-    padding: 4px 12px;
-    border-radius: 999px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    white-space: nowrap;
+    .case-badge,
+    .listbox .case-badge {
+        display: inline-block !important;
+        margin: 0 auto !important;
+        padding: 4px 12px !important;
+        border-radius: 999px !important;
+        font-size: 0.75rem !important;
+        font-weight: 600 !important;
+        letter-spacing: 0.02em !important;
+        white-space: nowrap !important;
     }
 
-    .case-badge.real {
-        background: rgba(96, 165, 250, 0.18) !important;
+    /* Force blue theme colors even if other .case-badge rules exist elsewhere */
+    .case-badge.real,
+    .listbox .case-badge.real {
+        background-color: rgba(96, 165, 250, 0.18) !important;
         border: 1px solid rgba(96, 165, 250, 0.55) !important;
         color: #dbeafe !important;
     }
 
-    .case-badge.hypo {
-        background: rgba(59, 130, 246, 0.12) !important;
+    .case-badge.hypo,
+    .listbox .case-badge.hypo {
+        background-color: rgba(59, 130, 246, 0.12) !important;
         border: 1px solid rgba(59, 130, 246, 0.35) !important;
         color: #bfdbfe !important;
     }
 
-    .case-badge {
-    transition: box-shadow 0.15s ease, transform 0.15s ease;
+    .case-badge,
+    .listbox .case-badge {
+        transition: box-shadow 0.15s ease, transform 0.15s ease;
     }
 
-    .case-badge:hover {
+    .case-badge:hover,
+    .listbox .case-badge:hover {
         box-shadow: 0 0 0 2px rgba(255,255,255,0.08);
         transform: translateY(-1px);
     }
