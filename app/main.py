@@ -101,6 +101,33 @@ div[data-testid="stButton"] > button:hover{
 }
 div[data-testid="stButton"] > button:active{ transform: translateY(0); }
 
+/* Ghost nav button (Back to Mode Selection) */
+div[data-testid="stButton"] > button[kind="secondary"]{
+  background: rgba(255,255,255,0.06) !important;
+  box-shadow: none !important;
+  border: 1px solid rgba(255,255,255,0.14) !important;
+}
+div[data-testid="stButton"] > button[kind="secondary"]:hover{
+  transform: none !important;
+  filter: none !important;
+  box-shadow: none !important;
+}
+
+/* Back to Mode Selection — size to text cleanly */
+div[data-testid="stButton"] > button[kind="secondary"]{
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  width: auto !important;
+  min-width: unset !important;
+
+  padding: 0.45rem 0.9rem !important;
+  line-height: 1.2 !important;
+
+  white-space: nowrap !important;
+}
+
 /* === Inputs === */
 input, textarea, select, .stTextInput input, .stTextArea textarea{
   background: rgba(255,255,255,0.06) !important;
@@ -429,8 +456,29 @@ def _render_landing_page():
 
 
 def render_app_header(compact: bool = False):
-    # Case walkthrough header: show CASE TITLE only, then the same blue divider
-    in_case_walkthrough = st.session_state.get("cb_view") == "walkthrough"
+    # --- Back to Mode Selection (secondary nav) ---
+    show_back = st.session_state.get("landing_complete", False)
+
+    in_case_select = (
+        st.session_state.get("active_mode") == "Case-Based"
+        and st.session_state.get("cb_view") == "select"
+    )
+    in_case_walkthrough = (st.session_state.get("cb_view") == "walkthrough")
+    in_open_ended = (st.session_state.get("active_mode") == "Open-Ended")
+
+    if show_back and (in_case_select or in_case_walkthrough or in_open_ended):
+        col_left, col_spacer = st.columns([1, 6])
+        with col_left:
+            if st.button("← Back to Mode Selection", key="back_to_modes", type="secondary"):
+                st.session_state["landing_complete"] = False
+                st.session_state.pop("cb_view", None)
+                st.session_state.pop("cb_case_id", None)
+                st.session_state.pop("cb_prev_case_id", None)
+                st.session_state.pop("cb_step", None)
+                st.session_state.pop("oe_step", None)
+                st.rerun()
+
+    # --- Header title ---
     if in_case_walkthrough:
         case_id = st.session_state.get("cb_case_id")
         case = load_case(case_id) or {}
@@ -445,7 +493,6 @@ def render_app_header(compact: bool = False):
             unsafe_allow_html=True,
         )
     else:
-        # Existing header behavior (unchanged)
         if compact:
             st.markdown(
                 """
@@ -471,7 +518,7 @@ def render_app_header(compact: bool = False):
                 unsafe_allow_html=True,
             )
 
-    # one consistent divider everywhere (UNCHANGED)
+    # --- Divider (unchanged) ---
     st.markdown(
         """
         <hr style='
@@ -714,14 +761,6 @@ def main():
 
     if not (in_case_walkthrough or in_open_walkthrough):
 
-
-        show_change_mode = st.session_state.get("landing_complete", False)
-        if show_change_mode:
-            col_left, col_center, col_right = st.columns([2, 1, 2])
-            with col_center:
-                if st.button("Change Mode", key="change_mode_main", use_container_width=True):
-                    st.session_state["landing_complete"] = False
-                    st.rerun()
 
         render_disclaimer_footer()
 
