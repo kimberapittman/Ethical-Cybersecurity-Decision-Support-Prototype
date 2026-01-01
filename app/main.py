@@ -685,7 +685,10 @@ def main():
         open_ended.render_open_ended()
 
     if not (in_case_walkthrough or in_open_walkthrough):
-        st.markdown("---")
+        st.markdown(
+            "<div style='height:8px; border-top:1px solid rgba(255,255,255,0.15);'></div>",
+            unsafe_allow_html=True,
+        )
 
     show_change_mode = (
         st.session_state.get("landing_complete", False)
