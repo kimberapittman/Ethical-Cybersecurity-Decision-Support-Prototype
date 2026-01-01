@@ -578,19 +578,32 @@ def main():
 
     st.markdown("---")
 
-    col_left, col_right = st.columns([6, 1])
-    with col_left:
-        st.caption(
-            "This prototype is designed for research and demonstration purposes and is not intended for operational deployment"
-        )
+    show_change_mode = (
+        st.session_state.get("landing_complete", False)
+        and not (in_case_walkthrough or in_open_walkthrough)
+    )
 
-    with col_right:
-        if (
-            st.session_state.get("landing_complete", False)
-            and not (in_case_walkthrough or in_open_walkthrough)
-        ):
+    # --- Centered Change Mode button (responsive-safe) ---
+    if show_change_mode:
+        col_left, col_center, col_right = st.columns([2, 1, 2])
+        with col_center:
             if st.button("Change Mode", key="change_mode_main", use_container_width=True):
                 st.session_state["landing_complete"] = False
+
+
+    st.markdown(
+        """
+        <div style="
+            text-align:center;
+            opacity:0.7;
+            font-size:0.85rem;
+            padding: 0.25rem 0 0.75rem 0;
+        ">
+            This prototype is designed for research and demonstration purposes and is not intended for operational deployment
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 if __name__ == "__main__":
