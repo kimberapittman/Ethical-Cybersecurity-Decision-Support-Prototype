@@ -299,127 +299,125 @@ def render_case(case_id: str):
 
         st.progress(step / 9.0)
 
-        # --- STEP TILE WRAPPER (matches Select a Mode / Select a Case tiles) ---
-        st.markdown('<div class="listbox">', unsafe_allow_html=True)
+        # --- STEP TILE (true Streamlit container) ---
+        with st.container():
+            st.markdown('<span class="step-tile-anchor"></span>', unsafe_allow_html=True)
 
-        if step == 1:
-            st.header("1. Technical and Operational Background")
-            _render_bullets(case["background"].get("technical_operational_background"))
-            st.markdown("---")
+            if step == 1:
+                st.header("1. Technical and Operational Background")
+                _render_bullets(case["background"].get("technical_operational_background"))
+                st.markdown("---")
 
-        if step == 2:
-            st.header("2. Triggering Condition and Key Events")
-            _render_bullets(case["background"].get("triggering_condition_key_events"))
-            st.markdown("---")
+            if step == 2:
+                st.header("2. Triggering Condition and Key Events")
+                _render_bullets(case["background"].get("triggering_condition_key_events"))
+                st.markdown("---")
 
-        if step == 3:
-            st.header("3. Decision Context")
-            _render_bullets(case["technical"].get("decision_context"))
-            st.markdown("---")
+            if step == 3:
+                st.header("3. Decision Context")
+                _render_bullets(case["technical"].get("decision_context"))
+                st.markdown("---")
 
-        if step == 4:
-            _step_title_with_framework(
-                4,
-                "NIST CSF Mapping",
-                "NIST CSF",
-                NIST_CSF_HOVER,
-                NIST_CSF_URL,
-            )
+            if step == 4:
+                _step_title_with_framework(
+                    4,
+                    "NIST CSF Mapping",
+                    "NIST CSF",
+                    NIST_CSF_HOVER,
+                    NIST_CSF_URL,
+                )
 
-            mapping = case["technical"].get("nist_csf_mapping", [])
+                mapping = case["technical"].get("nist_csf_mapping", [])
 
-            if mapping:
-                for m in mapping:
-                    fn = m.get("function", "TBD")
+                if mapping:
+                    for m in mapping:
+                        fn = m.get("function", "TBD")
 
-                    cats = m.get("categories", [])
-                    if isinstance(cats, str):
-                        cats = [cats]
+                        cats = m.get("categories", [])
+                        if isinstance(cats, str):
+                            cats = [cats]
 
-                    cat_text = ", ".join(cats) if cats else "TBD"
+                        cat_text = ", ".join(cats) if cats else "TBD"
 
-                    st.markdown(f"- **{fn} — {cat_text}**")
+                        st.markdown(f"- **{fn} — {cat_text}**")
 
-                    if m.get("rationale"):
-                        st.markdown(f"_Rationale_: {m.get('rationale')}")
-            else:
-                st.write("TBD")
+                        if m.get("rationale"):
+                            st.markdown(f"_Rationale_: {m.get('rationale')}")
+                else:
+                    st.write("TBD")
 
-            st.markdown("---")
+                st.markdown("---")
 
-        if step == 5:
-            st.header("5. Ethical Tension")
-            tensions = case["ethical"].get("tension", [])
-            if tensions:
-                for t in tensions:
-                    st.markdown(f"- {t.get('description', 'TBD')}")
-            else:
-                st.write("TBD")
-            st.markdown("---")
+            if step == 5:
+                st.header("5. Ethical Tension")
+                tensions = case["ethical"].get("tension", [])
+                if tensions:
+                    for t in tensions:
+                        st.markdown(f"- {t.get('description', 'TBD')}")
+                else:
+                    st.write("TBD")
+                st.markdown("---")
 
-        if step == 6:
-            _step_title_with_framework(
-                6,
-                "PFCE Analysis",
-                "PFCE",
-                PFCE_HOVER,
-                PFCE_URL,
-            )
+            if step == 6:
+                _step_title_with_framework(
+                    6,
+                    "PFCE Analysis",
+                    "PFCE",
+                    PFCE_HOVER,
+                    PFCE_URL,
+                )
 
-            pfce_items = case["ethical"].get("pfce_analysis", [])
+                pfce_items = case["ethical"].get("pfce_analysis", [])
 
-            if isinstance(pfce_items, list) and pfce_items and isinstance(pfce_items[0], dict):
-                for p in pfce_items:
-                    principle = p.get("principle", "TBD")
-                    definition = PFCE_DEFINITIONS.get(principle, "")
-                    desc = p.get("description", "TBD")
+                if isinstance(pfce_items, list) and pfce_items and isinstance(pfce_items[0], dict):
+                    for p in pfce_items:
+                        principle = p.get("principle", "TBD")
+                        definition = PFCE_DEFINITIONS.get(principle, "")
+                        desc = p.get("description", "TBD")
 
-                    if definition:
-                        st.markdown(
-                            f"""
+                        if definition:
+                            st.markdown(
+                                f"""
 - <span title="{html.escape(definition)}"
     style="font-weight:700; text-decoration: underline; cursor: help;">{html.escape(principle)}</span>: {html.escape(desc)}
-                            """,
-                            unsafe_allow_html=True,
-                        )
-                    else:
-                        st.markdown(f"- **{principle}**: {desc}")
-            else:
-                _render_bullets(pfce_items)
-
-            st.markdown("---")
-
-        if step == 7:
-            st.header("7. Institutional and Governance Constraints")
-            constraints = case.get("constraints", [])
-            if constraints:
-                for c in constraints:
-                    if isinstance(c, dict):
-                        st.markdown(
-                            f"- **{c.get('type','TBD')}** – {c.get('description','TBD')}"
-                        )
-                        if c.get("effect_on_decision"):
-                            st.markdown(
-                                f"  \n  _Effect on decision_: {c.get('effect_on_decision')}"
+                                """,
+                                unsafe_allow_html=True,
                             )
-                    else:
-                        st.markdown(f"- {c}")
-            else:
-                st.write("TBD")
-            st.markdown("---")
+                        else:
+                            st.markdown(f"- **{principle}**: {desc}")
+                else:
+                    _render_bullets(pfce_items)
 
-        if step == 8:
-            st.header("8. Decision")
-            st.write(case["decision_outcome"].get("decision"))
-            st.markdown("---")
+                st.markdown("---")
 
-        if step == 9:
-            st.header("9. Outcomes and Implications")
-            _render_bullets(case["decision_outcome"].get("outcomes_implications"))
-            st.markdown("---")
+            if step == 7:
+                st.header("7. Institutional and Governance Constraints")
+                constraints = case.get("constraints", [])
+                if constraints:
+                    for c in constraints:
+                        if isinstance(c, dict):
+                            st.markdown(
+                                f"- **{c.get('type','TBD')}** – {c.get('description','TBD')}"
+                            )
+                            if c.get("effect_on_decision"):
+                                st.markdown(
+                                    f"  \n  _Effect on decision_: {c.get('effect_on_decision')}"
+                                )
+                        else:
+                            st.markdown(f"- {c}")
+                else:
+                    st.write("TBD")
+                st.markdown("---")
 
-        # close tile wrapper
-        st.markdown("</div>", unsafe_allow_html=True)
+            if step == 8:
+                st.header("8. Decision")
+                st.write(case["decision_outcome"].get("decision"))
+                st.markdown("---")
+
+            if step == 9:
+                st.header("9. Outcomes and Implications")
+                _render_bullets(case["decision_outcome"].get("outcomes_implications"))
+                st.markdown("---")
 
         # Navigation controls (Previous | Exit | Next)
         col_prev, col_spacer1, col_exit, col_spacer2, col_next = st.columns([1, 2, 2.2, 2, 1])
@@ -447,4 +445,4 @@ def render_case(case_id: str):
                 st.info("End of Case.")
 
         return
-
+   

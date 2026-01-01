@@ -118,6 +118,17 @@ section[data-testid="stSidebar"] span{
 .tight-list li{ margin: 6px 0; }
 .tight-list li::marker{ color: var(--text-muted); }
 
+/* === Step tile wrapper inside walkthrough === */
+div[data-testid="stVerticalBlock"]:has(.step-tile-anchor){
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+  border-left: 4px solid var(--brand);
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.25);
+  padding: 12px 14px;
+  border-radius: 14px;
+  margin: 8px 0 16px;
+}
+
 /* Section captions */
 .section-note, .sub{ color: var(--text-muted) !important; }
 
