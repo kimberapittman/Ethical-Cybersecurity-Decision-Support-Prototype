@@ -224,7 +224,6 @@ def render_case(case_id: str):
             with col:        
                 # Badge selection (based on case id)
                 if str(cid).lower() == "riverton":
-                if str(cid).lower() == "riverton":
                     badge_html = (
                         '<div class="case-badge-wrap" '
                         'style="width:100%; display:block; text-align:center; margin:0 0 10px 0;">'
