@@ -79,9 +79,6 @@ section[data-testid="stSidebar"] span{
 }
 
 /* === Buttons === */
-div[data-testid="stButton"]{
-  width: 100% !important;
-}
 div[data-testid="stButton"] > button{
   min-width: 100% !important;
   box-sizing: border-box !important;
@@ -362,6 +359,7 @@ def render_disclaimer_footer(pinned: bool = False):
     if pinned:
         st.markdown(
             f"""
+            <div class="disclaimer-spacer"></div>
             <div class="disclaimer-fixed">
               <div class="disclaimer-inner">
                 {html.escape(txt)}
