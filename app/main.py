@@ -66,6 +66,13 @@ div[data-testid="stButton"]{
   width: 100% !important;
 }
 
+/* Navigation buttons: Previous / Next should size to content */
+.nav-button > div[data-testid="stButton"] > button {
+  width: auto !important;
+  padding-left: 1.2rem;
+  padding-right: 1.2rem;
+}
+
 div[data-testid="stButton"] > button,
 div[data-testid="stButton"] button{
   width: 100% !important;
