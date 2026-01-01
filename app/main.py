@@ -62,6 +62,19 @@ div[data-testid="stAppViewContainer"]{
   --card-bg: rgba(255,255,255,0.05);
 }
 
+/* Force ALL Streamlit buttons (wrapper + button) to fill their container */
+div[data-testid="stButton"]{
+  width: 100% !important;
+}
+
+div[data-testid="stButton"] > button,
+div[data-testid="stButton"] button{
+  width: 100% !important;
+  max-width: 100% !important;
+  display: block !important;
+  white-space: nowrap !important;
+}
+
 /* Sidebar */
 section[data-testid="stSidebar"]{
   background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
