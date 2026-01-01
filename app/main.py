@@ -139,7 +139,7 @@ div[data-testid="stVerticalBlock"]:has(.step-tile-anchor){
   box-shadow: 0 10px 24px rgba(0,0,0,0.25);
   padding: 12px 14px;
   border-radius: 14px;
-  margin: 8px 0 16px;
+  margin: 8px 0 8px;
 }
 
 /* Section captions */
@@ -298,6 +298,29 @@ def main():
     _open_sidebar_once()
 
 
+def render_disclaimer_footer():
+    st.markdown(
+        """
+        <hr style="
+            margin: 8px 0 6px 0;
+            border:none;
+            height:1px;
+            background: rgba(255,255,255,0.15);
+        ">
+        <div style="
+            text-align:center;
+            opacity:0.7;
+            font-size:0.85rem;
+            margin: 0;
+            padding: 0 0 0.75rem 0;
+        ">
+            This prototype is designed for research and demonstration purposes and is not intended for operational deployment
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 def _render_landing_page():
     st.markdown(
         """
@@ -379,21 +402,7 @@ def _render_landing_page():
             ),
             unsafe_allow_html=True,
         )
-    st.markdown("---")
-
-    st.markdown(
-        """
-        <div style="
-            text-align:center;
-            opacity:0.7;
-            font-size:0.85rem;
-            padding: 0.25rem 0 0.75rem 0;
-        ">
-            This prototype is designed for research and demonstration purposes and is not intended for operational deployment
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    render_disclaimer_footer()
     st.stop()
 
 
@@ -685,40 +694,17 @@ def main():
         open_ended.render_open_ended()
 
     if not (in_case_walkthrough or in_open_walkthrough):
-        st.markdown(
-            "<div style='height:8px; border-top:1px solid rgba(255,255,255,0.15);'></div>",
-            unsafe_allow_html=True,
-        )
-
-    show_change_mode = (
-        st.session_state.get("landing_complete", False)
-        and not (in_case_walkthrough or in_open_walkthrough)
-    )
-
-    # --- Centered Change Mode button (responsive-safe) ---
-    if show_change_mode:
-        col_left, col_center, col_right = st.columns([2, 1, 2])
-        with col_center:
-            if st.button("Change Mode", key="change_mode_main", use_container_width=True):
-                st.session_state["landing_complete"] = False
-                st.rerun()
 
 
-    if not (in_case_walkthrough or in_open_walkthrough):
-        st.markdown(
-            """
-            <div style="
-                text-align:center;
-                opacity:0.7;
-                font-size:0.85rem;
-                padding: 0.25rem 0 0.75rem 0;
-            ">
-                This prototype is designed for research and demonstration purposes and is not intended for operational deployment
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+        show_change_mode = st.session_state.get("landing_complete", False)
+        if show_change_mode:
+            col_left, col_center, col_right = st.columns([2, 1, 2])
+            with col_center:
+                if st.button("Change Mode", key="change_mode_main", use_container_width=True):
+                    st.session_state["landing_complete"] = False
+                    st.rerun()
 
+        render_disclaimer_footer()
 
 if __name__ == "__main__":
     main()
