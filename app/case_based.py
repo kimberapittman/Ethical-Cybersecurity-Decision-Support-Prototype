@@ -134,6 +134,21 @@ CASE_HOOKS = {
 }
 
 
+def _step_tile_open(title: str):
+    st.markdown(
+        f"""
+        <div class="listbox" style="padding: 18px 18px 10px 18px;">
+          <div style="font-weight:800; font-size:1.15rem; margin-bottom:10px; text-align:left;">
+            {html.escape(title)}
+          </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+def _step_tile_close():
+    st.markdown("</div>", unsafe_allow_html=True)
+
+
 def render_case(case_id: str):
     # ==========================================================
     # VIEW STATE (default to "select" to avoid dropdown + open button)
@@ -284,6 +299,9 @@ def render_case(case_id: str):
 
         st.progress(step / 9.0)
 
+        # --- STEP TILE WRAPPER (matches Select a Mode / Select a Case tiles) ---
+        st.markdown('<div class="listbox">', unsafe_allow_html=True)
+
         if step == 1:
             st.header("1. Technical and Operational Background")
             _render_bullets(case["background"].get("technical_operational_background"))
@@ -400,6 +418,9 @@ def render_case(case_id: str):
             _render_bullets(case["decision_outcome"].get("outcomes_implications"))
             st.markdown("---")
 
+        # close tile wrapper
+        st.markdown("</div>", unsafe_allow_html=True)
+
         # Navigation controls (Previous | Exit | Next)
         col_prev, col_spacer1, col_exit, col_spacer2, col_next = st.columns([1, 2, 2.2, 2, 1])
 
@@ -425,5 +446,5 @@ def render_case(case_id: str):
             else:
                 st.info("End of Case.")
 
-
         return
+
