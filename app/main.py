@@ -165,6 +165,12 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) div.element-container
   padding-top: 0 !important;
 }
 
+div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor),
+div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor){
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
 @media (max-width: 900px){
   /* When columns stack, don't force tall empty cards */
   .listbox{

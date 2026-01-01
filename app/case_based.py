@@ -171,7 +171,10 @@ def render_case(case_id: str):
                 Select a Case
             </h2>
             </div>
+
+            <div class="case-tiles">
             <div class="case-tiles-anchor"></div>
+            </div>
             """,
             unsafe_allow_html=True,
         )
