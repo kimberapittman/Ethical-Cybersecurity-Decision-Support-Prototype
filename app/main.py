@@ -144,6 +144,21 @@ div[data-testid="column"] .listbox{
   }
 }
 
+/* === Force equal-sized tiles on Select-a-Mode page (even when stacked) === */
+.mode-tiles div[data-testid="column"]{
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.mode-tiles .listbox{
+  display: flex !important;
+  flex-direction: column !important;
+
+  /* Pick the height you want */
+  min-height: 460px !important;   /* adjust up/down until it looks perfect */
+  height: 100% !important;
+}
+
 /* Cards */
 .listbox{
   background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
@@ -362,15 +377,17 @@ def _render_landing_page():
         Select a Mode
       </h2>
     </div>
+
+    <div class="mode-tiles">
         """,
         unsafe_allow_html=True,
     )
 
-    st.markdown(
-        "<div style='margin-top:-18px'></div>",
-        unsafe_allow_html=True,
-    )
-
+    # REMOVE this once you add the wrapper + CSS below
+    # st.markdown(
+    #     "<div style='margin-top:-18px'></div>",
+    #     unsafe_allow_html=True,
+    # )
 
     col1, col2 = st.columns(2, gap="large")
 
@@ -441,6 +458,10 @@ def _render_landing_page():
             ),
             unsafe_allow_html=True,
         )
+
+    # ✅ close wrapper
+    st.markdown("</div>", unsafe_allow_html=True)
+
     render_disclaimer_footer()
     st.stop()
 
