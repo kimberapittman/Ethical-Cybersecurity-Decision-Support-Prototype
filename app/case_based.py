@@ -5,11 +5,13 @@ import html
 st.markdown(
     """
     <style>
-    .case-badge-wrap{
-    display: block !important;
-    width: 100% !important;
-    text-align: center !important;
-    margin: 0 0 10px 0 !important;
+    .case-badge-wrap {
+        width: 100%;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        text-align: center !important;
+        margin-bottom: 10px;
     }
 
     .case-badge{
@@ -24,15 +26,15 @@ st.markdown(
     }
 
     .case-badge.real {
-        background: rgba(96, 165, 250, 0.18);   /* primary blue */
-        border: 1px solid rgba(96, 165, 250, 0.55);
-        color: #dbeafe;
+        background: rgba(96, 165, 250, 0.18) !important;
+        border: 1px solid rgba(96, 165, 250, 0.55) !important;
+        color: #dbeafe !important;
     }
 
     .case-badge.hypo {
-        background: rgba(59, 130, 246, 0.12);   /* softer blue */
-        border: 1px solid rgba(59, 130, 246, 0.35);
-        color: #bfdbfe;
+        background: rgba(59, 130, 246, 0.12) !important;
+        border: 1px solid rgba(59, 130, 246, 0.35) !important;
+        color: #bfdbfe !important;
     }
 
     .case-badge {
