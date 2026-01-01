@@ -259,7 +259,7 @@ div[data-testid="stVerticalBlock"]:has(.step-tile-anchor){
   margin-top: 18px;
 }
 
-/* Pinned disclaimer (only when pinned=True) */
+/* Pinned disclaimer (viewport bottom) */
 .disclaimer-fixed{
   position: fixed;
   left: 50%;
@@ -267,11 +267,23 @@ div[data-testid="stVerticalBlock"]:has(.step-tile-anchor){
   bottom: 14px;
   width: min(1100px, calc(100% - 48px));
   z-index: 9999;
+  pointer-events: none; /* do not block clicks */
+}
 
-  /* CRITICAL: prevent page overlay */
-  height: auto !important;
-  max-height: none !important;
-  pointer-events: none;
+.disclaimer-fixed .disclaimer-inner{
+  pointer-events: auto;
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.25);
+  border-radius: 14px;
+  padding: 10px 14px;
+  text-align: center;
+  color: rgba(229,231,235,0.85);
+}
+
+/* CRITICAL: reserve space so fixed footer doesn't overlap bottom content */
+div[data-testid="stAppViewContainer"] .block-container{
+  padding-bottom: 110px !important;
 }
 
 /* Visible pill */
@@ -344,50 +356,15 @@ def _open_sidebar_once():
     )
 
 
-def main():
-    if "landing_complete" not in st.session_state:
-        st.session_state["landing_complete"] = False
-
-    if "active_mode" not in st.session_state:
-        st.session_state["active_mode"] = "Case-Based"
-
-    _open_sidebar_once()
-
-
 def render_disclaimer_footer(pinned: bool = False):
+    txt = "This prototype is designed for research and demonstration purposes and is not intended for operational deployment"
+
     if pinned:
         st.markdown(
-            """
-            <style>
-              .disclaimer-fixed {
-                position: fixed;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                z-index: 9999;
-                padding: 0.75rem 1rem;
-                background: linear-gradient(180deg, rgba(10,16,32,0.55), rgba(10,16,32,0.92));
-                border-top: 1px solid rgba(255,255,255,0.10);
-                backdrop-filter: blur(8px);
-              }
-              .disclaimer-fixed .txt {
-                text-align: center;
-                opacity: 0.75;
-                font-size: 0.85rem;
-                color: #e5e7eb;
-                margin: 0;
-              }
-              /* Add space so fixed bar doesn't cover bottom content */
-              .disclaimer-spacer {
-                height: 56px;
-              }
-            </style>
-
-            <div class="disclaimer-spacer"></div>
-
+            f"""
             <div class="disclaimer-fixed">
-              <div class="txt">
-                This prototype is designed for research and demonstration purposes and is not intended for operational deployment
+              <div class="disclaimer-inner">
+                {html.escape(txt)}
               </div>
             </div>
             """,
@@ -395,18 +372,9 @@ def render_disclaimer_footer(pinned: bool = False):
         )
     else:
         st.markdown(
-            """
-            <div class="disclaimer-footer">
-              <hr>
-              <div style="
-                  text-align:center;
-                  opacity:0.7;
-                  font-size:0.85rem;
-                  margin: 0;
-                  padding: 0 0 0.75rem 0;
-              ">
-                  This prototype is designed for research and demonstration purposes and is not intended for operational deployment
-              </div>
+            f"""
+            <div class="disclaimer-inline">
+              {html.escape(txt)}
             </div>
             """,
             unsafe_allow_html=True,
@@ -525,10 +493,6 @@ def _render_landing_page():
             unsafe_allow_html=True,
         )
 
-    # ✅ close wrapper
-    st.markdown("</div>", unsafe_allow_html=True)
-st.stop()
-
 
 def render_app_header(compact: bool = False):
     # --- Back to Mode Selection (secondary nav) ---
@@ -624,11 +588,8 @@ def main():
     try:
         qp = st.query_params
 
-        # existing params
         mode_qp = qp.get("mode", None)
         start_qp = qp.get("start", None)
-
-        # NEW: case tile selection param
         cb_case_id_qp = qp.get("cb_case_id", None)
 
         # If a case was clicked, force Case-Based walkthrough for that case
@@ -639,7 +600,6 @@ def main():
             st.session_state["cb_case_id"] = cb_case_id_qp
             st.session_state["cb_prev_case_id"] = cb_case_id_qp
 
-            # go straight into walkthrough
             st.session_state["cb_view"] = "walkthrough"
             st.session_state["cb_step"] = 1
             st.session_state.pop("cb_step_return", None)
@@ -656,7 +616,6 @@ def main():
 
             if start_qp == "walkthrough":
                 if mode_qp == "Case-Based":
-                    # Case-Based must select a case first (tile selector lives in case_based.py)
                     st.session_state["cb_view"] = "select"
                 else:
                     if st.session_state.get("oe_step", 0) == 0:
@@ -669,12 +628,10 @@ def main():
 
     except Exception:
         pass
-    
 
     # ---------- SIDEBAR (ALWAYS) ----------
     with st.sidebar:
         st.markdown("---")
-        # Prototype Overview (always visible)
         st.markdown(
             "<h3 style='margin:0 0 0.5rem 0; font-weight:700;'>Prototype Overview</h3>",
             unsafe_allow_html=True,
@@ -711,9 +668,7 @@ def main():
                 unsafe_allow_html=True,
             )
 
-
         st.markdown("---")
-        # Appendix (always visible)
         st.markdown(
             "<h3 style='margin:0 0 0.5rem 0; font-weight:700;'>Appendix</h3>",
             unsafe_allow_html=True,
@@ -761,22 +716,20 @@ def main():
     # ---------- HEADER (ALWAYS) ----------
     in_case_walkthrough = st.session_state.get("cb_view") == "walkthrough"
     in_open_walkthrough = st.session_state.get("oe_step", 0) > 0
-
-
     render_app_header(compact=in_case_walkthrough or in_open_walkthrough)
 
-    # ---------- LANDING GATE (shown on fresh app load; not on reruns after selection) ----------
+    # ---------- LANDING GATE ----------
     if not st.session_state.get("landing_complete", False):
         _render_landing_page()
+        render_disclaimer_footer(pinned=True)
+        return  # CRITICAL: stop here so the rest of the app doesn't render on the landing screen
 
+    # ---------- CONTINUE APP ----------
     mode = st.session_state.get("active_mode", "Case-Based")
 
-    # Ensure Case-Based uses tile selector by default (prevents dropdown page)
     if mode == "Case-Based" and "cb_view" not in st.session_state:
         st.session_state["cb_view"] = "select"
 
-
-    # ---------- MODE-SPECIFIC EXPLAINERS (MAIN AREA) ----------
     cb_view = st.session_state.get("cb_view", "collapsed")
 
     if mode == "Case-Based" and cb_view == "collapsed":
@@ -784,7 +737,6 @@ def main():
             "<h2 style='text-align: center; margin-top: 0.25rem;'>Case-Based Mode</h2>",
             unsafe_allow_html=True,
         )
-
     elif mode != "Case-Based":
         st.markdown(
             "<h2 style='text-align: center; margin-top: 0.25rem;'>Open-Ended Mode</h2>",
@@ -800,7 +752,6 @@ def main():
         else:
             case_titles = [c.get("ui_title", c["title"]) for c in cases]
 
-            # Initialize selection + id once
             if "cb_case_title" not in st.session_state:
                 st.session_state["cb_case_title"] = case_titles[0]
 
@@ -812,7 +763,6 @@ def main():
                 new_title = st.session_state["cb_case_title"]
                 new_case = next(c for c in cases if c["title"] == new_title)
 
-                # Store id + reset navigation immediately
                 st.session_state["cb_case_id"] = new_case["id"]
                 st.session_state["cb_step"] = 1
                 st.session_state["cb_prev_case_id"] = new_case["id"]
@@ -827,18 +777,16 @@ def main():
                 on_change=_on_case_change,
             )
 
-
     # ---------- ROUTING ----------
     if mode == "Case-Based":
         case_based.render_case(st.session_state.get("cb_case_id"))
     else:
         open_ended.render_open_ended()
 
-# ---------- DISCLAIMER (PINNED ONLY ON NON-WALKTHROUGH SCREENS) ----------
-in_case_walkthrough = st.session_state.get("cb_view") == "walkthrough"
-in_open_walkthrough = st.session_state.get("oe_step", 0) > 0
-
-render_disclaimer_footer(pinned=not (in_case_walkthrough or in_open_walkthrough))
+    # ---------- DISCLAIMER (ONLY ON NON-WALKTHROUGH SCREENS) ----------
+    in_case_walkthrough = st.session_state.get("cb_view") == "walkthrough"
+    in_open_walkthrough = st.session_state.get("oe_step", 0) > 0
+    render_disclaimer_footer(pinned=not (in_case_walkthrough or in_open_walkthrough))
 
 if __name__ == "__main__":
     main()
