@@ -30,64 +30,27 @@ st.markdown(
 /* === Font (Inter) + base tokens === */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 html, body, [class^="css"] {
-  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji"!important;
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji" !important;
 }
 
-/* tokens */
+/* === Tokens === */
 :root{
   --brand: #378AED;     /* Real-World Incident */
   --brand-2: #55CAFF;   /* Hypothetical Scenario */
   --bg-soft: #0b1020;
-  --text-strong: #111827;
-  --text-muted: #6b7280;
-  --card-bg: #f9fbff;
-  --card-border: var(--brand);
-}
-@media (prefers-color-scheme: dark){
-  :root{
-    --text-strong: #e5e7eb;
-    --text-muted: #94a3b8;
-    --card-bg: rgba(255,255,255,0.05);
-  }
-}
-
-/* App background */
-div[data-testid="stAppViewContainer"]{
-  background: radial-gradient(1200px 600px at 10% -10%, rgba(76,139,245,0.15), transparent 60%),
-              radial-gradient(900px 500px at 100% 0%, rgba(122,168,255,0.10), transparent 60%),
-              var(--bg-soft);
   --text-strong: #e5e7eb;
   --text-muted: #94a3b8;
   --card-bg: rgba(255,255,255,0.05);
 }
 
-/* Force ALL Streamlit buttons (wrapper + button) to fill their container */
-div[data-testid="stButton"]{
-  width: 100% !important;
+/* === App background === */
+div[data-testid="stAppViewContainer"]{
+  background: radial-gradient(1200px 600px at 10% -10%, rgba(76,139,245,0.15), transparent 60%),
+              radial-gradient(900px 500px at 100% 0%, rgba(122,168,255,0.10), transparent 60%),
+              var(--bg-soft);
 }
 
-/* Force buttons to truly occupy the full column width (prevents shrink-to-fit in narrow layouts) */
-div[data-testid="stButton"] > button {
-  min-width: 100% !important;
-  box-sizing: border-box !important;
-}
-
-/* Navigation buttons: Previous / Next should size to content */
-.nav-button > div[data-testid="stButton"] > button {
-  width: auto !important;
-  padding-left: 1.2rem;
-  padding-right: 1.2rem;
-}
-
-div[data-testid="stButton"] > button,
-div[data-testid="stButton"] button{
-  width: 100% !important;
-  max-width: 100% !important;
-  display: block !important;
-  white-space: nowrap !important;
-}
-
-/* Sidebar */
+/* === Sidebar === */
 section[data-testid="stSidebar"]{
   background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
   border-right: 1px solid rgba(255,255,255,0.08);
@@ -96,8 +59,7 @@ section[data-testid="stSidebar"]{
 section[data-testid="stSidebar"] *{
   color: var(--text-strong) !important;
 }
-
-/* --- FIX: allow long sidebar text/URLs to wrap so the resizer doesn't "snap" --- */
+/* Allow long sidebar text/URLs to wrap */
 section[data-testid="stSidebar"] a,
 section[data-testid="stSidebar"] p,
 section[data-testid="stSidebar"] li,
@@ -107,7 +69,7 @@ section[data-testid="stSidebar"] span{
   white-space: normal !important;
 }
 
-/* Header container */
+/* === Header container === */
 .block-container > div:first-child{
   backdrop-filter: blur(6px);
   border-radius: 14px;
@@ -116,126 +78,13 @@ section[data-testid="stSidebar"] span{
   background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
 }
 
-/* Force Streamlit columns to stretch children equally */
-div[data-testid="stHorizontalBlock"]{
-  align-items: stretch;
+/* === Buttons === */
+div[data-testid="stButton"]{
+  width: 100% !important;
 }
-
-/* Make Streamlit "columns row" stretch children to equal height */
-div[data-testid="stHorizontalBlock"]{
-  align-items: stretch !important;
-}
-
-/* === Select-a-Mode: equal height without forced giant tiles === */
-div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) div[data-testid="stHorizontalBlock"]{
-  align-items: stretch !important;
-}
-
-div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) div[data-testid="column"]{
-  display: flex !important;
-  flex-direction: column !important;
-}
-
-div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) a{
-  display: block !important;
-  height: 100% !important;
-}
-
-div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) .listbox{
-  display: flex !important;
-  flex-direction: column !important;
-  height: 100% !important;          /* stretch to match the other tile */
-  min-height: unset !important;      /* remove the forced tall height */
-}
-
-/* === Select-a-Case: tighten title-to-tiles spacing to match Select-a-Mode === */
-div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) div[data-testid="stMarkdownContainer"]{
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
-}
-
-div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) div[data-testid="stHorizontalBlock"]{
-  margin-top: 0 !important;
-  padding-top: 0 !important;
-}
-
-/* === Select-a-Case: remove Streamlit element spacing between header markdown and columns === */
-div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) div.element-container:has(div[data-testid="stHorizontalBlock"]) {
-  margin-top: 0 !important;
-  padding-top: 0 !important;
-}
-
-div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor),
-div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor){
-  padding-top: 0 !important;
-  margin-top: 0 !important;
-}
-
-@media (max-width: 900px){
-  /* When columns stack, don't force tall empty cards */
-  .listbox{
-    min-height: unset !important;
-  }
-}
-
-/* === Force equal-sized tiles on Select-a-Mode page (even when stacked) === */
-.mode-tiles div[data-testid="column"]{
-  display: flex !important;
-  flex-direction: column !important;
-}
-
-.mode-tiles .listbox{
-  display: flex !important;
-  flex-direction: column !important;
-
-  /* Pick ONE approach */
-
-  /* Option A: fixed equal height (most consistent) */
-  height: 460px !important;
-
-  /* Option B: minimum height (allows growth if content needs it) */
-  /* min-height: 460px !important; */
-}
-
-.listbox{
-  display: block;
-}
-
-div[data-testid="column"]{
-  align-items: flex-start !important;
-}
-
-/* Cards */
-.listbox{
-  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
-  border-left: 4px solid var(--brand);
-  border: 1px solid rgba(255,255,255,0.10);
-  box-shadow: 0 10px 24px rgba(0,0,0,0.25);
-  padding: 12px 14px;
-  border-radius: 14px;
-  margin: 0 0 8px;
-}
-.listbox, .listbox *{ color: var(--text-strong) !important; }
-.tight-list{ margin: 0.25rem 0 0 1.15rem; padding: 0; }
-.tight-list li{ margin: 6px 0; }
-.tight-list li::marker{ color: var(--text-muted); }
-
-/* === Step tile wrapper inside walkthrough === */
-div[data-testid="stVerticalBlock"]:has(.step-tile-anchor){
-  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
-  border-left: 4px solid var(--brand);
-  border: 1px solid rgba(255,255,255,0.10);
-  box-shadow: 0 10px 24px rgba(0,0,0,0.25);
-  padding: 12px 14px;
-  border-radius: 14px;
-  margin: 8px 0 8px;
-}
-
-/* Section captions */
-.section-note, .sub{ color: var(--text-muted) !important; }
-
-/* Buttons */
-.stButton > button{
+div[data-testid="stButton"] > button{
+  min-width: 100% !important;
+  box-sizing: border-box !important;
   border: 0;
   padding: 0.7rem 1rem;
   border-radius: 12px;
@@ -243,15 +92,16 @@ div[data-testid="stVerticalBlock"]:has(.step-tile-anchor){
   color: white !important;
   box-shadow: 0 10px 20px rgba(76,139,245,0.35);
   transition: transform .06s ease, box-shadow .15s ease, filter .15s ease;
+  white-space: nowrap !important;
 }
-.stButton > button:hover{
+div[data-testid="stButton"] > button:hover{
   transform: translateY(-1px);
   box-shadow: 0 14px 26px rgba(76,139,245,0.45);
   filter: brightness(1.05);
 }
-.stButton > button:active{ transform: translateY(0); }
+div[data-testid="stButton"] > button:active{ transform: translateY(0); }
 
-/* Inputs */
+/* === Inputs === */
 input, textarea, select, .stTextInput input, .stTextArea textarea{
   background: rgba(255,255,255,0.06) !important;
   border: 1px solid rgba(255,255,255,0.12) !important;
@@ -262,23 +112,44 @@ label, .stRadio, .stSelectbox, .stMultiSelect, .stExpander{
   color: var(--text-strong) !important;
 }
 
-/* === Clickable tile affordances === */
-.listbox {
-  transition:
-    transform 0.12s ease,
-    box-shadow 0.12s ease,
-    border-color 0.12s ease,
-    background 0.12s ease;
+/* === Cards / tiles === */
+.listbox{
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+  border-left: 4px solid var(--brand);
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.25);
+  padding: 12px 14px;
+  border-radius: 14px;
+  margin: 0 0 8px;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+}
+.listbox, .listbox *{ color: var(--text-strong) !important; }
+.section-note, .sub{ color: var(--text-muted) !important; }
+
+/* Click affordances */
+.listbox:hover{
+  cursor: pointer;
+  transform: translateY(-2px);
+  box-shadow: 0 16px 34px rgba(0,0,0,0.35);
+  border-color: rgba(76,139,245,0.65);
+}
+.listbox:active{
+  transform: translateY(0);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.25);
 }
 
-/* --- Case type badges --- */
+/* === Bullet list inside tiles === */
+.tight-list{ margin: 0.25rem 0 0 1.15rem; padding: 0; }
+.tight-list li{ margin: 6px 0; }
+.tight-list li::marker{ color: var(--text-muted); }
+
+/* === Case badges === */
 .case-badge-wrap{
   width:100% !important;
   display:flex !important;
   justify-content:center !important;
   margin: 0 0 10px 0 !important;
 }
-
 .case-badge{
   display:inline-flex !important;
   align-items:center !important;
@@ -291,34 +162,10 @@ label, .stRadio, .stSelectbox, .stMultiSelect, .stExpander{
   white-space:nowrap !important;
   color:#ffffff !important;
 }
+.case-badge.real{ background-color:#378AED !important; border:1px solid #378AED !important; }
+.case-badge.hypo{ background-color:#55CAFF !important; border:1px solid #55CAFF !important; }
 
-/* Real-World Incident = darker blue */
-.case-badge.real{
-  background-color:#378AED !important;
-  border:1px solid #378AED !important;
-}
-
-/* Hypothetical Scenario = lighter blue */
-.case-badge.hypo{
-  background-color:#55CAFF !important;
-  border:1px solid #55CAFF !important;
-}
-
-/* Hover = discoverable click */
-.listbox:hover {
-  cursor: pointer;
-  transform: translateY(-2px);
-  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.35);
-  border-color: rgba(76, 139, 245, 0.65);
-}
-
-/* Active = confirmation of click */
-.listbox:active {
-  transform: translateY(0);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
-}
-
-/* Expander headers */
+/* === Expanders === */
 details > summary{
   background: rgba(255,255,255,0.06);
   border: 1px solid rgba(255,255,255,0.10);
@@ -327,14 +174,49 @@ details > summary{
   color: var(--text-strong);
 }
 
-/* Checkbox / radio accent color */
-input[type="checkbox"], input[type="radio"]{ accent-color: var(--brand); }
+/* === Layout: unify Mode + Case tile rows === */
 
-/* Hide Streamlit chrome */
-header[data-testid="stHeader"]{ background: transparent; }
-footer, #MainMenu{ visibility: hidden; }
+/* Make columns stretch */
+div[data-testid="stHorizontalBlock"]{ align-items: stretch !important; }
 
-/* --- Disclaimer footer: override global hr spacing --- */
+/* Only on pages that include mode/case anchors: make columns + tiles equal height */
+div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) div[data-testid="column"],
+div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) div[data-testid="column"]{
+  display: flex !important;
+  flex-direction: column !important;
+}
+div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) a,
+div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) a{
+  display: block !important;
+  height: 100% !important;
+}
+div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) .listbox,
+div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) .listbox{
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+}
+
+/* Fixed height ONLY for Select-a-Mode (if you still want it) */
+.mode-tiles .listbox{ height: 460px !important; }
+
+/* Mobile: don't force tall cards */
+@media (max-width: 900px){
+  .mode-tiles .listbox{ height: auto !important; }
+}
+
+/* === Step tile wrapper inside walkthrough === */
+div[data-testid="stVerticalBlock"]:has(.step-tile-anchor){
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+  border-left: 4px solid var(--brand);
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.25);
+  padding: 12px 14px;
+  border-radius: 14px;
+  margin: 8px 0 8px;
+}
+
+/* === Disclaimer footer === */
 .disclaimer-footer hr{
   margin: 8px 0 6px 0 !important;
   border: none !important;
@@ -342,38 +224,24 @@ footer, #MainMenu{ visibility: hidden; }
   background: rgba(255,255,255,0.15) !important;
   opacity: 1 !important;
 }
-.disclaimer-footer{
-  margin: 0 !important;
-  padding: 0 !important;
-}
+.disclaimer-footer{ margin: 0 !important; padding: 0 !important; }
 
-/* --- Hide Streamlit "copy link" / header anchor icons (paperclip/link) --- */
+/* === Hide Streamlit chrome === */
+header[data-testid="stHeader"]{ background: transparent; }
+footer, #MainMenu{ visibility: hidden; }
 
-/* Common class-based anchors */
-a.header-anchor,
-a.anchor-link,
-a[href^="#"].header-anchor,
-a[href^="#"].anchor-link {
-  display: none !important;
-  visibility: hidden !important;
-}
-
-/* Headings rendered in Markdown containers */
+/* Hide header anchor icons */
 div[data-testid="stMarkdownContainer"] h1 a,
 div[data-testid="stMarkdownContainer"] h2 a,
 div[data-testid="stMarkdownContainer"] h3 a,
 div[data-testid="stMarkdownContainer"] h4 a,
 div[data-testid="stMarkdownContainer"] h5 a,
-div[data-testid="stMarkdownContainer"] h6 a {
+div[data-testid="stMarkdownContainer"] h6 a{
   display: none !important;
   visibility: hidden !important;
 }
-
-/* Streamlit sometimes wraps the icon in a button/element with aria-label */
 button[aria-label*="Copy link"],
-button[aria-label*="copy link"],
-button[title*="Copy link"],
-button[title*="copy link"] {
+button[title*="Copy link"]{
   display: none !important;
 }
 </style>
