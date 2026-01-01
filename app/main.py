@@ -145,7 +145,7 @@ div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) a{
 /* Make the tile itself stretch + enforce a consistent minimum height */
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) .listbox{
   height: 100% !important;
-  min-height: 520=px !important;  /* adjust up/down to taste */
+  min-height: 520px !important;  /* adjust up/down to taste */
 }
 
 /* Make the column itself allow its child to stretch */
@@ -202,9 +202,6 @@ div[data-testid="column"]{
   padding: 12px 14px;
   border-radius: 14px;
   margin: 0 0 8px;
-  display: flex;
-  flex-direction: column;
-  min-height: 420px;
 }
 .listbox, .listbox *{ color: var(--text-strong) !important; }
 .tight-list{ margin: 0.25rem 0 0 1.15rem; padding: 0; }
@@ -324,7 +321,6 @@ input[type="checkbox"], input[type="radio"]{ accent-color: var(--brand); }
 /* Hide Streamlit chrome */
 header[data-testid="stHeader"]{ background: transparent; }
 footer, #MainMenu{ visibility: hidden; }
-
 
 /* --- Disclaimer footer: override global hr spacing --- */
 .disclaimer-footer hr{
