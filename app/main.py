@@ -36,10 +36,10 @@ html, body, [class^="css"] {
 
 /* tokens */
 :root{
-  --shield-blue-dark: var(--brand);    /* #4C8BF5 */
-  --shield-blue-light: var(--brand-2); /* #7aa8ff */
   --brand: #4C8BF5;
   --brand-2: #7aa8ff;
+  --shield-blue-dark: var(--brand);    
+  --shield-blue-light: var(--brand-2); 
   --bg-soft: #0b1020;
   --text-strong: #111827;
   --text-muted: #6b7280;
@@ -171,15 +171,15 @@ label, .stRadio, .stSelectbox, .stMultiSelect, .stExpander{
 
 /* Real-World Incident = darker shield blue */
 .case-badge.real{
-  background: color-mix(in srgb, var(--shield-blue-dark) 25%, transparent) !important;
-  border: 1px solid var(--shield-blue-dark) !important;
+  background: rgba(76, 139, 245, 0.22) !important;  /* --brand */
+  border: 1px solid rgba(76, 139, 245, 0.70) !important;
   color: #e0f2ff !important;
 }
 
 /* Hypothetical Scenario = lighter shield blue */
 .case-badge.hypo{
-  background: color-mix(in srgb, var(--shield-blue-light) 22%, transparent) !important;
-  border: 1px solid var(--shield-blue-light) !important;
+  background: rgba(122, 168, 255, 0.20) !important; /* --brand-2 */
+  border: 1px solid rgba(122, 168, 255, 0.70) !important;
   color: #f0f7ff !important;
 }
 
