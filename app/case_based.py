@@ -2,62 +2,66 @@ import streamlit as st
 from logic.loaders import load_case, list_cases
 import html
 
+import textwrap
+
 st.markdown(
-    """
-    <style>
-    /* ---------- BADGE CENTERING + COLOR OVERRIDES (high specificity) ---------- */
+    textwrap.dedent(
+        """
+        <style>
+        /* ---------- BADGE CENTERING + COLOR OVERRIDES (high specificity) ---------- */
 
-    /* Center reliably even if .listbox uses flex/grid/align rules */
-    .case-badge-wrap,
-    .listbox .case-badge-wrap {
-        width: 100% !important;
-        display: block !important;
-        text-align: center !important;
-        margin: 0 0 10px 0 !important;
-    }
+        .case-badge-wrap,
+        .listbox .case-badge-wrap {
+            width: 100% !important;
+            display: block !important;
+            text-align: center !important;
+            margin: 0 0 10px 0 !important;
+        }
 
-    .case-badge,
-    .listbox .case-badge {
-        display: inline-block !important;
-        margin: 0 auto !important;
-        padding: 4px 12px !important;
-        border-radius: 999px !important;
-        font-size: 0.75rem !important;
-        font-weight: 600 !important;
-        letter-spacing: 0.02em !important;
-        white-space: nowrap !important;
-    }
+        .case-badge,
+        .listbox .case-badge {
+            display: inline-block !important;
+            margin: 0 auto !important;
+            padding: 4px 12px !important;
+            border-radius: 999px !important;
+            font-size: 0.75rem !important;
+            font-weight: 600 !important;
+            letter-spacing: 0.02em !important;
+            white-space: nowrap !important;
+        }
 
-    /* Real-world cases: primary shield blue */
-    .case-badge.real,
-    .listbox .case-badge.real {
-        background-color: rgba(59, 130, 246, 0.22) !important;   /* bright shield blue */
-        border: 1px solid rgba(59, 130, 246, 0.65) !important;
-        color: #e0f2ff !important;
-    }
+        /* Real-world cases: primary shield blue */
+        .case-badge.real,
+        .listbox .case-badge.real {
+            background-color: rgba(59, 130, 246, 0.22) !important;
+            border: 1px solid rgba(59, 130, 246, 0.65) !important;
+            color: #e0f2ff !important;
+        }
 
-    /* Hypothetical case: darker shield blue */
-    .case-badge.hypo,
-    .listbox .case-badge.hypo {
-        background-color: rgba(37, 99, 235, 0.18) !important;    /* deeper shield blue */
-        border: 1px solid rgba(37, 99, 235, 0.55) !important;
-        color: #dbeafe !important;
-    }
+        /* Hypothetical case: darker shield blue */
+        .case-badge.hypo,
+        .listbox .case-badge.hypo {
+            background-color: rgba(37, 99, 235, 0.18) !important;
+            border: 1px solid rgba(37, 99, 235, 0.55) !important;
+            color: #dbeafe !important;
+        }
 
-    .case-badge,
-    .listbox .case-badge {
-        transition: box-shadow 0.15s ease, transform 0.15s ease;
-    }
+        .case-badge,
+        .listbox .case-badge {
+            transition: box-shadow 0.15s ease, transform 0.15s ease;
+        }
 
-    .case-badge:hover,
-    .listbox .case-badge:hover {
-        box-shadow: 0 0 0 2px rgba(255,255,255,0.08);
-        transform: translateY(-1px);
-    }
-    </style>
-    """,
+        .case-badge:hover,
+        .listbox .case-badge:hover {
+            box-shadow: 0 0 0 2px rgba(255,255,255,0.08);
+            transform: translateY(-1px);
+        }
+        </style>
+        """
+    ),
     unsafe_allow_html=True,
 )
+
 
 def _safe_rerun():
     try:
