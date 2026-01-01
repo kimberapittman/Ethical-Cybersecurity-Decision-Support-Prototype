@@ -641,7 +641,6 @@ def main():
                 on_change=_on_case_change,
             )
 
-        st.divider()
 
     # ---------- ROUTING ----------
     if mode == "Case-Based":
@@ -649,7 +648,8 @@ def main():
     else:
         open_ended.render_open_ended()
 
-    st.markdown("---")
+    if not (in_case_walkthrough or in_open_walkthrough):
+        st.markdown("---")
 
     show_change_mode = (
         st.session_state.get("landing_complete", False)

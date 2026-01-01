@@ -289,7 +289,7 @@ def render_case(case_id: str):
         st.session_state.pop("cb_step_return", None)
         # IMPORTANT: do NOT call _safe_rerun() here
 
-    # ==========================================================
+        # ==========================================================
     # VIEW 2: WALKTHROUGH (STEP-BASED)
     # ==========================================================
     if view == "walkthrough":
@@ -297,133 +297,148 @@ def render_case(case_id: str):
             st.session_state["cb_step"] = 1
         step = st.session_state["cb_step"]
 
+        def _bullets_md(value) -> str:
+            if value is None:
+                return "TBD"
+            if isinstance(value, list):
+                return "\n".join([f"- {item}" for item in value]) if value else "TBD"
+            return str(value)
+
+        def _render_step_tile(inner_md: str):
+            st.markdown(
+                f"""
+                <div class="listbox">
+                {inner_md}
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
         st.progress(step / 9.0)
 
-        # --- STEP TILE (true Streamlit container) ---
-        with st.container():
-            st.markdown('<span class="step-tile-anchor"></span>', unsafe_allow_html=True)
+        if step == 1:
+            inner = f"## 1. Technical and Operational Background\n\n{_bullets_md(case['background'].get('technical_operational_background'))}"
+            _render_step_tile(inner)
 
-            if step == 1:
-                st.header("1. Technical and Operational Background")
-                _render_bullets(case["background"].get("technical_operational_background"))
-                st.markdown("---")
+        if step == 2:
+            inner = f"## 2. Triggering Condition and Key Events\n\n{_bullets_md(case['background'].get('triggering_condition_key_events'))}"
+            _render_step_tile(inner)
 
-            if step == 2:
-                st.header("2. Triggering Condition and Key Events")
-                _render_bullets(case["background"].get("triggering_condition_key_events"))
-                st.markdown("---")
+        if step == 3:
+            inner = f"## 3. Decision Context\n\n{_bullets_md(case['technical'].get('decision_context'))}"
+            _render_step_tile(inner)
 
-            if step == 3:
-                st.header("3. Decision Context")
-                _render_bullets(case["technical"].get("decision_context"))
-                st.markdown("---")
+        if step == 4:
+            mapping = case["technical"].get("nist_csf_mapping", [])
+            if mapping:
+                lines = []
+                for m in mapping:
+                    fn = m.get("function", "TBD")
 
-            if step == 4:
-                _step_title_with_framework(
-                    4,
-                    "NIST CSF Mapping",
-                    "NIST CSF",
-                    NIST_CSF_HOVER,
-                    NIST_CSF_URL,
-                )
+                    cats = m.get("categories", [])
+                    if isinstance(cats, str):
+                        cats = [cats]
+                    cat_text = ", ".join(cats) if cats else "TBD"
 
-                mapping = case["technical"].get("nist_csf_mapping", [])
+                    lines.append(f"- **{fn} — {cat_text}**")
+                    if m.get("rationale"):
+                        lines.append(f"_Rationale_: {m.get('rationale')}")
+                mapping_md = "\n".join(lines)
+            else:
+                mapping_md = "TBD"
 
-                if mapping:
-                    for m in mapping:
-                        fn = m.get("function", "TBD")
+            # Keep your framework title behavior (tooltip + link) as-is, but inside the tile
+            tooltip_link = (
+                f'<a href="{html.escape(NIST_CSF_URL)}" target="_blank" style="text-decoration: none;">'
+                f'  <span title="{html.escape(NIST_CSF_HOVER)}" '
+                f'        style="font-weight: 800; text-decoration: underline; cursor: help;">'
+                f'    NIST CSF'
+                f'  </span>'
+                f'</a>'
+            )
+            inner = f"## 4. NIST CSF Mapping\n\n{mapping_md}"
+            inner = inner.replace("NIST CSF", tooltip_link, 1)
+            _render_step_tile(inner)
 
-                        cats = m.get("categories", [])
-                        if isinstance(cats, str):
-                            cats = [cats]
+        if step == 5:
+            tensions = case["ethical"].get("tension", [])
+            if tensions:
+                tension_md = "\n".join([f"- {t.get('description', 'TBD')}" for t in tensions])
+            else:
+                tension_md = "TBD"
+            inner = f"## 5. Ethical Tension\n\n{tension_md}"
+            _render_step_tile(inner)
 
-                        cat_text = ", ".join(cats) if cats else "TBD"
+        if step == 6:
+            pfce_items = case["ethical"].get("pfce_analysis", [])
 
-                        st.markdown(f"- **{fn} — {cat_text}**")
+            # Title with PFCE tooltip/link preserved
+            tooltip_link = (
+                f'<a href="{html.escape(PFCE_URL)}" target="_blank" style="text-decoration: none;">'
+                f'  <span title="{html.escape(PFCE_HOVER)}" '
+                f'        style="font-weight: 800; text-decoration: underline; cursor: help;">'
+                f'    PFCE'
+                f'  </span>'
+                f'</a>'
+            )
 
-                        if m.get("rationale"):
-                            st.markdown(f"_Rationale_: {m.get('rationale')}")
-                else:
-                    st.write("TBD")
+            if isinstance(pfce_items, list) and pfce_items and isinstance(pfce_items[0], dict):
+                lines = []
+                for p in pfce_items:
+                    principle = p.get("principle", "TBD")
+                    definition = PFCE_DEFINITIONS.get(principle, "")
+                    desc = p.get("description", "TBD")
 
-                st.markdown("---")
+                    if definition:
+                        lines.append(
+                            f'- <span title="{html.escape(definition)}" '
+                            f'style="font-weight:700; text-decoration: underline; cursor: help;">'
+                            f'{html.escape(principle)}</span>: {html.escape(desc)}'
+                        )
+                    else:
+                        lines.append(f"- **{principle}**: {desc}")
+                pfce_md = "\n".join(lines)
+            else:
+                pfce_md = _bullets_md(pfce_items)
 
-            if step == 5:
-                st.header("5. Ethical Tension")
-                tensions = case["ethical"].get("tension", [])
-                if tensions:
-                    for t in tensions:
-                        st.markdown(f"- {t.get('description', 'TBD')}")
-                else:
-                    st.write("TBD")
-                st.markdown("---")
+            inner = f"## 6. PFCE Analysis\n\n{pfce_md}"
+            inner = inner.replace("PFCE", tooltip_link, 1)
+            _render_step_tile(inner)
 
-            if step == 6:
-                _step_title_with_framework(
-                    6,
-                    "PFCE Analysis",
-                    "PFCE",
-                    PFCE_HOVER,
-                    PFCE_URL,
-                )
+        if step == 7:
+            constraints = case.get("constraints", [])
+            if constraints:
+                lines = []
+                for c in constraints:
+                    if isinstance(c, dict):
+                        lines.append(f"- **{c.get('type','TBD')}** – {c.get('description','TBD')}")
+                        if c.get("effect_on_decision"):
+                            lines.append(f"  \n  _Effect on decision_: {c.get('effect_on_decision')}")
+                    else:
+                        lines.append(f"- {c}")
+                constraints_md = "\n".join(lines)
+            else:
+                constraints_md = "TBD"
 
-                pfce_items = case["ethical"].get("pfce_analysis", [])
+            inner = f"## 7. Institutional and Governance Constraints\n\n{constraints_md}"
+            _render_step_tile(inner)
 
-                if isinstance(pfce_items, list) and pfce_items and isinstance(pfce_items[0], dict):
-                    for p in pfce_items:
-                        principle = p.get("principle", "TBD")
-                        definition = PFCE_DEFINITIONS.get(principle, "")
-                        desc = p.get("description", "TBD")
+        if step == 8:
+            inner = f"## 8. Decision\n\n{_bullets_md(case['decision_outcome'].get('decision'))}"
+            _render_step_tile(inner)
 
-                        if definition:
-                            st.markdown(
-                                f"""
-- <span title="{html.escape(definition)}"
-    style="font-weight:700; text-decoration: underline; cursor: help;">{html.escape(principle)}</span>: {html.escape(desc)}
-                                """,
-                                unsafe_allow_html=True,
-                            )
-                        else:
-                            st.markdown(f"- **{principle}**: {desc}")
-                else:
-                    _render_bullets(pfce_items)
+        if step == 9:
+            inner = f"## 9. Outcomes and Implications\n\n{_bullets_md(case['decision_outcome'].get('outcomes_implications'))}"
+            _render_step_tile(inner)
 
-                st.markdown("---")
-
-            if step == 7:
-                st.header("7. Institutional and Governance Constraints")
-                constraints = case.get("constraints", [])
-                if constraints:
-                    for c in constraints:
-                        if isinstance(c, dict):
-                            st.markdown(
-                                f"- **{c.get('type','TBD')}** – {c.get('description','TBD')}"
-                            )
-                            if c.get("effect_on_decision"):
-                                st.markdown(
-                                    f"  \n  _Effect on decision_: {c.get('effect_on_decision')}"
-                                )
-                        else:
-                            st.markdown(f"- {c}")
-                else:
-                    st.write("TBD")
-                st.markdown("---")
-
-            if step == 8:
-                st.header("8. Decision")
-                st.write(case["decision_outcome"].get("decision"))
-                st.markdown("---")
-
-            if step == 9:
-                st.header("9. Outcomes and Implications")
-                _render_bullets(case["decision_outcome"].get("outcomes_implications"))
-                st.markdown("---")
+        # ONE divider between tile and nav (matches Select a Case layout)
+        st.markdown("<hr style='margin: 18px 0 14px 0; opacity: 0.35;'>", unsafe_allow_html=True)
 
         # Navigation controls (Previous | Exit | Next)
         col_prev, col_spacer1, col_exit, col_spacer2, col_next = st.columns([1, 2, 2.2, 2, 1])
 
         with col_prev:
-            if step > 1 and st.button("◀ Previous", key=f"cb_prev_{step}_{case_id}"):
+            if step > 1 and st.button("◀ Previous", key=f"cb_prev_{step}_{case_id}", use_container_width=True):
                 st.session_state["cb_step"] = max(1, step - 1)
                 _safe_rerun()
 
@@ -434,15 +449,10 @@ def render_case(case_id: str):
 
         with col_next:
             if step < 9:
-                if st.button(
-                    "Next ▶",
-                    key=f"cb_next_{step}_{case_id}",
-                    use_container_width=True,
-                ):
+                if st.button("Next ▶", key=f"cb_next_{step}_{case_id}", use_container_width=True):
                     st.session_state["cb_step"] = min(9, step + 1)
                     _safe_rerun()
             else:
                 st.info("End of Case.")
 
         return
-   
