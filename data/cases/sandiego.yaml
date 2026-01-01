@@ -3,9 +3,12 @@ id: "sandiego"
 title: "CASE 2: SAN DIEGO – WHEN DATA PROTECTION MEETS PUBLIC AUTONOMY"
 
 short_summary: >
-  Examines how municipal cybersecurity practitioners navigated a ransomware
-  incident that threatened essential city services, raising tensions between
-  system containment, public welfare, and institutional responsibility.
+  The San Diego smart streetlight program presents a case in which municipal cybersecurity
+  practitioners confronted a decision about continued system access with implications for
+  data governance and public oversight. The decision examined in this case centers on whether
+  to maintain or restrict access to smart streetlight footage once practitioners became aware
+  that the system was being used beyond its originally documented scope and in the absence of
+  clearly defined governance procedures.
 
 sources:
   - "23–40: Sources cited in Chapter III case reconstruction text."

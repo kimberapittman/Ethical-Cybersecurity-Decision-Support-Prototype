@@ -3,9 +3,11 @@ id: "riverton"
 title: "CASE 3: RIVERTON – WHEN AI-DRIVEN SECURITY MEETS HUMAN-CENTERED OBLIGATIONS"
 
 short_summary: >
-  Examines how municipal cybersecurity practitioners navigated a ransomware
-  incident that threatened essential city services, raising tensions between
-  system containment, public welfare, and institutional responsibility.
+  The Riverton water-treatment scenario presents a case in which municipal cybersecurity
+  practitioners confronted a decision involving automated system controls during anomalous
+  network activity. The decision examined in this case centers on whether to maintain
+  AI-imposed operational restrictions or override them to restore full manual control while
+  the integrity of the system remained uncertain.
 
 sources:
   - "Constructed for this thesis as a hypothetical municipal cybersecurity scenario."
