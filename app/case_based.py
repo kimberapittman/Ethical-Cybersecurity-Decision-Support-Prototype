@@ -224,10 +224,16 @@ def render_case(case_id: str):
             with col:        
                 # Badge selection (based on case id)
                 if str(cid).lower() == "riverton":
+                if str(cid).lower() == "riverton":
                     badge_html = (
-                        '<div class="case-badge-wrap">'
+                        '<div class="case-badge-wrap" '
+                        'style="width:100%; display:block; text-align:center; margin:0 0 10px 0;">'
                         '<span class="case-badge hypo" '
-                        'title="Constructed scenario used to demonstrate forward-looking reasoning.">'
+                        'title="Constructed scenario used to demonstrate forward-looking reasoning." '
+                        'style="display:inline-block; margin:0 auto; padding:4px 12px; border-radius:999px; '
+                        'font-size:0.75rem; font-weight:600; letter-spacing:0.02em; white-space:nowrap; '
+                        'background-color:rgba(59, 130, 246, 0.12); border:1px solid rgba(59, 130, 246, 0.35); '
+                        'color:#bfdbfe;">'
                         'Hypothetical Scenario'
                         '</span>'
                         '</div>'
@@ -235,13 +241,19 @@ def render_case(case_id: str):
 
                 else:
                     badge_html = (
-                        '<div class="case-badge-wrap">'
+                        '<div class="case-badge-wrap" '
+                        'style="width:100%; display:block; text-align:center; margin:0 0 10px 0;">'
                         '<span class="case-badge real" '
-                        'title="Reconstructed from documented municipal incidents.">'
+                        'title="Reconstructed from documented municipal incidents." '
+                        'style="display:inline-block; margin:0 auto; padding:4px 12px; border-radius:999px; '
+                        'font-size:0.75rem; font-weight:600; letter-spacing:0.02em; white-space:nowrap; '
+                        'background-color:rgba(96, 165, 250, 0.18); border:1px solid rgba(96, 165, 250, 0.55); '
+                        'color:#dbeafe;">'
                         'Real-World Incident'
                         '</span>'
                         '</div>'
                     )
+
 
                 st.markdown(
                     _html_block(
