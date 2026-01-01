@@ -160,7 +160,6 @@ def render_case(case_id: str):
     unsafe_allow_html=True,
 )
 
-        st.markdown("<div style='height:6px;'></div>", unsafe_allow_html=True)
 
         if not top_cases:
             st.error("No cases found in data/cases.")
