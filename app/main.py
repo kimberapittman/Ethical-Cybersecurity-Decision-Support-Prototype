@@ -121,6 +121,29 @@ div[data-testid="stHorizontalBlock"]{
   align-items: stretch;
 }
 
+/* Make Streamlit "columns row" stretch children to equal height */
+div[data-testid="stHorizontalBlock"]{
+  align-items: stretch !important;
+}
+
+/* Make the column itself allow its child to stretch */
+div[data-testid="column"]{
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Make the tile (listbox) consume available height inside the column */
+div[data-testid="column"] .listbox{
+  height: 100% !important;
+}
+
+@media (max-width: 900px){
+  /* When columns stack, don't force tall empty cards */
+  .listbox{
+    min-height: unset !important;
+  }
+}
+
 /* Cards */
 .listbox{
   background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
