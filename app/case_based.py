@@ -168,11 +168,27 @@ def render_case(case_id: str):
             short_summary = c.get("short_summary", "")
 
             with col:        
-                badge_html = (
-                    '<div class="case-badge-wrap"><span class="case-badge real">Real-World Incident</span></div>'
-                )
-                # for Riverton use:
-                # badge_html = '<div class="case-badge-wrap"><span class="case-badge hypo">Hypothetical Scenario</span></div>'
+                # Badge selection (based on case id)
+                if str(cid).lower() == "riverton":
+                    badge_html = (
+                        '<div class="case-badge-wrap">'
+                        '<span class="case-badge hypo" '
+                        'title="Constructed scenario used to demonstrate forward-looking reasoning.">'
+                        'Hypothetical Scenario'
+                        '</span>'
+                        '</div>'
+                    )
+
+                else:
+                    badge_html = (
+                        '<div class="case-badge-wrap">'
+                        '<span class="case-badge real" '
+                        'title="Reconstructed from documented municipal incidents.">'
+                        'Real-World Incident'
+                        '</span>'
+                        '</div>'
+                    )
+
                 st.markdown(
                     _html_block(
                         f"""
