@@ -36,6 +36,8 @@ html, body, [class^="css"] {
 
 /* tokens */
 :root{
+  --shield-blue-dark: var(--brand);    /* #4C8BF5 */
+  --shield-blue-light: var(--brand-2); /* #7aa8ff */
   --brand: #4C8BF5;
   --brand-2: #7aa8ff;
   --bg-soft: #0b1020;
@@ -146,11 +148,11 @@ label, .stRadio, .stSelectbox, .stMultiSelect, .stExpander{
     background 0.12s ease;
 }
 
-/* --- Case type badges (Real-World / Hypothetical) --- */
+/* --- Case type badges --- */
 .case-badge-wrap{
   width:100% !important;
   display:flex !important;
-  justify-content:center !important;   /* center badge */
+  justify-content:center !important;
   margin: 0 0 10px 0 !important;
 }
 
@@ -161,26 +163,24 @@ label, .stRadio, .stSelectbox, .stMultiSelect, .stExpander{
   font-size:0.72rem !important;
   font-weight:800 !important;
   letter-spacing:0.02em !important;
-  padding:6px 10px !important;
+  padding:6px 12px !important;
   border-radius:999px !important;
   white-space:nowrap !important;
-  border:1px solid rgba(255,255,255,0.18) !important;
-  background: rgba(255,255,255,0.06) !important;
-  color: var(--text-strong) !important;
+  background: rgba(255,255,255,0.04) !important;
 }
 
-/* Real-world = match shield blue */
+/* Real-World Incident = darker shield blue */
 .case-badge.real{
-  background: rgba(76,139,245,0.18) !important;
-  border-color: rgba(76,139,245,0.55) !important;
+  background: color-mix(in srgb, var(--shield-blue-dark) 25%, transparent) !important;
+  border: 1px solid var(--shield-blue-dark) !important;
   color: #e0f2ff !important;
 }
 
-/* Hypo = slightly darker shield blue */
+/* Hypothetical Scenario = lighter shield blue */
 .case-badge.hypo{
-  background: rgba(37,99,235,0.18) !important;
-  border-color: rgba(37,99,235,0.55) !important;
-  color: #dbeafe !important;
+  background: color-mix(in srgb, var(--shield-blue-light) 22%, transparent) !important;
+  border: 1px solid var(--shield-blue-light) !important;
+  color: #f0f7ff !important;
 }
 
 /* Hover = discoverable click */
