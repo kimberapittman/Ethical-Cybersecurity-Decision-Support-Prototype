@@ -379,7 +379,21 @@ def _render_landing_page():
             ),
             unsafe_allow_html=True,
         )
+    st.markdown("---")
 
+    st.markdown(
+        """
+        <div style="
+            text-align:center;
+            opacity:0.7;
+            font-size:0.85rem;
+            padding: 0.25rem 0 0.75rem 0;
+        ">
+            This prototype is designed for research and demonstration purposes and is not intended for operational deployment
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
     st.stop()
 
 
@@ -686,6 +700,8 @@ def main():
                 st.session_state["landing_complete"] = False
                 st.rerun()
 
+
+if not (in_case_walkthrough or in_open_walkthrough):
     st.markdown(
         """
         <div style="
