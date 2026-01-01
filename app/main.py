@@ -124,7 +124,7 @@ section[data-testid="stSidebar"] span{
   box-shadow: 0 10px 24px rgba(0,0,0,0.25);
   padding: 12px 14px;
   border-radius: 14px;
-  margin: 8px 0 16px;
+  margin: 8px 0 8px;
 }
 .listbox, .listbox *{ color: var(--text-strong) !important; }
 .tight-list{ margin: 0.25rem 0 0 1.15rem; padding: 0; }
@@ -701,20 +701,20 @@ def main():
                 st.rerun()
 
 
-if not (in_case_walkthrough or in_open_walkthrough):
-    st.markdown(
-        """
-        <div style="
-            text-align:center;
-            opacity:0.7;
-            font-size:0.85rem;
-            padding: 0.25rem 0 0.75rem 0;
-        ">
-            This prototype is designed for research and demonstration purposes and is not intended for operational deployment
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    if not (in_case_walkthrough or in_open_walkthrough):
+        st.markdown(
+            """
+            <div style="
+                text-align:center;
+                opacity:0.7;
+                font-size:0.85rem;
+                padding: 0.25rem 0 0.75rem 0;
+            ">
+                This prototype is designed for research and demonstration purposes and is not intended for operational deployment
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
 
 if __name__ == "__main__":

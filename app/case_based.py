@@ -431,7 +431,6 @@ def render_case(case_id: str):
             inner = f"## 9. Outcomes and Implications\n\n{_bullets_md(case['decision_outcome'].get('outcomes_implications'))}"
             _render_step_tile(inner)
 
-        st.markdown("---")
 
         # Navigation controls (Previous | Exit | Next)
         col_prev, col_exit, col_next = st.columns([1, 2, 1])
