@@ -8,7 +8,20 @@ st.markdown(
     .case-badge-wrap {
         display: flex;
         justify-content: center;
+        align-items: center;
+        width: 100%;
         margin-bottom: 10px;
+    }
+
+    .case-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 12px;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        white-space: nowrap;
     }
 
     .case-badge.real {
@@ -21,6 +34,14 @@ st.markdown(
         background: rgba(148, 163, 184, 0.15);  /* neutral slate */
         border: 1px solid rgba(148, 163, 184, 0.45);
         color: #e5e7eb;
+    }
+    .case-badge {
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+    .case-badge:hover {
+        box-shadow: 0 0 0 2px rgba(255,255,255,0.08);
+        transform: translateY(-1px);
     }
     </style>
     """,
