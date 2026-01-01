@@ -146,6 +146,40 @@ label, .stRadio, .stSelectbox, .stMultiSelect, .stExpander{
     background 0.12s ease;
 }
 
+/* --- Case type badges (Real-World / Hypothetical) --- */
+.case-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:0.72rem;
+  font-weight:800;
+  letter-spacing:0.02em;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.06);
+  color: var(--text-strong);
+  white-space:nowrap;
+}
+
+/* position badge inside your existing .listbox tile */
+.case-badge-wrap{
+  display:flex;
+  justify-content:flex-end;
+  margin:-2px 0 8px 0; /* pulls badge toward top without changing tile padding */
+}
+
+/* optional: subtle tint differences */
+.case-badge.real{
+  background: rgba(76,139,245,0.18);
+  border-color: rgba(76,139,245,0.35);
+}
+
+.case-badge.hypo{
+  background: rgba(167,139,250,0.18);
+  border-color: rgba(167,139,250,0.35);
+}
+
 /* Hover = discoverable click */
 .listbox:hover {
   cursor: pointer;

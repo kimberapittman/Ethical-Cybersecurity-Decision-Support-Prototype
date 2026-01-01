@@ -167,13 +167,19 @@ def render_case(case_id: str):
             title = c.get("ui_title") or c.get("title", "TBD")
             short_summary = c.get("short_summary", "")
 
-            with col:
+            with col:        
+                badge_html = (
+                    '<div class="case-badge-wrap"><span class="case-badge real">Real-World Incident</span></div>'
+                )
+                # for Riverton use:
+                # badge_html = '<div class="case-badge-wrap"><span class="case-badge hypo">Hypothetical Scenario</span></div>'
                 st.markdown(
                     _html_block(
                         f"""
                         <a href="?cb_case_id={html.escape(str(cid))}" target="_self"
                         style="text-decoration:none; color: inherit; display:block;">
                         <div class="listbox" style="cursor:pointer;">
+                            {badge_html}
                             <div style="font-weight:700; font-size:1.05rem; margin-bottom:6px; text-align:center;">
                             {html.escape(title)}
                             </div>
