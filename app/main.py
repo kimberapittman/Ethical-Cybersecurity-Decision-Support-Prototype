@@ -256,9 +256,9 @@ div[data-testid="stVerticalBlock"]:has(.step-tile-anchor){
   margin-top: 18px;
 }
 
-/* Spacer that creates room so the fixed footer never overlaps content */
+/* Spacer so bottom content never hides behind the pinned footer */
 .disclaimer-spacer{
-  height: 110px;   /* adjust if you want more/less breathing room */
+  height: 96px; /* tweak if you want more/less breathing room */
 }
 
 /* Pinned disclaimer (viewport bottom) */
@@ -281,6 +281,19 @@ div[data-testid="stVerticalBlock"]:has(.step-tile-anchor){
   padding: 10px 14px;
   text-align: center;
   color: rgba(229,231,235,0.85);
+}
+
+/* Reserve space so the fixed footer never overlaps content (robust) */
+div[data-testid="stAppViewContainer"] .main .block-container{
+  padding-bottom: 120px !important;
+}
+
+/* Mobile breathing room */
+@media (max-width: 900px){
+  .disclaimer-fixed{
+    bottom: 10px;
+    width: calc(100% - 24px);
+  }
 }
 
 /* Visible pill */
