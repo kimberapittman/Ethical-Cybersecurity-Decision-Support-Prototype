@@ -256,6 +256,11 @@ div[data-testid="stVerticalBlock"]:has(.step-tile-anchor){
   margin-top: 18px;
 }
 
+/* Spacer that creates room so the fixed footer never overlaps content */
+.disclaimer-spacer{
+  height: 110px;   /* adjust if you want more/less breathing room */
+}
+
 /* Pinned disclaimer (viewport bottom) */
 .disclaimer-fixed{
   position: fixed;
@@ -276,11 +281,6 @@ div[data-testid="stVerticalBlock"]:has(.step-tile-anchor){
   padding: 10px 14px;
   text-align: center;
   color: rgba(229,231,235,0.85);
-}
-
-/* CRITICAL: reserve space so fixed footer doesn't overlap bottom content */
-div[data-testid="stAppViewContainer"] .block-container{
-  padding-bottom: 110px !important;
 }
 
 /* Visible pill */
