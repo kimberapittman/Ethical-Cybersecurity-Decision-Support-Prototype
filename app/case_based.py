@@ -2,6 +2,30 @@ import streamlit as st
 from logic.loaders import load_case, list_cases
 import html
 
+st.markdown(
+    """
+    <style>
+    .case-badge-wrap {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+
+    .case-badge.real {
+        background: rgba(59, 130, 246, 0.15);   /* muted blue */
+        border: 1px solid rgba(59, 130, 246, 0.45);
+        color: #cfe2ff;
+    }
+
+    .case-badge.hypo {
+        background: rgba(148, 163, 184, 0.15);  /* neutral slate */
+        border: 1px solid rgba(148, 163, 184, 0.45);
+        color: #e5e7eb;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
 def _safe_rerun():
     try:
@@ -11,7 +35,6 @@ def _safe_rerun():
             st.experimental_rerun()
     except Exception:
         pass
-
 
 def _render_bullets(value):
     """
