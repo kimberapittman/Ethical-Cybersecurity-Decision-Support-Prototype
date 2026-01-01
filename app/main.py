@@ -324,8 +324,33 @@ footer, #MainMenu{ visibility: hidden; }
   padding: 0 !important;
 }
 
-/* Hide Streamlit header anchor (paperclip/link icon) */
-a.header-anchor {
+/* --- Hide Streamlit "copy link" / header anchor icons (paperclip/link) --- */
+
+/* Common class-based anchors */
+a.header-anchor,
+a.anchor-link,
+a[href^="#"].header-anchor,
+a[href^="#"].anchor-link {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Headings rendered in Markdown containers */
+div[data-testid="stMarkdownContainer"] h1 a,
+div[data-testid="stMarkdownContainer"] h2 a,
+div[data-testid="stMarkdownContainer"] h3 a,
+div[data-testid="stMarkdownContainer"] h4 a,
+div[data-testid="stMarkdownContainer"] h5 a,
+div[data-testid="stMarkdownContainer"] h6 a {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Streamlit sometimes wraps the icon in a button/element with aria-label */
+button[aria-label*="Copy link"],
+button[aria-label*="copy link"],
+button[title*="Copy link"],
+button[title*="copy link"] {
   display: none !important;
 }
 </style>
