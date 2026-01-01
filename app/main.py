@@ -148,6 +148,17 @@ div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) .listbox{
   min-height: unset !important;      /* remove the forced tall height */
 }
 
+/* === Select-a-Case: tighten title-to-tiles spacing to match Select-a-Mode === */
+div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) div[data-testid="stMarkdownContainer"]{
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) div[data-testid="stHorizontalBlock"]{
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
 @media (max-width: 900px){
   /* When columns stack, don't force tall empty cards */
   .listbox{

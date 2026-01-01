@@ -165,15 +165,19 @@ def render_case(case_id: str):
         top_cases = cases[:3]
 
         st.markdown(
-    """
-<div style='text-align:center; margin-top: 0.5rem;'>
-<h2 style='margin-bottom:0.35rem; display:inline-block;'>
-    Select a Case
-</h2>
-</div>
-    """,
-    unsafe_allow_html=True,
-)
+            """
+            <div style='text-align:center; margin-top: 0; margin-bottom: 0;'>
+              <h2 style='margin-bottom:0.1rem; display:inline-block;'>
+                Select a Case
+              </h2>
+            </div>
+
+            <div class="case-tiles">
+              <div class="case-tiles-anchor"></div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
 
         if not top_cases:
