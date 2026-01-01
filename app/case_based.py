@@ -167,18 +167,17 @@ def render_case(case_id: str):
         st.markdown(
             """
             <div style='text-align:center; margin-top: 0; margin-bottom: 0;'>
-              <h2 style='margin-bottom:0.1rem; display:inline-block;'>
+            <h2 style='margin-bottom:0.1rem; display:inline-block;'>
                 Select a Case
-              </h2>
+            </h2>
             </div>
 
             <div class="case-tiles">
-              <div class="case-tiles-anchor"></div>
+            <div class="case-tiles-anchor"></div>
             </div>
             """,
             unsafe_allow_html=True,
         )
-
 
         if not top_cases:
             st.error("No cases found in data/cases.")
@@ -192,8 +191,7 @@ def render_case(case_id: str):
             cid_norm = str(cid).strip().lower()
             hook = CASE_HOOKS.get(cid_norm, "")
 
-
-            with col:        
+            with col:
                 # Badge selection (based on case id)
                 if str(cid).lower() == "riverton":
                     badge_html = (
@@ -213,7 +211,6 @@ def render_case(case_id: str):
                         '</span>'
                         '</div>'
                     )
-
 
                 st.markdown(
                     _html_block(
@@ -237,7 +234,6 @@ def render_case(case_id: str):
                     unsafe_allow_html=True,
                 )
 
-
         # Handle tile click via query params (same tab)
         try:
             qp = st.query_params
@@ -257,6 +253,7 @@ def render_case(case_id: str):
             pass
 
         return
+
 
     # ==========================================================
     # WALKTHROUGH: load selected case
