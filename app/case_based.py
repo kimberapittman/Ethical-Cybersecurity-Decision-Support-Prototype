@@ -28,19 +28,20 @@ st.markdown(
         white-space: nowrap !important;
     }
 
-    /* Force blue theme colors even if other .case-badge rules exist elsewhere */
+    /* Real-world cases: primary shield blue */
     .case-badge.real,
     .listbox .case-badge.real {
-        background-color: rgba(96, 165, 250, 0.18) !important;
-        border: 1px solid rgba(96, 165, 250, 0.55) !important;
-        color: #dbeafe !important;
+        background-color: rgba(59, 130, 246, 0.22) !important;   /* bright shield blue */
+        border: 1px solid rgba(59, 130, 246, 0.65) !important;
+        color: #e0f2ff !important;
     }
 
+    /* Hypothetical case: darker shield blue */
     .case-badge.hypo,
     .listbox .case-badge.hypo {
-        background-color: rgba(59, 130, 246, 0.12) !important;
-        border: 1px solid rgba(59, 130, 246, 0.35) !important;
-        color: #bfdbfe !important;
+        background-color: rgba(37, 99, 235, 0.18) !important;    /* deeper shield blue */
+        border: 1px solid rgba(37, 99, 235, 0.55) !important;
+        color: #dbeafe !important;
     }
 
     .case-badge,
