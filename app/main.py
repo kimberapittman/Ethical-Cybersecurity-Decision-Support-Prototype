@@ -116,6 +116,11 @@ section[data-testid="stSidebar"] span{
   background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
 }
 
+/* Force Streamlit columns to stretch children equally */
+div[data-testid="stHorizontalBlock"]{
+  align-items: stretch;
+}
+
 /* Cards */
 .listbox{
   background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
