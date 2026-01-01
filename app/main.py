@@ -539,7 +539,7 @@ def main():
         if not cases:
             st.error("No cases found in data/cases.")
         else:
-            case_titles = [c["title"] for c in cases]
+            case_titles = [c.get("ui_title", c["title"]) for c in cases]
 
             # Initialize selection + id once
             if "cb_case_title" not in st.session_state:

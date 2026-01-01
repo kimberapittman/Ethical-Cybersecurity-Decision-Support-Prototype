@@ -186,14 +186,20 @@ def list_cases() -> List[Dict[str, Any]]:
         data = _safe_read_yaml(path)
         cid = str(data.get("id") or path.stem)
         title = data.get("title") or path.stem
+        ui_title = data.get("ui_title") or title
+        short_summary = data.get("short_summary") or ""  # <-- ADD THIS LINE
+
         cases.append(
             {
                 "id": cid,
-                "title": title,
+                "title": title,          # canonical / thesis title
+                "ui_title": ui_title,    # display-only title
+                "short_summary": short_summary,
                 "path": str(path),
                 "raw": data,
             }
         )
+
 
     # Sort by title for stable UI
     cases.sort(key=lambda c: c["title"])
