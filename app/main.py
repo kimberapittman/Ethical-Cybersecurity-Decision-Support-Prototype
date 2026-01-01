@@ -675,7 +675,7 @@ def main():
         with col_center:
             if st.button("Change Mode", key="change_mode_main", use_container_width=True):
                 st.session_state["landing_complete"] = False
-
+                st.rerun()
 
     st.markdown(
         """
