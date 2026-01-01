@@ -438,11 +438,7 @@ def render_case(case_id: str):
         col_prev, col_spacer1, col_exit, col_spacer2, col_next = st.columns([1, 2, 2.2, 2, 1])
 
         with col_prev:
-            if step > 1 and st.button(
-                "◀ Previous",
-                key=f"cb_prev_{step}_{case_id}",
-                use_container_width=True,   # <-- add this
-            ):
+            if step > 1 and st.button("◀ Previous", key=f"cb_prev_{step}_{case_id}", use_container_width=True):
                 st.session_state["cb_step"] = max(1, step - 1)
                 _safe_rerun()
 
