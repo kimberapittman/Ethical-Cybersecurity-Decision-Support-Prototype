@@ -245,13 +245,18 @@ input[type="checkbox"], input[type="radio"]{ accent-color: var(--brand); }
 header[data-testid="stHeader"]{ background: transparent; }
 footer, #MainMenu{ visibility: hidden; }
 
-/* === Consistent faint divider (for st.markdown("---")) === */
-div[data-testid="stMarkdownContainer"] hr {
+
+/* --- Disclaimer footer: override global hr spacing --- */
+.disclaimer-footer hr{
+  margin: 8px 0 6px 0 !important;
   border: none !important;
   height: 1px !important;
-  background: rgba(255,255,255,0.14) !important;
-  margin: 22px 0 18px 0 !important;
+  background: rgba(255,255,255,0.15) !important;
   opacity: 1 !important;
+}
+.disclaimer-footer{
+  margin: 0 !important;
+  padding: 0 !important;
 }
 </style>
 """,
@@ -301,20 +306,17 @@ def main():
 def render_disclaimer_footer():
     st.markdown(
         """
-        <hr style="
-            margin: 8px 0 6px 0;
-            border:none;
-            height:1px;
-            background: rgba(255,255,255,0.15);
-        ">
-        <div style="
-            text-align:center;
-            opacity:0.7;
-            font-size:0.85rem;
-            margin: 0;
-            padding: 0 0 0.75rem 0;
-        ">
-            This prototype is designed for research and demonstration purposes and is not intended for operational deployment
+        <div class="disclaimer-footer">
+          <hr>
+          <div style="
+              text-align:center;
+              opacity:0.7;
+              font-size:0.85rem;
+              margin: 0;
+              padding: 0 0 0.75rem 0;
+          ">
+              This prototype is designed for research and demonstration purposes and is not intended for operational deployment
+          </div>
         </div>
         """,
         unsafe_allow_html=True,
