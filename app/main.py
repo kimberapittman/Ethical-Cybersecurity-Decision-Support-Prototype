@@ -420,29 +420,33 @@ div[data-testid="stMainBlockContainer"]{
 }
 
 .disclaimer-footer{
-  /* Positioning / spacing */
-  margin-top: auto !important;
-  margin-top: 3.5rem !important;
-  margin-bottom: 14px !important;
+  position: fixed !important;
+  left: 0;
+  right: 0;
+  bottom: 0;
 
-  /* Boundary look (not a card) */
+  /* keep it above Streamlit’s bottom padding / scrollbars */
+  padding: 10px 0 10px 0 !important;
+
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
 
-  /* Subtle separator */
   border-top: 1px solid rgba(255,255,255,0.10) !important;
 
-  /* Typography */
-  padding: 10px 0 0 0 !important;
   text-align: center;
   color: rgba(229,231,235,0.55) !important;
   font-size: 0.85rem !important;
   font-weight: 500 !important;
   letter-spacing: 0.01em !important;
 
-  /* Final de-emphasis */
   opacity: 0.85 !important;
+
+  z-index: 9999 !important;
+}
+
+div[data-testid="stMainBlockContainer"]{
+  padding-bottom: 3.25rem !important; /* room for the fixed footer */
 }
 </style>
 """,
