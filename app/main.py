@@ -536,20 +536,22 @@ div[data-testid="stMainBlockContainer"]{
 }
 
 /* =========================
-   CASE WALKTHROUGH: disable clickable hover on tiles
+   WALKTHROUGH STEP TILE: remove "clickable" hover affordance
    ========================= */
 
-div[data-testid="stVerticalBlock"]:has(.step-tile-anchor) .listbox{
+/* 1) If any .listbox appears inside the step tile area, kill its hover */
+div[data-testid="stVerticalBlock"]:has(.step-tile-anchor) .listbox:hover{
   cursor: default !important;
+  transform: none !important;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.25) !important; /* same as base */
+  border-color: rgba(255,255,255,0.10) !important;     /* same as base */
 }
 
-div[data-testid="stVerticalBlock"]:has(.step-tile-anchor) .listbox:hover{
+/* 2) Also neutralize hover on the step tile container itself */
+div[data-testid="stVerticalBlock"]:has(.step-tile-anchor):hover{
   transform: none !important;
-  box-shadow: none !important;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.25) !important;
   border-color: rgba(255,255,255,0.10) !important;
-}
-div[data-testid="stVerticalBlock"]:has(.step-tile-anchor) .listbox{
-  box-shadow: 0 8px 18px rgba(0,0,0,0.22) !important;
 }
 </style>
 """,
