@@ -340,7 +340,7 @@ div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
 /* Title → hook spacing (same as case tiles) */
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
 .listbox.tile-card.mode-tile .tile-title{
-  font-weight: 700 !important;
+  font-weight: 800 !important;
   font-size: 1.05rem !important;
   text-align: center !important;
   margin: 0 0 20px 0 !important;
@@ -350,8 +350,8 @@ div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
 .listbox.tile-card.mode-tile .tile-hook{
   text-align: center !important;
-  font-size: 0.95rem !important;
-  margin: 0 0 12px 0 !important;   /* hook → details spacing */
+  font-size: 1.05rem !important;
+  margin: 0 0 20px 0 !important;   /* hook → details spacing */
   line-height: 1.45 !important;
 }
 
@@ -372,13 +372,6 @@ div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
   margin: 10px 0 10px 0 !important;
 }
 
-/* Optional: tighten the list */
-div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
-.listbox.tile-card.mode-tile .tight-list{
-  margin: 0 !important;
-  padding-left: 18px !important;
-}
-
 /* =========================
    Mode tiles: hook ↔ details spacing (MATCH title ↔ hook)
    ========================= */
@@ -387,19 +380,6 @@ div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
 .listbox.tile-card.mode-tile details{
   margin: 0 !important;
-}
-
-/* Ensure consistent hook → details spacing */
-div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
-.listbox.tile-card.mode-tile .tile-hook{
-  margin-bottom: 30px !important;   /* SAME as title → hook */
-}
-
-/* Normalize summary so it doesn’t add hidden spacing */
-div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
-.listbox.tile-card.mode-tile summary{
-  margin: 0 !important;
-  padding: 0 !important;
 }
 
 /* =========================
@@ -420,7 +400,7 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
 /* Title styling + Title → hook spacing */
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
 .listbox.case-tile .tile-title{
-  font-weight: 700 !important;
+  font-weight: 800 !important;
   font-size: 1.05rem !important;
   text-align: center !important;
   margin: 0 0 20px 0 !important;   /* THIS is the consistent title→hook gap */
@@ -464,7 +444,7 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
   display:inline-flex !important;
   align-items:center !important;
   justify-content:center !important;
-  font-size:1.05rem !important;
+  font-size:0.85rem !important;
   font-weight:800 !important;
   letter-spacing:0.02em !important;
   padding:8px 14px !important;
@@ -493,14 +473,25 @@ details > summary{
   color: var(--text-strong);
 }
 
+/* Mode tiles: deterministic summary styling (no conflicts) */
+div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
+details > summary{
+  margin: 0 !important;
+  padding: 10px 12px !important;       /* keep padding here—single source of truth */
+  list-style: none !important;
+
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
 /* =========================
    DETAILS CHEVRON — LANDING MODE TILES
    ========================= */
-
-div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details > summary::-webkit-details-marker {
+div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details > summary::-webkit-details-marker{
   display: none !important;
 }
-div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details > summary::marker {
+div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details > summary::marker{
   content: "" !important;
 }
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details > summary{
@@ -508,30 +499,39 @@ div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details > summary{
   display: flex !important;
   align-items: center !important;
   gap: 10px !important;
+
+  margin: 0 !important;
+  padding: 10px 12px !important;      /* single source of truth for summary padding */
+  padding-left: 34px !important;      /* reserve space for chevron */
+  position: relative !important;
 }
+
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details > summary::before{
   content: ">";
   font-weight: 800;
   display: inline-block;
   font-size: 1rem;
   line-height: 1;
-  margin-top: -1px;
-  transform: rotate(0deg);
-  transition: transform 0.12s ease;
   opacity: 0.8;
+
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%) rotate(0deg);
+  transition: transform 0.12s ease;
 }
+
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details[open] > summary::before{
-  transform: rotate(90deg);
+  transform: translateY(-50%) rotate(90deg);
 }
 
 /* =========================
    DETAILS CHEVRON — CASE MODE TILES
    ========================= */
-
-div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details > summary::-webkit-details-marker {
+div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details > summary::-webkit-details-marker{
   display: none !important;
 }
-div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details > summary::marker {
+div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details > summary::marker{
   content: "" !important;
 }
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details > summary{
@@ -539,20 +539,30 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details > summary{
   display: flex !important;
   align-items: center !important;
   gap: 10px !important;
+
+  margin: 0 !important;
+  padding: 10px 12px !important;      /* match landing mode tiles */
+  padding-left: 34px !important;      /* reserve space for chevron */
+  position: relative !important;
 }
+
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details > summary::before{
   content: ">";
   font-weight: 800;
   display: inline-block;
   font-size: 1rem;
   line-height: 1;
-  margin-top: -1px;
-  transform: rotate(0deg);
-  transition: transform 0.12s ease;
   opacity: 0.8;
+
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%) rotate(0deg);
+  transition: transform 0.12s ease;
 }
+
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details[open] > summary::before{
-  transform: rotate(90deg);
+  transform: translateY(-50%) rotate(90deg);
 }
 
 /* === Layout: equal-height tiles ONLY on Select-a-Mode / Select-a-Case === */
@@ -774,7 +784,8 @@ def _render_landing_page():
 
                     <div class="tile-title">Case-Based Mode</div>
 
-                    <div class="tile-hook"><em>Explore the prototype through reconstructed case demonstrations.</em></div>
+                    <div class="tile-hook">Explore the prototype through reconstructed case demonstrations.</div>
+
 
                     <!-- Collapsible details (inside tile) -->
                     <details onclick="event.stopPropagation();">
@@ -811,7 +822,7 @@ def _render_landing_page():
 
                     <div class="tile-title">Open-Ended Mode</div>
 
-                    <div class="tile-hook"><em>Utilize the prototype for a decision context you define.</em></div>
+                    <div class="tile-hook">Utilize the prototype for a decision context you define.</div>
 
                     <!-- Collapsible details (inside tile) -->
                     <details onclick="event.stopPropagation();">
