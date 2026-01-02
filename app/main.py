@@ -174,7 +174,7 @@ div[data-testid="stButton"] > button[kind="secondary"]:hover{
   cursor: default;
   user-select: none;
   pointer-events: none;
-  opacity: 0.95;
+  opacity: 0.55;
 }
 
 /* =========================
