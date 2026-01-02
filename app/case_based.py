@@ -335,45 +335,34 @@ def render_case(case_id: str):
             _render_step_tile(inner)
 
         # --- spacer between tile and nav ---
-        st.markdown('<div class="nav-anchor"></div><div style="height:16px;"></div>', unsafe_allow_html=True)
+        st.markdown("<div style='height:16px;'></div>", unsafe_allow_html=True)
 
-        nav = st.container()
-        with nav:
-            st.markdown('<div class="cb-nav-anchor"></div>', unsafe_allow_html=True)
-            st.markdown("<div style='height:14px;'></div>", unsafe_allow_html=True)  # padding above nav
+        # Navigation row (symmetrical inset)
+        sp_l, col_prev, col_mid, col_next, sp_r = st.columns([1, 3, 2, 3, 1], gap="large")
 
-            # tighter symmetric layout (less “middle suction”)
-            sp_l, col_prev, col_mid, col_next, sp_r = st.columns([1, 3, 2, 3, 1], gap="large")
-
-            with col_prev:
-                if step > 1 and st.button("◀ Previous", key=f"cb_prev_{step}_{case_id}", use_container_width=True):
-                    st.session_state["cb_step"] = max(1, step - 1)
-                    _safe_rerun()
-
-            with col_next:
-                if step < 9 and st.button("Next ▶", key=f"cb_next_{step}_{case_id}", use_container_width=True):
-                    st.session_state["cb_step"] = min(9, step + 1)
-                    _safe_rerun()
-
-            with col_mid:
-                if step == 9:
-                    st.markdown('<div class="endcase-btn">End of Case.</div>', unsafe_allow_html=True)
-
-
-        # Navigation row (symmetrical inset within the centered nav lane)
-        sp_l, col_prev, col_mid, col_next, sp_r = st.columns([1, 2, 6, 2, 1], gap="large")
+        nav_scope = "cb_nav"  # keeps keys distinct and future-proof
 
         with col_prev:
-            if step > 1 and st.button("◀ Previous", key=f"cb_prev_{step}_{case_id}", use_container_width=True):
+            if step > 1 and st.button(
+                "◀ Previous",
+                key=f"{nav_scope}_prev_{case_id}_{step}",
+                use_container_width=True,
+            ):
                 st.session_state["cb_step"] = max(1, step - 1)
-                _safe_rerun()
-
-        with col_next:
-            if step < 9 and st.button("Next ▶", key=f"cb_next_{step}_{case_id}", use_container_width=True):
-                st.session_state["cb_step"] = min(9, step + 1)
                 _safe_rerun()
 
         with col_mid:
             if step == 9:
                 st.markdown('<div class="endcase-btn">End of Case.</div>', unsafe_allow_html=True)
+
+        with col_next:
+            if step < 9 and st.button(
+                "Next ▶",
+                key=f"{nav_scope}_next_{case_id}_{step}",
+                use_container_width=True,
+            ):
+                st.session_state["cb_step"] = min(9, step + 1)
+                _safe_rerun()
+
+
 
