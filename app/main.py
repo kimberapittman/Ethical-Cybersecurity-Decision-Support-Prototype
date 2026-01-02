@@ -160,6 +160,24 @@ div[data-testid="stButton"] > button[kind="secondary"]:hover{
   box-shadow: none !important;
 }
 
+/* End-of-case: button look, but disabled */
+.endcase-btn{
+  width: 100%;
+  box-sizing: border-box;
+  border: 0;
+  padding: 0.7rem 1rem;              /* MATCH your stButton padding */
+  border-radius: 12px;               /* MATCH your stButton radius */
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.14);
+  color: var(--text-strong);
+  box-shadow: none;
+  font-weight: 600;
+  text-align: center;
+  cursor: default;
+  user-select: none;
+  opacity: 0.85;                     /* MATCH your desired de-emphasis */
+}
+
 /* Back to Mode Selection — size to text cleanly */
 div[data-testid="stButton"] > button[kind="secondary"]{
   display: inline-flex !important;
