@@ -672,6 +672,12 @@ def main():
         _render_landing_page()
         render_disclaimer_footer()
         return
+    
+    # ---------- ACTIVE MODE ----------
+    mode = st.session_state.get("active_mode", "Case-Based")
+
+    if mode == "Case-Based" and "cb_view" not in st.session_state:
+        st.session_state["cb_view"] = "select"
 
     # ---------- ROUTING ----------
     if mode == "Case-Based":
