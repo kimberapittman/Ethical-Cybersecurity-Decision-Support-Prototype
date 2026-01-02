@@ -256,11 +256,6 @@ div[data-testid="stVerticalBlock"]:has(.step-tile-anchor){
   margin-top: 18px;
 }
 
-/* Spacer so bottom content never hides behind the pinned footer */
-.disclaimer-spacer{
-  height: 96px; /* tweak if you want more/less breathing room */
-}
-
 /* Pinned disclaimer (viewport bottom) */
 .disclaimer-fixed{
   position: fixed;
@@ -283,8 +278,8 @@ div[data-testid="stVerticalBlock"]:has(.step-tile-anchor){
   color: rgba(229,231,235,0.85);
 }
 
-/* Reserve space so the fixed footer never overlaps content (robust) */
-div[data-testid="stAppViewContainer"] .main .block-container{
+/* Reserve space so the fixed footer never overlaps content */
+div[data-testid="stMainBlockContainer"]{
   padding-bottom: 120px !important;
 }
 
@@ -306,11 +301,6 @@ div[data-testid="stAppViewContainer"] .main .block-container{
   padding: 10px 14px;
   text-align: center;
   color: rgba(229,231,235,0.85);
-}
-
-/* Spacer so content never hides behind footer */
-.disclaimer-spacer{
-  height: 84px;
 }
 
 /* === Hide Streamlit chrome === */
@@ -372,7 +362,6 @@ def render_disclaimer_footer(pinned: bool = False):
     if pinned:
         st.markdown(
             f"""
-            <div class="disclaimer-spacer"></div>
             <div class="disclaimer-fixed">
               <div class="disclaimer-inner">
                 {html.escape(txt)}
@@ -733,7 +722,7 @@ def main():
     if not st.session_state.get("landing_complete", False):
         _render_landing_page()
         render_disclaimer_footer(pinned=True)
-        return  # CRITICAL: stop here so the rest of the app doesn't render on the landing screen
+        return
 
     # ---------- CONTINUE APP ----------
     mode = st.session_state.get("active_mode", "Case-Based")
