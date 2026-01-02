@@ -329,6 +329,16 @@ label, .stRadio, .stSelectbox, .stMultiSelect, .stExpander{
 .listbox, .listbox *{ color: var(--text-strong) !important; }
 .section-note, .sub{ color: var(--text-muted) !important; }
 
+/* === Select-a-Case tile text spacing === */
+div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) .listbox > div[style*="font-weight:700"]{
+  margin-bottom: 12px !important;
+  line-height: 1.4 !important;
+}
+
+div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) .listbox .sub{
+  line-height: 1.5 !important;
+}
+
 /* Click affordances */
 .listbox:hover{
   cursor: pointer;
