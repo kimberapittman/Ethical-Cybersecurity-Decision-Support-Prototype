@@ -355,44 +355,34 @@ div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
   line-height: 1.45 !important;
 }
 
-/* Keep details clean and prevent random spacing from default elements */
+/* Keep details clean and prevent browser default spacing */
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
 .listbox.tile-card.mode-tile details{
   margin: 0 !important;
 }
 
+/* Summary inside mode tiles only (do not target generic summary) */
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
-.listbox.tile-card.mode-tile summary{
+.listbox.tile-card.mode-tile details > summary{
   margin: 0 !important;
 }
 
-/* The paragraph inside details (your explanatory text) */
-div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
-.listbox.tile-card.mode-tile .mode-detail-text{
-  margin: 10px 0 10px 0 !important;
-}
-
+/* Expanded panel (wrapper) + connected look */
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
 .listbox.tile-card.mode-tile details .details-body{
-  margin-top: 10px !important;
+  margin-top: 6px !important;                 /* tighten gap */
   padding: 12px 12px !important;
   background: rgba(255,255,255,0.03) !important;
   border: 1px solid rgba(255,255,255,0.08) !important;
+  border-top: 0 !important;                   /* share border line with summary */
   border-radius: 12px !important;
-}
-
-/* Mode tiles: visually connect summary and expanded panel */
-div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
-.listbox.tile-card.mode-tile details .details-body{
-  margin-top: 6px !important;      /* tighten gap so it doesn't read as a new tile */
-  border-top: 0 !important;        /* remove duplicate border between summary + panel */
-  border-top-left-radius: 10px !important;
+  border-top-left-radius: 10px !important;    /* visually connect */
   border-top-right-radius: 10px !important;
 }
 
 /* When open, soften summary bottom corners so it flows into the panel */
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
-details[open] > summary{
+.listbox.tile-card.mode-tile details[open] > summary{
   border-bottom-left-radius: 10px !important;
   border-bottom-right-radius: 10px !important;
 }
