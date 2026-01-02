@@ -106,11 +106,13 @@ section[data-testid="stSidebar"] span{
 }
 
 .sb-details > summary::before{
-  content:"›";
-  font-size:1.05rem;
-  line-height:1;
-  opacity:0.65;
-  transition: transform 0.12s ease;
+  content: ">";
+  font-size: 1rem;      /* ↑ size */
+  font-weight: 800;        /* ↑ weight */
+  line-height: 1;
+  opacity: 0.8;            /* slightly more present */
+  margin-top: -1px;        /* optical vertical alignment */
+  transition: transform 0.12s ease, opacity 0.12s ease;
 }
 
 .sb-details[open] > summary::before{
@@ -267,13 +269,15 @@ div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details > summary{
 
 /* chevron (closed) */
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details > summary::before{
-  content: "›";
+  content: ">";
+  font-weight: 800;
   display: inline-block;
-  font-size: 1.2rem;
+  font-size: 1rem;
   line-height: 1;
+  margin-top: -1px;
   transform: rotate(0deg);
   transition: transform 0.12s ease;
-  opacity: 0.85;
+  opacity: 0.8;
 }
 
 /* chevron (open) */
@@ -302,13 +306,15 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details > summary{
 
 /* chevron (closed) */
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details > summary::before{
-  content: "›";
+  content: ">";
+  font-weight: 800;
   display: inline-block;
-  font-size: 1.2rem;
+  font-size: 1rem;
   line-height: 1;
+  margin-top: -1px;
   transform: rotate(0deg);
   transition: transform 0.12s ease;
-  opacity: 0.85;
+  opacity: 0.8;
 }
 
 /* chevron (open) */
