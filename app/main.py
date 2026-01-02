@@ -107,11 +107,11 @@ section[data-testid="stSidebar"] span{
 
 .sb-details > summary::before{
   content: ">";
-  font-size: 1rem;      /* ↑ size */
-  font-weight: 800;        /* ↑ weight */
+  font-size: 1rem;
+  font-weight: 800;
   line-height: 1;
-  opacity: 0.8;            /* slightly more present */
-  margin-top: -1px;        /* optical vertical alignment */
+  opacity: 0.8;
+  margin-top: -1px;
   transition: transform 0.12s ease, opacity 0.12s ease;
 }
 
@@ -165,8 +165,8 @@ div[data-testid="stButton"] > button[kind="secondary"]:hover{
   width: 100%;
   box-sizing: border-box;
   border: 0;
-  padding: 0.7rem 1rem;              /* MATCH your stButton padding */
-  border-radius: 12px;               /* MATCH your stButton radius */
+  padding: 0.7rem 1rem;
+  border-radius: 12px;
   background: rgba(255,255,255,0.06);
   border: 1px solid rgba(255,255,255,0.14);
   color: var(--text-strong);
@@ -175,14 +175,13 @@ div[data-testid="stButton"] > button[kind="secondary"]:hover{
   text-align: center;
   cursor: default;
   user-select: none;
-  opacity: 0.85;                     /* MATCH your desired de-emphasis */
+  opacity: 0.85;
 }
 
 /* =========================
    WALKTHROUGH NAV WIDTH + SYMMETRY
    ========================= */
 
-/* Constrain the *block that contains* the nav columns */
 div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor){
   max-width: 980px !important;
   margin-left: auto !important;
@@ -196,29 +195,41 @@ div[data-testid="stButton"] > button{
 }
 
 /* ---------------------------------
-   NAV: responsive behavior
+   NAV FIX (small screens)
+   - Keep buttons readable
+   - Keep End-of-case horizontal
+   - Don’t let columns collapse into skinny strips
 ---------------------------------- */
-
-/* Default (desktop/tablet): stretch nav buttons in their columns */
-div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
-div[data-testid="stButton"] > button{
-  width: 100% !important;
-}
-
-/* On smaller screens: stop stretching buttons (prevents text wrapping weirdness) */
 @media (max-width: 720px){
+
+  /* Force the nav row to maintain usable column widths */
   div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
-  div[data-testid="stButton"] > button{
-    width: auto !important;       /* let it fit text */
-    min-width: unset !important;
+  div[data-testid="stHorizontalBlock"]{
+    width: 100% !important;
   }
 
-  /* Also prevent your End-of-case pill from becoming a vertical column */
+  /* The *column* wrapper in Streamlit can shrink too far; stop that */
+  div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
+  div[data-testid="column"]{
+    min-width: 0 !important;
+  }
+
+  /* Previous/Next: fill their column width cleanly (no cramped pill) */
+  div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
+  div[data-testid="stButton"] > button{
+    width: 100% !important;
+    min-width: 100% !important;     /* override any earlier “auto” experiments */
+    display: inline-flex !important;
+    justify-content: center !important;
+  }
+
+  /* End-of-case: behave like a button and stay one line (no vertical letters) */
   div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor) .endcase-btn{
-    width: auto !important;
-    display: inline-block !important;
+    width: 100% !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     white-space: nowrap !important;
-    padding: 0.7rem 1rem !important;
   }
 }
 
@@ -320,16 +331,12 @@ div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details > summary::-w
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details > summary::marker {
   content: "" !important;
 }
-
-/* make summary behave like a Streamlit expander row */
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details > summary{
   list-style: none !important;
   display: flex !important;
   align-items: center !important;
   gap: 10px !important;
 }
-
-/* chevron (closed) */
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details > summary::before{
   content: ">";
   font-weight: 800;
@@ -341,8 +348,6 @@ div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details > summary::be
   transition: transform 0.12s ease;
   opacity: 0.8;
 }
-
-/* chevron (open) */
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details[open] > summary::before{
   transform: rotate(90deg);
 }
@@ -357,16 +362,12 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details > summary::-w
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details > summary::marker {
   content: "" !important;
 }
-
-/* make summary behave like a Streamlit expander row */
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details > summary{
   list-style: none !important;
   display: flex !important;
   align-items: center !important;
   gap: 10px !important;
 }
-
-/* chevron (closed) */
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details > summary::before{
   content: ">";
   font-weight: 800;
@@ -378,21 +379,15 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details > summary::be
   transition: transform 0.12s ease;
   opacity: 0.8;
 }
-
-/* chevron (open) */
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details[open] > summary::before{
   transform: rotate(90deg);
 }
 
 /* === Layout: unify Mode + Case tile rows === */
-
-/* Only stretch columns on tile pages (mode/case tiles) */
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) div[data-testid="stHorizontalBlock"],
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) div[data-testid="stHorizontalBlock"]{
   align-items: stretch !important;
 }
-
-/* Only on pages that include mode/case anchors: make columns + tiles equal height */
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) div[data-testid="column"],
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) div[data-testid="column"]{
   display: flex !important;
@@ -410,10 +405,7 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) .listbox{
   height: 100% !important;
 }
 
-/* Fixed height ONLY for Select-a-Mode (if you still want it) */
 .mode-tiles .listbox{ height: 460px !important; }
-
-/* Mobile: don't force tall cards */
 @media (max-width: 900px){
   .mode-tiles .listbox{ height: auto !important; }
 }
@@ -428,7 +420,6 @@ div[data-testid="stVerticalBlock"]:has(.step-tile-anchor){
   border-radius: 14px;
   margin: 8px 0 8px;
 }
-
 
 /* === Hide Streamlit chrome === */
 header[data-testid="stHeader"]{ background: transparent; }
@@ -451,7 +442,6 @@ button[title*="Copy link"]{
 
 /* =========================
    MAKE MAIN AREA A FULL-HEIGHT FLEX COLUMN
-   (lets footer sit at bottom when content is short)
    ========================= */
 
 section[data-testid="stMain"]{
@@ -471,29 +461,22 @@ div[data-testid="stMainBlockContainer"]{
   left: 0;
   right: 0;
   bottom: 0;
-
-  /* keep it above Streamlit’s bottom padding / scrollbars */
   padding: 10px 0 10px 0 !important;
-
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
-
   border-top: 1px solid rgba(255,255,255,0.10) !important;
-
   text-align: center;
   color: rgba(229,231,235,0.55) !important;
   font-size: 0.85rem !important;
   font-weight: 500 !important;
   letter-spacing: 0.01em !important;
-
   opacity: 0.85 !important;
-
   z-index: 9999 !important;
 }
 
 div[data-testid="stMainBlockContainer"]{
-  padding-bottom: 3.25rem !important; /* room for the fixed footer */
+  padding-bottom: 3.25rem !important;
 }
 </style>
 """,
