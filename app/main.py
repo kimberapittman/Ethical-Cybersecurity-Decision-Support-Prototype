@@ -12,7 +12,7 @@ if str(ROOT_DIR) not in sys.path:
 
 import streamlit as st
 
-from logic.loaders import list_cases, load_case
+from logic.loaders import load_case
 from app import case_based, open_ended
 
 # ---------- Page config ----------
@@ -280,7 +280,7 @@ div[data-testid="stMainBlockContainer"]{
 .disclaimer-footer{
   /* Positioning / spacing */
   margin-top: auto !important;
-  margin-top: 4.5rem !important;
+  margin-top: 3.5rem !important;
   margin-bottom: 14px !important;
 
   /* Boundary look (not a card) */
@@ -311,30 +311,6 @@ div[data-testid="stMainBlockContainer"]{
 def html_block(s: str) -> str:
     # Prevent Markdown from treating indented HTML as a code block.
     return "\n".join(line.lstrip() for line in textwrap.dedent(s).splitlines())
-
-
-def _enter_mode(mode: str):
-    st.session_state["active_mode"] = mode
-    st.session_state["landing_complete"] = True
-    # no st.rerun() — Streamlit reruns automatically on button click
-
-
-def _open_sidebar_once():
-    if st.session_state.get("_sidebar_opened_once", False):
-        return
-    st.session_state["_sidebar_opened_once"] = True
-
-    st.markdown(
-        """
-        <script>
-        (function () {
-          const btn = window.parent.document.querySelector('button[data-testid="collapsedControl"]');
-          if (btn) btn.click();
-        })();
-        </script>
-        """,
-        unsafe_allow_html=True,
-    )
 
 
 def render_disclaimer_footer():
@@ -553,6 +529,10 @@ def main():
     if "active_mode" not in st.session_state:
         st.session_state["active_mode"] = "Case-Based"
 
+    if st.session_state.get("active_mode") == "Case-Based" and "cb_view" not in st.session_state:
+        st.session_state["cb_view"] = "select"
+
+
     # ---------- URL PARAM MODE ENTRY (tile click) ----------
     try:
         qp = st.query_params
@@ -693,12 +673,6 @@ def main():
         render_disclaimer_footer()
         return
 
-    # ---------- CONTINUE APP ----------
-    mode = st.session_state.get("active_mode", "Case-Based")
-
-    if mode == "Case-Based" and "cb_view" not in st.session_state:
-        st.session_state["cb_view"] = "select"
-
     # ---------- ROUTING ----------
     if mode == "Case-Based":
         case_based.render_case(st.session_state.get("cb_case_id"))
@@ -707,8 +681,8 @@ def main():
 
     # ---------- DISCLAIMER (ONLY ON SELECTION SCREENS) ----------
     show_disclaimer = (
-        (not st.session_state.get("landing_complete", False)) or
-        (st.session_state.get("active_mode") == "Case-Based" and st.session_state.get("cb_view") == "select")
+        st.session_state.get("active_mode") == "Case-Based"
+        and st.session_state.get("cb_view") == "select"
     )
 
     if show_disclaimer:
