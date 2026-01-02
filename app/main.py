@@ -277,17 +277,30 @@ div[data-testid="stMainBlockContainer"]{
   flex-direction: column !important;
 }
 
-/* Footer disclaimer that visually separates from tiles and sits at bottom */
 .disclaimer-footer{
-  margin-top: auto !important;   /* KEY: pushes it to the bottom */
+  /* Positioning / spacing */
+  margin-top: auto !important;
+  margin-top: 4.5rem !important;
   margin-bottom: 14px !important;
-  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
-  border: 1px solid rgba(255,255,255,0.10);
-  box-shadow: 0 10px 24px rgba(0,0,0,0.25);
-  border-radius: 14px;
-  padding: 12px 16px;
+
+  /* Boundary look (not a card) */
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+
+  /* Subtle separator */
+  border-top: 1px solid rgba(255,255,255,0.10) !important;
+
+  /* Typography */
+  padding: 10px 0 0 0 !important;
   text-align: center;
-  color: rgba(229,231,235,0.85);
+  color: rgba(229,231,235,0.55) !important;
+  font-size: 0.85rem !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.01em !important;
+
+  /* Final de-emphasis */
+  opacity: 0.85 !important;
 }
 </style>
 """,
@@ -739,10 +752,8 @@ def main():
     else:
         open_ended.render_open_ended()
 
-    # ---------- DISCLAIMER (ONLY ON NON-WALKTHROUGH SCREENS) ----------
-    in_case_walkthrough = st.session_state.get("cb_view") == "walkthrough"
-    in_open_walkthrough = st.session_state.get("oe_step", 0) > 0
-    render_disclaimer_footer(pinned=not (in_case_walkthrough or in_open_walkthrough))
+    render_disclaimer_footer()
+
 
 if __name__ == "__main__":
     main()
