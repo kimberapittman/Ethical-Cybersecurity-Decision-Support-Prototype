@@ -334,21 +334,17 @@ def render_case(case_id: str):
             inner = f"## 9. Outcomes and Implications\n\n{_bullets_md(case['decision_outcome'].get('outcomes_implications'))}"
             _render_step_tile(inner)
 
-        # --- spacer between tile and nav ---
+        # padding between tile and nav
         st.markdown("<div style='height:16px;'></div>", unsafe_allow_html=True)
 
-        # Navigation row (symmetrical inset)
+        # anchor that the CSS uses to constrain the nav lane
+        st.markdown('<div class="cb-nav-anchor"></div>', unsafe_allow_html=True)
+
         sp_l, col_prev, col_mid, col_next, sp_r = st.columns([1, 3, 2, 3, 1], gap="large")
 
-        nav_scope = "cb_nav"  # keeps keys distinct and future-proof
-
         with col_prev:
-            if step > 1 and st.button(
-                "◀ Previous",
-                key=f"{nav_scope}_prev_{case_id}_{step}",
-                use_container_width=True,
-            ):
-                st.session_state["cb_step"] = max(1, step - 1)
+            if step > 1 and st.button("◀ Previous", key=f"cbnav_prev_{case_id}_{step}", use_container_width=True):
+                st.session_state["cb_step"] = step - 1
                 _safe_rerun()
 
         with col_mid:
@@ -356,13 +352,6 @@ def render_case(case_id: str):
                 st.markdown('<div class="endcase-btn">End of Case.</div>', unsafe_allow_html=True)
 
         with col_next:
-            if step < 9 and st.button(
-                "Next ▶",
-                key=f"{nav_scope}_next_{case_id}_{step}",
-                use_container_width=True,
-            ):
-                st.session_state["cb_step"] = min(9, step + 1)
+            if step < 9 and st.button("Next ▶", key=f"cbnav_next_{case_id}_{step}", use_container_width=True):
+                st.session_state["cb_step"] = step + 1
                 _safe_rerun()
-
-
-

@@ -183,17 +183,18 @@ div[data-testid="stButton"] > button[kind="secondary"]:hover{
    ========================= */
 
 /* Constrain the *block that contains* the nav columns */
-div[data-testid="stVerticalBlock"]:has(.nav-anchor){
-  max-width: 980px;              /* match your card feel */
+div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor){
+  max-width: 980px !important;
   margin-left: auto !important;
   margin-right: auto !important;
   width: 100% !important;
 }
 
-/* Optional: ensure the nav row itself doesn't stretch weirdly */
-div[data-testid="stVerticalBlock"]:has(.nav-anchor) div[data-testid="stHorizontalBlock"]{
+div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
+div[data-testid="stButton"] > button{
   width: 100% !important;
 }
+
 
 /* Back to Mode Selection — size to text cleanly */
 div[data-testid="stButton"] > button[kind="secondary"]{
@@ -208,18 +209,6 @@ div[data-testid="stButton"] > button[kind="secondary"]{
   line-height: 1.2 !important;
 
   white-space: nowrap !important;
-}
-
-/* =========================
-   CASE WALKTHROUGH NAV LANE
-   ========================= */
-
-/* Constrain the nav block itself */
-div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor){
-  max-width: 860px;            /* tune to match your tile width */
-  margin-left: auto !important;
-  margin-right: auto !important;
-  width: 100% !important;
 }
 
 /* === Inputs === */
@@ -371,8 +360,11 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details[open] > summa
 
 /* === Layout: unify Mode + Case tile rows === */
 
-/* Make columns stretch */
-div[data-testid="stHorizontalBlock"]{ align-items: stretch !important; }
+/* Only stretch columns on tile pages (mode/case tiles) */
+div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) div[data-testid="stHorizontalBlock"],
+div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) div[data-testid="stHorizontalBlock"]{
+  align-items: stretch !important;
+}
 
 /* Only on pages that include mode/case anchors: make columns + tiles equal height */
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) div[data-testid="column"],
