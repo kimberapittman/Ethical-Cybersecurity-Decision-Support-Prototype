@@ -286,6 +286,34 @@ div[data-testid="stButton"] > button[kind="secondary"]{
   white-space: nowrap !important;
 }
 
+/* =========================
+   CLICKABLE NAV BUTTON AFFORDANCE
+   (match tile blue rim)
+   ========================= */
+
+/* Apply blue rim ONLY to real buttons */
+div[data-testid="stButton"] > button{
+  border: 1px solid rgba(76,139,245,0.55) !important;
+  box-shadow:
+    0 0 0 1px rgba(76,139,245,0.35),
+    0 10px 20px rgba(76,139,245,0.35) !important;
+}
+
+/* Stronger affordance on hover */
+div[data-testid="stButton"] > button:hover{
+  border-color: rgba(76,139,245,0.85) !important;
+  box-shadow:
+    0 0 0 2px rgba(76,139,245,0.55),
+    0 14px 26px rgba(76,139,245,0.45) !important;
+}
+
+/* Subtle press feedback */
+div[data-testid="stButton"] > button:active{
+  box-shadow:
+    0 0 0 1px rgba(76,139,245,0.45),
+    0 8px 16px rgba(76,139,245,0.30) !important;
+}
+
 /* === Inputs === */
 input, textarea, select, .stTextInput input, .stTextArea textarea{
   background: rgba(255,255,255,0.06) !important;
