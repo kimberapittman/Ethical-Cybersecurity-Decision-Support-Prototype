@@ -553,6 +553,10 @@ div[data-testid="stVerticalBlock"]:has(.step-tile-anchor):hover{
   box-shadow: 0 10px 24px rgba(0,0,0,0.25) !important;
   border-color: rgba(255,255,255,0.10) !important;
 }
+div[data-testid="stVerticalBlock"]:has(.step-tile-anchor) a{
+  pointer-events: none !important;
+  cursor: default !important;
+}
 </style>
 """,
     unsafe_allow_html=True,
