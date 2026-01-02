@@ -439,21 +439,18 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details[open] > summa
   transform: rotate(90deg);
 }
 
-/* === Layout: unify Mode + Case tile rows === */
+/* === Layout: equal-height tiles ONLY on Select-a-Mode / Select-a-Case === */
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) div[data-testid="stHorizontalBlock"],
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) div[data-testid="stHorizontalBlock"]{
   align-items: stretch !important;
 }
+
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) div[data-testid="column"],
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) div[data-testid="column"]{
   display: flex !important;
   flex-direction: column !important;
 }
-div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) a,
-div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) a{
-  display: block !important;
-  height: 100% !important;
-}
+
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) .listbox,
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) .listbox{
   display: flex !important;
@@ -461,20 +458,11 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) .listbox{
   height: 100% !important;
 }
 
+/* Fixed height ONLY for Select-a-Mode */
 .mode-tiles .listbox{ height: 460px !important; }
+
 @media (max-width: 900px){
   .mode-tiles .listbox{ height: auto !important; }
-}
-
-/* === Step tile wrapper inside walkthrough === */
-div[data-testid="stVerticalBlock"]:has(.step-tile-anchor){
-  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
-  border-left: 4px solid var(--brand);
-  border: 1px solid rgba(255,255,255,0.10);
-  box-shadow: 0 10px 24px rgba(0,0,0,0.25);
-  padding: 12px 14px;
-  border-radius: 14px;
-  margin: 8px 0 8px;
 }
 
 /* === Hide Streamlit chrome === */
@@ -536,26 +524,20 @@ div[data-testid="stMainBlockContainer"]{
 }
 
 /* =========================
-   WALKTHROUGH STEP TILE: remove "clickable" hover affordance
+   WALKTHROUGH TILES: NOT CLICKABLE
    ========================= */
 
-/* 1) If any .listbox appears inside the step tile area, kill its hover */
-div[data-testid="stVerticalBlock"]:has(.step-tile-anchor) .listbox:hover{
+.listbox.walkthrough-tile{
   cursor: default !important;
-  transform: none !important;
-  box-shadow: 0 10px 24px rgba(0,0,0,0.25) !important; /* same as base */
-  border-color: rgba(255,255,255,0.10) !important;     /* same as base */
 }
 
-/* 2) Also neutralize hover on the step tile container itself */
-div[data-testid="stVerticalBlock"]:has(.step-tile-anchor):hover{
-  transform: none !important;
-  box-shadow: 0 10px 24px rgba(0,0,0,0.25) !important;
-  border-color: rgba(255,255,255,0.10) !important;
-}
-div[data-testid="stVerticalBlock"]:has(.step-tile-anchor) a{
-  pointer-events: none !important;
+/* kill the hover/active "clickable" affordance */
+.listbox.walkthrough-tile:hover,
+.listbox.walkthrough-tile:active{
   cursor: default !important;
+  transform: none !important;
+  border-color: rgba(255,255,255,0.10) !important;   /* normal */
+  box-shadow: 0 10px 24px rgba(0,0,0,0.25) !important; /* normal */
 }
 </style>
 """,

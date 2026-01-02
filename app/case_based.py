@@ -195,6 +195,7 @@ def render_case(case_id: str):
         # ==========================================================
     # VIEW 2: WALKTHROUGH (STEP-BASED)
     # ==========================================================
+    st.markdown('<div class="walkthrough-scope"></div>', unsafe_allow_html=True)
     if view == "walkthrough":
         if "cb_step" not in st.session_state:
             st.session_state["cb_step"] = 1
@@ -210,7 +211,7 @@ def render_case(case_id: str):
         def _render_step_tile(inner_md: str):
             st.markdown(
                 f"""
-                <div class="listbox">
+                <div class="listbox walkthrough-tile">
                 {inner_md}
                 </div>
                 """,
