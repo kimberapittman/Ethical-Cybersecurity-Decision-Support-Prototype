@@ -343,11 +343,6 @@ def render_case(case_id: str):
                 st.session_state["cb_step"] = max(1, step - 1)
                 _safe_rerun()
 
-        with col_exit:
-            if st.button("Exit Walkthrough", key=f"cb_exit_walkthrough_{case_id}", use_container_width=True):
-                st.session_state["cb_view"] = "select"
-                _safe_rerun()
-
         with col_next:
             if step < 9:
                 if st.button(
