@@ -195,6 +195,32 @@ div[data-testid="stButton"] > button{
   width: 100% !important;
 }
 
+/* ---------------------------------
+   NAV: responsive behavior
+---------------------------------- */
+
+/* Default (desktop/tablet): stretch nav buttons in their columns */
+div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
+div[data-testid="stButton"] > button{
+  width: 100% !important;
+}
+
+/* On smaller screens: stop stretching buttons (prevents text wrapping weirdness) */
+@media (max-width: 720px){
+  div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
+  div[data-testid="stButton"] > button{
+    width: auto !important;       /* let it fit text */
+    min-width: unset !important;
+  }
+
+  /* Also prevent your End-of-case pill from becoming a vertical column */
+  div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor) .endcase-btn{
+    width: auto !important;
+    display: inline-block !important;
+    white-space: nowrap !important;
+    padding: 0.7rem 1rem !important;
+  }
+}
 
 /* Back to Mode Selection — size to text cleanly */
 div[data-testid="stButton"] > button[kind="secondary"]{
@@ -676,32 +702,34 @@ def render_app_header(compact: bool = False):
         st.session_state.get("active_mode") == "Case-Based"
         and st.session_state.get("cb_view") == "select"
     )
+
     in_case_walkthrough = (st.session_state.get("cb_view") == "walkthrough")
     in_open_ended = (st.session_state.get("active_mode") == "Open-Ended")
 
     if show_back and (in_case_select or in_case_walkthrough or in_open_ended):
-        col_left, col_spacer = st.columns([1, 6])
-        with col_left:
 
-            # Case-Based walkthrough -> back to Case Selection
-            if in_case_walkthrough:
-                if st.button("← Back to Case Selection", key="back_to_cases", type="secondary"):
-                    st.session_state["cb_view"] = "select"
-                    st.session_state.pop("cb_step", None)
-                    st.session_state.pop("cb_step_return", None)
-                    st.rerun()
+        # anchor for CSS scoping (important)
+        st.markdown('<div class="header-nav-anchor"></div>', unsafe_allow_html=True)
 
-            # Case Selection or Open-Ended -> back to Mode Selection
-            else:
-                if st.button("← Back to Mode Selection", key="back_to_modes", type="secondary"):
-                    st.session_state["landing_complete"] = False
-                    st.session_state.pop("cb_view", None)
-                    st.session_state.pop("cb_case_id", None)
-                    st.session_state.pop("cb_prev_case_id", None)
-                    st.session_state.pop("cb_step", None)
-                    st.session_state.pop("cb_step_return", None)
-                    st.session_state.pop("oe_step", None)
-                    st.rerun()
+        # Case-Based walkthrough → back to Case Selection
+        if in_case_walkthrough:
+            if st.button("← Back to Case Selection", key="back_to_cases", type="secondary"):
+                st.session_state["cb_view"] = "select"
+                st.session_state.pop("cb_step", None)
+                st.session_state.pop("cb_step_return", None)
+                st.rerun()
+
+        # Case Selection or Open-Ended → back to Mode Selection
+        else:
+            if st.button("← Back to Mode Selection", key="back_to_modes", type="secondary"):
+                st.session_state["landing_complete"] = False
+                st.session_state.pop("cb_view", None)
+                st.session_state.pop("cb_case_id", None)
+                st.session_state.pop("cb_prev_case_id", None)
+                st.session_state.pop("cb_step", None)
+                st.session_state.pop("cb_step_return", None)
+                st.session_state.pop("oe_step", None)
+                st.rerun()
 
 
     # --- Header title ---

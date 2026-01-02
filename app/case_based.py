@@ -349,7 +349,7 @@ def render_case(case_id: str):
 
         with col_mid:
             if step == 9:
-                st.markdown('<div class="endcase-btn">End of Case.</div>', unsafe_allow_html=True)
+                st.markdown('<div class="endcase-btn">End of Case</div>', unsafe_allow_html=True)
 
         with col_next:
             if step < 9 and st.button("Next ▶", key=f"cbnav_next_{case_id}_{step}", use_container_width=True):
