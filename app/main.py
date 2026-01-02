@@ -793,24 +793,26 @@ def _render_landing_page():
                         About Case-Based Mode
                       </summary>
 
-                      <div class="mode-detail-text">
-                        Uses reconstructed municipal cybersecurity cases to demonstrate how the decision-support prototype structures ethical reasoning and technical decision-making across an entire decision process.
-                      </div>
+                      <div class="details-body">
+                        <div class="mode-detail-text">
+                          Uses reconstructed municipal cybersecurity cases to demonstrate how the decision-support prototype structures ethical reasoning and technical decision-making across an entire decision process.
+                        </div>
 
-                      <ul class="tight-list">
-                        <li>Pre-structured cases reconstructed from documented municipal incidents</li>
-                        <li>Walks through defined decision points and ethical triggers</li>
-                        <li>Shows how CSF procedural logic and PFCE reasoning are applied in practice</li>
-                        <li>Establishes a shared reference point for how the prototype is intended to be used</li>
-                      </ul>
+                        <ul class="tight-list">
+                          <li>Pre-structured cases reconstructed from documented municipal incidents</li>
+                          <li>Walks through defined decision points and ethical triggers</li>
+                          <li>Shows how CSF procedural logic and PFCE reasoning are applied in practice</li>
+                          <li>Establishes a shared reference point for how the prototype is intended to be used</li>
+                        </ul>
+                      </div>
                     </details>
 
-                  </div>
-                </a>
-                """
-            ),
-            unsafe_allow_html=True,
-        )
+                    </div>
+                  </a>
+                  """
+              ),
+              unsafe_allow_html=True,
+          )
 
     with col2:
         st.markdown(
