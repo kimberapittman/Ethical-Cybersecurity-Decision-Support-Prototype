@@ -456,6 +456,7 @@ def html_block(s: str) -> str:
 
 
 def _open_sidebar_once():
+    # Only try once per browser session (Streamlit session_state)
     if st.session_state.get("_sidebar_opened_once", False):
         return
     st.session_state["_sidebar_opened_once"] = True
@@ -466,16 +467,26 @@ def _open_sidebar_once():
         (function () {
           const doc = window.parent.document;
 
-          function findExpandButton() {
-            // When sidebar is collapsed, Streamlit usually shows this control.
-            // We try several common selectors across versions.
+          function isCollapsed(sidebarEl) {
+            if (!sidebarEl) return false;
+            const w = sidebarEl.getBoundingClientRect().width;
+            // When collapsed, sidebar width is usually very small (often < ~80px)
+            return w < 120;
+          }
+
+          function findToggleButton() {
+            // Try multiple selectors (Streamlit changes these)
             const selectors = [
               'button[data-testid="collapsedControl"]',
               'button[aria-label="Expand sidebar"]',
-              'button[aria-label="Open sidebar"]',
+              'button[aria-label="Collapse sidebar"]',
               'button[title="Expand sidebar"]',
-              'button[title="Open sidebar"]',
+              'button[title="Collapse sidebar"]',
+              // Fallback: any header button with "sidebar" in aria-label/title
+              'button[aria-label*="sidebar"]',
+              'button[title*="sidebar"]'
             ];
+
             for (const sel of selectors) {
               const btn = doc.querySelector(sel);
               if (btn) return btn;
@@ -484,17 +495,17 @@ def _open_sidebar_once():
           }
 
           function tryOpen(attempt) {
-            const btn = findExpandButton();
+            const sidebar = doc.querySelector('section[data-testid="stSidebar"]');
+            const toggle = findToggleButton();
 
-            // If we can see the expand button, sidebar is collapsed -> click it.
-            if (btn) {
-              btn.click();
+            if (sidebar && toggle && isCollapsed(sidebar)) {
+              toggle.click();
               return;
             }
 
-            // Retry while Streamlit finishes rendering
-            if (attempt < 40) {
-              setTimeout(() => tryOpen(attempt + 1), 125);
+            // Retry while Streamlit finishes layout
+            if (attempt < 20) {
+              setTimeout(() => tryOpen(attempt + 1), 120);
             }
           }
 
