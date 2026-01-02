@@ -240,41 +240,6 @@ div[data-testid="stVerticalBlock"]:has(.step-tile-anchor){
   margin: 8px 0 8px;
 }
 
-/* =========================
-   DISCLAIMER FOOTER
-   ========================= */
-
-#global-disclaimer-fixed{
-  position: fixed !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 12px !important;
-  z-index: 999999 !important;
-  pointer-events: none !important;
-  display: flex !important;
-  justify-content: center !important;
-}
-
-#global-disclaimer-fixed .inner{
-  pointer-events: auto !important;
-  width: min(1100px, calc(100% - 48px)) !important;
-
-  background: rgba(255,255,255,0.035) !important;
-  border: 1px solid rgba(255,255,255,0.10) !important;
-  border-radius: 12px !important;
-  padding: 10px 14px !important;
-
-  text-align: center !important;
-  color: rgba(229,231,235,0.75) !important;
-  box-shadow: 0 10px 24px rgba(0,0,0,0.25) !important;
-}
-
-@media (max-width: 900px){
-  #global-disclaimer-fixed .inner{
-    width: calc(100% - 24px) !important;
-  }
-}
-
 
 /* === Hide Streamlit chrome === */
 header[data-testid="stHeader"]{ background: transparent; }
@@ -293,6 +258,36 @@ div[data-testid="stMarkdownContainer"] h6 a{
 button[aria-label*="Copy link"],
 button[title*="Copy link"]{
   display: none !important;
+}
+
+/* =========================
+   MAKE MAIN AREA A FULL-HEIGHT FLEX COLUMN
+   (lets footer sit at bottom when content is short)
+   ========================= */
+
+section[data-testid="stMain"]{
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+div[data-testid="stMainBlockContainer"]{
+  flex: 1 1 auto !important;
+  min-height: 100vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Footer disclaimer that visually separates from tiles and sits at bottom */
+.disclaimer-footer{
+  margin-top: auto !important;   /* KEY: pushes it to the bottom */
+  margin-bottom: 14px !important;
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.25);
+  border-radius: 14px;
+  padding: 12px 16px;
+  text-align: center;
+  color: rgba(229,231,235,0.85);
 }
 </style>
 """,
@@ -332,60 +327,11 @@ def _open_sidebar_once():
 def render_disclaimer_footer(pinned: bool = False):
     txt = "This prototype is designed for research and demonstration purposes and is not intended for operational deployment"
 
-    if not pinned:
-        st.markdown(
-            f"""
-            <div class="disclaimer-inline">
-              {html.escape(txt)}
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-        return
-
     st.markdown(
         f"""
-        <script>
-        (function() {{
-          const doc = window.parent && window.parent.document ? window.parent.document : document;
-
-          // Remove existing (avoid duplicates)
-          const existing = doc.getElementById("global-disclaimer-fixed");
-          if (existing) existing.remove();
-
-          // Create footer
-          const wrap = doc.createElement("div");
-          wrap.id = "global-disclaimer-fixed";
-          wrap.style.position = "fixed";
-          wrap.style.left = "0";
-          wrap.style.right = "0";
-          wrap.style.bottom = "12px";
-          wrap.style.zIndex = "999999";
-          wrap.style.pointerEvents = "none";
-          wrap.style.display = "flex";
-          wrap.style.justifyContent = "center";
-
-          const inner = doc.createElement("div");
-          inner.className = "inner";
-          inner.style.pointerEvents = "auto";
-          inner.style.width = "min(1100px, calc(100% - 48px))";
-          inner.style.background = "rgba(255,255,255,0.035)";
-          inner.style.border = "1px solid rgba(255,255,255,0.10)";
-          inner.style.borderRadius = "12px";
-          inner.style.padding = "10px 14px";
-          inner.style.textAlign = "center";
-          inner.style.color = "rgba(229,231,235,0.75)";
-          inner.style.boxShadow = "0 10px 24px rgba(0,0,0,0.25)";
-          inner.textContent = "{html.escape(txt)}";
-
-          wrap.appendChild(inner);
-          doc.body.appendChild(wrap);
-
-          // Debug: log + also set a flag you can verify in console
-          doc.body.dataset.disclaimerInjected = "true";
-          console.log("✅ Disclaimer injected into", doc === document ? "document" : "parent.document");
-        }})();
-        </script>
+        <div class="disclaimer-footer">
+          {html.escape(txt)}
+        </div>
         """,
         unsafe_allow_html=True,
     )
