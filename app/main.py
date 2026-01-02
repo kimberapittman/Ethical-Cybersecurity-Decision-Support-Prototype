@@ -699,53 +699,6 @@ def main():
     if mode == "Case-Based" and "cb_view" not in st.session_state:
         st.session_state["cb_view"] = "select"
 
-    cb_view = st.session_state.get("cb_view", "collapsed")
-
-    if mode == "Case-Based" and cb_view == "collapsed":
-        st.markdown(
-            "<h2 style='text-align: center; margin-top: 0.25rem;'>Case-Based Mode</h2>",
-            unsafe_allow_html=True,
-        )
-    elif mode != "Case-Based":
-        st.markdown(
-            "<h2 style='text-align: center; margin-top: 0.25rem;'>Open-Ended Mode</h2>",
-            unsafe_allow_html=True,
-        )
-
-    # ---------- CASE SELECTOR (Case-Based Only) ----------
-    if mode == "Case-Based" and cb_view == "collapsed":
-        cases = list_cases()
-
-        if not cases:
-            st.error("No cases found in data/cases.")
-        else:
-            case_titles = [c.get("ui_title", c["title"]) for c in cases]
-
-            if "cb_case_title" not in st.session_state:
-                st.session_state["cb_case_title"] = case_titles[0]
-
-            if "cb_case_id" not in st.session_state:
-                first = next(c for c in cases if c["title"] == st.session_state["cb_case_title"])
-                st.session_state["cb_case_id"] = first["id"]
-
-            def _on_case_change():
-                new_title = st.session_state["cb_case_title"]
-                new_case = next(c for c in cases if c["title"] == new_title)
-
-                st.session_state["cb_case_id"] = new_case["id"]
-                st.session_state["cb_step"] = 1
-                st.session_state["cb_prev_case_id"] = new_case["id"]
-                st.session_state["cb_view"] = "walkthrough"
-
-            st.markdown("### Select A Case")
-            st.selectbox(
-                "Case selection",
-                options=case_titles,
-                key="cb_case_title",
-                label_visibility="collapsed",
-                on_change=_on_case_change,
-            )
-
     # ---------- ROUTING ----------
     if mode == "Case-Based":
         case_based.render_case(st.session_state.get("cb_case_id"))
@@ -753,12 +706,12 @@ def main():
         open_ended.render_open_ended()
 
     # ---------- DISCLAIMER (ONLY ON SELECTION SCREENS) ----------
-    show_on_case_select = (
-        st.session_state.get("active_mode") == "Case-Based"
-        and st.session_state.get("cb_view") == "select"
+    show_disclaimer = (
+        (not st.session_state.get("landing_complete", False)) or
+        (st.session_state.get("active_mode") == "Case-Based" and st.session_state.get("cb_view") == "select")
     )
 
-    if show_on_case_select:
+    if show_disclaimer:
         render_disclaimer_footer()
 
 
