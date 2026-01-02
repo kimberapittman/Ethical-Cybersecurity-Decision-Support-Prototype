@@ -539,6 +539,11 @@ div[data-testid="stMainBlockContainer"]{
   border-color: rgba(255,255,255,0.10) !important;   /* normal */
   box-shadow: 0 10px 24px rgba(0,0,0,0.25) !important; /* normal */
 }
+
+/* Optional polish: soften walkthrough tiles slightly */
+.listbox.walkthrough-tile{
+  box-shadow: 0 8px 18px rgba(0,0,0,0.22) !important;
+}
 </style>
 """,
     unsafe_allow_html=True,
