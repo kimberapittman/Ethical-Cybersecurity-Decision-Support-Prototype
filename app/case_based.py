@@ -335,26 +335,23 @@ def render_case(case_id: str):
             _render_step_tile(inner)
 
 
-        # Navigation controls
-        col_spacer_l, col_prev, col_center, col_next, col_spacer_r = st.columns([0.6, 1.4, 2, 1.4, 0.6])
+        # Navigation row (symmetrical inset)
+        sp_l, col_prev, col_mid, col_next, sp_r = st.columns([1, 2, 6, 2, 1], gap="large")
 
         with col_prev:
             if step > 1 and st.button("◀ Previous", key=f"cb_prev_{step}_{case_id}", use_container_width=True):
                 st.session_state["cb_step"] = max(1, step - 1)
                 _safe_rerun()
 
-        with col_center:
-            if step == 9:
-                st.markdown(
-                    '<div class="endcase-btn">End of Case.</div>',
-                    unsafe_allow_html=True,
-                )
-
         with col_next:
-            if step < 9:
-                if st.button("Next ▶", key=f"cb_next_{step}_{case_id}", use_container_width=True):
-                    st.session_state["cb_step"] = min(9, step + 1)
-                    _safe_rerun()
+            if step < 9 and st.button("Next ▶", key=f"cb_next_{step}_{case_id}", use_container_width=True):
+                st.session_state["cb_step"] = min(9, step + 1)
+                _safe_rerun()
+
+        with col_mid:
+            if step == 9:
+                st.markdown('<div class="endcase-btn">End of Case.</div>', unsafe_allow_html=True)
+
 
 
 

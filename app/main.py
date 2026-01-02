@@ -455,6 +455,50 @@ def html_block(s: str) -> str:
     return "\n".join(line.lstrip() for line in textwrap.dedent(s).splitlines())
 
 
+def _open_sidebar_once():
+    if st.session_state.get("_sidebar_opened_once", False):
+        return
+    st.session_state["_sidebar_opened_once"] = True
+
+    st.markdown(
+        """
+        <script>
+        (function () {
+          const doc = window.parent.document;
+
+          function isCollapsed(sidebarEl) {
+            if (!sidebarEl) return false;
+            const w = sidebarEl.getBoundingClientRect().width;
+            // When collapsed, sidebar width is typically very small (often 0–60px)
+            return w < 80;
+          }
+
+          function tryOpen(attempt) {
+            const sidebar = doc.querySelector('section[data-testid="stSidebar"]');
+            const toggle = doc.querySelector('button[data-testid="collapsedControl"]');
+
+            // Only click if:
+            // 1) the toggle exists AND
+            // 2) the sidebar is currently collapsed (narrow)
+            if (toggle && isCollapsed(sidebar)) {
+              toggle.click();
+              return;
+            }
+
+            // Retry a few times while Streamlit finishes layout
+            if (attempt < 10) {
+              setTimeout(() => tryOpen(attempt + 1), 120);
+            }
+          }
+
+          tryOpen(0);
+        })();
+        </script>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 def render_disclaimer_footer():
     txt = "This prototype is designed for research and demonstration purposes and is not intended for operational deployment"
 
@@ -687,6 +731,7 @@ def main():
     if st.session_state.get("active_mode") == "Case-Based" and "cb_view" not in st.session_state:
         st.session_state["cb_view"] = "select"
 
+    _open_sidebar_once()
 
     # ---------- URL PARAM MODE ENTRY (tile click) ----------
     try:
