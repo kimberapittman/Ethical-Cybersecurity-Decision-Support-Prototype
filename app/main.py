@@ -343,22 +343,47 @@ def render_disclaimer_footer(pinned: bool = False):
         )
         return
 
-    # Pinned: inject into the *parent document body* so it is truly viewport-fixed.
     st.markdown(
         f"""
         <script>
         (function() {{
-          const doc = window.parent.document;
+          const doc = window.parent && window.parent.document ? window.parent.document : document;
 
-          // Remove any existing footer (prevents duplicates after reruns)
+          // Remove existing (avoid duplicates)
           const existing = doc.getElementById("global-disclaimer-fixed");
           if (existing) existing.remove();
 
           // Create footer
           const wrap = doc.createElement("div");
           wrap.id = "global-disclaimer-fixed";
-          wrap.innerHTML = `<div class="inner">{html.escape(txt)}</div>`;
+          wrap.style.position = "fixed";
+          wrap.style.left = "0";
+          wrap.style.right = "0";
+          wrap.style.bottom = "12px";
+          wrap.style.zIndex = "999999";
+          wrap.style.pointerEvents = "none";
+          wrap.style.display = "flex";
+          wrap.style.justifyContent = "center";
+
+          const inner = doc.createElement("div");
+          inner.className = "inner";
+          inner.style.pointerEvents = "auto";
+          inner.style.width = "min(1100px, calc(100% - 48px))";
+          inner.style.background = "rgba(255,255,255,0.035)";
+          inner.style.border = "1px solid rgba(255,255,255,0.10)";
+          inner.style.borderRadius = "12px";
+          inner.style.padding = "10px 14px";
+          inner.style.textAlign = "center";
+          inner.style.color = "rgba(229,231,235,0.75)";
+          inner.style.boxShadow = "0 10px 24px rgba(0,0,0,0.25)";
+          inner.textContent = "{html.escape(txt)}";
+
+          wrap.appendChild(inner);
           doc.body.appendChild(wrap);
+
+          // Debug: log + also set a flag you can verify in console
+          doc.body.dataset.disclaimerInjected = "true";
+          console.log("✅ Disclaimer injected into", doc === document ? "document" : "parent.document");
         }})();
         </script>
         """,
