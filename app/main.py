@@ -372,14 +372,29 @@ div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
   margin: 10px 0 10px 0 !important;
 }
 
-/* =========================
-   Mode tiles: hook ↔ details spacing (MATCH title ↔ hook)
-   ========================= */
-
-/* Remove browser default spacing on details */
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
-.listbox.tile-card.mode-tile details{
-  margin: 0 !important;
+.listbox.tile-card.mode-tile details .details-body{
+  margin-top: 10px !important;
+  padding: 12px 12px !important;
+  background: rgba(255,255,255,0.03) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  border-radius: 12px !important;
+}
+
+/* Mode tiles: visually connect summary and expanded panel */
+div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
+.listbox.tile-card.mode-tile details .details-body{
+  margin-top: 6px !important;      /* tighten gap so it doesn't read as a new tile */
+  border-top: 0 !important;        /* remove duplicate border between summary + panel */
+  border-top-left-radius: 10px !important;
+  border-top-right-radius: 10px !important;
+}
+
+/* When open, soften summary bottom corners so it flows into the panel */
+div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
+details[open] > summary{
+  border-bottom-left-radius: 10px !important;
+  border-bottom-right-radius: 10px !important;
 }
 
 /* =========================
@@ -832,16 +847,18 @@ def _render_landing_page():
                         About Open-Ended Mode
                       </summary>
 
-                      <div class="mode-detail-text">
-                        Provides a structured walkthrough for analyzing the ethical significance of a user-defined cybersecurity decision, without prescribing outcomes.
-                      </div>
+                      <div class="details-body">
+                        <div class="mode-detail-text">
+                          Provides a structured walkthrough for analyzing the ethical significance of a user-defined cybersecurity decision, without prescribing outcomes.
+                        </div>
 
-                      <ul class="tight-list">
-                        <li>User-defined decision context</li>
-                        <li>Supports identification of ethical significance and competing obligations</li>
-                        <li>Structures reasoning using CSF procedural context and PFCE principles</li>
-                        <li>Documents ethical reasoning to support transparency and defensibility</li>
-                      </ul>
+                        <ul class="tight-list">
+                          <li>User-defined decision context</li>
+                          <li>Supports identification of ethical significance and competing obligations</li>
+                          <li>Structures reasoning using CSF procedural context and PFCE principles</li>
+                          <li>Documents ethical reasoning to support transparency and defensibility</li>
+                        </ul>
+                      </div>
                     </details>
 
                   </div>
