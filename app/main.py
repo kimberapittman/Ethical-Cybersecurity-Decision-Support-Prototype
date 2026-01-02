@@ -196,34 +196,72 @@ div[data-testid="stButton"] > button{
 
 /* ---------------------------------
    NAV FIX (small screens)
-   - Keep buttons readable
-   - Keep End-of-case horizontal
-   - Don’t let columns collapse into skinny strips
+   Keep single-row nav without vertical-letter stacking:
+   - collapse spacer columns
+   - enforce min widths for prev/mid/next
+   - allow horizontal scroll instead of squeezing
 ---------------------------------- */
 @media (max-width: 720px){
 
-  /* Force the nav row to maintain usable column widths */
+  /* Target the nav row that contains your 5 columns */
   div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
   div[data-testid="stHorizontalBlock"]{
-    width: 100% !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 16px !important;
+    padding-bottom: 6px !important; /* room for scroll bar on some devices */
   }
 
-  /* The *column* wrapper in Streamlit can shrink too far; stop that */
+  /* Make each column behave like a flex item we can size */
   div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
   div[data-testid="column"]{
+    flex: 0 0 auto !important;
     min-width: 0 !important;
   }
 
-  /* Previous/Next: fill their column width cleanly (no cramped pill) */
+  /* Collapse the spacer columns (1st and 5th) so they stop squeezing the real content */
+  div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
+  div[data-testid="column"]:nth-child(1),
+  div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
+  div[data-testid="column"]:nth-child(5){
+    flex: 0 0 0px !important;
+    width: 0px !important;
+    min-width: 0px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Force usable widths for the actual nav columns */
+  /* 2nd = Previous */
+  div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
+  div[data-testid="column"]:nth-child(2){
+    min-width: 150px !important;
+  }
+
+  /* 3rd = End-of-case */
+  div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
+  div[data-testid="column"]:nth-child(3){
+    min-width: 180px !important;
+  }
+
+  /* 4th = Next */
+  div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
+  div[data-testid="column"]:nth-child(4){
+    min-width: 150px !important;
+  }
+
+  /* Ensure buttons/pill fill their column width cleanly */
   div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
   div[data-testid="stButton"] > button{
     width: 100% !important;
-    min-width: 100% !important;     /* override any earlier “auto” experiments */
+    min-width: 100% !important;
     display: inline-flex !important;
     justify-content: center !important;
   }
 
-  /* End-of-case: behave like a button and stay one line (no vertical letters) */
+  /* Keep End-of-case on one line (no vertical letters) */
   div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor) .endcase-btn{
     width: 100% !important;
     display: inline-flex !important;
