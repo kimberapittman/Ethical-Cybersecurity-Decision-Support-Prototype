@@ -1,7 +1,6 @@
 import streamlit as st
 from logic.loaders import load_case, list_cases
 import html
-import textwrap
 
 def _safe_rerun():
     try:
@@ -11,22 +10,6 @@ def _safe_rerun():
             st.experimental_rerun()
     except Exception:
         pass
-
-def _render_bullets(value):
-    """
-    Render a YAML value as bullets if it's a list,
-    otherwise render as plain text.
-    """
-    if value is None:
-        st.write("TBD")
-    elif isinstance(value, list):
-        if not value:
-            st.write("TBD")
-        else:
-            for item in value:
-                st.markdown(f"- {item}")
-    else:
-        st.write(value)
 
 
 PFCE_DEFINITIONS = {
@@ -59,6 +42,7 @@ PFCE_DEFINITIONS = {
 NIST_CSF_URL = "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf"
 PFCE_URL = "https://doi.org/10.1016/j.cose.2021.102382"
 
+
 NIST_CSF_HOVER = (
     "National Institute of Standards and Technology (NIST) Cybersecurity Framework (CSF): "
     "A voluntary framework that provides a common structure for identifying, assessing, and "
@@ -72,78 +56,16 @@ PFCE_HOVER = (
     "ethically relevant principles and tensions within cybersecurity decision contexts."
 )
 
-
-def _step_title_with_framework(step_num: int, title: str, acronym: str, hover: str, url: str):
-    """
-    Render a step title where the framework acronym inside the title is:
-    - bold
-    - underlined to signal hover
-    - shows a tooltip on hover
-    - links out to the reference
-
-    IMPORTANT: `title` should contain `acronym` somewhere (e.g., "NIST CSF Mapping").
-    """
-    tooltip_link = (
-        f'<a href="{html.escape(url)}" target="_blank" style="text-decoration: none;">'
-        f'  <span title="{html.escape(hover)}" '
-        f'        style="font-weight: 800; text-decoration: underline; cursor: help;">'
-        f'    {html.escape(acronym)}'
-        f'  </span>'
-        f'</a>'
-    )
-
-    # Replace only the first occurrence of the acronym in the title
-    safe_title = html.escape(title).replace(html.escape(acronym), tooltip_link, 1)
-
-    st.markdown(
-        f"""
-<h2 style="margin: 0.2rem 0 0.8rem 0;">
-  {step_num}. {safe_title}
-</h2>
-        """,
-        unsafe_allow_html=True,
-    )
-
-
-def _as_text(value) -> str:
-    """
-    Normalize YAML values that may be a string or a list into a display-safe string.
-    - None -> ""
-    - str -> str
-    - list -> first item as str (or "" if empty)
-    - other -> str(value)
-    """
-    if value is None:
-        return ""
-    if isinstance(value, list):
-        return str(value[0]) if value else ""
-    if isinstance(value, str):
-        return value
-    return str(value)
-
-
-def _html_block(s: str) -> str:
-    # Prevent Markdown from treating indented HTML as a code block.
-    return "\n".join(line.lstrip() for line in s.splitlines())
-
-
 CASE_HOOKS = {
     "baltimore": "Preventing harm while sustaining essential public services",
     "sandiego": "Protecting public safety while respecting autonomy and public oversight",
     "riverton": "Delegating control to automated systems without relinquishing human responsibility",
 }
 
+def _html_block(s: str) -> str:
+    # Prevent Markdown from treating indented HTML as a code block.
+    return "\n".join(line.lstrip() for line in s.splitlines())
 
-def _step_tile_open(title: str):
-    st.markdown(
-        f"""
-        <div class="listbox" style="padding: 18px 18px 10px 18px;">
-          <div style="font-weight:800; font-size:1.15rem; margin-bottom:10px; text-align:left;">
-            {html.escape(title)}
-          </div>
-        """,
-        unsafe_allow_html=True,
-    )
 
 def _step_tile_close():
     st.markdown("</div>", unsafe_allow_html=True)
@@ -321,15 +243,15 @@ def render_case(case_id: str):
             inner = f"## 1. Technical and Operational Background\n\n{_bullets_md(case['background'].get('technical_operational_background'))}"
             _render_step_tile(inner)
 
-        if step == 2:
+        elif step == 2:
             inner = f"## 2. Triggering Condition and Key Events\n\n{_bullets_md(case['background'].get('triggering_condition_key_events'))}"
             _render_step_tile(inner)
 
-        if step == 3:
+        elif step == 3:
             inner = f"## 3. Decision Context\n\n{_bullets_md(case['technical'].get('decision_context'))}"
             _render_step_tile(inner)
 
-        if step == 4:
+        elif step == 4:
             mapping = case["technical"].get("nist_csf_mapping", [])
             if mapping:
                 lines = []
@@ -361,16 +283,16 @@ def render_case(case_id: str):
             inner = inner.replace("NIST CSF", tooltip_link, 1)
             _render_step_tile(inner)
 
-        if step == 5:
-            tensions = case["ethical"].get("tension", [])
-            if tensions:
-                tension_md = "\n".join([f"- {t.get('description', 'TBD')}" for t in tensions])
+        elif step == 5:
+            tension = case["ethical"].get("tension", [])
+            if tension:
+                tension_md = "\n".join([f"- {t.get('description', 'TBD')}" for t in tension])
             else:
                 tension_md = "TBD"
             inner = f"## 5. Ethical Tension\n\n{tension_md}"
             _render_step_tile(inner)
 
-        if step == 6:
+        elif step == 6:
             pfce_items = case["ethical"].get("pfce_analysis", [])
 
             # Title with PFCE tooltip/link preserved
@@ -406,7 +328,7 @@ def render_case(case_id: str):
             inner = inner.replace("PFCE", tooltip_link, 1)
             _render_step_tile(inner)
 
-        if step == 7:
+        elif step == 7:
             constraints = case.get("constraints", [])
             if constraints:
                 lines = []
@@ -424,11 +346,11 @@ def render_case(case_id: str):
             inner = f"## 7. Institutional and Governance Constraints\n\n{constraints_md}"
             _render_step_tile(inner)
 
-        if step == 8:
+        elif step == 8:
             inner = f"## 8. Decision\n\n{_bullets_md(case['decision_outcome'].get('decision'))}"
             _render_step_tile(inner)
 
-        if step == 9:
+        elif step == 9:
             inner = f"## 9. Outcomes and Implications\n\n{_bullets_md(case['decision_outcome'].get('outcomes_implications'))}"
             _render_step_tile(inner)
 
