@@ -327,49 +327,40 @@ label, .stRadio, .stSelectbox, .stMultiSelect, .stExpander{
   transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease, background 0.12s ease;
 }
 .listbox, .listbox *{ color: var(--text-strong) !important; }
-.section-note, .sub{ color: var(--text-muted) !important; }
+section-note, .tile-hook { color: var(--text-muted) !important; }
 
 /* =========================
-   Select-a-Case tile spacing (FINAL)
+   Select-a-Case tile spacing (DETERMINISTIC)
    ========================= */
 /* Tile padding: top and bottom must match */
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
-.listbox{
-  padding: 20px 20px !important;   /* top/bottom symmetry */
+.listbox.case-tile{
+  padding: 30px 30px !important;   /* top/bottom symmetry */
 }
 
 /* Badge → title spacing */
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
-.case-badge-wrap{
+.listbox.case-tile .case-badge-wrap{
   margin: 0 0 20px 0 !important;
 }
 
-/* Title → hook spacing */
+/* Title styling + Title → hook spacing */
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
-.listbox > div[style*="font-weight:700"]{
-  margin: 0 0 20px 0 !important;
+.listbox.case-tile .tile-title{
+  font-weight: 700 !important;
+  font-size: 1.05rem !important;
+  text-align: center !important;
+  margin: 0 0 20px 0 !important;   /* THIS is the consistent title→hook gap */
   line-height: 1.45 !important;
 }
 
-/* Hook → bottom of tile (NO margin; padding handles this) */
+/* Hook styling; Hook → bottom spacing comes ONLY from tile padding */
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
-.listbox .sub{
+.listbox.case-tile .tile-hook{
+  text-align: center !important;
+  font-size: 0.95rem !important;
   margin: 0 !important;
   line-height: 1.45 !important;
-}
-
-/* Kill Streamlit/Markdown default paragraph spacing inside the hook (case tiles only) */
-div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
-.listbox .sub p{
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-/* If Streamlit wraps the hook in spans/markdown containers, force them tight too */
-div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
-.listbox .sub > div{
-  margin: 0 !important;
-  padding: 0 !important;
 }
 
 /* Click affordances */

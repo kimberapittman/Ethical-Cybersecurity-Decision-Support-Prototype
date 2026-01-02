@@ -139,15 +139,11 @@ def render_case(case_id: str):
                         f"""
                         <a href="?cb_case_id={html.escape(str(cid))}" target="_self"
                         style="text-decoration:none; color: inherit; display:block;">
-                        <div class="listbox" style="cursor:pointer;">
+                        <div class="listbox case-tile" style="cursor:pointer;">
                             {badge_html}
-                            <div style="font-weight:700; font-size:1.05rem; margin-bottom:6px; text-align:center;">
-                            {html.escape(title)}
-                            </div>
+                            <div class="tile-title">{html.escape(title)}</div>
                             {(
-                                '<div class="sub" style="text-align:center; margin-top:6px; font-size:0.95rem; line-height:1.25;">'
-                                + html.escape(hook)
-                                + '</div>'
+                                '<div class="tile-hook">' + html.escape(hook) + '</div>'
                             ) if hook else ""}
                         </div>
                         </a>
