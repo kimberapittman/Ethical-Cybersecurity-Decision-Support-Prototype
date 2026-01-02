@@ -69,6 +69,54 @@ section[data-testid="stSidebar"] span{
   white-space: normal !important;
 }
 
+/* Make the wrapper invisible (prevents the "card" look) */
+.sb-details{
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+  margin: 0 0 10px 0;
+}
+
+/* Sidebar details wrapper (replaces st.expander) */
+.sb-details > summary{
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)) !important;
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 12px;
+  padding: 10px 12px;
+  color: var(--text-strong);
+  cursor: pointer;
+}
+
+/* Inner body spacing */
+.sb-details-body{
+  padding: 10px 6px 0 6px;
+}
+
+/* Sidebar chevron */
+.sb-details > summary::-webkit-details-marker{ display:none !important; }
+.sb-details > summary::marker{ content:"" !important; }
+
+.sb-details > summary{
+  list-style:none !important;
+  display:flex !important;
+  align-items:center !important;
+  gap:10px !important;
+}
+
+.sb-details > summary::before{
+  content:"›";
+  font-size:1.05rem;
+  line-height:1;
+  opacity:0.65;
+  transition: transform 0.12s ease;
+}
+
+.sb-details[open] > summary::before{
+  transform: rotate(90deg);
+}
+
 /* === Header container === */
 .block-container > div:first-child{
   backdrop-filter: blur(6px);
@@ -199,23 +247,26 @@ details > summary{
 }
 
 /* =========================
-   MATCH <details> ARROWS TO STREAMLIT EXPANDER CHEVRONS
+   DETAILS CHEVRON — LANDING MODE TILES
    ========================= */
 
-/* Remove the browser default triangle */
-.mode-tiles details > summary::marker { content: ""; }
-.mode-tiles details > summary::-webkit-details-marker { display: none; }
+div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details > summary::-webkit-details-marker {
+  display: none !important;
+}
+div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details > summary::marker {
+  content: "" !important;
+}
 
-/* Build a chevron we control */
-.mode-tiles details > summary{
+/* make summary behave like a Streamlit expander row */
+div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details > summary{
   list-style: none !important;
   display: flex !important;
   align-items: center !important;
   gap: 10px !important;
 }
 
-/* Chevron icon (closed) */
-.mode-tiles details > summary::before{
+/* chevron (closed) */
+div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details > summary::before{
   content: "›";
   display: inline-block;
   font-size: 1.2rem;
@@ -225,8 +276,43 @@ details > summary{
   opacity: 0.85;
 }
 
-/* Chevron icon (open) */
-.mode-tiles details[open] > summary::before{
+/* chevron (open) */
+div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details[open] > summary::before{
+  transform: rotate(90deg);
+}
+
+/* =========================
+   DETAILS CHEVRON — CASE MODE TILES
+   ========================= */
+
+div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details > summary::-webkit-details-marker {
+  display: none !important;
+}
+div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details > summary::marker {
+  content: "" !important;
+}
+
+/* make summary behave like a Streamlit expander row */
+div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details > summary{
+  list-style: none !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+/* chevron (closed) */
+div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details > summary::before{
+  content: "›";
+  display: inline-block;
+  font-size: 1.2rem;
+  line-height: 1;
+  transform: rotate(0deg);
+  transition: transform 0.12s ease;
+  opacity: 0.85;
+}
+
+/* chevron (open) */
+div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details[open] > summary::before{
   transform: rotate(90deg);
 }
 
@@ -624,88 +710,122 @@ def main():
         pass
 
     # ---------- SIDEBAR (ALWAYS) ----------
+    import textwrap
+
+    def html_block(s: str) -> str:
+        return "\n".join(line.lstrip() for line in textwrap.dedent(s).splitlines())
+
     with st.sidebar:
         st.markdown("---")
         st.markdown(
             "<h3 style='margin:0 0 0.5rem 0; font-weight:700;'>Prototype Overview</h3>",
             unsafe_allow_html=True,
         )
-        with st.expander("ℹ️ About This Prototype"):
-            st.markdown(
+
+        st.markdown(
+            html_block(
                 """
-        <span style="font-weight:700; border-bottom:2px solid rgba(255,255,255,0.6); padding-bottom:2px;">
-        What It Is
-        </span>
+                <details class="sb-details">
+                  <summary>ℹ️ About This Prototype</summary>
+                  <div class="sb-details-body">
 
-        - A decision-support prototype designed to help municipal cybersecurity practitioners surface and reason through ethical tensions that may arise within cybersecurity decision-making  
-        - Focused on structuring ethical and technical reasoning, not prescribing actions or determining outcomes  
+                    <span style="font-weight:700; border-bottom:2px solid rgba(255,255,255,0.6); padding-bottom:2px;">
+                    What It Is
+                    </span>
 
-        
-        <span style="font-weight:700; border-bottom:2px solid rgba(255,255,255,0.6); padding-bottom:2px;">
-        How It Works
-        </span>
+                    <ul style="margin: 8px 0 14px 18px; padding: 0;">
+                      <li>A decision-support prototype designed to help municipal cybersecurity practitioners surface and reason through ethical tensions that may arise within cybersecurity decision-making</li>
+                      <li>Focused on structuring ethical and technical reasoning, not prescribing actions or determining outcomes</li>
+                    </ul>
 
-        - Guides practitioners through a structured, step-by-step reasoning walkthrough implemented in two complementary modes:  
+                    <span style="font-weight:700; border-bottom:2px solid rgba(255,255,255,0.6); padding-bottom:2px;">
+                    How It Works
+                    </span>
 
-          <strong>Case-Based Mode</strong>  
-          Uses reconstructed municipal cybersecurity cases to demonstrate the walkthrough and illustrate how the prototype was developed through analysis of real-world incidents. 
+                    <ul style="margin: 8px 0 10px 18px; padding: 0;">
+                      <li>Guides practitioners through a structured, step-by-step reasoning walkthrough implemented in two complementary modes:</li>
+                    </ul>
 
-          <strong>Open-Ended Mode</strong>  
-          Applies the same walkthrough to a user-defined cybersecurity decision context and represents the intended use of the prototype.
+                    <div style="margin-left: 18px;">
+                      <strong>Case-Based Mode</strong><br>
+                      Uses reconstructed municipal cybersecurity cases to demonstrate the walkthrough and illustrate how the prototype was developed through analysis of real-world incidents.
+                      <br><br>
+                      <strong>Open-Ended Mode</strong><br>
+                      Applies the same walkthrough to a user-defined cybersecurity decision context and represents the intended use of the prototype.
+                    </div>
 
-        - Across both modes, the walkthrough is structured to surface and document:  
-          - A triggering condition and decision context  
-          - Where the decision sits procedurally within the <strong>NIST Cybersecurity Framework (CSF) 2.0</strong>  
-          - The ethical tension raised by the decision context and how it can be articulated using the <strong>Principlist Framework for Cybersecurity Ethics (PFCE)</strong>  
-          - Institutional and governance constraints that shape feasible response options  
-                """,
-                unsafe_allow_html=True,
-            )
+                    <ul style="margin: 10px 0 0 18px; padding: 0;">
+                      <li>Across both modes, the walkthrough is structured to surface and document:
+                        <ul style="margin: 6px 0 0 18px; padding: 0;">
+                          <li>A triggering condition and decision context</li>
+                          <li>Where the decision sits procedurally within the <strong>NIST Cybersecurity Framework (CSF) 2.0</strong></li>
+                          <li>The ethical tension raised by the decision context and how it can be articulated using the <strong>Principlist Framework for Cybersecurity Ethics (PFCE)</strong></li>
+                          <li>Institutional and governance constraints that shape feasible response options</li>
+                        </ul>
+                      </li>
+                    </ul>
+
+                  </div>
+                </details>
+                """
+            ),
+            unsafe_allow_html=True,
+        )
 
         st.markdown("---")
         st.markdown(
             "<h3 style='margin:0 0 0.5rem 0; font-weight:700;'>Appendix</h3>",
             unsafe_allow_html=True,
         )
-        with st.expander("📚 Framework References"):
-            st.markdown(
+
+        st.markdown(
+            html_block(
                 """
-        <a href="https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf"
-          target="_blank"
-          title="Open the NIST Cybersecurity Framework (CSF) 2.0 (PDF)"
-          style="
-            font-weight:800;
-            color: white;
-            text-decoration-line: underline;
-            text-decoration-color: white;
-            text-decoration-thickness: 2px;
-            text-underline-offset: 4px;
-          ">
-        NIST Cybersecurity Framework (CSF) 2.0
-        </a><br>
-        National Institute of Standards and Technology (2024)
+                <details class="sb-details">
+                  <summary>📚 Framework References</summary>
+                  <div class="sb-details-body">
 
-        <a href="https://doi.org/10.1016/j.cose.2021.102382"
-          target="_blank"
-          title="Open the Principlist Framework for Cybersecurity Ethics journal article"
-          style="
-            font-weight:800;
-            color: white;
-            text-decoration-line: underline;
-            text-decoration-color: white;
-            text-decoration-thickness: 2px;
-            text-underline-offset: 4px;
-          ">
-        Principlist Framework for Cybersecurity Ethics (PFCE)
-        </a><br>
-        Formosa, Paul; Michael Wilson; Deborah Richards (2021)<br>
+                    <a href="https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf"
+                      target="_blank"
+                      title="Open the NIST Cybersecurity Framework (CSF) 2.0 (PDF)"
+                      style="
+                        font-weight:800;
+                        color: white;
+                        text-decoration-line: underline;
+                        text-decoration-color: white;
+                        text-decoration-thickness: 2px;
+                        text-underline-offset: 4px;
+                      ">
+                    NIST Cybersecurity Framework (CSF) 2.0
+                    </a><br>
+                    National Institute of Standards and Technology (2024)
 
-        <em>(Access to the full text may depend on institutional or publisher subscriptions.)</em>
-                """,
-                unsafe_allow_html=True,
-            )
+                    <a href="https://doi.org/10.1016/j.cose.2021.102382"
+                      target="_blank"
+                      title="Open the Principlist Framework for Cybersecurity Ethics journal article"
+                      style="
+                        font-weight:800;
+                        color: white;
+                        text-decoration-line: underline;
+                        text-decoration-color: white;
+                        text-decoration-thickness: 2px;
+                        text-underline-offset: 4px;
+                      ">
+                    Principlist Framework for Cybersecurity Ethics (PFCE)
+                    </a><br>
+                    Formosa, Paul; Michael Wilson; Deborah Richards (2021)<br>
+
+                    <em>(Access to the full text may depend on institutional or publisher subscriptions.)</em>
+
+                  </div>
+                </details>
+                """
+            ),
+            unsafe_allow_html=True,
+        )
 
         st.markdown("---")
+
 
     # ---------- HEADER (ALWAYS) ----------
     in_case_walkthrough = st.session_state.get("cb_view") == "walkthrough"
