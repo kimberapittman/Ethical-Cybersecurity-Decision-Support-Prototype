@@ -330,6 +330,79 @@ label, .stRadio, .stSelectbox, .stMultiSelect, .stExpander{
 section-note, .tile-hook { color: var(--text-muted) !important; }
 
 /* =========================
+   Select-a-Mode tile spacing (match Select-a-Case)
+   ========================= */
+div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
+.listbox.tile-card.mode-tile{
+  padding: 30px 30px !important;  
+}
+
+/* Title → hook spacing (same as case tiles) */
+div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
+.listbox.tile-card.mode-tile .tile-title{
+  font-weight: 700 !important;
+  font-size: 1.05rem !important;
+  text-align: center !important;
+  margin: 0 0 20px 0 !important;
+  line-height: 1.45 !important;
+}
+
+div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
+.listbox.tile-card.mode-tile .tile-hook{
+  text-align: center !important;
+  font-size: 0.95rem !important;
+  margin: 0 0 12px 0 !important;   /* hook → details spacing */
+  line-height: 1.45 !important;
+}
+
+/* Keep details clean and prevent random spacing from default elements */
+div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
+.listbox.tile-card.mode-tile details{
+  margin: 0 !important;
+}
+
+div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
+.listbox.tile-card.mode-tile summary{
+  margin: 0 !important;
+}
+
+/* The paragraph inside details (your explanatory text) */
+div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
+.listbox.tile-card.mode-tile .mode-detail-text{
+  margin: 10px 0 10px 0 !important;
+}
+
+/* Optional: tighten the list */
+div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
+.listbox.tile-card.mode-tile .tight-list{
+  margin: 0 !important;
+  padding-left: 18px !important;
+}
+
+/* =========================
+   Mode tiles: hook ↔ details spacing (MATCH title ↔ hook)
+   ========================= */
+
+/* Remove browser default spacing on details */
+div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
+.listbox.tile-card.mode-tile details{
+  margin: 0 !important;
+}
+
+/* Ensure consistent hook → details spacing */
+div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
+.listbox.tile-card.mode-tile .tile-hook{
+  margin-bottom: 30px !important;   /* SAME as title → hook */
+}
+
+/* Normalize summary so it doesn’t add hidden spacing */
+div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
+.listbox.tile-card.mode-tile summary{
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* =========================
    Select-a-Case tile spacing (DETERMINISTIC)
    ========================= */
 /* Tile padding: top and bottom must match */
@@ -697,29 +770,19 @@ def _render_landing_page():
                 """
                 <a href="?mode=Case-Based&start=walkthrough" target="_self"
                   style="text-decoration:none; color: inherit; display:block;">
-                  <div class="listbox" style="cursor:pointer;">
+                  <div class="listbox tile-card mode-tile" style="cursor:pointer;">
 
-                    <div style="font-weight:700; font-size:1.1rem; margin-bottom:6px; text-align:center;">
-                      Case-Based Mode
-                    </div>
+                    <div class="tile-title">Case-Based Mode</div>
 
-                    <div class="sub" style="text-align:center; margin-bottom:12px;">
-                      <em>Explore the prototype through reconstructed case demonstrations.</em>
-                    </div>
+                    <div class="tile-hook"><em>Explore the prototype through reconstructed case demonstrations.</em></div>
 
                     <!-- Collapsible details (inside tile) -->
-                    <details
-                      style="margin-top: 8px;"
-                      onclick="event.stopPropagation();"
-                    >
-                      <summary
-                        style="user-select:none;"
-                        onclick="event.stopPropagation();"
-                      >
+                    <details onclick="event.stopPropagation();">
+                      <summary style="user-select:none;" onclick="event.stopPropagation();">
                         About Case-Based Mode
                       </summary>
 
-                      <div class="sub" style="margin-top:10px; margin-bottom:10px;">
+                      <div class="mode-detail-text">
                         Uses reconstructed municipal cybersecurity cases to demonstrate how the decision-support prototype structures ethical reasoning and technical decision-making across an entire decision process.
                       </div>
 
@@ -744,29 +807,19 @@ def _render_landing_page():
                 """
                 <a href="?mode=Open-Ended&start=walkthrough" target="_self"
                   style="text-decoration:none; color: inherit; display:block;">
-                  <div class="listbox" style="cursor:pointer;">
+                  <div class="listbox tile-card mode-tile" style="cursor:pointer;">
 
-                    <div style="font-weight:700; font-size:1.1rem; margin-bottom:6px; text-align:center;">
-                      Open-Ended Mode
-                    </div>
+                    <div class="tile-title">Open-Ended Mode</div>
 
-                    <div class="sub" style="text-align:center; margin-bottom:12px;">
-                      <em>Utilize the prototype for a decision context you define.</em>
-                    </div>
+                    <div class="tile-hook"><em>Utilize the prototype for a decision context you define.</em></div>
 
                     <!-- Collapsible details (inside tile) -->
-                    <details
-                      style="margin-top: 8px;"
-                      onclick="event.stopPropagation();"
-                    >
-                      <summary
-                        style="user-select:none;"
-                        onclick="event.stopPropagation();"
-                      >
+                    <details onclick="event.stopPropagation();">
+                      <summary style="user-select:none;" onclick="event.stopPropagation();">
                         About Open-Ended Mode
                       </summary>
 
-                      <div class="sub" style="margin-top:10px; margin-bottom:10px;">
+                      <div class="mode-detail-text">
                         Provides a structured walkthrough for analyzing the ethical significance of a user-defined cybersecurity decision, without prescribing outcomes.
                       </div>
 
