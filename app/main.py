@@ -198,6 +198,38 @@ details > summary{
   color: var(--text-strong);
 }
 
+/* =========================
+   MATCH <details> ARROWS TO STREAMLIT EXPANDER CHEVRONS
+   ========================= */
+
+/* Remove the browser default triangle */
+.mode-tiles details > summary::marker { content: ""; }
+.mode-tiles details > summary::-webkit-details-marker { display: none; }
+
+/* Build a chevron we control */
+.mode-tiles details > summary{
+  list-style: none !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+/* Chevron icon (closed) */
+.mode-tiles details > summary::before{
+  content: "›";
+  display: inline-block;
+  font-size: 1.2rem;
+  line-height: 1;
+  transform: rotate(0deg);
+  transition: transform 0.12s ease;
+  opacity: 0.85;
+}
+
+/* Chevron icon (open) */
+.mode-tiles details[open] > summary::before{
+  transform: rotate(90deg);
+}
+
 /* === Layout: unify Mode + Case tile rows === */
 
 /* Make columns stretch */
@@ -453,14 +485,27 @@ def render_app_header(compact: bool = False):
     if show_back and (in_case_select or in_case_walkthrough or in_open_ended):
         col_left, col_spacer = st.columns([1, 6])
         with col_left:
-            if st.button("← Back to Mode Selection", key="back_to_modes", type="secondary"):
-                st.session_state["landing_complete"] = False
-                st.session_state.pop("cb_view", None)
-                st.session_state.pop("cb_case_id", None)
-                st.session_state.pop("cb_prev_case_id", None)
-                st.session_state.pop("cb_step", None)
-                st.session_state.pop("oe_step", None)
-                st.rerun()
+
+            # Case-Based walkthrough -> back to Case Selection
+            if in_case_walkthrough:
+                if st.button("← Back to Case Selection", key="back_to_cases", type="secondary"):
+                    st.session_state["cb_view"] = "select"
+                    st.session_state.pop("cb_step", None)
+                    st.session_state.pop("cb_step_return", None)
+                    st.rerun()
+
+            # Case Selection or Open-Ended -> back to Mode Selection
+            else:
+                if st.button("← Back to Mode Selection", key="back_to_modes", type="secondary"):
+                    st.session_state["landing_complete"] = False
+                    st.session_state.pop("cb_view", None)
+                    st.session_state.pop("cb_case_id", None)
+                    st.session_state.pop("cb_prev_case_id", None)
+                    st.session_state.pop("cb_step", None)
+                    st.session_state.pop("cb_step_return", None)
+                    st.session_state.pop("oe_step", None)
+                    st.rerun()
+
 
     # --- Header title ---
     if in_case_walkthrough:
