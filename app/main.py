@@ -456,6 +456,7 @@ def html_block(s: str) -> str:
 
 
 def _open_sidebar_once():
+    # Only try once per browser session (Streamlit session_state)
     if st.session_state.get("_sidebar_opened_once", False):
         return
     st.session_state["_sidebar_opened_once"] = True
@@ -469,24 +470,41 @@ def _open_sidebar_once():
           function isCollapsed(sidebarEl) {
             if (!sidebarEl) return false;
             const w = sidebarEl.getBoundingClientRect().width;
-            // When collapsed, sidebar width is typically very small (often 0–60px)
-            return w < 80;
+            // When collapsed, sidebar width is usually very small (often < ~80px)
+            return w < 120;
+          }
+
+          function findToggleButton() {
+            // Try multiple selectors (Streamlit changes these)
+            const selectors = [
+              'button[data-testid="collapsedControl"]',
+              'button[aria-label="Expand sidebar"]',
+              'button[aria-label="Collapse sidebar"]',
+              'button[title="Expand sidebar"]',
+              'button[title="Collapse sidebar"]',
+              // Fallback: any header button with "sidebar" in aria-label/title
+              'button[aria-label*="sidebar"]',
+              'button[title*="sidebar"]'
+            ];
+
+            for (const sel of selectors) {
+              const btn = doc.querySelector(sel);
+              if (btn) return btn;
+            }
+            return null;
           }
 
           function tryOpen(attempt) {
             const sidebar = doc.querySelector('section[data-testid="stSidebar"]');
-            const toggle = doc.querySelector('button[data-testid="collapsedControl"]');
+            const toggle = findToggleButton();
 
-            // Only click if:
-            // 1) the toggle exists AND
-            // 2) the sidebar is currently collapsed (narrow)
-            if (toggle && isCollapsed(sidebar)) {
+            if (sidebar && toggle && isCollapsed(sidebar)) {
               toggle.click();
               return;
             }
 
-            // Retry a few times while Streamlit finishes layout
-            if (attempt < 10) {
+            // Retry while Streamlit finishes layout
+            if (attempt < 20) {
               setTimeout(() => tryOpen(attempt + 1), 120);
             }
           }
