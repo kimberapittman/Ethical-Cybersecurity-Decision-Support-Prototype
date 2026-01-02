@@ -534,6 +534,23 @@ div[data-testid="stMainBlockContainer"]{
 div[data-testid="stMainBlockContainer"]{
   padding-bottom: 3.25rem !important;
 }
+
+/* =========================
+   CASE WALKTHROUGH: disable clickable hover on tiles
+   ========================= */
+
+div[data-testid="stVerticalBlock"]:has(.step-tile-anchor) .listbox{
+  cursor: default !important;
+}
+
+div[data-testid="stVerticalBlock"]:has(.step-tile-anchor) .listbox:hover{
+  transform: none !important;
+  box-shadow: none !important;
+  border-color: rgba(255,255,255,0.10) !important;
+}
+div[data-testid="stVerticalBlock"]:has(.step-tile-anchor) .listbox{
+  box-shadow: 0 8px 18px rgba(0,0,0,0.22) !important;
+}
 </style>
 """,
     unsafe_allow_html=True,
