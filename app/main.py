@@ -244,32 +244,34 @@ div[data-testid="stVerticalBlock"]:has(.step-tile-anchor){
    DISCLAIMER FOOTER
    ========================= */
 
-.disclaimer-fixed{
-  position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 6px;                 /* <-- near your red line */
-  width: min(1100px, calc(100% - 48px));
-  z-index: 999999;
-  pointer-events: none;
+#global-disclaimer-fixed{
+  position: fixed !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 12px !important;
+  z-index: 999999 !important;
+  pointer-events: none !important;
+  display: flex !important;
+  justify-content: center !important;
 }
 
-.disclaimer-fixed .disclaimer-inner{
-  pointer-events: auto;
-  background: rgba(255,255,255,0.035);
-  border: 1px solid rgba(255,255,255,0.10);
-  box-shadow: none;
-  border-radius: 12px;
-  padding: 10px 14px;
-  text-align: center;
-  color: rgba(229,231,235,0.75);
-}
+#global-disclaimer-fixed .inner{
+  pointer-events: auto !important;
+  width: min(1100px, calc(100% - 48px)) !important;
 
+  background: rgba(255,255,255,0.035) !important;
+  border: 1px solid rgba(255,255,255,0.10) !important;
+  border-radius: 12px !important;
+  padding: 10px 14px !important;
+
+  text-align: center !important;
+  color: rgba(229,231,235,0.75) !important;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.25) !important;
+}
 
 @media (max-width: 900px){
-  .disclaimer-fixed{
-    bottom: 10px;
-    width: calc(100% - 24px);
+  #global-disclaimer-fixed .inner{
+    width: calc(100% - 24px) !important;
   }
 }
 
@@ -330,37 +332,7 @@ def _open_sidebar_once():
 def render_disclaimer_footer(pinned: bool = False):
     txt = "This prototype is designed for research and demonstration purposes and is not intended for operational deployment"
 
-    if pinned:
-        st.markdown(
-            f"""
-            <div id="global-disclaimer" class="disclaimer-fixed">
-              <div class="disclaimer-inner">
-                {html.escape(txt)}
-              </div>
-            </div>
-
-            <script>
-            (function() {{
-              // Streamlit runs inside an iframe sometimes (Codespaces, etc.)
-              const doc = window.parent?.document || document;
-
-              // Remove any old copies first
-              const old = doc.getElementById("global-disclaimer");
-              if (old) old.remove();
-
-              // Grab the element Streamlit just rendered
-              const fresh = document.getElementById("global-disclaimer");
-              if (!fresh) return;
-
-              // Move it to the real page body so "fixed" is truly viewport-fixed
-              doc.body.appendChild(fresh);
-            }})();
-            </script>
-            """,
-            unsafe_allow_html=True,
-        )
-
-    else:
+    if not pinned:
         st.markdown(
             f"""
             <div class="disclaimer-inline">
@@ -369,6 +341,29 @@ def render_disclaimer_footer(pinned: bool = False):
             """,
             unsafe_allow_html=True,
         )
+        return
+
+    # Pinned: inject into the *parent document body* so it is truly viewport-fixed.
+    st.markdown(
+        f"""
+        <script>
+        (function() {{
+          const doc = window.parent.document;
+
+          // Remove any existing footer (prevents duplicates after reruns)
+          const existing = doc.getElementById("global-disclaimer-fixed");
+          if (existing) existing.remove();
+
+          // Create footer
+          const wrap = doc.createElement("div");
+          wrap.id = "global-disclaimer-fixed";
+          wrap.innerHTML = `<div class="inner">{html.escape(txt)}</div>`;
+          doc.body.appendChild(wrap);
+        }})();
+        </script>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 def _render_landing_page():
