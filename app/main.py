@@ -329,14 +329,47 @@ label, .stRadio, .stSelectbox, .stMultiSelect, .stExpander{
 .listbox, .listbox *{ color: var(--text-strong) !important; }
 .section-note, .sub{ color: var(--text-muted) !important; }
 
-/* === Select-a-Case tile text spacing === */
-div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) .listbox > div[style*="font-weight:700"]{
-  margin-bottom: 12px !important;
-  line-height: 1.4 !important;
+/* =========================
+   Select-a-Case tile spacing (FINAL)
+   ========================= */
+/* Tile padding: top and bottom must match */
+div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
+.listbox{
+  padding: 20px 20px !important;   /* top/bottom symmetry */
 }
 
-div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) .listbox .sub{
-  line-height: 1.5 !important;
+/* Badge → title spacing */
+div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
+.case-badge-wrap{
+  margin: 0 0 20px 0 !important;
+}
+
+/* Title → hook spacing */
+div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
+.listbox > div[style*="font-weight:700"]{
+  margin: 0 0 20px 0 !important;
+  line-height: 1.45 !important;
+}
+
+/* Hook → bottom of tile (NO margin; padding handles this) */
+div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
+.listbox .sub{
+  margin: 0 !important;
+  line-height: 1.45 !important;
+}
+
+/* Kill Streamlit/Markdown default paragraph spacing inside the hook (case tiles only) */
+div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
+.listbox .sub p{
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* If Streamlit wraps the hook in spans/markdown containers, force them tight too */
+div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
+.listbox .sub > div{
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 /* Click affordances */
@@ -367,16 +400,25 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) .listbox .sub{
   display:inline-flex !important;
   align-items:center !important;
   justify-content:center !important;
-  font-size:0.72rem !important;
+  font-size:0.92rem !important;
   font-weight:800 !important;
   letter-spacing:0.02em !important;
-  padding:10px 14px !important;
+  padding:8px 14px !important;
   border-radius:999px !important;
   white-space:nowrap !important;
   color:#ffffff !important;
 }
-.case-badge.real{ background-color:#378AED !important; border:1px solid #378AED !important; }
-.case-badge.hypo{ background-color:#55CAFF !important; border:1px solid #55CAFF !important; }
+
+.case-badge.real{
+  background-color: rgba(55,138,237,0.85) !important;
+  border: 1px solid rgba(55,138,237,0.85) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.15);
+}
+.case-badge.hypo{
+  background-color: rgba(85,202,255,0.85) !important;
+  border: 1px solid rgba(85,202,255,0.85) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.15);
+}
 
 /* === Expanders === */
 details > summary{
