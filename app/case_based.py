@@ -334,8 +334,10 @@ def render_case(case_id: str):
             inner = f"## 9. Outcomes and Implications\n\n{_bullets_md(case['decision_outcome'].get('outcomes_implications'))}"
             _render_step_tile(inner)
 
+        # --- spacer between tile and nav ---
+        st.markdown('<div class="nav-anchor"></div><div style="height:16px;"></div>', unsafe_allow_html=True)
 
-        # Navigation row (symmetrical inset)
+        # Navigation row (symmetrical inset within the centered nav lane)
         sp_l, col_prev, col_mid, col_next, sp_r = st.columns([1, 2, 6, 2, 1], gap="large")
 
         with col_prev:
@@ -351,7 +353,4 @@ def render_case(case_id: str):
         with col_mid:
             if step == 9:
                 st.markdown('<div class="endcase-btn">End of Case.</div>', unsafe_allow_html=True)
-
-
-
 

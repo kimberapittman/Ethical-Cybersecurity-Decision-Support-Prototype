@@ -178,6 +178,23 @@ div[data-testid="stButton"] > button[kind="secondary"]:hover{
   opacity: 0.85;                     /* MATCH your desired de-emphasis */
 }
 
+/* =========================
+   WALKTHROUGH NAV WIDTH + SYMMETRY
+   ========================= */
+
+/* Constrain the *block that contains* the nav columns */
+div[data-testid="stVerticalBlock"]:has(.nav-anchor){
+  max-width: 980px;              /* match your card feel */
+  margin-left: auto !important;
+  margin-right: auto !important;
+  width: 100% !important;
+}
+
+/* Optional: ensure the nav row itself doesn't stretch weirdly */
+div[data-testid="stVerticalBlock"]:has(.nav-anchor) div[data-testid="stHorizontalBlock"]{
+  width: 100% !important;
+}
+
 /* Back to Mode Selection — size to text cleanly */
 div[data-testid="stButton"] > button[kind="secondary"]{
   display: inline-flex !important;
