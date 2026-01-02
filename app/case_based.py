@@ -156,26 +156,6 @@ def render_case(case_id: str):
                     unsafe_allow_html=True,
                 )
 
-        # Handle tile click via query params (same tab)
-        try:
-            qp = st.query_params
-            picked = qp.get("cb_case_id", None)
-            if picked:
-                st.session_state["cb_case_id"] = picked
-                st.session_state["cb_prev_case_id"] = picked
-                st.session_state["cb_view"] = "walkthrough"
-                st.session_state["cb_step"] = 1
-                st.session_state.pop("cb_step_return", None)
-                try:
-                    st.query_params.clear()
-                except Exception:
-                    pass
-                st.rerun()
-        except Exception:
-            pass
-
-        return
-
 
     # ==========================================================
     # WALKTHROUGH: load selected case
