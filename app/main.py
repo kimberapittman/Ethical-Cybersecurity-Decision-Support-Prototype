@@ -165,22 +165,15 @@ div[data-testid="stButton"] > button[kind="secondary"]:hover{
   box-sizing: border-box;
   padding: 0.7rem 1rem;
   border-radius: 12px;
-
-  /* More solid, but still neutral */
   background: rgba(255,255,255,0.10);
   border: 1px solid rgba(255,255,255,0.22);
-
   color: var(--text-strong);
   font-weight: 600;
   text-align: center;
-
-  /* Explicitly non-interactive */
   box-shadow: none !important;
   cursor: default;
   user-select: none;
   pointer-events: none;
-
-  /* Slightly lower emphasis than buttons */
   opacity: 0.95;
 }
 
@@ -265,15 +258,6 @@ div[data-testid="stButton"] > button{
     min-width: 100% !important;
     display: inline-flex !important;
     justify-content: center !important;
-  }
-
-  /* Keep End-of-case on one line (no vertical letters) */
-  div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor) .endcase-btn{
-    width: 100% !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    white-space: nowrap !important;
   }
 }
 
