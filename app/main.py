@@ -358,7 +358,7 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
 .listbox.case-tile .tile-hook{
   text-align: center !important;
-  font-size: 0.95rem !important;
+  font-size: 1.05rem !important;
   margin: 0 !important;
   line-height: 1.45 !important;
 }
@@ -391,7 +391,7 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
   display:inline-flex !important;
   align-items:center !important;
   justify-content:center !important;
-  font-size:0.92rem !important;
+  font-size:1.05rem !important;
   font-weight:800 !important;
   letter-spacing:0.02em !important;
   padding:8px 14px !important;
