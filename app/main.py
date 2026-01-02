@@ -337,7 +337,7 @@ def _open_sidebar_once():
     )
 
 
-def render_disclaimer_footer(pinned: bool = False):
+def render_disclaimer_footer():
     txt = "This prototype is designed for research and demonstration purposes and is not intended for operational deployment"
 
     st.markdown(
@@ -690,7 +690,7 @@ def main():
     # ---------- LANDING GATE ----------
     if not st.session_state.get("landing_complete", False):
         _render_landing_page()
-        render_disclaimer_footer(pinned=True)
+        render_disclaimer_footer()
         return
 
     # ---------- CONTINUE APP ----------
@@ -752,7 +752,14 @@ def main():
     else:
         open_ended.render_open_ended()
 
-    render_disclaimer_footer()
+    # ---------- DISCLAIMER (ONLY ON SELECTION SCREENS) ----------
+    show_on_case_select = (
+        st.session_state.get("active_mode") == "Case-Based"
+        and st.session_state.get("cb_view") == "select"
+    )
+
+    if show_on_case_select:
+        render_disclaimer_footer()
 
 
 if __name__ == "__main__":
