@@ -210,6 +210,18 @@ div[data-testid="stButton"] > button[kind="secondary"]{
   white-space: nowrap !important;
 }
 
+/* =========================
+   CASE WALKTHROUGH NAV LANE
+   ========================= */
+
+/* Constrain the nav block itself */
+div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor){
+  max-width: 860px;            /* tune to match your tile width */
+  margin-left: auto !important;
+  margin-right: auto !important;
+  width: 100% !important;
+}
+
 /* === Inputs === */
 input, textarea, select, .stTextInput input, .stTextArea textarea{
   background: rgba(255,255,255,0.06) !important;
