@@ -160,22 +160,28 @@ div[data-testid="stButton"] > button[kind="secondary"]:hover{
   box-shadow: none !important;
 }
 
-/* End-of-case: button look, but disabled */
 .endcase-btn{
   width: 100%;
   box-sizing: border-box;
-  border: 0;
   padding: 0.7rem 1rem;
   border-radius: 12px;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.14);
+
+  /* More solid, but still neutral */
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.22);
+
   color: var(--text-strong);
-  box-shadow: none;
   font-weight: 600;
   text-align: center;
+
+  /* Explicitly non-interactive */
+  box-shadow: none !important;
   cursor: default;
   user-select: none;
-  opacity: 0.85;
+  pointer-events: none;
+
+  /* Slightly lower emphasis than buttons */
+  opacity: 0.95;
 }
 
 /* =========================
