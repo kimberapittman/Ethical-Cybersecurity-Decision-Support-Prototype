@@ -128,6 +128,51 @@ section[data-testid="stSidebar"] span{
   background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
 }
 
+/* =========================
+   SIDEBAR DETAILS — CONNECTED PANEL
+   ========================= */
+/* The whole expander container */
+.sb-details{
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.06),
+    rgba(255,255,255,0.03)
+  ) !important;
+  border: 1px solid rgba(255,255,255,0.10) !important;
+  border-radius: 14px !important;
+  padding: 0 !important;
+  overflow: hidden !important; /* critical */
+}
+
+/* Summary header */
+.sb-details > summary{
+  list-style: none !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+
+  padding: 12px 14px !important;
+  margin: 0 !important;
+
+  cursor: pointer !important;
+  font-weight: 700 !important;
+}
+
+/* Remove default marker */
+.sb-details > summary::-webkit-details-marker{
+  display: none !important;
+}
+.sb-details > summary::marker{
+  content: "" !important;
+}
+
+/* Body = same container, no new “tile” */
+.sb-details-body{
+  padding: 12px 14px !important;
+  margin: 0 !important;
+  border-top: 1px solid rgba(255,255,255,0.08) !important;
+}
+
 /* === Buttons === */
 div[data-testid="stButton"] > button{
   min-width: 100% !important;
@@ -1118,7 +1163,7 @@ def main():
                     </a><br>
                     Formosa, Paul; Michael Wilson; Deborah Richards (2021)<br>
 
-                    <em>(Access to the full text may depend on institutional or publisher subscriptions.)</em>
+                    (Access to the full text may depend on institutional or publisher subscriptions.)
 
                   </div>
                 </details>
