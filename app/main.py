@@ -641,11 +641,14 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) .listbox{
   min-height: 0 !important;        /* ✅ prevents flex overflow weirdness */
 }
 
+/* Mode tiles: internal scroll + breathing room */
 .mode-tiles .listbox{
-  min-height: 460px !important;
+  min-height: 320px !important;
   height: auto !important;
+  max-height: calc(100vh - var(--disclaimer-h) - 260px) !important;
+  overflow: auto !important;
+  padding-bottom: 18px !important; /* prevents last line from feeling clipped */
 }
-
 
 /* === Hide Streamlit chrome === */
 header[data-testid="stHeader"]{ background: transparent; }
@@ -664,46 +667,6 @@ div[data-testid="stMarkdownContainer"] h6 a{
 button[aria-label*="Copy link"],
 button[title*="Copy link"]{
   display: none !important;
-}
-
-:root{ --disclaimer-h: 56px; }
-
-/* Reserve space so content never hides behind fixed footer */
-div[data-testid="stMainBlockContainer"]{
-  padding-bottom: calc(var(--disclaimer-h) + 12px) !important;
-}
-
-.disclaimer-footer{
-  position: fixed !important;
-  left: 0; right: 0; bottom: 0;
-  height: var(--disclaimer-h) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  background: rgba(11,16,32,0.92) !important;
-  border-top: 1px solid rgba(255,255,255,0.10) !important;
-  z-index: 9999 !important;
-}
-
-/* Footer stays fixed */
-.disclaimer-footer{
-  position: fixed !important;
-  left: 0; right: 0; bottom: 0;
-  height: var(--disclaimer-h) !important;
-
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-
-  padding: 0 !important;
-  margin: 0 !important;
-
-  background: rgba(11,16,32,0.92) !important;
-  border-top: 1px solid rgba(255,255,255,0.10) !important;
-
-  z-index: 9999 !important;
 }
 
 
@@ -727,6 +690,34 @@ div[data-testid="stMainBlockContainer"]{
 /* Optional polish: soften walkthrough tiles slightly */
 .listbox.walkthrough-tile{
   box-shadow: 0 8px 18px rgba(0,0,0,0.22) !important;
+}
+
+:root{ --disclaimer-h: 56px; }
+
+/* Reserve space so content never hides behind the fixed footer */
+div[data-testid="stMainBlockContainer"]{
+  padding-bottom: calc(var(--disclaimer-h) + 12px) !important;
+}
+
+/* PINNED footer — last rule wins */
+.disclaimer-footer{
+  position: fixed !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+
+  height: var(--disclaimer-h) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  padding: 0 !important;
+  margin: 0 !important;
+
+  background: rgba(11,16,32,0.92) !important;
+  border-top: 1px solid rgba(255,255,255,0.10) !important;
+
+  z-index: 9999 !important;
 }
 </style>
 """,
