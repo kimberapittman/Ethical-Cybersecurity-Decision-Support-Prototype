@@ -591,7 +591,9 @@ def render_open_ended():
 
         st.markdown("---")
 
-        if st.button("Generate decision rationale", key="oe_generate_summary"):
+        if st.session_state.get("oe_generate"):
+            st.session_state["oe_generate"] = False  # reset trigger
+
             ts = datetime.now().isoformat(timespec="minutes")
             st.success("Decision rationale generated below.")
             st.markdown("#### Decision Rationale (Open-Ended Mode)")
@@ -749,5 +751,10 @@ def render_open_ended():
             if st.button("Next ▶", key=f"oenav_next_{step}", use_container_width=True):
                 st.session_state["oe_step"] = step + 1
                 _safe_rerun()
+
         else:
-            st.button("generate decision rationale", key="oe_end", disabled=True, use_container_width=True)
+            # Step 6 primary action lives here (replaces "End of Walkthrough")
+            if st.button("Generate decision rationale", key="oe_generate_summary_nav", use_container_width=True):
+                st.session_state["oe_generate"] = True
+                _safe_rerun()
+
