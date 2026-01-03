@@ -66,7 +66,6 @@ def _html_block(s: str) -> str:
     # Prevent Markdown from treating indented HTML as a code block.
     return "\n".join(line.lstrip() for line in s.splitlines())
 
-
 def _step_tile_close():
     st.markdown("</div>", unsafe_allow_html=True)
 
@@ -163,7 +162,7 @@ def render_case(case_id: str):
                     ),
                     unsafe_allow_html=True,
                 )
-
+        return
 
     # ==========================================================
     # WALKTHROUGH: load selected case
@@ -200,33 +199,58 @@ def render_case(case_id: str):
         st.session_state.pop("cb_step_return", None)
         # IMPORTANT: do NOT call _safe_rerun() here
 
-        # ==========================================================
+    # ==========================================================
     # VIEW 2: WALKTHROUGH (STEP-BASED)
     # ==========================================================
-    st.markdown('<div class="walkthrough-scope"></div>', unsafe_allow_html=True)
     if view == "walkthrough":
+        st.markdown('<div class="walkthrough-scope"></div>', unsafe_allow_html=True)
+
+        # Ensure step state
         if "cb_step" not in st.session_state:
             st.session_state["cb_step"] = 1
         step = st.session_state["cb_step"]
-
-        def _bullets_md(value) -> str:
-            if value is None:
-                return "TBD"
-            if isinstance(value, list):
-                return "\n".join([f"- {item}" for item in value]) if value else "TBD"
-            return str(value)
 
         def _render_step_tile_html(title_html: str, body_html: str):
             st.markdown(
                 f"""
                 <div class="listbox walkthrough-tile">
-                <div class="wt-title">{title_html}</div>
-                <div class="wt-body">{body_html}</div>
+                  <div class="wt-title">{title_html}</div>
+                  <div class="wt-body">{body_html}</div>
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
 
+        # -------------------------
+        # Walkthrough header (case title)
+        # -------------------------
+        case_title = case.get("ui_title") or case.get("title") or case_id or ""
+        st.markdown(
+            f"""
+            <div style="text-align:center; margin-top: 0;">
+              <h2 style="margin: 0 0 0.25rem 0;">{html.escape(str(case_title))}</h2>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        # Divider under case title
+        st.markdown(
+            """
+            <hr style='
+                margin: 14px 0 20px 0;
+                border: none;
+                height: 2px;
+                background: linear-gradient(
+                    90deg,
+                    rgba(76,139,245,0.15),
+                    rgba(76,139,245,0.55),
+                    rgba(76,139,245,0.15)
+                );
+            '>
+            """,
+            unsafe_allow_html=True,
+        )
 
         st.progress(step / 9.0)
         st.caption(f"Step {step} of 9")
@@ -236,12 +260,10 @@ def render_case(case_id: str):
             body = _bullets_html(case["background"].get("technical_operational_background"))
             _render_step_tile_html(title, body)
 
-
         elif step == 2:
             title = "2. Triggering Condition and Key Events"
             body = _bullets_html(case["background"].get("triggering_condition_key_events"))
             _render_step_tile_html(title, body)
-
 
         elif step == 3:
             title = "3. Decision Context"
@@ -415,7 +437,6 @@ def render_case(case_id: str):
                 _safe_rerun()
 
         with col_mid:
-            # keep empty for symmetry / future status text
             pass
 
         with col_next:
@@ -428,7 +449,6 @@ def render_case(case_id: str):
                     st.session_state["cb_step"] = step + 1
                     _safe_rerun()
             else:
-                # step == 9: "finish" control goes on the right
                 st.button(
                     "End of Case",
                     key=f"cbnav_end_{case_id}",
