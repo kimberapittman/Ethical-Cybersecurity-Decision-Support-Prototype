@@ -130,7 +130,6 @@ section[data-testid="stSidebar"] span{
 
 /* === Header container === */
 .block-container > div:first-child{
-  backdrop-filter: blur(6px);
   border-radius: 14px;
   padding: 8px 14px;
   border: 1px solid rgba(255,255,255,0.06);
@@ -646,15 +645,6 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) .listbox{
   min-height: 0 !important;        /* ✅ prevents flex overflow weirdness */
 }
 
-/* Mode tiles: internal scroll + breathing room */
-.mode-tiles .listbox{
-  min-height: 320px !important;
-  height: auto !important;
-  max-height: calc(100vh - var(--disclaimer-h) - 260px) !important;
-  overflow: auto !important;
-  padding-bottom: 18px !important; /* prevents last line from feeling clipped */
-}
-
 /* === Hide Streamlit chrome === */
 header[data-testid="stHeader"]{ background: transparent; }
 footer, #MainMenu{ visibility: hidden; }
@@ -711,13 +701,30 @@ div[data-testid="stMainBlockContainer"]{
   padding-bottom: calc(var(--disclaimer-h) + 16px) !important;
 }
 
-/* Full-viewport overlay (forces true pinning and full width) */
 .disclaimer-overlay{
   position: fixed !important;
-  inset: auto 0 0 0 !important;
-  width: 100vw !important;
-  z-index: 999999 !important;
-  pointer-events: none !important; /* never blocks clicks */
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+
+  width: 100% !important;
+  max-width: 100% !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  z-index: 2147483647 !important; /* go nuclear */
+  pointer-events: none !important;
+}
+
+/* Prevent any ancestor from turning fixed into “fixed inside container” */
+div[data-testid="stAppViewContainer"],
+div[data-testid="stMain"],
+div[data-testid="stMainBlockContainer"],
+main{
+  transform: none !important;
+  filter: none !important;
+  perspective: none !important;
 }
 
 /* The actual bar */
@@ -927,6 +934,48 @@ def _render_landing_page():
             ),
             unsafe_allow_html=True,
         )
+
+    # --- Auto-scroll when opening "About" dropdowns on landing page ---
+    st.markdown(
+        """
+        <script>
+        (function () {
+          function wireAutoScroll() {
+            const root = window.parent.document;
+            const detailsList = root.querySelectorAll(
+              '.listbox.tile-card.mode-tile details'
+            );
+
+            detailsList.forEach(d => {
+              if (d.dataset.autoscrollBound === "1") return;
+              d.dataset.autoscrollBound = "1";
+
+              d.addEventListener("toggle", () => {
+                if (!d.open) return;
+
+                // Wait for layout expansion, then scroll
+                setTimeout(() => {
+                  d.scrollIntoView({
+                    behavior: "smooth",
+                    block: "nearest"
+                  });
+                }, 80);
+              });
+            });
+          }
+
+          // Retry because Streamlit renders asynchronously
+          let tries = 0;
+          (function retry() {
+            wireAutoScroll();
+            tries++;
+            if (tries < 20) setTimeout(retry, 200);
+          })();
+        })();
+        </script>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 def render_app_header(compact: bool = False):
