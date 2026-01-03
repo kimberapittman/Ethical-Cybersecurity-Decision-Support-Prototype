@@ -133,6 +133,7 @@ div[data-testid="stButton"] > button{
   min-width: 100% !important;
   box-sizing: border-box !important;
 
+  border: 0;
   padding: 0.7rem 1rem !important;
   border-radius: 12px !important;
 
@@ -155,6 +156,7 @@ div[data-testid="stButton"] > button:hover{
   box-shadow:
     0 0 0 2px rgba(76,139,245,0.55),
     0 14px 26px rgba(76,139,245,0.45) !important;
+    filter: brightness(1.05);
 }
 
 div[data-testid="stButton"] > button:active{
