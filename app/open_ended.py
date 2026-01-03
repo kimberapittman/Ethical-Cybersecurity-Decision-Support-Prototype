@@ -427,15 +427,7 @@ def render_open_ended():
                 "service disruptions emerged; containment actions considered."
             ),
         )
-
-        col_l, col_c, col_r = st.columns([1, 2, 1])
-        with col_c:
-            if st.button("Start Structured Walkthrough", key="oe_start_walkthrough", use_container_width=True):
-                st.session_state["oe_started"] = True
-                st.session_state["oe_step"] = 1
-                _safe_rerun()
-
-        return  # IMPORTANT: stop here so the walkthrough doesn't render on same run
+        return  
 
     # ---------------- Walkthrough ----------------
     if "oe_step" not in st.session_state:
@@ -445,10 +437,6 @@ def render_open_ended():
     total_steps = 5
     st.progress(step / float(total_steps))
 
-    # single thin separator line (requested)
-    st.markdown(THIN_SEPARATOR, unsafe_allow_html=True)
-
-    pfce_auto = st.session_state.get("oe_pfce_auto", [])
 
     # ---------------- Step 1: Decision Context ----------------
     if step == 1:
