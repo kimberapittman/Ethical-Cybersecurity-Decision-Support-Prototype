@@ -294,7 +294,6 @@ def _build_pdf(title: str, lines: list[str]) -> BytesIO:
     return buffer
 
 
-
 def render_open_ended():
     # ==========================================================
     # WALKTHROUGH STATE (single flow, no gate)
@@ -303,21 +302,11 @@ def render_open_ended():
         st.session_state["oe_step"] = 1
     step = st.session_state["oe_step"]
 
-    total_steps = 6
+    total_steps = OE_TOTAL_STEPS
 
-    st.markdown(
-        _html_block(
-            """
-            <div style='text-align:center; margin-top: 0; margin-bottom: 0;'>
-              <h2 style='margin:0 0 0.1rem 0; display:inline-block;'>Open-Ended Mode</h2>
-            </div>
-            <div class="walkthrough-scope"></div>
-            """
-        ),
-        unsafe_allow_html=True,
-    )
 
     st.progress(step / float(total_steps))
+    _render_open_header(step)
     st.caption(f"Step {step} of {total_steps}")
 
     def _render_open_header(step: int):
@@ -349,27 +338,24 @@ def render_open_ended():
             unsafe_allow_html=True,
         )
 
-    def _render_step_tile_html(title_html: str, body_html: str):
+    def _render_step_tile_html(body_html: str):
         st.markdown(
             f"""
             <div class="listbox walkthrough-tile">
-              <div class="wt-title">{title_html}</div>
-              <div class="wt-body">{body_html}</div>
+            <div class="wt-body">{body_html}</div>
             </div>
             """,
             unsafe_allow_html=True,
         )
+
 
     # ==========================================================
     # STEP 1: ORIENTATION + TRIGGER (was the old gate)
     # ==========================================================
     if step == 1:
         _render_step_tile_html(
-            "1. Orientation and Triggering Condition",
-            (
-                "Capture the triggering condition and key events that created the decision context. "
+                "Capture the triggering condition and key events that created the decision context."
                 "Examples are provided to mirror Case-Based Mode."
-            ),
         )
 
         st.selectbox(
@@ -399,8 +385,7 @@ def render_open_ended():
     # ==========================================================
     if step == 2:
         _render_step_tile_html(
-            "2. Decision Context",
-            "State the operational decision context in clear procedural terms. Keep it short and concrete.",
+                "State the operational decision context in clear procedural terms. Keep it short and concrete.",
         )
 
         st.markdown("**Triggering condition and key events (from Step 1)**")
@@ -431,7 +416,6 @@ def render_open_ended():
     # ==========================================================
     if step == 3:
         _render_step_tile_html(
-            "3. NIST CSF 2.0 Mapping",
             "Use the CSF to situate the decision procedurally. This does not prescribe actions; it structures context.",
         )
 
@@ -525,7 +509,6 @@ def render_open_ended():
     # ==========================================================
     if step == 4:
         _render_step_tile_html(
-            "4. PFCE Analysis and Ethical Tension",
             "Make ethically significant conditions explicit, then state the central tension as two justified obligations.",
         )
 
@@ -579,7 +562,6 @@ def render_open_ended():
     # ==========================================================
     if step == 5:
         _render_step_tile_html(
-            "5. Institutional and Governance Constraints",
             "Document constraints that shape or limit feasible actions or justification.",
         )
 
@@ -600,7 +582,6 @@ def render_open_ended():
     # ==========================================================
     if step == 6:
         _render_step_tile_html(
-            "6. Decision and Documented Rationale",
             "Record the decision in operational terms, then generate a structured rationale for demonstration purposes.",
         )
 
@@ -754,7 +735,7 @@ def render_open_ended():
     # ==========================================================
     # NAVIGATION (match Case-Based layout + anchor)
     # ==========================================================
-    st.markdown('<div class="oe-nav-anchor"></div>', unsafe_allow_html=True)
+    st.markdown('<div class="cb-nav-anchor"></div>', unsafe_allow_html=True)
 
     sp_l, col_prev, col_mid, col_next, sp_r = st.columns([1, 3, 2, 3, 1], gap="large")
 
