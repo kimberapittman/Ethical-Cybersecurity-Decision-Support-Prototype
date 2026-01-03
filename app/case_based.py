@@ -431,7 +431,7 @@ def render_case(case_id: str):
             if step > 1 and st.button(
                 "◀ Previous",
                 key=f"cbnav_prev_{case_id}_{step}",
-                use_container_width=True
+                use_container_width=False
             ):
                 st.session_state["cb_step"] = step - 1
                 _safe_rerun()
@@ -444,7 +444,7 @@ def render_case(case_id: str):
                 if st.button(
                     "Next ▶",
                     key=f"cbnav_next_{case_id}_{step}",
-                    use_container_width=True
+                    use_container_width=False
                 ):
                     st.session_state["cb_step"] = step + 1
                     _safe_rerun()
@@ -453,7 +453,7 @@ def render_case(case_id: str):
                     "End of Case",
                     key=f"cbnav_end_{case_id}",
                     disabled=True,
-                    use_container_width=True
+                    use_container_width=False
                 )
 
 

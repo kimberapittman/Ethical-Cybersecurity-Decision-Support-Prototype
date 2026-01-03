@@ -316,6 +316,20 @@ div[data-testid="stButton"] > button{
     overflow: hidden !important;
   }
 
+/* On narrow screens, revert nav buttons to full-width for readability */
+@media (max-width: 720px){
+  div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor) div[data-testid="stButton"] > button,
+  div[data-testid="stVerticalBlock"]:has(.oe-nav-anchor) div[data-testid="stButton"] > button{
+    width: 100% !important;
+    min-width: 100% !important;
+  }
+
+  div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor) div[data-testid="stButton"],
+  div[data-testid="stVerticalBlock"]:has(.oe-nav-anchor) div[data-testid="stButton"]{
+    justify-content: stretch !important;
+  }
+}
+
   /* Hide middle column completely on small screens */
   div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
   div[data-testid="column"]:nth-child(3){
@@ -358,6 +372,35 @@ div[data-testid="stButton"] > button[kind="secondary"]{
   line-height: 1.2 !important;
 
   white-space: nowrap !important;
+}
+
+/* =========================
+   NAV BUTTONS: size to text (pill), not full-width
+   Applies ONLY inside walkthrough nav rows
+   ========================= */
+
+div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor) div[data-testid="stButton"] > button,
+div[data-testid="stVerticalBlock"]:has(.oe-nav-anchor) div[data-testid="stButton"] > button{
+  width: auto !important;
+  min-width: unset !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  white-space: nowrap !important;
+}
+
+/* Left align the left button column */
+div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor) div[data-testid="column"]:nth-child(2) div[data-testid="stButton"],
+div[data-testid="stVerticalBlock"]:has(.oe-nav-anchor) div[data-testid="column"]:nth-child(2) div[data-testid="stButton"]{
+  display: flex !important;
+  justify-content: flex-start !important;
+}
+
+/* Right align the right button column */
+div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor) div[data-testid="column"]:nth-child(4) div[data-testid="stButton"],
+div[data-testid="stVerticalBlock"]:has(.oe-nav-anchor) div[data-testid="column"]:nth-child(4) div[data-testid="stButton"]{
+  display: flex !important;
+  justify-content: flex-end !important;
 }
 
 /* =========================
