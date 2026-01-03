@@ -230,6 +230,27 @@ div[data-testid="stButton"] > button[kind="secondary"]:hover{
   opacity: 0.55;
 }
 
+.walkthrough-tile .wt-title{
+  font-weight: 900;
+  font-size: 1.05rem;
+  margin: 0 0 10px 0;
+}
+.walkthrough-tile .wt-body{
+  font-size: 1rem;
+  line-height: 1.55;
+}
+.walkthrough-tile .wt-list{
+  margin: 10px 0 0 1.15rem;
+  padding: 0;
+}
+.walkthrough-tile .wt-list li{ margin: 6px 0; }
+.walkthrough-tile .wt-tbd{ opacity: 0.75; }
+.walkthrough-tile .wt-rationale{
+  margin: 6px 0 10px 0;
+  opacity: 0.85;
+  font-style: italic;
+}
+
 /* =========================
    WALKTHROUGH NAV WIDTH + SYMMETRY
    ========================= */

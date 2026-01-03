@@ -204,51 +204,80 @@ def render_case(case_id: str):
                 return "\n".join([f"- {item}" for item in value]) if value else "TBD"
             return str(value)
 
-        def _render_step_tile(inner_md: str):
+        def _render_step_tile_html(title_html: str, body_html: str):
             st.markdown(
                 f"""
                 <div class="listbox walkthrough-tile">
-                {inner_md}
+                <div class="wt-title">{title_html}</div>
+                <div class="wt-body">{body_html}</div>
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
 
+            def _bullets_html(value) -> str:
+                if value is None:
+                    return "<div class='wt-tbd'>TBD</div>"
+
+                if isinstance(value, list):
+                    if not value:
+                        return "<div class='wt-tbd'>TBD</div>"
+                    items = "".join(f"<li>{html.escape(str(item))}</li>" for item in value)
+                    return f"<ul class='wt-list'>{items}</ul>"
+
+                # plain string
+                return f"<div class='wt-text'>{html.escape(str(value))}</div>"
+
         st.progress(step / 9.0)
 
         if step == 1:
-            inner = f"## 1. Technical and Operational Background\n\n{_bullets_md(case['background'].get('technical_operational_background'))}"
-            _render_step_tile(inner)
+            title = "1. Technical and Operational Background"
+            body = _bullets_html(case["background"].get("technical_operational_background"))
+            _render_step_tile_html(title, body)
+
 
         elif step == 2:
-            inner = f"## 2. Triggering Condition and Key Events\n\n{_bullets_md(case['background'].get('triggering_condition_key_events'))}"
-            _render_step_tile(inner)
+            title = "2. Triggering Condition and Key Events"
+            body = _bullets_html(case["background"].get("triggering_condition_key_events"))
+            _render_step_tile_html(title, body)
+
 
         elif step == 3:
-            inner = f"## 3. Decision Context\n\n{_bullets_md(case['technical'].get('decision_context'))}"
-            _render_step_tile(inner)
+            title = "3. Decision Context"
+            body = _bullets_html(case["technical"].get("decision_context"))
+            _render_step_tile_html(title, body)
+
 
         elif step == 4:
             mapping = case["technical"].get("nist_csf_mapping", [])
+
             if mapping:
-                lines = []
+                items = []
                 for m in mapping:
-                    fn = m.get("function", "TBD")
+                    fn = html.escape(m.get("function", "TBD"))
 
                     cats = m.get("categories", [])
                     if isinstance(cats, str):
                         cats = [cats]
-                    cat_text = ", ".join(cats) if cats else "TBD"
+                    cat_text = html.escape(", ".join(cats) if cats else "TBD")
 
-                    lines.append(f"- **{fn} — {cat_text}**")
+                    # main line
+                    line = f"<li><strong>{fn} — {cat_text}</strong>"
+
+                    # rationale (if present)
                     if m.get("rationale"):
-                        lines.append(f"_Rationale_: {m.get('rationale')}")
-                mapping_md = "\n".join(lines)
-            else:
-                mapping_md = "TBD"
+                        rationale = html.escape(m.get("rationale"))
+                        line += f"<div class='wt-rationale'>Rationale: {rationale}</div>"
 
-            # Keep your framework title behavior (tooltip + link) as-is, but inside the tile
-            tooltip_link = (
+                    line += "</li>"
+                    items.append(line)
+
+                body = f"<ul class='wt-list'>{''.join(items)}</ul>"
+            else:
+                body = "<div class='wt-tbd'>TBD</div>"
+
+            # NIST CSF title with tooltip + link (unchanged behavior)
+            nist_title = (
                 f'<a href="{html.escape(NIST_CSF_URL)}" target="_blank" style="text-decoration: none;">'
                 f'  <span title="{html.escape(NIST_CSF_HOVER)}" '
                 f'        style="font-weight: 800; text-decoration: underline; cursor: help;">'
@@ -256,24 +285,34 @@ def render_case(case_id: str):
                 f'  </span>'
                 f'</a>'
             )
-            inner = f"## 4. NIST CSF Mapping\n\n{mapping_md}"
-            inner = inner.replace("NIST CSF", tooltip_link, 1)
-            _render_step_tile(inner)
+
+            title = f"4. {nist_title} Mapping"
+
+            _render_step_tile_html(title, body)
+
 
         elif step == 5:
             tension = case["ethical"].get("tension", [])
+
             if tension:
-                tension_md = "\n".join([f"- {t.get('description', 'TBD')}" for t in tension])
+                items = []
+                for t in tension:
+                    desc = html.escape(t.get("description", "TBD"))
+                    items.append(f"<li>{desc}</li>")
+                body = f"<ul class='wt-list'>{''.join(items)}</ul>"
             else:
-                tension_md = "TBD"
-            inner = f"## 5. Ethical Tension\n\n{tension_md}"
-            _render_step_tile(inner)
+                body = "<div class='wt-tbd'>TBD</div>"
+
+            title = "5. Ethical Tension"
+
+            _render_step_tile_html(title, body)
+
 
         elif step == 6:
             pfce_items = case["ethical"].get("pfce_analysis", [])
 
-            # Title with PFCE tooltip/link preserved
-            tooltip_link = (
+            # PFCE title tooltip + link (preserved)
+            pfce_title = (
                 f'<a href="{html.escape(PFCE_URL)}" target="_blank" style="text-decoration: none;">'
                 f'  <span title="{html.escape(PFCE_HOVER)}" '
                 f'        style="font-weight: 800; text-decoration: underline; cursor: help;">'
@@ -282,57 +321,84 @@ def render_case(case_id: str):
                 f'</a>'
             )
 
+            # Body
             if isinstance(pfce_items, list) and pfce_items and isinstance(pfce_items[0], dict):
-                lines = []
+                items = []
                 for p in pfce_items:
-                    principle = p.get("principle", "TBD")
-                    definition = PFCE_DEFINITIONS.get(principle, "")
-                    desc = p.get("description", "TBD")
+                    principle_raw = p.get("principle", "TBD")
+                    desc_raw = p.get("description", "TBD")
 
+                    principle = html.escape(str(principle_raw))
+                    desc = html.escape(str(desc_raw))
+
+                    definition = PFCE_DEFINITIONS.get(principle_raw, "")
                     if definition:
-                        lines.append(
-                            f'- <span title="{html.escape(definition)}" '
-                            f'style="font-weight:700; text-decoration: underline; cursor: help;">'
-                            f'{html.escape(principle)}</span>: {html.escape(desc)}'
+                        definition_esc = html.escape(str(definition))
+                        principle_html = (
+                            f"<span title='{definition_esc}' "
+                            f"style='font-weight:700; text-decoration: underline; cursor: help;'>"
+                            f"{principle}</span>"
                         )
                     else:
-                        lines.append(f"- **{principle}**: {desc}")
-                pfce_md = "\n".join(lines)
-            else:
-                pfce_md = _bullets_md(pfce_items)
+                        principle_html = f"<strong>{principle}</strong>"
 
-            inner = f"## 6. PFCE Analysis\n\n{pfce_md}"
-            inner = inner.replace("PFCE", tooltip_link, 1)
-            _render_step_tile(inner)
+                    items.append(f"<li>{principle_html}: {desc}</li>")
+
+                body = f"<ul class='wt-list'>{''.join(items)}</ul>"
+            else:
+                # Fallback: render list/string/None as HTML bullets/text
+                body = _bullets_html(pfce_items)
+
+            title = f"6. {pfce_title} Analysis"
+
+            _render_step_tile_html(title, body)
+
 
         elif step == 7:
             constraints = case.get("constraints", [])
-            if constraints:
-                lines = []
-                for c in constraints:
-                    if isinstance(c, dict):
-                        lines.append(f"- **{c.get('type','TBD')}** – {c.get('description','TBD')}")
-                        if c.get("effect_on_decision"):
-                            lines.append(f"  \n  _Effect on decision_: {c.get('effect_on_decision')}")
-                    else:
-                        lines.append(f"- {c}")
-                constraints_md = "\n".join(lines)
-            else:
-                constraints_md = "TBD"
 
-            inner = f"## 7. Institutional and Governance Constraints\n\n{constraints_md}"
-            _render_step_tile(inner)
+            if constraints:
+                items = []
+
+                for c in constraints:
+                    # Dict form: {type, description, effect_on_decision}
+                    if isinstance(c, dict):
+                        c_type = html.escape(str(c.get("type", "TBD")))
+                        c_desc = html.escape(str(c.get("description", "TBD")))
+
+                        line = f"<li><strong>{c_type}</strong> – {c_desc}"
+
+                        if c.get("effect_on_decision"):
+                            effect = html.escape(str(c.get("effect_on_decision")))
+                            line += f"<div class='wt-effect'><em>Effect on decision:</em> {effect}</div>"
+
+                        line += "</li>"
+                        items.append(line)
+
+                    # String fallback
+                    else:
+                        items.append(f"<li>{html.escape(str(c))}</li>")
+
+                body = f"<ul class='wt-list'>{''.join(items)}</ul>"
+            else:
+                body = "<div class='wt-tbd'>TBD</div>"
+
+            title = "7. Institutional and Governance Constraints"
+
+            _render_step_tile_html(title, body)
+
 
         elif step == 8:
-            inner = f"## 8. Decision\n\n{_bullets_md(case['decision_outcome'].get('decision'))}"
-            _render_step_tile(inner)
+            title = "8. Decision"
+            body = _bullets_html(case["decision_outcome"].get("decision"))
+            _render_step_tile_html(title, body)
+
 
         elif step == 9:
-            inner = f"## 9. Outcomes and Implications\n\n{_bullets_md(case['decision_outcome'].get('outcomes_implications'))}"
-            _render_step_tile(inner)
+            title = "9. Outcomes and Implications"
+            body = _bullets_html(case["decision_outcome"].get("outcomes_implications"))
+            _render_step_tile_html(title, body)
 
-        # padding between tile and nav
-        st.markdown("<div style='height:16px;'></div>", unsafe_allow_html=True)
 
         # anchor that the CSS uses to constrain the nav lane
         st.markdown('<div class="cb-nav-anchor"></div>', unsafe_allow_html=True)
