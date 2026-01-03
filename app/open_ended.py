@@ -814,24 +814,39 @@ def render_open_ended():
                 mime="application/pdf",
             )
 
-    # ---------------- Navigation ----------------
-    col_prev, col_next, col_exit = st.columns([1, 1, 1])
+        # ---------------- Navigation (Open-Ended Mode) ----------------
+        st.markdown('<div class="oe-nav-anchor"></div>', unsafe_allow_html=True)
 
-    with col_prev:
-        if step > 1:
-            if st.button("◀ Previous", key=f"oe_prev_{step}"):
-                st.session_state["oe_step"] = max(1, step - 1)
+        sp_l, col_prev, col_mid, col_next, sp_r = st.columns([1, 3, 2, 3, 1], gap="large")
+
+        with col_prev:
+            if step > 1 and st.button(
+                "◀ Previous",
+                key=f"oenav_prev_{step}",
+                use_container_width=True
+            ):
+                st.session_state["oe_step"] = step - 1
                 _safe_rerun()
 
-    with col_next:
-        if step < total_steps:
-            if st.button("Next ▶", key=f"oe_next_{step}"):
-                st.session_state["oe_step"] = min(total_steps, step + 1)
-                _safe_rerun()
+        with col_mid:
+            pass  # keep empty for symmetry
 
-    with col_exit:
-        if st.button("Restart", key="oe_restart"):
-            # Keep gate values unless you want a full wipe; restart should be intentional, not destructive.
-            st.session_state["oe_started"] = False
-            st.session_state["oe_step"] = 1
-            _safe_rerun()
+        with col_next:
+            if step < total_steps:
+                if st.button(
+                    "Next ▶",
+                    key=f"oenav_next_{step}",
+                    use_container_width=True
+                ):
+                    st.session_state["oe_step"] = step + 1
+                    _safe_rerun()
+            else:
+                # Step 5 primary action (clickable, hover-enabled)
+                if st.session_state.get("oe_generate"):
+                    st.session_state["oe_generate"] = False  # reset trigger
+
+                    ts = datetime.now().isoformat(timespec="minutes")
+                    st.success("Decision rationale generated below.")
+                    ...
+
+
