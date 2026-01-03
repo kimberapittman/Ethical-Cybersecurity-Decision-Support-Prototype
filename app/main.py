@@ -367,24 +367,22 @@ div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
   margin: 0 !important;
 }
 
-/* Expanded panel (wrapper) + connected look */
+/* Expanded body: continuous with summary (no "second tile" look) */
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
 .listbox.tile-card.mode-tile details .details-body{
-  margin-top: 6px !important;                 /* tighten gap */
+  margin-top: 0 !important;                 /* REMOVE gap */
   padding: 12px 12px !important;
   background: rgba(255,255,255,0.03) !important;
-  border: 1px solid rgba(255,255,255,0.08) !important;
-  border-top: 0 !important;                   /* share border line with summary */
-  border-radius: 12px !important;
-  border-top-left-radius: 10px !important;    /* visually connect */
-  border-top-right-radius: 10px !important;
+
+  border: 0 !important;                      /* no second card border */
+  border-radius: 0 0 12px 12px !important;   /* ONLY bottom corners rounded */
 }
 
-/* When open, soften summary bottom corners so it flows into the panel */
+/* Make summary connect flush into body when open */
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
 .listbox.tile-card.mode-tile details[open] > summary{
-  border-bottom-left-radius: 10px !important;
-  border-bottom-right-radius: 10px !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
 }
 
 /* =========================
