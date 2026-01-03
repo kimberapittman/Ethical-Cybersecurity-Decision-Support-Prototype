@@ -940,37 +940,53 @@ def _render_landing_page():
         """
         <script>
         (function () {
-          function wireAutoScroll() {
+          const FOOTER_H = 56;          // must match --disclaimer-h
+          const PAD = 12;               // extra breathing room
+
+          function install() {
             const root = window.parent.document;
+
             const detailsList = root.querySelectorAll(
               '.listbox.tile-card.mode-tile details'
             );
 
+            if (!detailsList.length) return;
+
             detailsList.forEach(d => {
+              // Avoid double-binding on Streamlit reruns
               if (d.dataset.autoscrollBound === "1") return;
               d.dataset.autoscrollBound = "1";
 
               d.addEventListener("toggle", () => {
                 if (!d.open) return;
 
-                // Wait for layout expansion, then scroll
-                setTimeout(() => {
-                  d.scrollIntoView({
-                    behavior: "smooth",
-                    block: "nearest"
+                // Let layout finish AFTER the details expands
+                requestAnimationFrame(() => {
+                  requestAnimationFrame(() => {
+
+                    const rect = d.getBoundingClientRect();
+                    const visibleBottom = window.innerHeight - FOOTER_H - PAD;
+
+                    // If the expanded bottom is below what the user can see, scroll down
+                    if (rect.bottom > visibleBottom) {
+                      const delta = rect.bottom - visibleBottom;
+                      window.scrollBy({ top: delta, left: 0, behavior: "smooth" });
+                    }
+
                   });
-                }, 80);
+                });
               });
             });
           }
 
-          // Retry because Streamlit renders asynchronously
+          // Try now + a few retries (Streamlit renders async)
+          install();
           let tries = 0;
-          (function retry() {
-            wireAutoScroll();
-            tries++;
-            if (tries < 20) setTimeout(retry, 200);
-          })();
+          const t = setInterval(() => {
+            install();
+            tries += 1;
+            if (tries > 10) clearInterval(t);
+          }, 200);
         })();
         </script>
         """,
