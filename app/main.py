@@ -1047,32 +1047,26 @@ def _render_landing_page():
     """, unsafe_allow_html=True)
 
 
-def render_app_header(compact: bool = False):
-    # --- Back to Mode Selection (secondary nav) ---
+def render_app_header(show_banner: bool = True):
+    # --- Back buttons (secondary nav) ---
     show_back = st.session_state.get("landing_complete", False)
 
     in_case_select = (
         st.session_state.get("active_mode") == "Case-Based"
         and st.session_state.get("cb_view") == "select"
     )
-
     in_case_walkthrough = (st.session_state.get("cb_view") == "walkthrough")
     in_open_ended = (st.session_state.get("active_mode") == "Open-Ended")
 
     if show_back and (in_case_select or in_case_walkthrough or in_open_ended):
-
-        # anchor for CSS scoping (important)
         st.markdown('<div class="header-nav-anchor"></div>', unsafe_allow_html=True)
 
-        # Case-Based walkthrough → back to Case Selection
         if in_case_walkthrough:
             if st.button("← Back to Case Selection", key="back_to_cases", type="secondary"):
                 st.session_state["cb_view"] = "select"
                 st.session_state.pop("cb_step", None)
                 st.session_state.pop("cb_step_return", None)
                 st.rerun()
-
-        # Case Selection or Open-Ended → back to Mode Selection
         else:
             if st.button("← Back to Mode Selection", key="back_to_modes", type="secondary"):
                 st.session_state["landing_complete"] = False
@@ -1084,48 +1078,21 @@ def render_app_header(compact: bool = False):
                 st.session_state.pop("oe_step", None)
                 st.rerun()
 
-
-    # --- Header title ---
-    if in_case_walkthrough:
-        case_id = st.session_state.get("cb_case_id")
-        case = load_case(case_id) or {}
-        case_title = case.get("ui_title", case_id) if case_id else ""
-
+    # --- Prototype banner (select pages only) ---
+    if show_banner:
         st.markdown(
-            f"""
+            """
             <div style='text-align:center;'>
-              <h2 style='margin-bottom:0.25rem;'>{html.escape(str(case_title))}</h2>
+              <h1>🛡️ Municipal Cyber Ethics Decision-Support Prototype</h1>
+              <div style="font-size:2.0rem; font-weight:800; letter-spacing:0.01em; color:#4C8BF5; margin-top:0.25rem;">
+                Because what's secure isn't always what's right.
+              </div>
             </div>
             """,
             unsafe_allow_html=True,
         )
-    else:
-        if compact:
-            st.markdown(
-                """
-                <div style='text-align:center;'>
-                  <h2 style='margin-bottom:0.25rem;'>🛡️ Municipal Cyber Ethics Decision-Support Prototype</h2>
-                  <div style="font-size:0.75rem; font-weight:800; letter-spacing:0.01em; color:#4C8BF5; margin-top:0.1rem;">
-                    Because what's secure isn't always what's right.
-                  </div>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-        else:
-            st.markdown(
-                """
-                <div style='text-align:center;'>
-                  <h1>🛡️ Municipal Cyber Ethics Decision-Support Prototype</h1>
-                  <div style="font-size:2.0rem; font-weight:800; letter-spacing:0.01em; color:#4C8BF5; margin-top:0.25rem;">
-                    Because what's secure isn't always what's right.
-                  </div>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
 
-    # --- Divider (unchanged) ---
+def render_divider():
     st.markdown(
         """
         <hr style='
@@ -1142,7 +1109,6 @@ def render_app_header(compact: bool = False):
         """,
         unsafe_allow_html=True,
     )
-
 
 def main():
     # ---------- SESSION STATE DEFAULTS ----------
@@ -1320,10 +1286,20 @@ def main():
         st.markdown("---")
 
 
-    # ---------- HEADER (ALWAYS) ----------
+    # ---------- HEADER ----------
     in_case_walkthrough = st.session_state.get("cb_view") == "walkthrough"
     in_open_walkthrough = st.session_state.get("oe_step", 0) > 0
-    render_app_header(compact=in_case_walkthrough or in_open_walkthrough)
+    in_any_walkthrough = in_case_walkthrough or in_open_walkthrough
+
+    # Banner only on select pages
+    render_app_header(show_banner=not in_any_walkthrough)
+
+    # Divider rules:
+    # - Always show divider on select pages (under banner)
+    # - On Open-Ended walkthrough, main.py must show divider under the step title (which will be in open_ended.py or main)
+    if not in_any_walkthrough:
+        render_divider()
+
 
     # ---------- LANDING GATE ----------
     if not st.session_state.get("landing_complete", False):
