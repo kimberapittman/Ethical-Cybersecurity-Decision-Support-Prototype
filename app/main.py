@@ -937,106 +937,80 @@ def _render_landing_page():
 
     # --- Auto-scroll when opening "About" dropdowns on landing page ---
     st.markdown("""
-    <script>
-    (function () {
-      const FOOTER_H = 56;   // matches --disclaimer-h
-      const PAD = 14;
+<script>
+(function () {
+  const FOOTER_H = 56;   // match --disclaimer-h
+  const PAD = 14;
 
-      function isScrollable(el) {
-        if (!el) return false;
-        const s = getComputedStyle(el);
-        const oy = s.overflowY;
-        return (oy === "auto" || oy === "scroll") && el.scrollHeight > el.clientHeight + 2;
-      }
+  function isScrollable(el) {
+    if (!el) return false;
+    const s = getComputedStyle(el);
+    const oy = s.overflowY;
+    return (oy === "auto" || oy === "scroll") && el.scrollHeight > el.clientHeight + 2;
+  }
 
-      function getScrollParent(el) {
-        // Walk up DOM to find the actual scroller
-        let p = el;
-        while (p && p !== document.body) {
-          if (isScrollable(p)) return p;
-          p = p.parentElement;
-        }
-        // Fallbacks
-        const main = document.querySelector('section[data-testid="stMain"]');
-        if (isScrollable(main)) return main;
-        return window;
-      }
+  function getScrollParent(el) {
+    let p = el;
+    while (p && p !== document.body) {
+      if (isScrollable(p)) return p;
+      p = p.parentElement;
+    }
+    const main = document.querySelector('section[data-testid="stMain"]');
+    if (isScrollable(main)) return main;
+    return window;
+  }
 
-      function scrollSoBottomVisible(target) {
-        if (!target) return;
+  function scrollIntoViewSmart(target) {
+    if (!target) return;
 
-        const scroller = getScrollParent(target);
-        const isWindow = (scroller === window);
+    const scroller = getScrollParent(target);
+    const isWindow = (scroller === window);
 
-        const rect = target.getBoundingClientRect();
-        const visibleBottom = window.innerHeight - FOOTER_H - PAD;
+    const rect = target.getBoundingClientRect();
+    const visibleBottom = window.innerHeight - FOOTER_H - PAD;
 
-        // If bottom is below visible area, scroll down by the delta
-        const deltaDown = rect.bottom - visibleBottom;
-        if (deltaDown > 4) {
-          if (isWindow) window.scrollBy({ top: deltaDown, behavior: "smooth" });
-          else scroller.scrollBy({ top: deltaDown, behavior: "smooth" });
-        }
+    // If bottom is below visible viewport (above footer), scroll down
+    const down = rect.bottom - visibleBottom;
+    if (down > 4) {
+      if (isWindow) window.scrollBy({ top: down, behavior: "smooth" });
+      else scroller.scrollBy({ top: down, behavior: "smooth" });
+    }
+  }
 
-        // If top is above viewport, scroll up a bit
-        const deltaUp = rect.top - PAD;
-        if (deltaUp < -4) {
-          if (isWindow) window.scrollBy({ top: deltaUp, behavior: "smooth" });
-          else scroller.scrollBy({ top: deltaUp, behavior: "smooth" });
-        }
-      }
+  function wire(root) {
+    if (!root) return;
+    root.querySelectorAll("details").forEach(d => {
+      if (d.__autoScrollWired) return;
+      d.__autoScrollWired = true;
 
-      function adjustAfterOpen(d) {
-        // We retry because Streamlit/React expands content after the toggle fires
+      d.addEventListener("toggle", () => {
+        if (!d.open) return;
+
+        // wait for layout expansion
         let tries = 0;
         const tick = () => {
           tries += 1;
-
-          const body = d.querySelector(".details-body") || d;
-          scrollSoBottomVisible(body);
-
-          if (tries < 8) requestAnimationFrame(tick);
+          scrollIntoViewSmart(d);
+          if (tries < 6) requestAnimationFrame(tick);
         };
         requestAnimationFrame(tick);
-      }
+      });
+    });
+  }
 
-      function wireDetails(root) {
-        if (!root) return;
+  function findRoot() {
+    return document.querySelector(".mode-tiles")
+      || document.querySelector('div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)');
+  }
 
-        root.querySelectorAll("details").forEach(d => {
-          if (d.__wiredAutoScroll) return;
-          d.__wiredAutoScroll = true;
+  // Initial wire
+  wire(findRoot());
 
-          d.addEventListener("toggle", () => {
-            if (!d.open) return;
-
-            // Optional accordion behavior (prevents two open panels fighting scroll)
-            root.querySelectorAll("details[open]").forEach(other => {
-              if (other !== d) other.removeAttribute("open");
-            });
-
-            // Let layout settle then adjust
-            setTimeout(() => adjustAfterOpen(d), 30);
-          });
-        });
-      }
-
-      function getModeTilesRoot() {
-        return document.querySelector(".mode-tiles")
-          || document.querySelector('div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)');
-      }
-
-      // Initial + mutation observer because Streamlit re-renders DOM
-      function init() {
-        wireDetails(getModeTilesRoot());
-      }
-
-      init();
-
-      const obs = new MutationObserver(() => init());
-      obs.observe(document.documentElement, { childList: true, subtree: true });
-    })();
-    </script>
+  // Light-touch rewire on rerender (no DOM mutation)
+  const obs = new MutationObserver(() => wire(findRoot()));
+  obs.observe(document.body, { childList: true, subtree: true });
+})();
+</script>
     """, unsafe_allow_html=True)
 
 
