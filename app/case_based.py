@@ -425,29 +425,17 @@ def render_case(case_id: str):
 
         st.markdown('<div class="cb-nav-anchor"></div>', unsafe_allow_html=True)
 
-        sp_l, col_prev, col_mid, col_next, sp_r = st.columns([1, 3, 2, 3, 1], gap="large")
+        col_prev, col_next = st.columns(2, gap="large")
 
         with col_prev:
-            if step > 1 and st.button(
-                "◀ Previous",
-                key=f"cbnav_prev_{case_id}_{step}",
-                use_container_width=False
-            ):
+            if step > 1 and st.button("◀ Previous", key=f"cbnav_prev_{step}", use_container_width=True):
                 st.session_state["cb_step"] = step - 1
                 _safe_rerun()
 
-        with col_mid:
-            pass
-
         with col_next:
-            if step < 9:
-                if st.button(
-                    "Next ▶",
-                    key=f"cbnav_next_{case_id}_{step}",
-                    use_container_width=False
-                ):
-                    st.session_state["cb_step"] = step + 1
-                    _safe_rerun()
+            if step < total_steps and st.button("Next ▶", key=f"cbnav_next_{step}", use_container_width=True):
+                st.session_state["cb_step"] = step + 1
+                _safe_rerun()
             else:
                 st.button(
                     "End of Case",
