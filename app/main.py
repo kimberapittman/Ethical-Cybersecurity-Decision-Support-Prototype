@@ -936,62 +936,52 @@ def _render_landing_page():
         )
 
     # --- Auto-scroll when opening "About" dropdowns on landing page ---
-    st.markdown(
-        """
-        <script>
-        (function () {
-          const FOOTER_H = 56;          // must match --disclaimer-h
-          const PAD = 12;               // extra breathing room
+    st.markdown("""
+    <script>
+    (function () {
+      const root = window.parent.document;
+      const FOOTER_H = 56;          // match --disclaimer-h
+      const GUTTER = 12;            // little breathing room above footer
 
-          function install() {
-            const root = window.parent.document;
+      function getScroller(){
+        return root.querySelector('section[data-testid="stMain"]');
+      }
 
-            const detailsList = root.querySelectorAll(
-              '.listbox.tile-card.mode-tile details'
-            );
+      function bind(){
+        const scroller = getScroller();
+        if (!scroller) return;
 
-            if (!detailsList.length) return;
+        const detailsList = root.querySelectorAll('.mode-tiles details');
+        detailsList.forEach(d => {
+          if (d.dataset.autoscrollBound === "1") return;
+          d.dataset.autoscrollBound = "1";
 
-            detailsList.forEach(d => {
-              // Avoid double-binding on Streamlit reruns
-              if (d.dataset.autoscrollBound === "1") return;
-              d.dataset.autoscrollBound = "1";
+          d.addEventListener('toggle', () => {
+            // only act when opening
+            if (!d.open) return;
 
-              d.addEventListener("toggle", () => {
-                if (!d.open) return;
+            // allow layout to expand first
+            setTimeout(() => {
+              const rect = d.getBoundingClientRect();
+              const visibleBottom = window.innerHeight - FOOTER_H - GUTTER;
 
-                // Let layout finish AFTER the details expands
-                requestAnimationFrame(() => {
-                  requestAnimationFrame(() => {
+              // if bottom is hidden under footer, scroll just enough
+              const delta = rect.bottom - visibleBottom;
+              if (delta > 0) {
+                scroller.scrollBy({ top: delta, left: 0, behavior: 'smooth' });
+              }
+            }, 0);
+          }, true);
+        });
+      }
 
-                    const rect = d.getBoundingClientRect();
-                    const visibleBottom = window.innerHeight - FOOTER_H - PAD;
-
-                    // If the expanded bottom is below what the user can see, scroll down
-                    if (rect.bottom > visibleBottom) {
-                      const delta = rect.bottom - visibleBottom;
-                      window.scrollBy({ top: delta, left: 0, behavior: "smooth" });
-                    }
-
-                  });
-                });
-              });
-            });
-          }
-
-          // Try now + a few retries (Streamlit renders async)
-          install();
-          let tries = 0;
-          const t = setInterval(() => {
-            install();
-            tries += 1;
-            if (tries > 10) clearInterval(t);
-          }, 200);
-        })();
-        </script>
-        """,
-        unsafe_allow_html=True,
-    )
+      // run now + keep rebinding as Streamlit rerenders
+      bind();
+      const obs = new MutationObserver(bind);
+      obs.observe(root.body, { childList: true, subtree: true });
+    })();
+    </script>
+    """, unsafe_allow_html=True)
 
 
 def render_app_header(compact: bool = False):
