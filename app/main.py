@@ -269,14 +269,11 @@ div[data-testid="stButton"] > button{
 
 /* ---------------------------------
    NAV FIX (small screens)
-   Keep single-row nav without vertical-letter stacking:
-   - collapse spacer columns
-   - enforce min widths for prev/mid/next
-   - allow horizontal scroll instead of squeezing
+   Option B: Prev on left, Next/End on right
 ---------------------------------- */
 @media (max-width: 720px){
 
-  /* Target the nav row that contains your 5 columns */
+  /* Nav row stays single-line with horizontal scroll if needed */
   div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
   div[data-testid="stHorizontalBlock"]{
     display: flex !important;
@@ -284,48 +281,49 @@ div[data-testid="stButton"] > button{
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch !important;
     gap: 16px !important;
-    padding-bottom: 6px !important; /* room for scroll bar on some devices */
+    padding-bottom: 6px !important;
   }
 
-  /* Make each column behave like a flex item we can size */
+  /* Each column behaves as a flex item */
   div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
   div[data-testid="column"]{
     flex: 0 0 auto !important;
     min-width: 0 !important;
   }
 
-  /* Collapse the spacer columns (1st and 5th) so they stop squeezing the real content */
+  /* Collapse spacer columns (1st and 5th) */
   div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
   div[data-testid="column"]:nth-child(1),
   div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
   div[data-testid="column"]:nth-child(5){
-    flex: 0 0 0px !important;
-    width: 0px !important;
-    min-width: 0px !important;
+    flex: 0 0 0 !important;
+    width: 0 !important;
+    min-width: 0 !important;
     padding: 0 !important;
     margin: 0 !important;
+    overflow: hidden !important;
   }
 
-  /* Force usable widths for the actual nav columns */
-  /* 2nd = Previous */
-  div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
-  div[data-testid="column"]:nth-child(2){
-    min-width: 150px !important;
-  }
-
-  /* 3rd = End-of-case */
+  /* Hide middle column completely on small screens */
   div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
   div[data-testid="column"]:nth-child(3){
-    min-width: 180px !important;
+    flex: 0 0 0 !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
   }
 
-  /* 4th = Next */
+  /* Give usable width to Prev and Next / End */
+  div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
+  div[data-testid="column"]:nth-child(2),
   div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
   div[data-testid="column"]:nth-child(4){
-    min-width: 150px !important;
+    min-width: 160px !important;
   }
 
-  /* Ensure buttons/pill fill their column width cleanly */
+  /* Buttons fill their column cleanly */
   div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
   div[data-testid="stButton"] > button{
     width: 100% !important;
