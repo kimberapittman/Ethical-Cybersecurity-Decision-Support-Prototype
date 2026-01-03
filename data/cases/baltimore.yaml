@@ -82,16 +82,17 @@ constraints:
   - The city lacked an incident-specific continuity plan, resulting in reliance on ad-hoc workarounds during early recovery efforts.
 
 
-decision:
-  - Additional municipal systems were disconnected as a precautionary measure while the scope of the ransomware deployment was assessed.
+decision_outcome:
+  decision:
+    - Additional municipal systems were disconnected as a precautionary measure while the scope of the ransomware deployment was assessed.
 
 
-outcomes_implications:
-  - More than 10,000 city employees lost access to email accounts.
-  - Online payment systems for water bills, property taxes, and vehicle citations were disabled.
-  - Departments implemented manual workarounds, including in-person payment processing and paper recordkeeping.
-  - Real-estate transactions were delayed due to inaccessibility of property records and lien certification systems.
-  - The Department of Public Works was unable to bill over 14,000 customers for sewer charges during the outage.
-  - More than 1,500 home sales were stalled due to lien certification delays.
-  - Recovery progressed unevenly, and the incident contributed to approximately $18.2 million in associated costs.
-  - The scale and duration of service disruptions affected public trust and had downstream implications for institutional legitimacy.
+  outcomes_implications:
+    - More than 10,000 city employees lost access to email accounts.
+    - Online payment systems for water bills, property taxes, and vehicle citations were disabled.
+    - Departments implemented manual workarounds, including in-person payment processing and paper recordkeeping.
+    - Real-estate transactions were delayed due to inaccessibility of property records and lien certification systems.
+    - The Department of Public Works was unable to bill over 14,000 customers for sewer charges during the outage.
+    - More than 1,500 home sales were stalled due to lien certification delays.
+    - Recovery progressed unevenly, and the incident contributed to approximately $18.2 million in associated costs.
+    - The scale and duration of service disruptions affected public trust and had downstream implications for institutional legitimacy.

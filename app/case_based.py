@@ -70,18 +70,18 @@ def _html_block(s: str) -> str:
 def _step_tile_close():
     st.markdown("</div>", unsafe_allow_html=True)
 
-def _bullets_html(value) -> str:
-    if value is None:
-        return "<div class='wt-tbd'>TBD</div>"
-
-    if isinstance(value, list):
-        if not value:
+    def _bullets_html(value) -> str:
+        if value is None:
             return "<div class='wt-tbd'>TBD</div>"
-        items = "".join(f"<li>{html.escape(str(item))}</li>" for item in value)
-        return f"<ul class='wt-list'>{items}</ul>"
 
-    # plain string
-    return f"<div class='wt-text'>{html.escape(str(value))}</div>"
+        if isinstance(value, list):
+            if not value:
+                return "<div class='wt-tbd'>TBD</div>"
+            items = "".join(f"<li>{html.escape(str(item))}</li>" for item in value)
+            return f"<ul class='wt-list'>{items}</ul>"
+
+        # plain string
+        return f"<div class='wt-text'>{html.escape(str(value))}</div>"
     
 def render_case(case_id: str):
     # ==========================================================
@@ -390,7 +390,7 @@ def render_case(case_id: str):
 
         elif step == 8:
             title = "8. Decision"
-            body = _bullets_html(case["decision"].get("decision"))
+            body = _bullets_html(case["decision_outcome"].get("decision"))
             _render_step_tile_html(title, body)
 
 
