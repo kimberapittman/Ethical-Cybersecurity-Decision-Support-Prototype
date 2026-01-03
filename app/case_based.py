@@ -70,7 +70,19 @@ def _html_block(s: str) -> str:
 def _step_tile_close():
     st.markdown("</div>", unsafe_allow_html=True)
 
+def _bullets_html(value) -> str:
+    if value is None:
+        return "<div class='wt-tbd'>TBD</div>"
 
+    if isinstance(value, list):
+        if not value:
+            return "<div class='wt-tbd'>TBD</div>"
+        items = "".join(f"<li>{html.escape(str(item))}</li>" for item in value)
+        return f"<ul class='wt-list'>{items}</ul>"
+
+    # plain string
+    return f"<div class='wt-text'>{html.escape(str(value))}</div>"
+    
 def render_case(case_id: str):
     # ==========================================================
     # VIEW STATE (default to "select" to avoid dropdown + open button)
@@ -215,18 +227,6 @@ def render_case(case_id: str):
                 unsafe_allow_html=True,
             )
 
-            def _bullets_html(value) -> str:
-                if value is None:
-                    return "<div class='wt-tbd'>TBD</div>"
-
-                if isinstance(value, list):
-                    if not value:
-                        return "<div class='wt-tbd'>TBD</div>"
-                    items = "".join(f"<li>{html.escape(str(item))}</li>" for item in value)
-                    return f"<ul class='wt-list'>{items}</ul>"
-
-                # plain string
-                return f"<div class='wt-text'>{html.escape(str(value))}</div>"
 
         st.progress(step / 9.0)
 
