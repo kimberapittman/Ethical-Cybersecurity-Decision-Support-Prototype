@@ -293,7 +293,34 @@ def _build_pdf(title: str, lines: list[str]) -> BytesIO:
     buffer.seek(0)
     return buffer
 
+def _render_open_header(step: int):
+    step_title = OE_STEP_TITLES.get(step, "Open-Ended Mode")
 
+    st.markdown(
+        f"""
+        <div style="text-align:center; margin-top: 0;">
+        <h2 style="margin: 0 0 0.25rem 0;">{step_title}</h2>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown(
+        """
+        <hr style='
+            margin: 14px 0 20px 0;
+            border: none;
+            height: 2px;
+            background: linear-gradient(
+                90deg,
+                rgba(76,139,245,0.15),
+                rgba(76,139,245,0.55),
+                rgba(76,139,245,0.15)
+            );
+        '>
+        """,
+        unsafe_allow_html=True,
+    )
 def render_open_ended():
     # ==========================================================
     # WALKTHROUGH STATE (single flow, no gate)
@@ -304,39 +331,9 @@ def render_open_ended():
 
     total_steps = OE_TOTAL_STEPS
 
-
-    st.progress(step / float(total_steps))
     _render_open_header(step)
+    st.progress(step / float(total_steps))
     st.caption(f"Step {step} of {total_steps}")
-
-    def _render_open_header(step: int):
-        step_title = OE_STEP_TITLES.get(step, "Open-Ended Mode")
-
-        st.markdown(
-            f"""
-            <div style="text-align:center; margin-top: 0;">
-            <h2 style="margin: 0 0 0.25rem 0;">{step_title}</h2>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-        st.markdown(
-            """
-            <hr style='
-                margin: 14px 0 20px 0;
-                border: none;
-                height: 2px;
-                background: linear-gradient(
-                    90deg,
-                    rgba(76,139,245,0.15),
-                    rgba(76,139,245,0.55),
-                    rgba(76,139,245,0.15)
-                );
-            '>
-            """,
-            unsafe_allow_html=True,
-        )
 
     def _render_step_tile_html(body_html: str):
         st.markdown(
@@ -354,7 +351,7 @@ def render_open_ended():
     # ==========================================================
     if step == 1:
         _render_step_tile_html(
-                "Capture the triggering condition and key events that created the decision context."
+                "Capture the triggering condition and key events that created the decision context. "
                 "Examples are provided to mirror Case-Based Mode."
         )
 
@@ -735,7 +732,7 @@ def render_open_ended():
     # ==========================================================
     # NAVIGATION (match Case-Based layout + anchor)
     # ==========================================================
-    st.markdown('<div class="cb-nav-anchor"></div>', unsafe_allow_html=True)
+    st.markdown('<div class="oe-nav-anchor"></div>', unsafe_allow_html=True)
 
     sp_l, col_prev, col_mid, col_next, sp_r = st.columns([1, 3, 2, 3, 1], gap="large")
 
