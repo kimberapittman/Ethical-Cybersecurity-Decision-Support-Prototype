@@ -939,78 +939,102 @@ def _render_landing_page():
     st.markdown("""
     <script>
     (function () {
-      const FOOTER_H = 56;  // match --disclaimer-h
-      const PAD = 14;       // breathing room above footer
+      const FOOTER_H = 56;   // matches --disclaimer-h
+      const PAD = 14;
 
-      function getMainScroller() {
-        // Your app scrolls inside stMain (per your earlier checks)
-        return document.querySelector('section[data-testid="stMain"]') || window;
+      function isScrollable(el) {
+        if (!el) return false;
+        const s = getComputedStyle(el);
+        const oy = s.overflowY;
+        return (oy === "auto" || oy === "scroll") && el.scrollHeight > el.clientHeight + 2;
       }
 
-      function scrollIntoViewIfNeeded(el) {
-        if (!el) return;
+      function getScrollParent(el) {
+        // Walk up DOM to find the actual scroller
+        let p = el;
+        while (p && p !== document.body) {
+          if (isScrollable(p)) return p;
+          p = p.parentElement;
+        }
+        // Fallbacks
+        const main = document.querySelector('section[data-testid="stMain"]');
+        if (isScrollable(main)) return main;
+        return window;
+      }
 
-        const scroller = getMainScroller();
+      function scrollSoBottomVisible(target) {
+        if (!target) return;
+
+        const scroller = getScrollParent(target);
         const isWindow = (scroller === window);
 
-        const rect = el.getBoundingClientRect();
+        const rect = target.getBoundingClientRect();
         const visibleBottom = window.innerHeight - FOOTER_H - PAD;
 
-        // If the bottom is hidden behind the footer, scroll down
-        if (rect.bottom > visibleBottom) {
-          const delta = rect.bottom - visibleBottom;
-
-          if (isWindow) {
-            window.scrollBy({ top: delta, behavior: "smooth" });
-          } else {
-            scroller.scrollBy({ top: delta, behavior: "smooth" });
-          }
+        // If bottom is below visible area, scroll down by the delta
+        const deltaDown = rect.bottom - visibleBottom;
+        if (deltaDown > 4) {
+          if (isWindow) window.scrollBy({ top: deltaDown, behavior: "smooth" });
+          else scroller.scrollBy({ top: deltaDown, behavior: "smooth" });
         }
 
-        // If the top is above the viewport, scroll up a bit
-        if (rect.top < 0) {
-          const deltaUp = rect.top - PAD;
-          if (isWindow) {
-            window.scrollBy({ top: deltaUp, behavior: "smooth" });
-          } else {
-            scroller.scrollBy({ top: deltaUp, behavior: "smooth" });
-          }
+        // If top is above viewport, scroll up a bit
+        const deltaUp = rect.top - PAD;
+        if (deltaUp < -4) {
+          if (isWindow) window.scrollBy({ top: deltaUp, behavior: "smooth" });
+          else scroller.scrollBy({ top: deltaUp, behavior: "smooth" });
         }
       }
 
-      function wire() {
-        const root = document.querySelector('.mode-tiles') ||
-                    document.querySelector('div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)');
+      function adjustAfterOpen(d) {
+        // We retry because Streamlit/React expands content after the toggle fires
+        let tries = 0;
+        const tick = () => {
+          tries += 1;
 
+          const body = d.querySelector(".details-body") || d;
+          scrollSoBottomVisible(body);
+
+          if (tries < 8) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      }
+
+      function wireDetails(root) {
         if (!root) return;
 
-        const details = root.querySelectorAll('details');
-        details.forEach(d => {
-          if (d.__autoScrollWired) return;
-          d.__autoScrollWired = true;
+        root.querySelectorAll("details").forEach(d => {
+          if (d.__wiredAutoScroll) return;
+          d.__wiredAutoScroll = true;
 
-          d.addEventListener('toggle', () => {
+          d.addEventListener("toggle", () => {
             if (!d.open) return;
 
-            // Wait for layout to settle after expand
-            requestAnimationFrame(() => {
-              requestAnimationFrame(() => {
-                // Scroll to the *expanded body* if present, else the details
-                const target = d.querySelector('.details-body') || d;
-                scrollIntoViewIfNeeded(target);
-              });
+            // Optional accordion behavior (prevents two open panels fighting scroll)
+            root.querySelectorAll("details[open]").forEach(other => {
+              if (other !== d) other.removeAttribute("open");
             });
+
+            // Let layout settle then adjust
+            setTimeout(() => adjustAfterOpen(d), 30);
           });
         });
       }
 
-      // Run now + retry a few times because Streamlit/React mounts late
-      wire();
-      let tries = 0;
-      const t = setInterval(() => {
-        wire();
-        if (++tries > 20) clearInterval(t);
-      }, 300);
+      function getModeTilesRoot() {
+        return document.querySelector(".mode-tiles")
+          || document.querySelector('div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)');
+      }
+
+      // Initial + mutation observer because Streamlit re-renders DOM
+      function init() {
+        wireDetails(getModeTilesRoot());
+      }
+
+      init();
+
+      const obs = new MutationObserver(() => init());
+      obs.observe(document.documentElement, { childList: true, subtree: true });
     })();
     </script>
     """, unsafe_allow_html=True)
