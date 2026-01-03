@@ -385,12 +385,6 @@ def _build_pdf(title: str, lines: list[str]) -> BytesIO:
     buffer.seek(0)
     return buffer
 
-
-# ------------------------------
-# Open-Ended Mode UI
-# ------------------------------
-
-
 def render_open_ended():
     # ---------------- Orientation Gate ----------------
     if "oe_started" not in st.session_state:
