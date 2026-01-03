@@ -750,4 +750,4 @@ def render_open_ended():
                 st.session_state["oe_step"] = step + 1
                 _safe_rerun()
         else:
-            st.button("End of Walkthrough", key="oe_end", disabled=True, use_container_width=True)
+            st.button("generate decision rationale", key="oe_end", disabled=True, use_container_width=True)
