@@ -71,15 +71,6 @@ section[data-testid="stSidebar"] span{
   word-break: break-word !important;
   white-space: normal !important;
 }
-
-/* === Header container === */
-.block-container > div:first-child{
-  border-radius: 14px;
-  padding: 2px 14px 38px 14px;
-  border: 1px solid rgba(255,255,255,0.06);
-  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
-}
-
 /* =========================
    SIDEBAR DETAILS — CONNECTED PANEL
    ========================= */
@@ -94,6 +85,21 @@ section[data-testid="stSidebar"] span{
   border-radius: 14px !important;
   padding: 0 !important;
   overflow: hidden !important; /* critical */
+}
+/* Sidebar chevron */
+.sb-details > summary::-webkit-details-marker{ display:none !important; }
+.sb-details > summary::marker{ content:"" !important; }
+/* Inner body spacing */
+.sb-details-body{
+  padding: 10px 6px 0 6px;
+}
+
+/* === Header container === */
+.block-container > div:first-child{
+  border-radius: 14px;
+  padding: 2px 14px 38px 14px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
 }
 
 /* Summary header */
