@@ -84,11 +84,10 @@ constraints:
   - Diagnostic access to portions of the AI platform required vendor involvement.
   - Municipal risk-governance policies emphasized precaution in critical infrastructure operations.
 
+
 decision_outcome:
   decision: 
-    - Riverton maintained the AI-initiated restrictions while analysts reviewed the anomalous
-    activity, then restored full manual control after diagnostics and vendor consultation
-    indicated a misconfiguration rather than malicious activity.
+    - Riverton maintained the AI-initiated restrictions while analysts reviewed the anomalous activity, then restored full manual control after diagnostics and vendor consultation indicated a misconfiguration rather than malicious activity.
 
   outcomes_implications:
     - The precautionary posture preserved system safety during uncertainty.
