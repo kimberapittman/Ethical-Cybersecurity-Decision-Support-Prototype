@@ -768,7 +768,7 @@ def render_open_ended():
             st.session_state["oe_step"] = step + 1
             _safe_rerun()
         else:
-            if st.button("Generate PDF", key="oe_generate_summary_nav", use_container_width=False):
+            if st.button("Generate PDF", key="oe_generate_summary_nav", use_container_width=True):
                 st.session_state["oe_generate"] = True
                 _safe_rerun()
 

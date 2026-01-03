@@ -263,172 +263,131 @@ div[data-testid="stCaption"]{
 }
 
 /* =========================
-   WALKTHROUGH NAV WIDTH + SYMMETRY
+   BUTTONS — GLOBAL
    ========================= */
-
-div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor)){
-  max-width: 980px !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-  width: 100% !important;
-  margin-bottom: 12px !important;
-  margin-top: 12px !important;
-}
-
-div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
 div[data-testid="stButton"] > button{
   width: 100% !important;
-}
+  min-width: 100% !important;
+  box-sizing: border-box !important;
 
-/* ---------------------------------
-   NAV FIX (small screens)
----------------------------------- */
-@media (max-width: 720px){
+  padding: 0.7rem 1rem !important;
+  border-radius: 12px !important;
 
-  /* Nav row stays single-line with horizontal scroll if needed */
-  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
-  div[data-testid="stHorizontalBlock"]{
-    display: flex !important;
-    flex-wrap: nowrap !important;
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-    gap: 16px !important;
-    padding-bottom: 6px !important;
-  }
+  background: linear-gradient(135deg, var(--brand), var(--brand-2)) !important;
+  color: white !important;
 
-  /* Each column behaves as a flex item */
-  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
-  div[data-testid="column"]{
-    flex: 0 0 auto !important;
-    min-width: 0 !important;
-  }
-
-  /* Collapse spacer columns (1st and 5th) */
-  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
-  div[data-testid="column"]:nth-child(1),
-  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
-  div[data-testid="column"]:nth-child(5){
-    flex: 0 0 0 !important;
-    width: 0 !important;
-    min-width: 0 !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    overflow: hidden !important;
-  }
-
-/* On narrow screens, revert nav buttons to full-width for readability */
-@media (max-width: 720px){
-  div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor) div[data-testid="stButton"] > button,
-  div[data-testid="stVerticalBlock"]:has(.oe-nav-anchor) div[data-testid="stButton"] > button{
-    width: 100% !important;
-    min-width: 100% !important;
-  }
-
-  div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor) div[data-testid="stButton"],
-  div[data-testid="stVerticalBlock"]:has(.oe-nav-anchor) div[data-testid="stButton"]{
-    justify-content: stretch !important;
-  }
-}
-
-  /* Hide middle column completely on small screens */
-  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
-  div[data-testid="column"]:nth-child(3){
-    flex: 0 0 0 !important;
-    width: 0 !important;
-    min-width: 0 !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    overflow: hidden !important;
-  }
-
-  /* Give usable width to Prev and Next / End */
-  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
-  div[data-testid="column"]:nth-child(2),
-  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
-  div[data-testid="column"]:nth-child(4){
-    min-width: 160px !important;
-  }
-
-  /* Buttons fill their column cleanly */
-  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
-  div[data-testid="stButton"] > button{
-    width: 100% !important;
-    min-width: 100% !important;
-    display: inline-flex !important;
-    justify-content: center !important;
-  }
-}
-
-/* Back to Mode Selection — size to text cleanly */
-div[data-testid="stButton"] > button[kind="secondary"]{
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-
-  width: auto !important;
-  min-width: unset !important;
-
-  padding: 0.45rem 0.9rem !important;
-  line-height: 1.2 !important;
-
-  white-space: nowrap !important;
-}
-
-/* =========================
-   NAV BUTTONS: size to text (pill), not full-width
-   Applies ONLY inside walkthrough nav rows
-   ========================= */
-
-div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor) div[data-testid="stButton"] > button,
-div[data-testid="stVerticalBlock"]:has(.oe-nav-anchor) div[data-testid="stButton"] > button{
-  width: auto !important;
-  min-width: unset !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  white-space: nowrap !important;
-}
-
-/* Left align the left button column */
-div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor) div[data-testid="column"]:nth-child(2) div[data-testid="stButton"],
-div[data-testid="stVerticalBlock"]:has(.oe-nav-anchor) div[data-testid="column"]:nth-child(2) div[data-testid="stButton"]{
-  display: flex !important;
-  justify-content: flex-start !important;
-}
-
-/* Right align the right button column */
-div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor) div[data-testid="column"]:nth-child(4) div[data-testid="stButton"],
-div[data-testid="stVerticalBlock"]:has(.oe-nav-anchor) div[data-testid="column"]:nth-child(4) div[data-testid="stButton"]{
-  display: flex !important;
-  justify-content: flex-end !important;
-}
-
-/* =========================
-   CLICKABLE NAV BUTTON AFFORDANCE
-   (match tile blue rim)
-   ========================= */
-
-/* Apply blue rim ONLY to real buttons */
-div[data-testid="stButton"] > button{
   border: 1px solid rgba(76,139,245,0.55) !important;
   box-shadow:
     0 0 0 1px rgba(76,139,245,0.35),
     0 10px 20px rgba(76,139,245,0.35) !important;
+
+  transition: transform .06s ease, box-shadow .15s ease, filter .15s ease !important;
+  white-space: nowrap !important;
 }
 
-/* Stronger affordance on hover */
 div[data-testid="stButton"] > button:hover{
+  transform: translateY(-1px) !important;
+  filter: brightness(1.05) !important;
   border-color: rgba(76,139,245,0.85) !important;
   box-shadow:
     0 0 0 2px rgba(76,139,245,0.55),
     0 14px 26px rgba(76,139,245,0.45) !important;
 }
 
-/* Subtle press feedback */
 div[data-testid="stButton"] > button:active{
+  transform: translateY(0) !important;
   box-shadow:
     0 0 0 1px rgba(76,139,245,0.45),
     0 8px 16px rgba(76,139,245,0.30) !important;
+}
+
+/* Ghost button (Back to Mode Selection) */
+div[data-testid="stButton"] > button[kind="secondary"]{
+  background: rgba(255,255,255,0.06) !important;
+  border: 1px solid rgba(255,255,255,0.14) !important;
+  box-shadow: none !important;
+
+  width: auto !important;
+  min-width: unset !important;
+  padding: 0.45rem 0.9rem !important;
+  line-height: 1.2 !important;
+}
+
+div[data-testid="stButton"] > button[kind="secondary"]:hover{
+  transform: none !important;
+  filter: none !important;
+  box-shadow: none !important;
+}
+
+/* Disabled */
+div[data-testid="stButton"] > button:disabled{
+  opacity: 0.55 !important;
+  background: rgba(255,255,255,0.10) !important;
+  border: 1px solid rgba(255,255,255,0.22) !important;
+  color: var(--text-strong) !important;
+  box-shadow: none !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+/* =========================
+   WALKTHROUGH NAV (2-column, deterministic)
+   ========================= */
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor)){
+  max-width: 980px !important;
+  margin: 12px auto !important;
+  width: 100% !important;
+}
+
+/* Force the nav row to left/right */
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
+div[data-testid="stHorizontalBlock"]{
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  gap: 16px !important;
+}
+
+/* Two columns split the row */
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
+div[data-testid="column"]{
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+}
+
+/* Buttons in nav are pill-sized */
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
+div[data-testid="stButton"]{
+  display: flex !important;
+}
+
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
+div[data-testid="stButton"] > button{
+  width: auto !important;
+  min-width: unset !important;
+}
+
+/* Left button left-aligned; right button right-aligned */
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
+div[data-testid="column"]:nth-child(1) div[data-testid="stButton"]{
+  justify-content: flex-start !important;
+}
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
+div[data-testid="column"]:nth-child(2) div[data-testid="stButton"]{
+  justify-content: flex-end !important;
+}
+
+/* Narrow screens: nav buttons go full-width */
+@media (max-width: 720px){
+  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
+  div[data-testid="stButton"] > button{
+    width: 100% !important;
+    min-width: 100% !important;
+  }
+  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
+  div[data-testid="stButton"]{
+    justify-content: stretch !important;
+  }
 }
 
 /* === Inputs === */

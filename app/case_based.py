@@ -441,7 +441,7 @@ def render_case(case_id: str):
                     "End of Case",
                     key=f"cbnav_end_{case_id}",
                     disabled=True,
-                    use_container_width=False
+                    use_container_width=True
                 )
 
 
