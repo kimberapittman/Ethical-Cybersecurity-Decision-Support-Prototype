@@ -85,7 +85,7 @@ def _load_core_data():
     return csf, crosswalk, pfce, constraints
 
 OE_STEP_TITLES = {
-    1: "1. Triggering Condition and Key Events",
+    1: "1. Triggering Condition",
     2: "2. Decision Context",
     3: "3. NIST CSF 2.0 Mapping",
     4: "4. PFCE Analysis and Ethical Tension",
@@ -372,6 +372,13 @@ def render_open_ended():
                 An AI system flagged anomalous control activity and imposed restrictions pending human review.
                 """
             )
+            
+        st.markdown(
+            "<div style='margin: 8px 0 6px 0; font-weight:600; opacity:0.85;'>"
+            "Document the triggering condition below."
+            "</div>",
+            unsafe_allow_html=True,
+        )
 
 
         st.selectbox(
@@ -381,7 +388,7 @@ def render_open_ended():
         )
 
         st.text_area(
-            "Triggering condition and key events (brief)",
+            "Triggering condition",
             key="oe_gate_triggering_condition",
             height=150,
             placeholder=(
