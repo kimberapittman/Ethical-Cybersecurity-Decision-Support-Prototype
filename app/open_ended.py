@@ -221,8 +221,7 @@ def guess_csf_function(decision_text: str):
 TRIGGER_EXAMPLE_OPTIONS = [
     "Example (Baltimore): Ransomware deployed across municipal systems; service disruption and containment decisions.",
     "Example (San Diego): Smart streetlight footage accessed for law-enforcement use beyond documented program scope.",
-    "Example (Riverton): AI system flagged anomalous control activity; imposed restrictions pending review.",
-    "Other / enter your own triggering condition",
+    "Example (Riverton): AI system flagged anomalous control activity; imposed restrictions pending review."
 ]
 
 TRIGGER_TYPE_OPTIONS = [
@@ -351,12 +350,11 @@ def render_open_ended():
     # ==========================================================
     if step == 1:
         _render_step_tile_html(
-                "Capture the triggering condition and key events that created the decision context. "
-                "Examples are provided to mirror Case-Based Mode."
+                "Identify the event or condition that disrupted normal operations and created pressure to act. Focus on what changed, what uncertainty emerged, and why a decision became necessary."
         )
 
         st.selectbox(
-            "Example seed (optional)",
+            "Example",
             options=TRIGGER_EXAMPLE_OPTIONS,
             key="oe_gate_trigger_example",
         )
@@ -629,7 +627,7 @@ def render_open_ended():
 
             st.markdown("**Triggering condition and key events**")
             if trigger_example:
-                st.write(f"Example seed: {trigger_example}")
+                st.write(f"Example: {trigger_example}")
             st.write(f"Trigger type: {trigger_type or '—'}")
             st.write(triggering_condition or "—")
 
@@ -682,7 +680,7 @@ def render_open_ended():
                 f"Timestamp: {ts}",
                 "",
                 "Triggering condition and key events",
-                f"Example seed: {trigger_example or '—'}",
+                f"Example: {trigger_example or '—'}",
                 f"Trigger type: {trigger_type or '—'}",
                 triggering_condition or "—",
                 "",

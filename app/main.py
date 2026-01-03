@@ -131,7 +131,7 @@ section[data-testid="stSidebar"] span{
 /* === Header container === */
 .block-container > div:first-child{
   border-radius: 14px;
-  padding: 2px 14px 42px 14px;
+  padding: 2px 14px 38px 14px;
   border: 1px solid rgba(255,255,255,0.06);
   background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
 }
