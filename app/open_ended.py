@@ -349,8 +349,14 @@ def render_open_ended():
     # STEP 1: ORIENTATION + TRIGGER (was the old gate)
     # ==========================================================
     if step == 1:
-        _render_step_tile_html(
-                "Identify the event or condition that disrupted normal operations and created pressure to act. Focus on what changed, what uncertainty emerged, and why a decision became necessary."
+        st.markdown(
+            """
+            <div style="opacity:0.8; max-width:820px; margin:0 auto 12px auto;">
+            Identify the event or condition that disrupted normal operations and created pressure to act. 
+            Focus on what changed, what uncertainty emerged, and why a decision became necessary.
+            </div>
+            """,
+            unsafe_allow_html=True,
         )
 
         st.selectbox(
