@@ -632,11 +632,16 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) .listbox{
   height: 100% !important;
 }
 
-/* Fixed height ONLY for Select-a-Mode */
-.mode-tiles .listbox{ height: 460px !important; }
+/* Fixed height ONLY when vertical space allows it */
+.mode-tiles .listbox{
+  height: 460px !important;
+}
 
-@media (max-width: 900px){
-  .mode-tiles .listbox{ height: auto !important; }
+/* Disable fixed height on short viewports (laptops) */
+@media (max-height: 900px){
+  .mode-tiles .listbox{
+    height: auto !important;
+  }
 }
 
 /* === Hide Streamlit chrome === */
@@ -674,27 +679,38 @@ div[data-testid="stMainBlockContainer"]{
   flex-direction: column !important;
 }
 
+:root{
+  --disclaimer-h: 56px; /* adjust once if you want it taller */
+}
+
+/* Footer: deterministic height */
 .disclaimer-footer{
   position: fixed !important;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 10px 0 10px 0 !important;
-  background: transparent !important;
-  border: 0 !important;
-  box-shadow: none !important;
+  left: 0; right: 0; bottom: 0;
+
+  height: var(--disclaimer-h) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  padding: 0 !important;     /* critical: stop height drifting */
+  margin: 0 !important;
+
+  background: rgba(11,16,32,0.92) !important;
   border-top: 1px solid rgba(255,255,255,0.10) !important;
+
   text-align: center;
   color: rgba(229,231,235,0.55) !important;
   font-size: 0.85rem !important;
   font-weight: 500 !important;
   letter-spacing: 0.01em !important;
-  opacity: 0.85 !important;
+
   z-index: 9999 !important;
 }
 
+/* Reserve the same space so content never goes under it */
 div[data-testid="stMainBlockContainer"]{
-  padding-bottom: 3.25rem !important;
+  padding-bottom: calc(var(--disclaimer-h) + 12px) !important;
 }
 
 /* =========================
