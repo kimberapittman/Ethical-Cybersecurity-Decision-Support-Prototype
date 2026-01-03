@@ -1,7 +1,7 @@
 import streamlit as st
 from datetime import datetime
-
 from io import BytesIO
+
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import LETTER
 import textwrap
@@ -15,7 +15,19 @@ from logic.loaders import (
 from logic.reasoning import apply_crosswalk, summarize_pfce
 
 
-THIN_SEPARATOR = "<hr style='margin: 12px 0 16px 0; opacity: 0.35;'>"
+def _safe_rerun():
+    try:
+        if hasattr(st, "rerun"):
+            st.rerun()
+        elif hasattr(st, "experimental_rerun"):
+            st.experimental_rerun()
+    except Exception:
+        pass
+
+
+def _html_block(s: str) -> str:
+    return "\n".join(line.lstrip() for line in s.splitlines())
+
 
 # Practitioner-friendly NIST CSF 2.0 function prompts for Open-Ended Mode
 CSF_FUNCTION_OPTIONS = {
@@ -64,22 +76,6 @@ CSF_FUNCTION_OPTIONS = {
 }
 
 
-def _safe_rerun():
-    """Compat helper for rerunning the app across Streamlit versions."""
-    try:
-        if hasattr(st, "rerun"):
-            st.rerun()
-        elif hasattr(st, "experimental_rerun"):
-            st.experimental_rerun()
-    except Exception:
-        pass
-
-
-# ------------------------------
-# Data loading / indexing helpers
-# ------------------------------
-
-
 @st.cache_data
 def _load_core_data():
     csf = load_csf_data()
@@ -93,7 +89,6 @@ CSF_DATA, PFCE_CROSSWALK, PFCE_PRINCIPLES, GOV_CONSTRAINTS_RAW = _load_core_data
 PFCE_NAMES = [p.get("name", "") for p in PFCE_PRINCIPLES if p.get("name")]
 
 
-# PFCE (original-style) definitions, used as practitioner prompts
 PFCE_DEFINITIONS = {
     "Beneficence": (
         "Cybersecurity technologies should be used to benefit humans, promote human well-being, "
@@ -120,15 +115,6 @@ PFCE_DEFINITIONS = {
 
 
 def _index_csf(csf_raw):
-    """
-    Normalize CSF data into three structures:
-
-    - FUNC_OPTIONS:          [(func_id, func_label), ...]
-    - CATS_BY_FUNC[func_id]: [(cat_id, cat_label), ...]
-    - SUBS_BY_CAT[cat_id]:   [(sub_id, sub_label), ...]
-    """
-
-    # Accept either {"functions": [...]} or [...] as the top level
     if isinstance(csf_raw, dict):
         functions = csf_raw.get("functions", []) or []
     elif isinstance(csf_raw, list):
@@ -147,7 +133,6 @@ def _index_csf(csf_raw):
 
         func_title = fn.get("title") or fn.get("name") or ""
         func_label = f"{func_id} – {func_title}" if func_title else func_id
-
         func_options.append((func_id, func_label))
 
         categories = fn.get("categories", []) or []
@@ -164,12 +149,10 @@ def _index_csf(csf_raw):
 
             outcomes = cat.get("outcomes") or cat.get("subcategories") or []
             sub_tuples = []
-
             for item in outcomes:
                 sub_id = item.get("id")
                 if not sub_id:
                     continue
-
                 desc = item.get("outcome") or item.get("description") or ""
                 sub_label = f"{sub_id} – {desc}" if desc else sub_id
                 sub_tuples.append((sub_id, sub_label))
@@ -185,7 +168,6 @@ FUNC_OPTIONS, CATS_BY_FUNC, SUBS_BY_CAT = _index_csf(CSF_DATA)
 
 
 def _normalize_constraints(raw):
-    """Ensure constraints is a flat list of strings."""
     if isinstance(raw, list):
         return [str(x) for x in raw]
     if isinstance(raw, dict):
@@ -198,91 +180,17 @@ def _normalize_constraints(raw):
 GOV_CONSTRAINTS = _normalize_constraints(GOV_CONSTRAINTS_RAW)
 
 
-# ------------------------------
-# Hinting logic for CSF Function
-# ------------------------------
-
-
 CSF_HINT_KEYWORDS = {
-    "GV": [
-        "policy",
-        "policies",
-        "authority",
-        "approval",
-        "oversight",
-        "governance",
-        "charter",
-        "compliance",
-        "board",
-        "council",
-    ],
-    "ID": [
-        "inventory",
-        "inventories",
-        "classify",
-        "classification",
-        "asset",
-        "assets",
-        "dependency",
-        "dependencies",
-        "risk register",
-        "risk assessment",
-    ],
-    "PR": [
-        "access",
-        "permission",
-        "privilege",
-        "authorization",
-        "encrypt",
-        "encryption",
-        "credential",
-        "password",
-        "data protection",
-        "control",
-        "controls",
-        "configuration",
-    ],
-    "DE": [
-        "monitor",
-        "monitoring",
-        "alert",
-        "alerts",
-        "anomaly",
-        "anomalies",
-        "flagged",
-        "suspicious",
-        "detection",
-        "log review",
-    ],
-    "RS": [
-        "disconnect",
-        "isolate",
-        "contain",
-        "mitigate",
-        "shutdown",
-        "shut down",
-        "take offline",
-        "incident response",
-        "triage",
-        "manual control",
-        "disable automation",
-        "block traffic",
-    ],
-    "RC": [
-        "restore",
-        "restoration",
-        "rebuild",
-        "recover",
-        "back online",
-        "return to operations",
-        "post-incident review",
-        "lessons learned",
-    ],
+    "GV": ["policy", "policies", "authority", "approval", "oversight", "governance", "charter", "compliance", "board", "council"],
+    "ID": ["inventory", "inventories", "classify", "classification", "asset", "assets", "dependency", "dependencies", "risk register", "risk assessment"],
+    "PR": ["access", "permission", "privilege", "authorization", "encrypt", "encryption", "credential", "password", "data protection", "control", "controls", "configuration"],
+    "DE": ["monitor", "monitoring", "alert", "alerts", "anomaly", "anomalies", "flagged", "suspicious", "detection", "log review"],
+    "RS": ["disconnect", "isolate", "contain", "mitigate", "shutdown", "shut down", "take offline", "incident response", "triage", "manual control", "disable automation", "block traffic"],
+    "RC": ["restore", "restoration", "rebuild", "recover", "back online", "return to operations", "post-incident review", "lessons learned"],
 }
 
 
-def guess_csf_function(decision_text: str) -> str | None:
-    """Best-effort, non-prescriptive guess of the primary CSF function from decision wording."""
+def guess_csf_function(decision_text: str):
     if not decision_text:
         return None
 
@@ -298,11 +206,6 @@ def guess_csf_function(decision_text: str) -> str | None:
         return None
 
     return max(scores, key=scores.get)
-
-
-# ------------------------------
-# Option vocabularies
-# ------------------------------
 
 
 TRIGGER_EXAMPLE_OPTIONS = [
@@ -350,11 +253,6 @@ ETHICAL_CONDITION_TAG_OPTIONS = [
 ]
 
 
-# ------------------------------
-# PDF export helper
-# ------------------------------
-
-
 def _build_pdf(title: str, lines: list[str]) -> BytesIO:
     buffer = BytesIO()
     c = canvas.Canvas(buffer, pagesize=LETTER)
@@ -385,20 +283,54 @@ def _build_pdf(title: str, lines: list[str]) -> BytesIO:
     buffer.seek(0)
     return buffer
 
-def render_open_ended():
-    # ---------------- Orientation Gate ----------------
-    if "oe_started" not in st.session_state:
-        st.session_state["oe_started"] = False
 
-    if not st.session_state["oe_started"]:
-        st.markdown("### Open-Ended Mode: Structured Reasoning Walkthrough")
-        st.caption(
-            "Begin by capturing the triggering condition that created the decision context. "
-            "Examples are provided to mirror the Case-Based Mode cases."
+def render_open_ended():
+    # ==========================================================
+    # WALKTHROUGH STATE (single flow, no gate)
+    # ==========================================================
+    if "oe_step" not in st.session_state:
+        st.session_state["oe_step"] = 1
+    step = st.session_state["oe_step"]
+
+    total_steps = 6
+
+    st.markdown(
+        _html_block(
+            """
+            <div style='text-align:center; margin-top: 0; margin-bottom: 0;'>
+              <h2 style='margin:0 0 0.1rem 0; display:inline-block;'>Open-Ended Mode</h2>
+            </div>
+            <div class="walkthrough-scope"></div>
+            """
+        ),
+        unsafe_allow_html=True,
+    )
+
+    st.progress(step / float(total_steps))
+    st.caption(f"Step {step} of {total_steps}")
+
+    def _render_step_tile_html(title_html: str, body_html: str):
+        st.markdown(
+            f"""
+            <div class="listbox walkthrough-tile">
+              <div class="wt-title">{title_html}</div>
+              <div class="wt-body">{body_html}</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
         )
 
-        # single thin separator line (requested)
-        st.markdown(THIN_SEPARATOR, unsafe_allow_html=True)
+    # ==========================================================
+    # STEP 1: ORIENTATION + TRIGGER (was the old gate)
+    # ==========================================================
+    if step == 1:
+        _render_step_tile_html(
+            "1. Orientation and Triggering Condition",
+            (
+                "Capture the triggering condition and key events that created the decision context. "
+                "Examples are provided to mirror Case-Based Mode."
+            ),
+        )
 
         st.selectbox(
             "Example seed (optional)",
@@ -421,21 +353,20 @@ def render_open_ended():
                 "service disruptions emerged; containment actions considered."
             ),
         )
-        return  
 
-    # ---------------- Walkthrough ----------------
-    if "oe_step" not in st.session_state:
-        st.session_state["oe_step"] = 1
-    step = st.session_state["oe_step"]
+    # ==========================================================
+    # STEP 2: DECISION CONTEXT (was step 1)
+    # ==========================================================
+    if step == 2:
+        _render_step_tile_html(
+            "2. Decision Context",
+            "State the operational decision context in clear procedural terms. Keep it short and concrete.",
+        )
 
-    total_steps = 5
-    st.progress(step / float(total_steps))
+        st.markdown("**Triggering condition and key events (from Step 1)**")
+        st.write(st.session_state.get("oe_gate_triggering_condition", "—") or "—")
 
-
-    # ---------------- Step 1: Decision Context ----------------
-    if step == 1:
-        st.markdown("### 1. Decision Context")
-        st.caption("State the operational decision context in clear procedural terms (short).")
+        st.markdown("---")
 
         st.selectbox(
             "Primary decision context type (optional)",
@@ -453,16 +384,15 @@ def render_open_ended():
             ),
         )
 
-        suggested_func_id = guess_csf_function(decision_context)
-        st.session_state["oe_suggested_func"] = suggested_func_id
+        st.session_state["oe_suggested_func"] = guess_csf_function(decision_context)
 
-        st.markdown("---")
-
-    # ---------------- Step 2: NIST CSF 2.0 Mapping ----------------
-    if step == 2:
-        st.markdown("### 2. NIST CSF 2.0 Mapping")
-        st.caption(
-            "Use the CSF to situate the decision procedurally. This does not prescribe actions; it structures context."
+    # ==========================================================
+    # STEP 3: NIST CSF (was step 2)
+    # ==========================================================
+    if step == 3:
+        _render_step_tile_html(
+            "3. NIST CSF 2.0 Mapping",
+            "Use the CSF to situate the decision procedurally. This does not prescribe actions; it structures context.",
         )
 
         option_texts = []
@@ -483,7 +413,7 @@ def render_open_ended():
             "Which CSF function best matches your procedural situation?",
             options=option_texts,
             index=default_index,
-            key="oe_csf_choice_step2",
+            key="oe_csf_choice_step3",
         )
 
         selected_label_prefix = selected_option.split(":")[0]
@@ -530,8 +460,8 @@ def render_open_ended():
 
         pfce_auto_local = []
         if selected_sub_ids and PFCE_CROSSWALK:
-            matches = apply_crosswalk(selected_sub_ids, PFCE_CROSSWALK)
             st.markdown("#### CSF → PFCE Ethical Hints (non-prescriptive)")
+            matches = apply_crosswalk(selected_sub_ids, PFCE_CROSSWALK)
             for m in matches:
                 csf_id = m.get("csf_id", "")
                 outcome = m.get("csf_outcome", "")
@@ -550,13 +480,13 @@ def render_open_ended():
 
         st.session_state["oe_pfce_auto"] = pfce_auto_local
 
-        st.markdown("---")
-
-    # ---------------- Step 3: PFCE Analysis + Ethical Tension ----------------
-    if step == 3:
-        st.markdown("### 3. PFCE Analysis and Ethical Tension")
-        st.caption(
-            "Use the PFCE to make ethically significant conditions explicit, then state the central tension."
+    # ==========================================================
+    # STEP 4: PFCE + TENSION (was step 3)
+    # ==========================================================
+    if step == 4:
+        _render_step_tile_html(
+            "4. PFCE Analysis and Ethical Tension",
+            "Make ethically significant conditions explicit, then state the central tension as two justified obligations.",
         )
 
         st.multiselect(
@@ -565,13 +495,8 @@ def render_open_ended():
             key="oe_ethical_condition_tags",
         )
 
-        # show definitions as prompts (practitioner-friendly)
         with st.expander("PFCE principle prompts (definitions)"):
-            st.markdown(
-                "\n".join(
-                    [f"- **{k}**: {v}" for k, v in PFCE_DEFINITIONS.items()]
-                )
-            )
+            st.markdown("\n".join([f"- **{k}**: {v}" for k, v in PFCE_DEFINITIONS.items()]))
 
         st.text_area(
             "PFCE analysis (brief — what is ethically significant here?)",
@@ -583,19 +508,14 @@ def render_open_ended():
             ),
         )
 
-        st.caption(
-            "State the tension as two justified obligations that cannot both be fully fulfilled in this situation."
-        )
+        st.caption("State the tension as two justified obligations that cannot both be fully fulfilled in this situation.")
         st.text_area(
             "Ethical tension (obligation A **vs.** obligation B)",
             key="oe_ethical_tension",
             height=110,
-            placeholder=(
-                "Example: Limit spread through isolation **vs.** maintain access to essential municipal services."
-            ),
+            placeholder="Example: Limit spread through isolation **vs.** maintain access to essential municipal services.",
         )
 
-        # Principle selection (with CSF-driven suggestions, if any)
         pfce_auto_unique = []
         for p in st.session_state.get("oe_pfce_auto", []):
             if p in PFCE_NAMES and p not in pfce_auto_unique:
@@ -614,12 +534,14 @@ def render_open_ended():
             height=110,
         )
 
-        st.markdown("---")
-
-    # ---------------- Step 4: Institutional & Governance Constraints ----------------
-    if step == 4:
-        st.markdown("### 4. Institutional and Governance Constraints")
-        st.caption("Document constraints that shape or limit feasible actions or justification.")
+    # ==========================================================
+    # STEP 5: CONSTRAINTS (was step 4)
+    # ==========================================================
+    if step == 5:
+        _render_step_tile_html(
+            "5. Institutional and Governance Constraints",
+            "Document constraints that shape or limit feasible actions or justification.",
+        )
 
         st.multiselect(
             "Constraints (select any that apply)",
@@ -633,14 +555,13 @@ def render_open_ended():
             height=90,
         )
 
-        st.markdown("---")
-
-    # ---------------- Step 5: Decision + Rationale Output ----------------
-    if step == 5:
-        st.markdown("### 5. Decision (and documented rationale)")
-        st.caption(
-            "Record the decision taken or proposed in clear operational terms. "
-            "Use the output below as a structured rationale for demonstration purposes."
+    # ==========================================================
+    # STEP 6: DECISION + OUTPUT (was step 5)
+    # ==========================================================
+    if step == 6:
+        _render_step_tile_html(
+            "6. Decision and Documented Rationale",
+            "Record the decision in operational terms, then generate a structured rationale for demonstration purposes.",
         )
 
         st.text_area(
@@ -654,23 +575,14 @@ def render_open_ended():
 
         if st.button("Generate decision rationale", key="oe_generate_summary"):
             ts = datetime.now().isoformat(timespec="minutes")
-
             st.success("Decision rationale generated below.")
             st.markdown("#### Decision Rationale (Open-Ended Mode)")
             st.write(f"**Timestamp:** {ts}")
 
-            # Build label dictionaries for CSF display
             func_labels = {fid: lbl for fid, lbl in FUNC_OPTIONS}
-            cat_labels = {}
-            for fid, cats in CATS_BY_FUNC.items():
-                for cid, lbl in cats:
-                    cat_labels[cid] = lbl
-            sub_labels = {}
-            for cid, subs in SUBS_BY_CAT.items():
-                for sid, lbl in subs:
-                    sub_labels[sid] = lbl
+            cat_labels = {cid: lbl for _, cats in CATS_BY_FUNC.items() for cid, lbl in cats}
+            sub_labels = {sid: lbl for _, subs in SUBS_BY_CAT.items() for sid, lbl in subs}
 
-            # Pull values (gate + walkthrough)
             trigger_example = st.session_state.get("oe_gate_trigger_example", "")
             trigger_type = st.session_state.get("oe_gate_trigger_type", "")
             triggering_condition = st.session_state.get("oe_gate_triggering_condition", "")
@@ -746,7 +658,6 @@ def render_open_ended():
             st.markdown("**Decision**")
             st.write(decision or "—")
 
-            # Optional PDF download
             lines = [
                 f"Timestamp: {ts}",
                 "",
@@ -787,7 +698,11 @@ def render_open_ended():
                 "Decision",
                 decision or "—",
             ]
-            pdf = _build_pdf("Decision Rationale (Open-Ended Mode)", [ln for ln in lines if ln is not None])
+
+            pdf = _build_pdf(
+                "Decision Rationale (Open-Ended Mode)",
+                [ln for ln in lines if ln is not None and ln != ""],
+            )
 
             st.download_button(
                 "Download decision rationale (PDF)",
@@ -796,39 +711,25 @@ def render_open_ended():
                 mime="application/pdf",
             )
 
-        # ---------------- Navigation (Open-Ended Mode) ----------------
-        st.markdown('<div class="oe-nav-anchor"></div>', unsafe_allow_html=True)
+    # ==========================================================
+    # NAVIGATION (match Case-Based layout + anchor)
+    # ==========================================================
+    st.markdown('<div class="oe-nav-anchor"></div>', unsafe_allow_html=True)
 
-        sp_l, col_prev, col_mid, col_next, sp_r = st.columns([1, 3, 2, 3, 1], gap="large")
+    sp_l, col_prev, col_mid, col_next, sp_r = st.columns([1, 3, 2, 3, 1], gap="large")
 
-        with col_prev:
-            if step > 1 and st.button(
-                "◀ Previous",
-                key=f"oenav_prev_{step}",
-                use_container_width=True
-            ):
-                st.session_state["oe_step"] = step - 1
+    with col_prev:
+        if step > 1 and st.button("◀ Previous", key=f"oenav_prev_{step}", use_container_width=True):
+            st.session_state["oe_step"] = step - 1
+            _safe_rerun()
+
+    with col_mid:
+        pass
+
+    with col_next:
+        if step < total_steps:
+            if st.button("Next ▶", key=f"oenav_next_{step}", use_container_width=True):
+                st.session_state["oe_step"] = step + 1
                 _safe_rerun()
-
-        with col_mid:
-            pass  # keep empty for symmetry
-
-        with col_next:
-            if step < total_steps:
-                if st.button(
-                    "Next ▶",
-                    key=f"oenav_next_{step}",
-                    use_container_width=True
-                ):
-                    st.session_state["oe_step"] = step + 1
-                    _safe_rerun()
-            else:
-                # Step 5 primary action (clickable, hover-enabled)
-                if st.session_state.get("oe_generate"):
-                    st.session_state["oe_generate"] = False  # reset trigger
-
-                    ts = datetime.now().isoformat(timespec="minutes")
-                    st.success("Decision rationale generated below.")
-                    ...
-
-
+        else:
+            st.button("End of Walkthrough", key="oe_end", disabled=True, use_container_width=True)
