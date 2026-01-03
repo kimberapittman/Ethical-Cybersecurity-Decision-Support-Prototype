@@ -52,7 +52,6 @@ div[data-testid="stAppViewContainer"]{
   background: radial-gradient(1200px 600px at 10% -10%, rgba(76,139,245,0.15), transparent 60%),
               radial-gradient(900px 500px at 100% 0%, rgba(122,168,255,0.10), transparent 60%),
               var(--bg-soft);
-}
 
 /* === Sidebar === */
 section[data-testid="stSidebar"]{
@@ -231,13 +230,13 @@ div[data-testid="stButton"] > button{
   min-width: unset !important;
 }
 
-/* Left button left-aligned; right button right-aligned */
 div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
-div[data-testid="column"]:nth-child(1) div[data-testid="stButton"]{
+div[data-testid="column"]:first-child div[data-testid="stButton"]{
   justify-content: flex-start !important;
 }
+
 div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
-div[data-testid="column"]:nth-child(2) div[data-testid="stButton"]{
+div[data-testid="column"]:last-child div[data-testid="stButton"]{
   justify-content: flex-end !important;
 }
 
@@ -303,18 +302,6 @@ div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
   font-size: 1.05rem !important;
   margin: 0 0 20px 0 !important;   /* hook → details spacing */
   line-height: 1.45 !important;
-}
-
-/* Keep details clean and prevent browser default spacing */
-div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
-.listbox.tile-card.mode-tile details{
-  margin: 0 !important;
-}
-
-/* Summary inside mode tiles only (do not target generic summary) */
-div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
-.listbox.tile-card.mode-tile details > summary{
-  margin: 0 !important;
 }
 
 /* Expanded body: continuous with summary (no "second tile" look) */
@@ -516,10 +503,14 @@ div[data-testid="stHorizontalBlock"]{
   align-items: stretch !important;
 }
 
-div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) div[data-testid="column"],
-div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) div[data-testid="column"]{
-  display: flex !important;
-  flex-direction: column !important;
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
+div[data-testid="column"]:first-child div[data-testid="stButton"]{
+  justify-content: flex-start !important;
+}
+
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
+div[data-testid="column"]:last-child div[data-testid="stButton"]{
+  justify-content: flex-end !important;
 }
 
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) .listbox,
@@ -575,11 +566,6 @@ button[title*="Copy link"]{
 }
 
 :root{ --disclaimer-h: 56px; }
-
-div[data-testid="stAppViewContainer"]{
-  transform: none !important;
-  filter: none !important;
-}
 
 /* Reserve space so content never hides behind the footer */
 div[data-testid="stMainBlockContainer"]{
