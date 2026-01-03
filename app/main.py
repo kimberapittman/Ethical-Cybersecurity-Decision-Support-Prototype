@@ -27,6 +27,10 @@ st.set_page_config(
 st.markdown(
     """
 <style>
+html, body{
+  overflow: auto !important;
+}
+
 /* === Font (Inter) + base tokens === */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 html, body, [class^="css"] {
@@ -613,9 +617,13 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details[open] > summa
   transform: translateY(-50%) rotate(90deg);
 }
 
-/* === Layout: equal-height tiles ONLY on Select-a-Mode / Select-a-Case === */
-div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) div[data-testid="stHorizontalBlock"],
-div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) div[data-testid="stHorizontalBlock"]{
+div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
+div[data-testid="stHorizontalBlock"]{
+  align-items: flex-start !important;
+}
+
+div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
+div[data-testid="stHorizontalBlock"]{
   align-items: stretch !important;
 }
 
@@ -629,20 +637,15 @@ div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) .listbox,
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) .listbox{
   display: flex !important;
   flex-direction: column !important;
-  height: 100% !important;
+  height: auto !important;         /* ✅ allow content-driven height */
+  min-height: 0 !important;        /* ✅ prevents flex overflow weirdness */
 }
 
-/* Fixed height ONLY when vertical space allows it */
 .mode-tiles .listbox{
-  height: 460px !important;
+  min-height: 460px !important;
+  height: auto !important;
 }
 
-/* Disable fixed height on short viewports (laptops) */
-@media (max-height: 900px){
-  .mode-tiles .listbox{
-    height: auto !important;
-  }
-}
 
 /* === Hide Streamlit chrome === */
 header[data-testid="stHeader"]{ background: transparent; }
@@ -663,55 +666,46 @@ button[title*="Copy link"]{
   display: none !important;
 }
 
-/* =========================
-   MAKE MAIN AREA A FULL-HEIGHT FLEX COLUMN
-   ========================= */
+:root{ --disclaimer-h: 56px; }
 
-section[data-testid="stMain"]{
-  display: flex !important;
-  flex-direction: column !important;
-}
-
+/* Reserve space so content never hides behind fixed footer */
 div[data-testid="stMainBlockContainer"]{
-  flex: 1 1 auto !important;
-  min-height: 100vh !important;
-  display: flex !important;
-  flex-direction: column !important;
+  padding-bottom: calc(var(--disclaimer-h) + 12px) !important;
 }
 
-:root{
-  --disclaimer-h: 56px; /* adjust once if you want it taller */
-}
-
-/* Footer: deterministic height */
 .disclaimer-footer{
   position: fixed !important;
   left: 0; right: 0; bottom: 0;
-
   height: var(--disclaimer-h) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: rgba(11,16,32,0.92) !important;
+  border-top: 1px solid rgba(255,255,255,0.10) !important;
+  z-index: 9999 !important;
+}
 
-  padding: 0 !important;     /* critical: stop height drifting */
+/* Footer stays fixed */
+.disclaimer-footer{
+  position: fixed !important;
+  left: 0; right: 0; bottom: 0;
+  height: var(--disclaimer-h) !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  padding: 0 !important;
   margin: 0 !important;
 
   background: rgba(11,16,32,0.92) !important;
   border-top: 1px solid rgba(255,255,255,0.10) !important;
 
-  text-align: center;
-  color: rgba(229,231,235,0.55) !important;
-  font-size: 0.85rem !important;
-  font-weight: 500 !important;
-  letter-spacing: 0.01em !important;
-
   z-index: 9999 !important;
 }
 
-/* Reserve the same space so content never goes under it */
-div[data-testid="stMainBlockContainer"]{
-  padding-bottom: calc(var(--disclaimer-h) + 12px) !important;
-}
 
 /* =========================
    WALKTHROUGH TILES: NOT CLICKABLE
