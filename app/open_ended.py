@@ -84,6 +84,16 @@ def _load_core_data():
     constraints = load_constraints()
     return csf, crosswalk, pfce, constraints
 
+OE_STEP_TITLES = {
+    1: "1. Triggering Condition and Key Events",
+    2: "2. Decision Context",
+    3: "3. NIST CSF 2.0 Mapping",
+    4: "4. PFCE Analysis and Ethical Tension",
+    5: "5. Institutional and Governance Constraints",
+    6: "6. Decision (and documented rationale)",
+}
+OE_TOTAL_STEPS = len(OE_STEP_TITLES)
+
 
 CSF_DATA, PFCE_CROSSWALK, PFCE_PRINCIPLES, GOV_CONSTRAINTS_RAW = _load_core_data()
 PFCE_NAMES = [p.get("name", "") for p in PFCE_PRINCIPLES if p.get("name")]
@@ -284,6 +294,7 @@ def _build_pdf(title: str, lines: list[str]) -> BytesIO:
     return buffer
 
 
+
 def render_open_ended():
     # ==========================================================
     # WALKTHROUGH STATE (single flow, no gate)
@@ -308,6 +319,35 @@ def render_open_ended():
 
     st.progress(step / float(total_steps))
     st.caption(f"Step {step} of {total_steps}")
+
+    def _render_open_header(step: int):
+        step_title = OE_STEP_TITLES.get(step, "Open-Ended Mode")
+
+        st.markdown(
+            f"""
+            <div style="text-align:center; margin-top: 0;">
+            <h2 style="margin: 0 0 0.25rem 0;">{step_title}</h2>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        st.markdown(
+            """
+            <hr style='
+                margin: 14px 0 20px 0;
+                border: none;
+                height: 2px;
+                background: linear-gradient(
+                    90deg,
+                    rgba(76,139,245,0.15),
+                    rgba(76,139,245,0.55),
+                    rgba(76,139,245,0.15)
+                );
+            '>
+            """,
+            unsafe_allow_html=True,
+        )
 
     def _render_step_tile_html(title_html: str, body_html: str):
         st.markdown(
