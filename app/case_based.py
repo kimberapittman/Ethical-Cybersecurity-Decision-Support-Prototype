@@ -70,18 +70,18 @@ def _html_block(s: str) -> str:
 def _step_tile_close():
     st.markdown("</div>", unsafe_allow_html=True)
 
-    def _bullets_html(value) -> str:
-        if value is None:
+def _bullets_html(value) -> str:
+    if value is None:
+        return "<div class='wt-tbd'>TBD</div>"
+
+    if isinstance(value, list):
+        if not value:
             return "<div class='wt-tbd'>TBD</div>"
+        items = "".join(f"<li>{html.escape(str(item))}</li>" for item in value)
+        return f"<ul class='wt-list'>{items}</ul>"
 
-        if isinstance(value, list):
-            if not value:
-                return "<div class='wt-tbd'>TBD</div>"
-            items = "".join(f"<li>{html.escape(str(item))}</li>" for item in value)
-            return f"<ul class='wt-list'>{items}</ul>"
-
-        # plain string
-        return f"<div class='wt-text'>{html.escape(str(value))}</div>"
+    # plain string
+    return f"<div class='wt-text'>{html.escape(str(value))}</div>"
     
 def render_case(case_id: str):
     # ==========================================================
@@ -400,21 +400,33 @@ def render_case(case_id: str):
             _render_step_tile_html(title, body)
 
 
-        # anchor that the CSS uses to constrain the nav lane
         st.markdown('<div class="cb-nav-anchor"></div>', unsafe_allow_html=True)
 
         sp_l, col_prev, col_mid, col_next, sp_r = st.columns([1, 3, 2, 3, 1], gap="large")
 
         with col_prev:
-            if step > 1 and st.button("◀ Previous", key=f"cbnav_prev_{case_id}_{step}", use_container_width=True):
+            if step > 1 and st.button(
+                "◀ Previous",
+                key=f"cbnav_prev_{case_id}_{step}",
+                use_container_width=True
+            ):
                 st.session_state["cb_step"] = step - 1
                 _safe_rerun()
 
         with col_mid:
-            if step == 9:
-                st.markdown('<div class="endcase-btn">End of Case</div>', unsafe_allow_html=True)
+            # keep empty for symmetry / future status text
+            pass
 
         with col_next:
-            if step < 9 and st.button("Next ▶", key=f"cbnav_next_{case_id}_{step}", use_container_width=True):
-                st.session_state["cb_step"] = step + 1
-                _safe_rerun()
+            if step < 9:
+                if st.button(
+                    "Next ▶",
+                    key=f"cbnav_next_{case_id}_{step}",
+                    use_container_width=True
+                ):
+                    st.session_state["cb_step"] = step + 1
+                    _safe_rerun()
+            else:
+                # step == 9: "finish" control goes on the right
+                st.markdown('<div class="endcase-btn">End of Case</div>', unsafe_allow_html=True)
+
