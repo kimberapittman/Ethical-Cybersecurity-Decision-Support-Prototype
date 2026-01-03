@@ -266,7 +266,7 @@ div[data-testid="stCaption"]{
    WALKTHROUGH NAV WIDTH + SYMMETRY
    ========================= */
 
-div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor){
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor)){
   max-width: 980px !important;
   margin-left: auto !important;
   margin-right: auto !important;
@@ -275,7 +275,7 @@ div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor){
   margin-top: 12px !important;
 }
 
-div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
 div[data-testid="stButton"] > button{
   width: 100% !important;
 }
@@ -286,7 +286,7 @@ div[data-testid="stButton"] > button{
 @media (max-width: 720px){
 
   /* Nav row stays single-line with horizontal scroll if needed */
-  div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
+  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
   div[data-testid="stHorizontalBlock"]{
     display: flex !important;
     flex-wrap: nowrap !important;
@@ -297,16 +297,16 @@ div[data-testid="stButton"] > button{
   }
 
   /* Each column behaves as a flex item */
-  div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
+  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
   div[data-testid="column"]{
     flex: 0 0 auto !important;
     min-width: 0 !important;
   }
 
   /* Collapse spacer columns (1st and 5th) */
-  div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
+  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
   div[data-testid="column"]:nth-child(1),
-  div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
+  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
   div[data-testid="column"]:nth-child(5){
     flex: 0 0 0 !important;
     width: 0 !important;
@@ -317,7 +317,7 @@ div[data-testid="stButton"] > button{
   }
 
   /* Hide middle column completely on small screens */
-  div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
+  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
   div[data-testid="column"]:nth-child(3){
     flex: 0 0 0 !important;
     width: 0 !important;
@@ -328,15 +328,15 @@ div[data-testid="stButton"] > button{
   }
 
   /* Give usable width to Prev and Next / End */
-  div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
+  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
   div[data-testid="column"]:nth-child(2),
-  div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
+  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
   div[data-testid="column"]:nth-child(4){
     min-width: 160px !important;
   }
 
   /* Buttons fill their column cleanly */
-  div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
+  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
   div[data-testid="stButton"] > button{
     width: 100% !important;
     min-width: 100% !important;
