@@ -47,6 +47,11 @@ html, body, [class^="css"] {
   --card-bg: rgba(255,255,255,0.05);
 }
 
+div[data-testid="stAppViewContainer"]{
+  transform: none !important;
+  filter: none !important;
+}
+
 /* === App background === */
 div[data-testid="stAppViewContainer"]{
   background: radial-gradient(1200px 600px at 10% -10%, rgba(76,139,245,0.15), transparent 60%),
@@ -696,28 +701,47 @@ button[title*="Copy link"]{
 
 /* Reserve space so content never hides behind the fixed footer */
 div[data-testid="stMainBlockContainer"]{
-  padding-bottom: calc(var(--disclaimer-h) + 12px) !important;
+  padding-bottom: calc(var(--disclaimer-h) + 24px) !important;
 }
 
-/* PINNED footer — last rule wins */
-.disclaimer-footer{
-  position: fixed !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
+:root{ --disclaimer-h: 56px; }
 
+/* Reserve space so content never hides behind the footer */
+div[data-testid="stMainBlockContainer"]{
+  padding-bottom: calc(var(--disclaimer-h) + 16px) !important;
+}
+
+/* Full-viewport overlay (forces true pinning and full width) */
+.disclaimer-overlay{
+  position: fixed !important;
+  inset: auto 0 0 0 !important;
+  width: 100vw !important;
+  z-index: 999999 !important;
+  pointer-events: none !important; /* never blocks clicks */
+}
+
+/* The actual bar */
+.disclaimer-footer{
   height: var(--disclaimer-h) !important;
+  width: 100% !important;
+
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
 
-  padding: 0 !important;
-  margin: 0 !important;
-
   background: rgba(11,16,32,0.92) !important;
   border-top: 1px solid rgba(255,255,255,0.10) !important;
 
-  z-index: 9999 !important;
+  color: rgba(229,231,235,0.75) !important;
+  font-size: 0.85rem !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.01em !important;
+
+  margin: 0 !important;
+  padding: 0 12px !important; /* small side padding */
+  text-align: center !important;
+
+  pointer-events: none !important;
 }
 </style>
 """,
@@ -797,8 +821,10 @@ def render_disclaimer_footer():
 
     st.markdown(
         f"""
-        <div class="disclaimer-footer">
-          {html.escape(txt)}
+        <div class="disclaimer-overlay">
+          <div class="disclaimer-footer">
+            {html.escape(txt)}
+          </div>
         </div>
         """,
         unsafe_allow_html=True,
