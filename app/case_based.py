@@ -229,6 +229,7 @@ def render_case(case_id: str):
 
 
         st.progress(step / 9.0)
+        st.caption(f"Step {step} of 9")
 
         if step == 1:
             title = "1. Technical and Operational Background"

@@ -131,7 +131,7 @@ section[data-testid="stSidebar"] span{
 /* === Header container === */
 .block-container > div:first-child{
   border-radius: 14px;
-  padding: 8px 14px;
+  padding: 2px 14px 42px 14px;
   border: 1px solid rgba(255,255,255,0.06);
   background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
 }
@@ -225,7 +225,6 @@ div[data-testid="stButton"] > button[kind="secondary"]:hover{
 /* Disabled button (End of Case) */
 div[data-testid="stButton"] > button:disabled{
   opacity: 0.55 !important;
-  cursor: default !important;
 
   background: rgba(255,255,255,0.10) !important;
   border: 1px solid rgba(255,255,255,0.22) !important;
@@ -234,6 +233,12 @@ div[data-testid="stButton"] > button:disabled{
 
   transform: none !important;
   filter: none !important;
+}
+
+div[data-testid="stCaption"]{
+  opacity: 0.65;
+  font-size: 0.85rem;
+  text-align: right;
 }
 
 .walkthrough-tile .wt-title{
@@ -266,6 +271,8 @@ div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor){
   margin-left: auto !important;
   margin-right: auto !important;
   width: 100% !important;
+  margin-bottom: 12px !important;
+  margin-top: 12px !important;
 }
 
 div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
@@ -695,6 +702,8 @@ button[title*="Copy link"]{
 
 .listbox.walkthrough-tile{
   cursor: default !important;
+  margin-top: 12px;
+  margin-bottom: 12px !important;
 }
 
 /* kill the hover/active "clickable" affordance */
