@@ -390,7 +390,7 @@ def render_case(case_id: str):
 
         elif step == 8:
             title = "8. Decision"
-            body = _bullets_html(case["decision_outcome"].get("decision"))
+            body = _bullets_html(case["decision"].get("decision"))
             _render_step_tile_html(title, body)
 
 
