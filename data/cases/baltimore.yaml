@@ -83,7 +83,7 @@ constraints:
 
 
 decision_outcome:
-  decision:
+  decision: >
     - Additional municipal systems were disconnected as a precautionary measure while the scope of the ransomware deployment was assessed.
 
 

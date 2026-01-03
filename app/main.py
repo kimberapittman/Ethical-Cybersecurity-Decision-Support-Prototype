@@ -183,23 +183,31 @@ section[data-testid="stSidebar"] span{
 
 /* === Buttons === */
 div[data-testid="stButton"] > button{
+  width: 100% !important;
   min-width: 100% !important;
   box-sizing: border-box !important;
+
   border: 0;
   padding: 0.7rem 1rem;
   border-radius: 12px;
+
   background: linear-gradient(135deg, var(--brand), var(--brand-2));
   color: white !important;
+
   box-shadow: 0 10px 20px rgba(76,139,245,0.35);
   transition: transform .06s ease, box-shadow .15s ease, filter .15s ease;
   white-space: nowrap !important;
 }
+
 div[data-testid="stButton"] > button:hover{
   transform: translateY(-1px);
   box-shadow: 0 14px 26px rgba(76,139,245,0.45);
   filter: brightness(1.05);
 }
-div[data-testid="stButton"] > button:active{ transform: translateY(0); }
+
+div[data-testid="stButton"] > button:active{
+  transform: translateY(0);
+}
 
 /* Ghost nav button (Back to Mode Selection) */
 div[data-testid="stButton"] > button[kind="secondary"]{
@@ -207,27 +215,25 @@ div[data-testid="stButton"] > button[kind="secondary"]{
   box-shadow: none !important;
   border: 1px solid rgba(255,255,255,0.14) !important;
 }
+
 div[data-testid="stButton"] > button[kind="secondary"]:hover{
   transform: none !important;
   filter: none !important;
   box-shadow: none !important;
 }
 
-.endcase-btn{
-  width: 100%;
-  box-sizing: border-box;
-  padding: 0.7rem 1rem;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.10);
-  border: 1px solid rgba(255,255,255,0.22);
-  color: var(--text-strong);
-  font-weight: 600;
-  text-align: center;
+/* Disabled button (End of Case) */
+div[data-testid="stButton"] > button:disabled{
+  opacity: 0.55 !important;
+  cursor: default !important;
+
+  background: rgba(255,255,255,0.10) !important;
+  border: 1px solid rgba(255,255,255,0.22) !important;
+  color: var(--text-strong) !important;
   box-shadow: none !important;
-  cursor: default;
-  user-select: none;
-  pointer-events: none;
-  opacity: 0.55;
+
+  transform: none !important;
+  filter: none !important;
 }
 
 .walkthrough-tile .wt-title{
@@ -269,7 +275,6 @@ div[data-testid="stButton"] > button{
 
 /* ---------------------------------
    NAV FIX (small screens)
-   Option B: Prev on left, Next/End on right
 ---------------------------------- */
 @media (max-width: 720px){
 

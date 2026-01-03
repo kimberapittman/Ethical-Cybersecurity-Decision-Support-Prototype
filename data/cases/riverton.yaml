@@ -86,7 +86,7 @@ constraints:
 
 decision_outcome:
   decision: >
-    Riverton maintained the AI-initiated restrictions while analysts reviewed the anomalous
+    - Riverton maintained the AI-initiated restrictions while analysts reviewed the anomalous
     activity, then restored full manual control after diagnostics and vendor consultation
     indicated a misconfiguration rather than malicious activity.
 

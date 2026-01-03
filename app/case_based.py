@@ -428,5 +428,11 @@ def render_case(case_id: str):
                     _safe_rerun()
             else:
                 # step == 9: "finish" control goes on the right
-                st.markdown('<div class="endcase-btn">End of Case</div>', unsafe_allow_html=True)
+                st.button(
+                    "End of Case",
+                    key=f"cbnav_end_{case_id}",
+                    disabled=True,
+                    use_container_width=True
+                )
+
 
