@@ -47,11 +47,6 @@ html, body, [class^="css"] {
   --card-bg: rgba(255,255,255,0.05);
 }
 
-div[data-testid="stAppViewContainer"]{
-  transform: none !important;
-  filter: none !important;
-}
-
 /* === App background === */
 div[data-testid="stAppViewContainer"]{
   background: radial-gradient(1200px 600px at 10% -10%, rgba(76,139,245,0.15), transparent 60%),
@@ -76,56 +71,6 @@ section[data-testid="stSidebar"] span{
   overflow-wrap: anywhere !important;
   word-break: break-word !important;
   white-space: normal !important;
-}
-
-/* Make the wrapper invisible (prevents the "card" look) */
-.sb-details{
-  border: none !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  border-radius: 0 !important;
-  overflow: visible !important;
-  margin: 0 0 10px 0;
-}
-
-/* Sidebar details wrapper (replaces st.expander) */
-.sb-details > summary{
-  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)) !important;
-  border: 1px solid rgba(255,255,255,0.10);
-  border-radius: 12px;
-  padding: 10px 12px;
-  color: var(--text-strong);
-  cursor: pointer;
-}
-
-/* Inner body spacing */
-.sb-details-body{
-  padding: 10px 6px 0 6px;
-}
-
-/* Sidebar chevron */
-.sb-details > summary::-webkit-details-marker{ display:none !important; }
-.sb-details > summary::marker{ content:"" !important; }
-
-.sb-details > summary{
-  list-style:none !important;
-  display:flex !important;
-  align-items:center !important;
-  gap:10px !important;
-}
-
-.sb-details > summary::before{
-  content: ">";
-  font-size: 1rem;
-  font-weight: 800;
-  line-height: 1;
-  opacity: 0.8;
-  margin-top: -1px;
-  transition: transform 0.12s ease, opacity 0.12s ease;
-}
-
-.sb-details[open] > summary::before{
-  transform: rotate(90deg);
 }
 
 /* === Header container === */
@@ -179,87 +124,6 @@ section[data-testid="stSidebar"] span{
   padding: 12px 14px !important;
   margin: 0 !important;
   border-top: 1px solid rgba(255,255,255,0.08) !important;
-}
-
-/* === Buttons === */
-div[data-testid="stButton"] > button{
-  width: 100% !important;
-  min-width: 100% !important;
-  box-sizing: border-box !important;
-
-  border: 0;
-  padding: 0.7rem 1rem;
-  border-radius: 12px;
-
-  background: linear-gradient(135deg, var(--brand), var(--brand-2));
-  color: white !important;
-
-  box-shadow: 0 10px 20px rgba(76,139,245,0.35);
-  transition: transform .06s ease, box-shadow .15s ease, filter .15s ease;
-  white-space: nowrap !important;
-}
-
-div[data-testid="stButton"] > button:hover{
-  transform: translateY(-1px);
-  box-shadow: 0 14px 26px rgba(76,139,245,0.45);
-  filter: brightness(1.05);
-}
-
-div[data-testid="stButton"] > button:active{
-  transform: translateY(0);
-}
-
-/* Ghost nav button (Back to Mode Selection) */
-div[data-testid="stButton"] > button[kind="secondary"]{
-  background: rgba(255,255,255,0.06) !important;
-  box-shadow: none !important;
-  border: 1px solid rgba(255,255,255,0.14) !important;
-}
-
-div[data-testid="stButton"] > button[kind="secondary"]:hover{
-  transform: none !important;
-  filter: none !important;
-  box-shadow: none !important;
-}
-
-/* Disabled button (End of Case) */
-div[data-testid="stButton"] > button:disabled{
-  opacity: 0.55 !important;
-
-  background: rgba(255,255,255,0.10) !important;
-  border: 1px solid rgba(255,255,255,0.22) !important;
-  color: var(--text-strong) !important;
-  box-shadow: none !important;
-
-  transform: none !important;
-  filter: none !important;
-}
-
-div[data-testid="stCaption"]{
-  opacity: 0.65;
-  font-size: 0.85rem;
-  text-align: right;
-}
-
-.walkthrough-tile .wt-title{
-  font-weight: 900;
-  font-size: 1.05rem;
-  margin: 0 0 10px 0;
-}
-.walkthrough-tile .wt-body{
-  font-size: 1rem;
-  line-height: 1.55;
-}
-.walkthrough-tile .wt-list{
-  margin: 10px 0 0 1.15rem;
-  padding: 0;
-}
-.walkthrough-tile .wt-list li{ margin: 6px 0; }
-.walkthrough-tile .wt-tbd{ opacity: 0.75; }
-.walkthrough-tile .wt-rationale{
-  margin: 6px 0 10px 0;
-  opacity: 0.85;
-  font-style: italic;
 }
 
 /* =========================
@@ -562,18 +426,6 @@ details > summary{
   color: var(--text-strong);
 }
 
-/* Mode tiles: deterministic summary styling (no conflicts) */
-div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
-details > summary{
-  margin: 0 !important;
-  padding: 10px 12px !important;       /* keep padding here—single source of truth */
-  list-style: none !important;
-
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-}
-
 /* =========================
    DETAILS CHEVRON — LANDING MODE TILES
    ========================= */
@@ -724,12 +576,10 @@ button[title*="Copy link"]{
 
 :root{ --disclaimer-h: 56px; }
 
-/* Reserve space so content never hides behind the fixed footer */
-div[data-testid="stMainBlockContainer"]{
-  padding-bottom: calc(var(--disclaimer-h) + 24px) !important;
+div[data-testid="stAppViewContainer"]{
+  transform: none !important;
+  filter: none !important;
 }
-
-:root{ --disclaimer-h: 56px; }
 
 /* Reserve space so content never hides behind the footer */
 div[data-testid="stMainBlockContainer"]{

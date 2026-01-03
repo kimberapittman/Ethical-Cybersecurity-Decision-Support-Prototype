@@ -759,16 +759,30 @@ def render_open_ended():
     col_prev, col_next = st.columns(2, gap="large")
 
     with col_prev:
-        if step > 1 and st.button("◀ Previous", key=f"oenav_prev_{step}", use_container_width=True):
+        if step > 1 and st.button(
+            "◀ Previous",
+            key=f"oenav_prev_{step}",
+            use_container_width=False
+        ):
             st.session_state["oe_step"] = step - 1
             _safe_rerun()
 
     with col_next:
-        if step < total_steps and st.button("Next ▶", key=f"oenav_next_{step}", use_container_width=True):
-            st.session_state["oe_step"] = step + 1
-            _safe_rerun()
-        else:
-            if st.button("Generate PDF", key="oe_generate_summary_nav", use_container_width=True):
-                st.session_state["oe_generate"] = True
+        if step < total_steps:
+            if st.button(
+                "Next ▶",
+                key=f"oenav_next_{step}",
+                use_container_width=False
+            ):
+                st.session_state["oe_step"] = step + 1
                 _safe_rerun()
+        else:
+            if st.button(
+                "Generate PDF",
+                key="oe_generate_summary_nav",
+                use_container_width=False
+            ):
+                st.session_state["oe_generate"] = False
+                _safe_rerun()
+
 

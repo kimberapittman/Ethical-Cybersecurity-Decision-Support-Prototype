@@ -2,6 +2,8 @@ import streamlit as st
 from logic.loaders import load_case, list_cases
 import html
 
+CB_TOTAL_STEPS = 9  
+
 def _safe_rerun():
     try:
         if hasattr(st, "rerun"):
@@ -428,12 +430,20 @@ def render_case(case_id: str):
         col_prev, col_next = st.columns(2, gap="large")
 
         with col_prev:
-            if step > 1 and st.button("◀ Previous", key=f"cbnav_prev_{step}", use_container_width=True):
+            if step > 1 and st.button(
+                "◀ Previous",
+                key=f"cbnav_prev_{case_id}_{step}",
+                use_container_width=False
+            ):
                 st.session_state["cb_step"] = step - 1
                 _safe_rerun()
 
         with col_next:
-            if step < total_steps and st.button("Next ▶", key=f"cbnav_next_{step}", use_container_width=True):
+            if step < CB_TOTAL_STEPS and st.button(
+                "Next ▶",
+                key=f"cbnav_next_{case_id}_{step}",
+                use_container_width=False
+            ):
                 st.session_state["cb_step"] = step + 1
                 _safe_rerun()
             else:
@@ -441,7 +451,7 @@ def render_case(case_id: str):
                     "End of Case",
                     key=f"cbnav_end_{case_id}",
                     disabled=True,
-                    use_container_width=True
+                    use_container_width=False
                 )
 
 
