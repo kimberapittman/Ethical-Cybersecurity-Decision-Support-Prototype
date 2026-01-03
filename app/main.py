@@ -939,46 +939,78 @@ def _render_landing_page():
     st.markdown("""
     <script>
     (function () {
-      const root = window.parent.document;
-      const FOOTER_H = 56;          // match --disclaimer-h
-      const GUTTER = 12;            // little breathing room above footer
+      const FOOTER_H = 56;  // match --disclaimer-h
+      const PAD = 14;       // breathing room above footer
 
-      function getScroller(){
-        return root.querySelector('section[data-testid="stMain"]');
+      function getMainScroller() {
+        // Your app scrolls inside stMain (per your earlier checks)
+        return document.querySelector('section[data-testid="stMain"]') || window;
       }
 
-      function bind(){
-        const scroller = getScroller();
-        if (!scroller) return;
+      function scrollIntoViewIfNeeded(el) {
+        if (!el) return;
 
-        const detailsList = root.querySelectorAll('.mode-tiles details');
-        detailsList.forEach(d => {
-          if (d.dataset.autoscrollBound === "1") return;
-          d.dataset.autoscrollBound = "1";
+        const scroller = getMainScroller();
+        const isWindow = (scroller === window);
+
+        const rect = el.getBoundingClientRect();
+        const visibleBottom = window.innerHeight - FOOTER_H - PAD;
+
+        // If the bottom is hidden behind the footer, scroll down
+        if (rect.bottom > visibleBottom) {
+          const delta = rect.bottom - visibleBottom;
+
+          if (isWindow) {
+            window.scrollBy({ top: delta, behavior: "smooth" });
+          } else {
+            scroller.scrollBy({ top: delta, behavior: "smooth" });
+          }
+        }
+
+        // If the top is above the viewport, scroll up a bit
+        if (rect.top < 0) {
+          const deltaUp = rect.top - PAD;
+          if (isWindow) {
+            window.scrollBy({ top: deltaUp, behavior: "smooth" });
+          } else {
+            scroller.scrollBy({ top: deltaUp, behavior: "smooth" });
+          }
+        }
+      }
+
+      function wire() {
+        const root = document.querySelector('.mode-tiles') ||
+                    document.querySelector('div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)');
+
+        if (!root) return;
+
+        const details = root.querySelectorAll('details');
+        details.forEach(d => {
+          if (d.__autoScrollWired) return;
+          d.__autoScrollWired = true;
 
           d.addEventListener('toggle', () => {
-            // only act when opening
             if (!d.open) return;
 
-            // allow layout to expand first
-            setTimeout(() => {
-              const rect = d.getBoundingClientRect();
-              const visibleBottom = window.innerHeight - FOOTER_H - GUTTER;
-
-              // if bottom is hidden under footer, scroll just enough
-              const delta = rect.bottom - visibleBottom;
-              if (delta > 0) {
-                scroller.scrollBy({ top: delta, left: 0, behavior: 'smooth' });
-              }
-            }, 0);
-          }, true);
+            // Wait for layout to settle after expand
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                // Scroll to the *expanded body* if present, else the details
+                const target = d.querySelector('.details-body') || d;
+                scrollIntoViewIfNeeded(target);
+              });
+            });
+          });
         });
       }
 
-      // run now + keep rebinding as Streamlit rerenders
-      bind();
-      const obs = new MutationObserver(bind);
-      obs.observe(root.body, { childList: true, subtree: true });
+      // Run now + retry a few times because Streamlit/React mounts late
+      wire();
+      let tries = 0;
+      const t = setInterval(() => {
+        wire();
+        if (++tries > 20) clearInterval(t);
+      }, 300);
     })();
     </script>
     """, unsafe_allow_html=True)
