@@ -359,11 +359,20 @@ def render_open_ended():
             unsafe_allow_html=True,
         )
 
-        st.selectbox(
-            "Example",
-            options=TRIGGER_EXAMPLE_OPTIONS,
-            key="oe_gate_trigger_example",
-        )
+        with st.expander("See case-based examples of triggering conditions"):
+            st.markdown(
+                """
+                **Baltimore (Ransomware):**  
+                Ransomware deployed across municipal systems; service disruption and containment decisions emerged under uncertainty.
+
+                **San Diego (Surveillance Repurposing):**  
+                Smart streetlight footage accessed for law-enforcement use beyond the program’s documented scope.
+
+                **Riverton (AI-Enabled Control System):**  
+                An AI system flagged anomalous control activity and imposed restrictions pending human review.
+                """
+            )
+
 
         st.selectbox(
             "Triggering condition type",
