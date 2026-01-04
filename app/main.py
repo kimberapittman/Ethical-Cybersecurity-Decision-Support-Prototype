@@ -181,22 +181,16 @@ section[data-testid="stSidebar"] span{
    BUTTONS — GLOBAL
    ========================= */
 div[data-testid="stButton"] > button{
-  width: 100% !important;
-  min-width: 100% !important;
   box-sizing: border-box !important;
-
   border: 0;
   padding: 0.7rem 1rem !important;
   border-radius: 12px !important;
-
   background: linear-gradient(135deg, var(--brand), var(--brand-2)) !important;
   color: white !important;
-
   border: 1px solid rgba(76,139,245,0.55) !important;
   box-shadow:
     0 0 0 1px rgba(76,139,245,0.35),
     0 10px 20px rgba(76,139,245,0.35) !important;
-
   transition: transform .06s ease, box-shadow .15s ease, filter .15s ease !important;
   white-space: nowrap !important;
 }
@@ -223,7 +217,6 @@ div[data-testid="stButton"] > button[kind="secondary"]{
   background: rgba(255,255,255,0.06) !important;
   border: 1px solid rgba(255,255,255,0.14) !important;
   box-shadow: none !important;
-
   width: auto !important;
   min-width: unset !important;
   padding: 0.45rem 0.9rem !important;
@@ -247,58 +240,49 @@ div[data-testid="stButton"] > button:disabled{
   filter: none !important;
 }
 
-/* =========================
-   WALKTHROUGH NAV — PIN LEFT/RIGHT
-   ========================= */
-
-/* Make the st.columns row behave like a fixed left/right bar */
-div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
-div[data-testid="stHorizontalBlock"]{
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: center !important;
-  gap: 16px !important;
+/* OPTIONAL: only make “normal” (non-nav) buttons full width */
+div[data-testid="stVerticalBlock"]:not(:has(:is(.cb-nav-anchor,.oe-nav-anchor)))
+div[data-testid="stButton"] > button{
   width: 100% !important;
+  min-width: 100% !important;
 }
 
-/* Left column: force the stButton wrapper to the left */
-div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
-div[data-testid="column"]:nth-child(1) div[data-testid="stButton"]{
-  width: 100% !important;            /* give it full lane */
+/* =========================
+   WALKTHROUGH NAV — SINGLE SOURCE OF TRUTH
+   ========================= */
+
+/* Full-width alignment wrapper INSIDE each column */
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor)) .nav-wrap{
+  width: 100% !important;
   display: flex !important;
+  align-items: center !important;
+}
+
+/* Left pinned */
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor)) .nav-left{
   justify-content: flex-start !important;
 }
 
-/* Right column: force the stButton wrapper to the right */
-div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
-div[data-testid="column"]:nth-child(2) div[data-testid="stButton"]{
-  width: 100% !important;            /* give it full lane */
-  display: flex !important;
+/* Right pinned */
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor)) .nav-right{
   justify-content: flex-end !important;
 }
 
-/* Button itself stays pill-sized (not full width) */
+/* Buttons stay pill-sized */
 div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
-div[data-testid="stButton"] > button{
+.nav-wrap div[data-testid="stButton"] > button{
   width: auto !important;
   min-width: unset !important;
 }
 
-/* Only stack when actually too narrow */
+/* Stack only when truly narrow */
 @media (max-width: 520px){
-  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
-  div[data-testid="stHorizontalBlock"]{
-    flex-direction: column !important;
-    align-items: stretch !important;
-  }
-
-  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
-  div[data-testid="column"]{
+  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor)) .nav-wrap{
     justify-content: stretch !important;
   }
 
-  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
-  div[data-testid="stButton"] > button{
+  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
+  .nav-wrap div[data-testid="stButton"] > button{
     width: 100% !important;
     min-width: 100% !important;
   }
