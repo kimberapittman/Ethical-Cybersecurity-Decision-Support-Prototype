@@ -424,25 +424,31 @@ def render_case(case_id: str):
             body = _bullets_html(case["decision_outcome"].get("outcomes_implications"))
             _render_step_tile_html(title, body)
 
+        # NAV CONTROLS
         st.markdown('<div class="cb-nav-anchor"></div>', unsafe_allow_html=True)
 
         col_l, col_r = st.columns(2, gap="large")
 
         with col_l:
+            st.markdown('<div class="nav-wrap nav-left">', unsafe_allow_html=True)
             if step > 1:
                 if st.button("◀ Previous", key=f"cb_prev_{case_id}_{step}", use_container_width=False):
                     st.session_state["cb_step"] = step - 1
                     _safe_rerun()
             else:
                 st.empty()
+            st.markdown("</div>", unsafe_allow_html=True)
 
         with col_r:
+            st.markdown('<div class="nav-wrap nav-right">', unsafe_allow_html=True)
             if step < CB_TOTAL_STEPS:
                 if st.button("Next ▶", key=f"cb_next_{case_id}_{step}", use_container_width=False):
                     st.session_state["cb_step"] = step + 1
                     _safe_rerun()
             else:
                 st.button("End of Case", key=f"cb_end_{case_id}", disabled=True, use_container_width=False)
+            st.markdown("</div>", unsafe_allow_html=True)
+
 
 
 
