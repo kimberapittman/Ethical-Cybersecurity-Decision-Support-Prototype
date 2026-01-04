@@ -258,20 +258,31 @@ div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor)) .nav
   justify-content: space-between !important;
   gap: 16px !important;
   width: 100% !important;
+  margin-top: 12px !important;
 }
 
+/* Left/right slots */
 div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor)) .nav-slot{
   display: flex !important;
   align-items: center !important;
   flex: 0 0 auto !important;
+  min-width: 0 !important;
 }
 
+/* Force left and right alignment */
 div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor)) .nav-left{
   justify-content: flex-start !important;
 }
 
 div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor)) .nav-right{
   justify-content: flex-end !important;
+  margin-left: auto !important; /* hard push right */
+}
+
+/* Streamlit wraps buttons—make wrapper behave */
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor)) .nav-slot div[data-testid="stButton"]{
+  width: auto !important;
+  display: flex !important;
 }
 
 /* Keep buttons pill-sized */
