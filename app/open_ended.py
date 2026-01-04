@@ -754,49 +754,39 @@ def render_open_ended():
     # ---------------- Navigation (Open-Ended Mode) ----------------
     st.markdown('<div class="oe-nav-anchor"></div>', unsafe_allow_html=True)
 
-    # One deterministic row we can control with CSS (no Streamlit columns)
-    st.markdown('<div class="nav-row">', unsafe_allow_html=True)
+    col_l, col_r = st.columns(2, gap="large")
 
-    # LEFT SLOT (Previous)
-    st.markdown('<div class="nav-slot nav-left">', unsafe_allow_html=True)
-    if step > 1:
-        if st.button(
-            "◀ Previous",
-            key=f"oenav_prev_{step}",
-            use_container_width=False
-        ):
-            st.session_state["oe_step"] = step - 1
-            _safe_rerun()
-    else:
-        # keeps layout stable even when Previous isn't shown
-        st.markdown('<div class="nav-spacer"></div>', unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
+    with col_l:
+        if step > 1:
+            if st.button(
+                "◀ Previous",
+                key=f"oenav_prev_{step}",
+                use_container_width=False
+            ):
+                st.session_state["oe_step"] = step - 1
+                _safe_rerun()
+        else:
+            st.empty()
 
-    # RIGHT SLOT (Next OR Generate PDF on last step)
-    st.markdown('<div class="nav-slot nav-right">', unsafe_allow_html=True)
+    with col_r:
+        if step < total_steps:
+            if st.button(
+                "Next ▶",
+                key=f"oenav_next_{step}",
+                use_container_width=False
+            ):
+                st.session_state["oe_step"] = step + 1
+                _safe_rerun()
+        else:
+            # Last step only: show Generate PDF in the same right slot
+            if st.button(
+                "Generate PDF",
+                key="oe_generate_pdf",
+                use_container_width=False
+            ):
+                st.session_state["oe_generate"] = True
+                _safe_rerun()
 
-    if step < total_steps:
-        if st.button(
-            "Next ▶",
-            key=f"oenav_next_{step}",
-            use_container_width=False
-        ):
-            st.session_state["oe_step"] = step + 1
-            _safe_rerun()
-    else:
-        # Last step only: Generate PDF (same position as "End of Case" behavior)
-        if st.button(
-            "Generate PDF",
-            key="oe_generate",
-            use_container_width=False
-        ):
-            st.session_state["oe_generate"] = True
-            _safe_rerun()
-
-    st.markdown('</div>', unsafe_allow_html=True)
-
-    # Close row
-    st.markdown('</div>', unsafe_allow_html=True)
 
 
 

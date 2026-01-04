@@ -248,67 +248,55 @@ div[data-testid="stButton"] > button:disabled{
 }
 
 /* =========================
-   WALKTHROUGH NAV — FIXED LEFT/RIGHT, THEN STACK
+   WALKTHROUGH NAV — PIN LEFT/RIGHT
    ========================= */
 
-/* Desktop / tablet: pinned */
-div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor)) .nav-row{
+/* Make the st.columns row behave like a fixed left/right bar */
+div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
+div[data-testid="stHorizontalBlock"]{
   display: flex !important;
-  align-items: center !important;
   justify-content: space-between !important;
+  align-items: center !important;
   gap: 16px !important;
   width: 100% !important;
-  margin-top: 12px !important;
 }
 
-/* Left/right slots */
-div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor)) .nav-slot{
+/* Left column = left */
+div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
+div[data-testid="column"]:nth-child(1){
   display: flex !important;
-  align-items: center !important;
-  flex: 0 0 auto !important;
-  min-width: 0 !important;
-}
-
-/* Force left and right alignment */
-div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor)) .nav-left{
   justify-content: flex-start !important;
 }
 
-div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor)) .nav-right{
-  justify-content: flex-end !important;
-  margin-left: auto !important; /* hard push right */
-}
-
-/* Streamlit wraps buttons—make wrapper behave */
-div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor)) .nav-slot div[data-testid="stButton"]{
-  width: auto !important;
+/* Right column = right */
+div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
+div[data-testid="column"]:nth-child(2){
   display: flex !important;
+  justify-content: flex-end !important;
 }
 
 /* Keep buttons pill-sized */
-div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
-.nav-slot div[data-testid="stButton"] > button{
+div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
+div[data-testid="stButton"] > button{
   width: auto !important;
   min-width: unset !important;
 }
 
-/* Spacer keeps left slot "real" when Previous isn't shown */
-.nav-spacer{ width: 1px; height: 1px; }
-
-/* Mobile: stack cleanly */
+/* Only stack when actually too narrow */
 @media (max-width: 520px){
-  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor)) .nav-row{
+  div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
+  div[data-testid="stHorizontalBlock"]{
     flex-direction: column !important;
     align-items: stretch !important;
   }
 
-  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor)) .nav-slot{
-    width: 100% !important;
+  div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
+  div[data-testid="column"]{
     justify-content: stretch !important;
   }
 
-  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
-  .nav-slot div[data-testid="stButton"] > button{
+  div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
+  div[data-testid="stButton"] > button{
     width: 100% !important;
     min-width: 100% !important;
   }
