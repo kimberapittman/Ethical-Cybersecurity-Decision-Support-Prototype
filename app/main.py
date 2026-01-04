@@ -51,7 +51,8 @@ html, body, [class^="css"] {
 div[data-testid="stAppViewContainer"]{
   background: radial-gradient(1200px 600px at 10% -10%, rgba(76,139,245,0.15), transparent 60%),
               radial-gradient(900px 500px at 100% 0%, rgba(122,168,255,0.10), transparent 60%),
-              var(--bg-soft);
+              var(--bg-soft)
+}
 
 /* === Sidebar === */
 section[data-testid="stSidebar"]{
@@ -71,6 +72,7 @@ section[data-testid="stSidebar"] span{
   word-break: break-word !important;
   white-space: normal !important;
 }
+
 /* =========================
    SIDEBAR DETAILS — CONNECTED PANEL
    ========================= */
@@ -86,9 +88,53 @@ section[data-testid="stSidebar"] span{
   padding: 0 !important;
   overflow: hidden !important; /* critical */
 }
+
+/* Make the wrapper invisible (prevents the "card" look) */
+.sb-details{
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+  margin: 0 0 10px 0;
+}
+
+/* Sidebar details wrapper (replaces st.expander) */
+.sb-details > summary{
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)) !important;
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 12px;
+  padding: 10px 12px;
+  color: var(--text-strong);
+  cursor: pointer;
+}
+
 /* Sidebar chevron */
 .sb-details > summary::-webkit-details-marker{ display:none !important; }
-.sb-details > summary::marker{ content:"" !important; }
+.sb-details > summary::marker{ content:"" !important; 
+}
+
+.sb-details > summary{
+  list-style:none !important;
+  display:flex !important;
+  align-items:center !important;
+  gap:10px !important;
+}
+
+.sb-details > summary::before{
+  content: ">";
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1;
+  opacity: 0.8;
+  margin-top: -1px;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+
+.sb-details[open] > summary::before{
+  transform: rotate(90deg);
+}
+
 /* Inner body spacing */
 .sb-details-body{
   padding: 10px 6px 0 6px;
@@ -97,7 +143,7 @@ section[data-testid="stSidebar"] span{
 /* === Header container === */
 .block-container > div:first-child{
   border-radius: 14px;
-  padding: 2px 14px 38px 14px;
+  padding: 4px 14px 38px 14px;
   border: 1px solid rgba(255,255,255,0.06);
   background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
 }
@@ -202,62 +248,58 @@ div[data-testid="stButton"] > button:disabled{
 }
 
 /* =========================
-   WALKTHROUGH NAV (2-column, deterministic)
+   WALKTHROUGH NAV — FIXED LEFT/RIGHT, THEN STACK
    ========================= */
-div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor)){
-  max-width: 980px !important;
-  margin: 12px auto !important;
+
+/* Desktop / tablet: pinned */
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor)) .nav-row{
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
   width: 100% !important;
 }
 
-/* Force the nav row to left/right */
-div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
-div[data-testid="stHorizontalBlock"]{
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor)) .nav-slot{
   display: flex !important;
-  justify-content: space-between !important;
   align-items: center !important;
-  gap: 16px !important;
+  flex: 0 0 auto !important;
 }
 
-/* Two columns split the row */
-div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
-div[data-testid="column"]{
-  flex: 1 1 0 !important;
-  min-width: 0 !important;
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor)) .nav-left{
+  justify-content: flex-start !important;
 }
 
-/* Buttons in nav are pill-sized */
-div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
-div[data-testid="stButton"]{
-  display: flex !important;
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor)) .nav-right{
+  justify-content: flex-end !important;
 }
 
+/* Keep buttons pill-sized */
 div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
-div[data-testid="stButton"] > button{
+.nav-slot div[data-testid="stButton"] > button{
   width: auto !important;
   min-width: unset !important;
 }
 
-div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
-div[data-testid="column"]:first-child div[data-testid="stButton"]{
-  justify-content: flex-start !important;
-}
+/* Spacer keeps left slot "real" when Previous isn't shown */
+.nav-spacer{ width: 1px; height: 1px; }
 
-div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
-div[data-testid="column"]:last-child div[data-testid="stButton"]{
-  justify-content: flex-end !important;
-}
+/* Mobile: stack cleanly */
+@media (max-width: 520px){
+  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor)) .nav-row{
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
 
-/* Narrow screens: nav buttons go full-width */
-@media (max-width: 720px){
+  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor)) .nav-slot{
+    width: 100% !important;
+    justify-content: stretch !important;
+  }
+
   div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
-  div[data-testid="stButton"] > button{
+  .nav-slot div[data-testid="stButton"] > button{
     width: 100% !important;
     min-width: 100% !important;
-  }
-  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
-  div[data-testid="stButton"]{
-    justify-content: stretch !important;
   }
 }
 
@@ -362,6 +404,34 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
   font-size: 1.05rem !important;
   margin: 0 !important;
   line-height: 1.45 !important;
+}
+
+/* =========================
+   CLICKABLE NAV BUTTON AFFORDANCE
+   (match tile blue rim)
+   ========================= */
+
+/* Apply blue rim ONLY to real buttons */
+div[data-testid="stButton"] > button{
+  border: 1px solid rgba(76,139,245,0.55) !important;
+  box-shadow:
+    0 0 0 1px rgba(76,139,245,0.35),
+    0 10px 20px rgba(76,139,245,0.35) !important;
+}
+
+/* Stronger affordance on hover */
+div[data-testid="stButton"] > button:hover{
+  border-color: rgba(76,139,245,0.85) !important;
+  box-shadow:
+    0 0 0 2px rgba(76,139,245,0.55),
+    0 14px 26px rgba(76,139,245,0.45) !important;
+}
+
+/* Subtle press feedback */
+div[data-testid="stButton"] > button:active{
+  box-shadow:
+    0 0 0 1px rgba(76,139,245,0.45),
+    0 8px 16px rgba(76,139,245,0.30) !important;
 }
 
 /* Click affordances */
@@ -548,11 +618,9 @@ button[title*="Copy link"]{
   display: none !important;
 }
 
-
 /* =========================
    WALKTHROUGH TILES: NOT CLICKABLE
    ========================= */
-
 .listbox.walkthrough-tile{
   cursor: default !important;
   margin-top: 12px;
