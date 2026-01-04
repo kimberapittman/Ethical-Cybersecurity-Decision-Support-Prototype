@@ -252,7 +252,7 @@ div[data-testid="stButton"] > button:disabled{
    ========================= */
 
 /* Make the st.columns row behave like a fixed left/right bar */
-div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
 div[data-testid="stHorizontalBlock"]{
   display: flex !important;
   justify-content: space-between !important;
@@ -261,22 +261,24 @@ div[data-testid="stHorizontalBlock"]{
   width: 100% !important;
 }
 
-/* Left column = left */
-div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
-div[data-testid="column"]:nth-child(1){
+/* Left column: force the stButton wrapper to the left */
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
+div[data-testid="column"]:nth-child(1) div[data-testid="stButton"]{
+  width: 100% !important;            /* give it full lane */
   display: flex !important;
   justify-content: flex-start !important;
 }
 
-/* Right column = right */
-div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
-div[data-testid="column"]:nth-child(2){
+/* Right column: force the stButton wrapper to the right */
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
+div[data-testid="column"]:nth-child(2) div[data-testid="stButton"]{
+  width: 100% !important;            /* give it full lane */
   display: flex !important;
   justify-content: flex-end !important;
 }
 
-/* Keep buttons pill-sized */
-div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
+/* Button itself stays pill-sized (not full width) */
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
 div[data-testid="stButton"] > button{
   width: auto !important;
   min-width: unset !important;
@@ -284,18 +286,18 @@ div[data-testid="stButton"] > button{
 
 /* Only stack when actually too narrow */
 @media (max-width: 520px){
-  div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
+  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
   div[data-testid="stHorizontalBlock"]{
     flex-direction: column !important;
     align-items: stretch !important;
   }
 
-  div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
+  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
   div[data-testid="column"]{
     justify-content: stretch !important;
   }
 
-  div[data-testid="stVerticalBlock"]:has(.cb-nav-anchor)
+  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
   div[data-testid="stButton"] > button{
     width: 100% !important;
     min-width: 100% !important;
