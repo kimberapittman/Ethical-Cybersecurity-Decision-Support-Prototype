@@ -522,7 +522,7 @@ def render_open_ended():
         st.session_state["oe_pfce_auto"] = pfce_auto_local
 
     # ==========================================================
-    # STEP 4: PFCE + TENSION (was step 3)
+    # STEP 4: PFCE + TENSION
     # ==========================================================
     if step == 4:
         _render_step_tile_html(
@@ -534,9 +534,6 @@ def render_open_ended():
             options=ETHICAL_CONDITION_TAG_OPTIONS,
             key="oe_ethical_condition_tags",
         )
-
-        with st.expander("PFCE principle prompts (definitions)"):
-            st.markdown("\n".join([f"- **{k}**: {v}" for k, v in PFCE_DEFINITIONS.items()]))
 
         st.text_area(
             "PFCE analysis (brief — what is ethically significant here?)",
@@ -556,23 +553,79 @@ def render_open_ended():
             placeholder="Example: Limit spread through isolation **vs.** maintain access to essential municipal services.",
         )
 
+        st.markdown("---")
+        st.subheader("PFCE principle triage")
+
+        st.caption(
+            "Select any principles that are implicated in this decision context. "
+            "Leaving a principle unchecked is a valid outcome."
+        )
+
+        # auto suggestions (optional; safe defaults)
         pfce_auto_unique = []
         for p in st.session_state.get("oe_pfce_auto", []):
             if p in PFCE_NAMES and p not in pfce_auto_unique:
                 pfce_auto_unique.append(p)
 
-        st.multiselect(
-            "PFCE principles most implicated (optional)",
-            options=PFCE_NAMES,
-            default=pfce_auto_unique,
-            key="oe_pfce_principles",
-        )
+        # initialize persistent storage
+        if "oe_pfce_triage" not in st.session_state:
+            st.session_state["oe_pfce_triage"] = {}
 
-        st.text_area(
-            "PFCE rationale (optional — how the selected principles show up here)",
-            key="oe_pfce_rationale",
-            height=110,
-        )
+        implicated = []
+        rationale_lines = []
+
+        for pid in PFCE_NAMES:
+            definition = PFCE_DEFINITIONS.get(pid, "")
+            label = pid  # swap to a display name if you have one
+
+            # default checked if auto-suggested, otherwise unchecked
+            prior = st.session_state["oe_pfce_triage"].get(pid, {})
+            default_checked = pid in pfce_auto_unique
+            checked = prior.get("checked", default_checked)
+
+            with st.container(border=True):
+                # checkbox with definition shown via tooltip
+                is_on = st.checkbox(
+                    f"{label}",
+                    value=checked,
+                    key=f"oe_pfce_chk_{pid}",
+                    help=definition,
+                )
+
+                note_key = f"oe_pfce_note_{pid}"
+
+                # if checked: show prompt + textbox
+                if is_on:
+                    st.caption("Prompt: In this context, how does this decision engage this principle?")
+                    st.text_area(
+                        "How / why is it implicated? (2–4 sentences)",
+                        key=note_key,
+                        height=90,
+                        placeholder="Describe the ethical implication in this situation.",
+                    )
+                else:
+                    # keep state clean if they toggle off
+                    if note_key in st.session_state:
+                        st.session_state[note_key] = ""
+
+                # persist to triage dict
+                st.session_state["oe_pfce_triage"][pid] = {
+                    "checked": bool(is_on),
+                    "note": (st.session_state.get(note_key, "") or "").strip(),
+                }
+
+                # build derived outputs
+                if is_on:
+                    implicated.append(pid)
+                    note = st.session_state["oe_pfce_triage"][pid]["note"]
+                    if note:
+                        rationale_lines.append(f"- **{pid}**: {note}")
+                    else:
+                        rationale_lines.append(f"- **{pid}**: [No rationale provided]")
+
+        # write back into your existing keys so export/PDF logic continues to work
+        st.session_state["oe_pfce_principles"] = implicated
+        st.session_state["oe_pfce_rationale"] = "\n".join(rationale_lines).strip()
 
     # ==========================================================
     # STEP 5: CONSTRAINTS (was step 4)
