@@ -612,6 +612,24 @@ button[title*="Copy link"]{
   margin-bottom: 12px !important;
 }
 
+.walkthrough-step-title{
+  font-size: 1.25rem;        
+  font-weight: 700;
+  line-height: 1.4;
+
+  margin: 0 0 0.6rem 0;      
+  color: var(--text-strong);
+}
+
+.walkthrough-step-title::after{
+  content: "";
+  display: block;
+  width: 48px;
+  height: 2px;
+  margin-top: 6px;
+  background: rgba(255,255,255,0.25);
+}
+
 /* kill the hover/active "clickable" affordance */
 .listbox.walkthrough-tile:hover,
 .listbox.walkthrough-tile:active{

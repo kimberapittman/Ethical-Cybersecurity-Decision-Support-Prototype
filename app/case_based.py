@@ -212,16 +212,14 @@ def render_case(case_id: str):
             st.session_state["cb_step"] = 1
         step = st.session_state["cb_step"]
 
-        def _render_step_tile_html(title_html: str, body_html: str):
-            st.markdown(
-                f"""
-                <div class="listbox walkthrough-tile">
-                  <div class="wt-title">{title_html}</div>
-                  <div class="wt-body">{body_html}</div>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
+        def _render_step_tile_html(title, body):
+            st.markdown(f"""
+            <div class="listbox walkthrough-tile">
+                <div class="walkthrough-step-title">{title}</div>
+                {body}
+            </div>
+            """, unsafe_allow_html=True)
+
 
         # -------------------------
         # Walkthrough header (case title)
