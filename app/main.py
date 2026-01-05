@@ -325,7 +325,7 @@ div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
 .listbox.tile-card.mode-tile .tile-title{
   font-weight: 800 !important;
-  font-size: 1.05rem !important;
+  font-size: 1.25rem !important;
   text-align: center !important;
   margin: 0 0 20px 0 !important;
   line-height: 1.45 !important;
