@@ -197,11 +197,12 @@ div[data-testid="stButton"] > button{
 
 div[data-testid="stButton"] > button:hover{
   transform: translateY(-3px) !important;
+  cursor: pointer;
   box-shadow:
     0 0 0 3px rgba(76,139,245,0.65),
     0 18px 38px rgba(76,139,245,0.45) !important;
   border-color: rgba(76,139,245,0.95) !important;
-  filter: brightness(1.06) !important;
+  filter: brightness(1.05) !important;
 }
 
 div[data-testid="stButton"] > button:active{
