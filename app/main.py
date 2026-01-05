@@ -196,13 +196,12 @@ div[data-testid="stButton"] > button{
 }
 
 div[data-testid="stButton"] > button:hover{
-  transform: translateY(-1px) !important;
-  filter: brightness(1.05) !important;
-  border-color: rgba(76,139,245,0.85) !important;
+  transform: translateY(-3px) !important;
   box-shadow:
-    0 0 0 2px rgba(76,139,245,0.55),
-    0 14px 26px rgba(76,139,245,0.45) !important;
-    filter: brightness(1.05);
+    0 0 0 3px rgba(76,139,245,0.65),
+    0 18px 38px rgba(76,139,245,0.45) !important;
+  border-color: rgba(76,139,245,0.95) !important;
+  filter: brightness(1.06) !important;
 }
 
 div[data-testid="stButton"] > button:active{
@@ -422,10 +421,13 @@ div[data-testid="stButton"] > button:active{
 /* Click affordances */
 .listbox:hover{
   cursor: pointer;
-  transform: translateY(-2px);
-  box-shadow: 0 16px 34px rgba(0,0,0,0.35);
-  border-color: rgba(76,139,245,0.65);
+  transform: translateY(-3px);
+  box-shadow:
+    0 0 0 2px rgba(76,139,245,0.45),
+    0 18px 38px rgba(0,0,0,0.45);
+  border-color: rgba(76,139,245,0.75);
 }
+
 .listbox:active{
   transform: translateY(0);
   box-shadow: 0 10px 20px rgba(0,0,0,0.25);
@@ -613,18 +615,18 @@ button[title*="Copy link"]{
 }
 
 .walkthrough-step-title{
-  font-size: 1.25rem;        
+  display: inline-block;     
+  font-size: 1.25rem;
   font-weight: 700;
   line-height: 1.4;
-
-  margin: 0 0 0.6rem 0;      
+  margin: 0 0 0.6rem 0;
   color: var(--text-strong);
 }
 
 .walkthrough-step-title::after{
   content: "";
   display: block;
-  width: 48px;
+  width: 100%;              
   height: 2px;
   margin-top: 6px;
   background: rgba(255,255,255,0.25);
