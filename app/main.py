@@ -54,6 +54,14 @@ div[data-testid="stAppViewContainer"]{
               var(--bg-soft)
 }
 
+/* === Header container === */
+.block-container > div:first-child{
+  border-radius: 14px;
+  padding: 4px 14px 38px 14px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+}
+
 /* === Sidebar === */
 section[data-testid="stSidebar"]{
   background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
@@ -108,8 +116,7 @@ section[data-testid="stSidebar"] span{
 }
 /* Sidebar chevron */
 .sb-details > summary::-webkit-details-marker{ display:none !important; }
-.sb-details > summary::marker{ content:"" !important; 
-}
+.sb-details > summary::marker{ content:"" !important; }
 .sb-details > summary::before{
   content: ">";
   font-size: 1rem;
@@ -121,13 +128,6 @@ section[data-testid="stSidebar"] span{
 }
 .sb-details[open] > summary::before{
   transform: rotate(90deg);
-}
-/* === Header container === */
-.block-container > div:first-child{
-  border-radius: 14px;
-  padding: 4px 14px 38px 14px;
-  border: 1px solid rgba(255,255,255,0.06);
-  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
 }
 /* Body = same container, no new “tile” */
 .sb-details-body{
