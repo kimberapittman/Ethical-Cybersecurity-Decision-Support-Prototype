@@ -350,7 +350,7 @@ def render_open_ended():
     # ==========================================================
     if step == 1:
         _render_step_tile_html(
-            "Identify the triggering condition that made this situation ethically significant. "
+            "Describe the triggering condition that made this situation ethically significant. "
             "This should describe what occurred, not how you responded or why it matters."
         )
 
@@ -376,10 +376,6 @@ def render_open_ended():
             "Triggering condition",
             key="oe_triggering_condition",
             height=140,
-            placeholder=(
-                "Describe the event or condition that initiated this situation.\n\n"
-                "Example: A vulnerability scan revealed unauthorized access to a core network segment."
-            ),
         )
 
         st.caption(

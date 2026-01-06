@@ -89,16 +89,6 @@ section[data-testid="stSidebar"] span{
   overflow: hidden !important; /* critical */
 }
 
-/* Make the wrapper invisible (prevents the "card" look) */
-.sb-details{
-  border: none !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  border-radius: 0 !important;
-  overflow: visible !important;
-  margin: 0 0 10px 0;
-}
-
 /* Sidebar details wrapper (replaces st.expander) */
 .sb-details > summary{
   background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)) !important;
@@ -535,8 +525,8 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details > summary{
   gap: 10px !important;
 
   margin: 0 !important;
-  padding: 10px 12px !important;      /* match landing mode tiles */
-  padding-left: 34px !important;      /* reserve space for chevron */
+  padding: 10px 12px !important;   
+  padding-left: 34px !important;     
   position: relative !important;
 }
 
@@ -583,8 +573,8 @@ div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) .listbox,
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) .listbox{
   display: flex !important;
   flex-direction: column !important;
-  height: auto !important;         /* ✅ allow content-driven height */
-  min-height: 0 !important;        /* ✅ prevents flex overflow weirdness */
+  height: auto !important;        
+  min-height: 0 !important;        
 }
 
 /* === Hide Streamlit chrome === */
