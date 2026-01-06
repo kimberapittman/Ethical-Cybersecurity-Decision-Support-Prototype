@@ -138,8 +138,8 @@ div[data-testid="stButton"] > button{
   box-sizing: border-box !important;
   padding: 0.7rem 1rem !important;
   border-radius: 12px !important;
-  background: linear-gradient(135deg, var(--brand), var(--brand-2)) !important;
-  color: white !important;
+  background: rgba(255,255,255,0.06) !important;
+  color: var(--text-strong) !important;
   border: 1px solid rgba(76,139,245,0.55) !important;
   box-shadow:
     0 0 0 1px rgba(76,139,245,0.35),
@@ -147,6 +147,7 @@ div[data-testid="stButton"] > button{
   transition: transform .06s ease, box-shadow .15s ease, filter .15s ease !important;
   white-space: nowrap !important;
 }
+
 
 div[data-testid="stButton"] > button:hover{
   transform: translateY(-3px) !important;
@@ -163,8 +164,8 @@ div[data-testid="stButton"] > button[kind="secondary"]{
   box-sizing: border-box !important;
   padding: 0.7rem 1rem !important;
   border-radius: 12px !important;
-  background: linear-gradient(135deg, var(--brand), var(--brand-2)) !important;
-  color: white !important;
+  background: rgba(255,255,255,0.06) !important;
+  color: var(--text-strong) !important;
   border: 1px solid rgba(76,139,245,0.55) !important;
   box-shadow:
     0 0 0 1px rgba(76,139,245,0.35),
