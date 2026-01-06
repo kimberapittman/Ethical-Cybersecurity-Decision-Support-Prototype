@@ -88,26 +88,27 @@ section[data-testid="stSidebar"] span{
   padding: 0 !important;
   overflow: hidden !important; /* critical */
 }
-
-/* Sidebar details wrapper (replaces st.expander) */
 .sb-details > summary{
+  /* layout */
+  list-style: none !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  /* visual */
   background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)) !important;
-  border: 1px solid rgba(255,255,255,0.10);
-  border-radius: 12px;
-  padding: 10px 12px;
-  color: var(--text-strong);
-  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.10) !important;
+  border-radius: 12px !important;
+  color: var(--text-strong) !important;
+  /* spacing + typography */
+  padding: 12px 14px !important;   /* choose this OR 10px 12px */
+  margin: 0 !important;
+  font-weight: 700 !important;
+  /* behavior */
+  cursor: pointer !important;
 }
-
 /* Sidebar chevron */
 .sb-details > summary::-webkit-details-marker{ display:none !important; }
 .sb-details > summary::marker{ content:"" !important; 
-}
-.sb-details > summary{
-  list-style:none !important;
-  display:flex !important;
-  align-items:center !important;
-  gap:10px !important;
 }
 .sb-details > summary::before{
   content: ">";
@@ -127,17 +128,6 @@ section[data-testid="stSidebar"] span{
   padding: 4px 14px 38px 14px;
   border: 1px solid rgba(255,255,255,0.06);
   background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
-}
-/* Summary header */
-.sb-details > summary{
-  list-style: none !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  padding: 12px 14px !important;
-  margin: 0 !important;
-  cursor: pointer !important;
-  font-weight: 700 !important;
 }
 /* Remove default marker */
 .sb-details > summary::-webkit-details-marker{
