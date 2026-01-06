@@ -345,57 +345,54 @@ def render_open_ended():
         )
 
 
-    # ==========================================================
-    # STEP 1: ORIENTATION + TRIGGER
-    # ==========================================================
-    if step == 1:
-        st.markdown(
-            """
-            <div style="opacity:0.8; max-width:820px; margin:0 auto 12px auto;">
-            Identify the event or condition that disrupted normal operations and created pressure to act. 
-            Focus on what changed, what uncertainty emerged, and why a decision became necessary.
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+# ==========================================================
+# STEP 1: TRIGGERING CONDITION
+# ==========================================================
+if step == 1:
+    _render_step_tile_html(
+        "State the triggering condition that made this cybersecurity decision ethically significant. "
+        "Focus on what changed, what uncertainty emerged, and why a decision became necessary."
+    )
 
-        with st.expander("See case-based examples of triggering conditions"):
-            st.markdown(
-                """
-                **Baltimore (Ransomware):**  
-                Ransomware deployed across municipal systems; service disruption and containment decisions emerged under uncertainty.
+    # --- Persistent examples (always visible, non-interactive) ---
+    st.markdown(
+        """
+        <div class="listbox walkthrough-tile" style="margin-top: 10px; margin-bottom: 12px;">
+          <div style="font-weight:800; font-size:1.05rem; margin-bottom: 8px;">
+            Illustrative examples (not exhaustive)
+          </div>
+          <ul style="margin: 0 0 0 1.15rem; padding: 0; line-height: 1.55;">
+            <li>Indicators of compromise suggested potential spread into systems supporting essential services before scope was confirmed.</li>
+            <li>Access or configuration settings enabled data use beyond the original public purpose, raising authorization concerns.</li>
+            <li>A time-sensitive operational decision had to be made while technical visibility remained incomplete.</li>
+            <li>Containment or recovery actions risked disrupting public-facing services or disproportionately affecting certain residents.</li>
+          </ul>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
-                **San Diego (Surveillance Repurposing):**  
-                Smart streetlight footage accessed for law-enforcement use beyond the program’s documented scope.
+    # --- Step 1: Triggering Condition ---
+    st.text_area(
+        "Triggering condition (what changed and why did it matter?)",
+        key="oe_triggering_condition",
+        height=140,
+        placeholder=(
+            "Example: After detecting indicators of compromise, practitioners had to decide whether to isolate additional systems "
+            "before the scope of spread was confirmed, knowing isolation could disrupt essential municipal services."
+        ),
+    )
 
-                **Riverton (AI-Enabled Control System):**  
-                An AI system flagged anomalous control activity and imposed restrictions pending human review.
-                """
-            )
-            
-        st.markdown(
-            "<div style='margin: 8px 0 6px 0; font-weight:600; opacity:0.85;'>"
-            "Document the triggering condition below."
-            "</div>",
-            unsafe_allow_html=True,
-        )
+    st.text_area(
+        "Why this trigger is ethically significant (optional — 1–3 sentences)",
+        key="oe_trigger_significance",
+        height=90,
+        placeholder=(
+            "Example: The trigger created competing obligations because acting quickly reduced risk of spread, "
+            "but could disrupt services residents rely on."
+        ),
+    )
 
-
-        st.selectbox(
-            "Triggering condition type",
-            options=TRIGGER_TYPE_OPTIONS,
-            key="oe_gate_trigger_type",
-        )
-
-        st.text_area(
-            "Triggering condition",
-            key="oe_gate_triggering_condition",
-            height=150,
-            placeholder=(
-                "Example: Ransomware encrypted core systems; monitoring gaps delayed scoping; "
-                "service disruptions emerged; containment actions considered."
-            ),
-        )
 
     # ==========================================================
     # STEP 2: DECISION CONTEXT 
