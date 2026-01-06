@@ -545,79 +545,72 @@ def render_open_ended():
             ),
         )
 
-        st.markdown("---")
-        st.subheader("PFCE principle triage")
+        # ----------------------------------------------------------
+        # PFCE PRINCIPLE TRIAGE (mirrors CSF step style, multi-select)
+        # ----------------------------------------------------------
 
-        st.caption(
-            "Select any principles that are implicated in this decision context. "
-            "Leaving a principle unchecked is a valid outcome."
-        )
+        # Build display strings like: "BENEFICENCE (B): Does this decision impact human well-being?"
+        # You can adjust label formatting to match your preferred style.
+        pfce_option_texts = []
+        pfce_ids = list(PFCE_DEFINITIONS.keys())  # assumes keys like "beneficence", etc.
 
-        # auto suggestions (optional; safe defaults)
+        for pid in pfce_ids:
+            name = pid.replace("-", " ").title()  # fallback if you don't have PFCE_NAMES mapping
+            definition = PFCE_DEFINITIONS.get(pid, "").strip()
+            pfce_option_texts.append(f"{name}: {definition}")
+
+        # Default selections: use auto suggestions (from CSF crosswalk) if present
         pfce_auto_unique = []
         for p in st.session_state.get("oe_pfce_auto", []):
-            if p in PFCE_NAMES and p not in pfce_auto_unique:
+            # allow either ids or names depending on what your crosswalk produces
+            if p in pfce_ids and p not in pfce_auto_unique:
                 pfce_auto_unique.append(p)
 
-        # initialize persistent storage
-        if "oe_pfce_triage" not in st.session_state:
-            st.session_state["oe_pfce_triage"] = {}
+        # Convert defaults into the same "Name: definition" strings
+        default_pfce_texts = []
+        for pid in pfce_auto_unique:
+            name = pid.replace("-", " ").title()
+            definition = PFCE_DEFINITIONS.get(pid, "").strip()
+            default_pfce_texts.append(f"{name}: {definition}")
 
-        implicated = []
-        rationale_lines = []
+        _render_step_tile_html(
+            "Use the PFCE to make ethically significant conditions explicit. "
+            "This does not prescribe outcomes; it structures ethical reasoning.",
+        )
 
-        for pid in PFCE_NAMES:
-            definition = PFCE_DEFINITIONS.get(pid, "")
-            label = pid  # swap to a display name if you have one
+        selected_pfce_texts = st.multiselect(
+            "Which PFCE principles are implicated in this decision context?",
+            options=pfce_option_texts,
+            default=default_pfce_texts,
+            key="oe_pfce_choice_step4",
+        )
 
-            # default checked if auto-suggested, otherwise unchecked
-            prior = st.session_state["oe_pfce_triage"].get(pid, {})
-            default_checked = pid in pfce_auto_unique
-            checked = prior.get("checked", default_checked)
+        # Map back to principle IDs
+        selected_pfce_ids = []
+        for opt in selected_pfce_texts:
+            label_prefix = opt.split(":")[0].strip().lower()
+            # rebuild the pid format you used earlier
+            # (this matches our fallback name formatting)
+            pid_guess = label_prefix.replace(" ", "-")
+            if pid_guess in pfce_ids and pid_guess not in selected_pfce_ids:
+                selected_pfce_ids.append(pid_guess)
 
-            with st.container(border=True):
-                # checkbox with definition shown via tooltip
-                is_on = st.checkbox(
-                    f"{label}",
-                    value=checked,
-                    key=f"oe_pfce_chk_{pid}",
-                    help=definition,
-                )
+        # Store into the same keys you already use elsewhere
+        st.session_state["oe_pfce_principles"] = selected_pfce_ids
 
-                note_key = f"oe_pfce_note_{pid}"
+        # Optional "current selection" indicator (mirrors your st.info pattern)
+        if selected_pfce_ids:
+            pretty = ", ".join([pid.replace("-", " ").title() for pid in selected_pfce_ids])
+            st.info(f"Current PFCE context: **{pretty}**")
+        else:
+            st.info("Current PFCE context: **None selected**")
 
-                # if checked: show prompt + textbox
-                if is_on:
-                    st.caption("Prompt: In this context, how does this decision engage this principle?")
-                    st.text_area(
-                        "How / why is it implicated? (2–4 sentences)",
-                        key=note_key,
-                        height=90,
-                        placeholder="Describe the ethical implication in this situation.",
-                    )
-                else:
-                    # keep state clean if they toggle off
-                    if note_key in st.session_state:
-                        st.session_state[note_key] = ""
-
-                # persist to triage dict
-                st.session_state["oe_pfce_triage"][pid] = {
-                    "checked": bool(is_on),
-                    "note": (st.session_state.get(note_key, "") or "").strip(),
-                }
-
-                # build derived outputs
-                if is_on:
-                    implicated.append(pid)
-                    note = st.session_state["oe_pfce_triage"][pid]["note"]
-                    if note:
-                        rationale_lines.append(f"- **{pid}**: {note}")
-                    else:
-                        rationale_lines.append(f"- **{pid}**: [No rationale provided]")
-
-        # write back into your existing keys so export/PDF logic continues to work
-        st.session_state["oe_pfce_principles"] = implicated
-        st.session_state["oe_pfce_rationale"] = "\n".join(rationale_lines).strip()
+        st.caption("Optional: explain how the selected PFCE principles show up in this decision context.")
+        st.text_area(
+            "PFCE rationale (optional)",
+            key="oe_pfce_rationale",
+            height=110,
+        )
 
     # ==========================================================
     # STEP 5: CONSTRAINTS
