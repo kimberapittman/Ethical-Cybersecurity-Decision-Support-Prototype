@@ -129,9 +129,6 @@ section[data-testid="stSidebar"] span{
   border: 1px solid rgba(255,255,255,0.06);
   background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
 }
-.sb-details > summary::marker{
-  content: "" !important;
-}
 /* Body = same container, no new “tile” */
 .sb-details-body{
   padding: 12px 14px !important;
