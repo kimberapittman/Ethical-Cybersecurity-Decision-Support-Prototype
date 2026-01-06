@@ -103,14 +103,12 @@ section[data-testid="stSidebar"] span{
 .sb-details > summary::-webkit-details-marker{ display:none !important; }
 .sb-details > summary::marker{ content:"" !important; 
 }
-
 .sb-details > summary{
   list-style:none !important;
   display:flex !important;
   align-items:center !important;
   gap:10px !important;
 }
-
 .sb-details > summary::before{
   content: ">";
   font-size: 1rem;
@@ -120,16 +118,9 @@ section[data-testid="stSidebar"] span{
   margin-top: -1px;
   transition: transform 0.12s ease, opacity 0.12s ease;
 }
-
 .sb-details[open] > summary::before{
   transform: rotate(90deg);
 }
-
-/* Inner body spacing */
-.sb-details-body{
-  padding: 10px 6px 0 6px;
-}
-
 /* === Header container === */
 .block-container > div:first-child{
   border-radius: 14px;
@@ -137,21 +128,17 @@ section[data-testid="stSidebar"] span{
   border: 1px solid rgba(255,255,255,0.06);
   background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
 }
-
 /* Summary header */
 .sb-details > summary{
   list-style: none !important;
   display: flex !important;
   align-items: center !important;
   gap: 10px !important;
-
   padding: 12px 14px !important;
   margin: 0 !important;
-
   cursor: pointer !important;
   font-weight: 700 !important;
 }
-
 /* Remove default marker */
 .sb-details > summary::-webkit-details-marker{
   display: none !important;
@@ -159,7 +146,6 @@ section[data-testid="stSidebar"] span{
 .sb-details > summary::marker{
   content: "" !important;
 }
-
 /* Body = same container, no new “tile” */
 .sb-details-body{
   padding: 12px 14px !important;
@@ -383,7 +369,6 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
 
 /* =========================
    CLICKABLE NAV BUTTON AFFORDANCE
-   (match tile blue rim)
    ========================= */
 
 /* Apply blue rim ONLY to real buttons */
@@ -448,7 +433,6 @@ div[data-testid="stButton"] > button:active{
   white-space:nowrap !important;
   color:#ffffff !important;
 }
-
 .case-badge.real{
   background-color: rgba(55,138,237,0.85) !important;
   border: 1px solid rgba(55,138,237,0.85) !important;
