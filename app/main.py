@@ -136,7 +136,6 @@ section[data-testid="stSidebar"] span{
    ========================= */
 div[data-testid="stButton"] > button{
   box-sizing: border-box !important;
-  border: 0;
   padding: 0.7rem 1rem !important;
   border-radius: 12px !important;
   background: linear-gradient(135deg, var(--brand), var(--brand-2)) !important;
@@ -159,6 +158,31 @@ div[data-testid="stButton"] > button:hover{
   filter: brightness(1.05) !important;
 }
 
+/* Secondary Buttons */
+div[data-testid="stButton"] > button[kind="secondary"]{
+  box-sizing: border-box !important;
+  padding: 0.7rem 1rem !important;
+  border-radius: 12px !important;
+  background: linear-gradient(135deg, var(--brand), var(--brand-2)) !important;
+  color: white !important;
+  border: 1px solid rgba(76,139,245,0.55) !important;
+  box-shadow:
+    0 0 0 1px rgba(76,139,245,0.35),
+    0 10px 20px rgba(76,139,245,0.35) !important;
+  transition: transform .06s ease, box-shadow .15s ease, filter .15s ease !important;
+  white-space: nowrap !important;
+}
+
+div[data-testid="stButton"] > button[kind="secondary"]:hover{
+  transform: translateY(-3px) !important;
+  cursor: pointer;
+  box-shadow:
+    0 0 0 3px rgba(76,139,245,0.65),
+    0 18px 38px rgba(76,139,245,0.45) !important;
+  border-color: rgba(76,139,245,0.95) !important;
+  filter: brightness(1.05) !important;
+}
+
 div[data-testid="stButton"] > button:active{
   transform: translateY(0) !important;
   box-shadow:
@@ -166,24 +190,6 @@ div[data-testid="stButton"] > button:active{
     0 8px 16px rgba(76,139,245,0.30) !important;
 }
 
-/* Ghost button (Back to Mode Selection) */
-div[data-testid="stButton"] > button[kind="secondary"]{
-  background: rgba(255,255,255,0.06) !important;
-  border: 1px solid rgba(255,255,255,0.14) !important;
-  box-shadow: none !important;
-  width: auto !important;
-  min-width: unset !important;
-  padding: 0.45rem 0.9rem !important;
-  line-height: 1.2 !important;
-}
-
-div[data-testid="stButton"] > button[kind="secondary"]:hover{
-  transform: none !important;
-  filter: none !important;
-  box-shadow: none !important;
-}
-
-/* Disabled */
 div[data-testid="stButton"] > button:disabled{
   opacity: 0.55 !important;
   background: rgba(255,255,255,0.10) !important;
