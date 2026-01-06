@@ -346,7 +346,7 @@ def render_open_ended():
 
 
     # ==========================================================
-    # STEP 1: ORIENTATION + TRIGGER (was the old gate)
+    # STEP 1: ORIENTATION + TRIGGER
     # ==========================================================
     if step == 1:
         st.markdown(
@@ -398,7 +398,7 @@ def render_open_ended():
         )
 
     # ==========================================================
-    # STEP 2: DECISION CONTEXT (was step 1)
+    # STEP 2: DECISION CONTEXT 
     # ==========================================================
     if step == 2:
         _render_step_tile_html(
@@ -429,7 +429,7 @@ def render_open_ended():
         st.session_state["oe_suggested_func"] = guess_csf_function(decision_context)
 
     # ==========================================================
-    # STEP 3: NIST CSF (was step 2)
+    # STEP 3: NIST CSF 
     # ==========================================================
     if step == 3:
         _render_step_tile_html(
@@ -545,14 +545,6 @@ def render_open_ended():
             ),
         )
 
-        st.caption("State the tension as two justified obligations that cannot both be fully fulfilled in this situation.")
-        st.text_area(
-            "Ethical tension (obligation A **vs.** obligation B)",
-            key="oe_ethical_tension",
-            height=110,
-            placeholder="Example: Limit spread through isolation **vs.** maintain access to essential municipal services.",
-        )
-
         st.markdown("---")
         st.subheader("PFCE principle triage")
 
@@ -628,7 +620,7 @@ def render_open_ended():
         st.session_state["oe_pfce_rationale"] = "\n".join(rationale_lines).strip()
 
     # ==========================================================
-    # STEP 5: CONSTRAINTS (was step 4)
+    # STEP 5: CONSTRAINTS
     # ==========================================================
     if step == 5:
         _render_step_tile_html(
@@ -648,7 +640,7 @@ def render_open_ended():
         )
 
     # ==========================================================
-    # STEP 6: DECISION + OUTPUT (was step 5)
+    # STEP 6: DECISION + OUTPUT 
     # ==========================================================
     if step == 6:
         _render_step_tile_html(
