@@ -100,7 +100,7 @@ section[data-testid="stSidebar"] span{
   border-radius: 12px !important;
   color: var(--text-strong) !important;
   /* spacing + typography */
-  padding: 12px 14px !important;   /* choose this OR 10px 12px */
+  padding: 12px 14px !important; 
   margin: 0 !important;
   font-weight: 700 !important;
   /* behavior */
@@ -128,10 +128,6 @@ section[data-testid="stSidebar"] span{
   padding: 4px 14px 38px 14px;
   border: 1px solid rgba(255,255,255,0.06);
   background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
-}
-/* Remove default marker */
-.sb-details > summary::-webkit-details-marker{
-  display: none !important;
 }
 .sb-details > summary::marker{
   content: "" !important;
