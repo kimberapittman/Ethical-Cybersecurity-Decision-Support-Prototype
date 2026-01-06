@@ -33,11 +33,10 @@ html, body{
 
 /* === Font (Inter) + base tokens === */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-html, body, [class^="css"] {
+html, body, .stApp{
   font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji" !important;
 }
-
-/* === Tokens === */
+/* === TOKENS === */
 :root{
   --brand: #378AED;     /* Real-World Incident */
   --brand-2: #55CAFF;   /* Hypothetical Scenario */
@@ -47,14 +46,14 @@ html, body, [class^="css"] {
   --card-bg: rgba(255,255,255,0.05);
 }
 
-/* === App background === */
+/* === APP BACKGROUND === */
 div[data-testid="stAppViewContainer"]{
   background: radial-gradient(1200px 600px at 10% -10%, rgba(76,139,245,0.15), transparent 60%),
               radial-gradient(900px 500px at 100% 0%, rgba(122,168,255,0.10), transparent 60%),
               var(--bg-soft)
 }
 
-/* === Header container === */
+/* === HEADER CONTAINER === */
 .block-container > div:first-child{
   border-radius: 14px;
   padding: 4px 14px 38px 14px;
@@ -62,7 +61,7 @@ div[data-testid="stAppViewContainer"]{
   background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
 }
 
-/* === Sidebar === */
+/* === SIDEBAR === */
 section[data-testid="stSidebar"]{
   background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
   border-right: 1px solid rgba(255,255,255,0.08);
@@ -80,10 +79,6 @@ section[data-testid="stSidebar"] span{
   word-break: break-word !important;
   white-space: normal !important;
 }
-
-/* =========================
-   SIDEBAR DETAILS — CONNECTED PANEL
-   ========================= */
 /* The whole expander container */
 .sb-details{
   background: linear-gradient(
