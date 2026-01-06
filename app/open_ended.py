@@ -345,53 +345,46 @@ def render_open_ended():
         )
 
 
-# ==========================================================
-# STEP 1: TRIGGERING CONDITION
-# ==========================================================
-if step == 1:
-    _render_step_tile_html(
-        "State the triggering condition that made this cybersecurity decision ethically significant. "
-        "Focus on what changed, what uncertainty emerged, and why a decision became necessary."
-    )
+    # ==========================================================
+    # STEP 1: TRIGGERING CONDITION
+    # ==========================================================
+    if step == 1:
+        _render_step_tile_html(
+            "Identify the triggering condition that made this situation ethically significant. "
+            "This should describe what occurred, not how you responded or why it matters."
+        )
 
-    # --- Persistent examples (always visible, non-interactive) ---
-    st.markdown(
-        """
-        <div class="listbox walkthrough-tile" style="margin-top: 10px; margin-bottom: 12px;">
-          <div style="font-weight:800; font-size:1.05rem; margin-bottom: 8px;">
-            Illustrative examples (not exhaustive)
-          </div>
-          <ul style="margin: 0 0 0 1.15rem; padding: 0; line-height: 1.55;">
-            <li>Indicators of compromise suggested potential spread into systems supporting essential services before scope was confirmed.</li>
-            <li>Access or configuration settings enabled data use beyond the original public purpose, raising authorization concerns.</li>
-            <li>A time-sensitive operational decision had to be made while technical visibility remained incomplete.</li>
-            <li>Containment or recovery actions risked disrupting public-facing services or disproportionately affecting certain residents.</li>
-          </ul>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+        # Optional reference examples (NOT a tile, NOT selectable)
+        with st.expander("View illustrative triggering-condition examples (optional)"):
+            st.markdown(
+                """
+                **Examples drawn from prior municipal cases that informed this prototype’s design**
 
-    # --- Step 1: Triggering Condition ---
-    st.text_area(
-        "Triggering condition (what changed and why did it matter?)",
-        key="oe_triggering_condition",
-        height=140,
-        placeholder=(
-            "Example: After detecting indicators of compromise, practitioners had to decide whether to isolate additional systems "
-            "before the scope of spread was confirmed, knowing isolation could disrupt essential municipal services."
-        ),
-    )
+                **Baltimore (Ransomware):**  
+                Ransomware was deployed across multiple municipal systems.
 
-    st.text_area(
-        "Why this trigger is ethically significant (optional — 1–3 sentences)",
-        key="oe_trigger_significance",
-        height=90,
-        placeholder=(
-            "Example: The trigger created competing obligations because acting quickly reduced risk of spread, "
-            "but could disrupt services residents rely on."
-        ),
-    )
+                **San Diego (Surveillance Repurposing):**  
+                Smart streetlight footage was accessed for law-enforcement use beyond the program’s documented scope.
+
+                **Riverton (AI-Enabled Control System):**  
+                An AI system flagged anomalous control activity.
+                """
+            )
+
+        # Input tile (the ONLY tile in this step)
+        st.text_area(
+            "Triggering condition",
+            key="oe_triggering_condition",
+            height=140,
+            placeholder=(
+                "Describe the event or condition that initiated this situation.\n\n"
+                "Example: A vulnerability scan revealed unauthorized access to a core network segment."
+            ),
+        )
+
+        st.caption(
+            "Focus only on what occurred. Do not describe response options, impacts, or ethical considerations yet."
+        )
 
 
     # ==========================================================
