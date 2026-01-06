@@ -460,7 +460,9 @@ div[data-testid="stButton"] > button:active{
   box-shadow: inset 0 0 0 1px rgba(255,255,255,0.15);
 }
 
-/* === Expanders === */
+/* MAIN CONTENT expanders only (exclude sidebar) */
+div[data-testid="stAppViewContainer"]
+:not(section[data-testid="stSidebar"])
 details > summary{
   background: rgba(255,255,255,0.06);
   border: 1px solid rgba(255,255,255,0.10);
