@@ -505,8 +505,6 @@ div[data-testid="stHorizontalBlock"]{
   width: 100% !important;
   display: flex !important;
   align-items: stretch !important;
-
-  /* match the “inner edge” you want (adjust if your tile padding differs) */
   padding-left: 30px !important;
   padding-right: 30px !important;
   margin-top: 12px !important;
@@ -514,15 +512,15 @@ div[data-testid="stHorizontalBlock"]{
 
 /* Columns must expand to fill the row */
 div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
-div[data-testid="column"]{
+div[data-testid="stColumn"]{
   flex: 1 1 0 !important;
   width: 100% !important;
   display: flex !important;
 }
 
-/* Inner wrapper must stretch full width so justify-content can work */
+/* Column wrapper must stretch so the lane has space */
 div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
-div[data-testid="column"] > div{
+div[data-testid="stColumn"] > div{
   flex: 1 1 auto !important;
   width: 100% !important;
   display: flex !important;
@@ -530,20 +528,19 @@ div[data-testid="column"] > div{
 
 /* Left lane pinned left */
 div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
-div[data-testid="column"]:first-child > div{
+div[data-testid="stColumn"]:first-child > div{
   justify-content: flex-start !important;
 }
 
-/* Right lane pinned right */
+/* Right lane pinned right — actual lane is the inner stVerticalBlock in the right column */
 div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
-div[data-testid="column"]:last-child > div{
+div[data-testid="stHorizontalBlock"]
+div[data-testid="stColumn"]:last-child
+div[data-testid="stVerticalBlock"]{
+  width: 100% !important;
+  display: flex !important;
   justify-content: flex-end !important;
-}
-
-/* EXTRA insurance: force the right lane button wrapper to auto-push */
-div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
-div[data-testid="column"]:last-child div[data-testid="stButton"]{
-  margin-left: auto !important;
+  align-items: center !important;
 }
 
 /* Keep nav buttons pill-sized */
@@ -556,7 +553,14 @@ div[data-testid="stButton"] > button{
 /* Stack only when truly narrow */
 @media (max-width: 520px){
   div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
-  div[data-testid="column"] > div{
+  div[data-testid="stColumn"] > div{
+    justify-content: stretch !important;
+  }
+    /* On narrow screens, don't force right-pin; let buttons go full-width */
+  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
+  div[data-testid="stHorizontalBlock"]
+  div[data-testid="stColumn"]:last-child
+  div[data-testid="stVerticalBlock"]{
     justify-content: stretch !important;
   }
 

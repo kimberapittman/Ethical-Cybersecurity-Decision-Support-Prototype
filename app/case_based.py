@@ -430,6 +430,8 @@ def render_case(case_id: str):
     with st.container():
         # This anchor is what your CSS is scoped to
         st.markdown('<div class="cb-nav-anchor"></div>', unsafe_allow_html=True)
+        st.markdown("<!-- CB_NAV_ANCHOR_PRESENT -->", unsafe_allow_html=True)
+
 
         col_l, col_r = st.columns(2, gap="large")
 
