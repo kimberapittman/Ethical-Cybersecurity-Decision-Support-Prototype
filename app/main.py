@@ -63,7 +63,7 @@ div[data-testid="stAppViewContainer"]{
 /* === HEADER CONTAINER === */
 .block-container > div:first-child{
   border-radius: 14px;
-  padding: 4px 14px 38px 14px;
+  padding: 4px var(--tile-x-pad) 38px var(--tile-x-pad);
   border: 1px solid rgba(255,255,255,0.06);
   background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
 }
