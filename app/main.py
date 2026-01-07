@@ -205,7 +205,7 @@ div[data-testid="stVerticalBlock"]:not(:has(:is(.cb-nav-anchor,.oe-nav-anchor)))
 div[data-testid="stButton"] > button{
   width: 100% !important;
       min-width: 100% !important;
-          }
+}
 /* Keyboard focus only (no mouse click outline) */
 div[data-testid="stButton"] > button:focus-visible{
   outline: none !important;
@@ -214,48 +214,7 @@ div[data-testid="stButton"] > button:focus-visible{
     0 0 0 6px rgba(76,139,245,0.25) !important;
 }
 
-/* =========================
-   WALKTHROUGH NAV — SINGLE SOURCE OF TRUTH
-   ========================= */
-
-/* Full-width alignment wrapper INSIDE each column */
-div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor)) .nav-wrap{
-  width: 100% !important;
-  display: flex !important;
-  align-items: center !important;
-}
-
-/* Left pinned */
-div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor)) .nav-left{
-  justify-content: flex-start !important;
-}
-
-/* Right pinned */
-div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor)) .nav-right{
-  justify-content: flex-end !important;
-}
-
-/* Buttons stay pill-sized */
-div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
-.nav-wrap div[data-testid="stButton"] > button{
-  width: auto !important;
-  min-width: unset !important;
-}
-
-/* Stack only when truly narrow */
-@media (max-width: 520px){
-  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor)) .nav-wrap{
-    justify-content: stretch !important;
-  }
-
-  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
-  .nav-wrap div[data-testid="stButton"] > button{
-    width: 100% !important;
-    min-width: 100% !important;
-  }
-}
-
-/* === Inputs === */
+/* === INPUTS === */
 input, textarea, select, .stTextInput input, .stTextArea textarea{
   background: rgba(255,255,255,0.06) !important;
   border: 1px solid rgba(255,255,255,0.12) !important;
@@ -266,7 +225,7 @@ label, .stRadio, .stSelectbox, .stMultiSelect, .stExpander{
   color: var(--text-strong) !important;
 }
 
-/* === Cards / tiles === */
+/* === CARD TILES === */
 .listbox{
   background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
   border-left: 4px solid var(--brand);
@@ -280,14 +239,11 @@ label, .stRadio, .stSelectbox, .stMultiSelect, .stExpander{
 .listbox, .listbox *{ color: var(--text-strong) !important; }
 section-note, .tile-hook { color: var(--text-muted) !important; }
 
-/* =========================
-   Select-a-Mode tile spacing (match Select-a-Case)
-   ========================= */
+/* === SELECT A MODE TILE SPACING ==== */
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
 .listbox.tile-card.mode-tile{
   padding: 30px 30px !important;  
 }
-
 /* Title → hook spacing (same as case tiles) */
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
 .listbox.tile-card.mode-tile .tile-title{
@@ -297,7 +253,6 @@ div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
   margin: 0 0 20px 0 !important;
   line-height: 1.45 !important;
 }
-
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
 .listbox.tile-card.mode-tile .tile-hook{
   text-align: center !important;
@@ -305,18 +260,15 @@ div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
   margin: 0 0 20px 0 !important;   /* hook → details spacing */
   line-height: 1.45 !important;
 }
-
 /* Expanded body: continuous with summary (no "second tile" look) */
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
 .listbox.tile-card.mode-tile details .details-body{
   margin-top: 0 !important;                 /* REMOVE gap */
   padding: 12px 12px !important;
   background: rgba(255,255,255,0.03) !important;
-
   border: 0 !important;                      /* no second card border */
   border-radius: 0 0 12px 12px !important;   /* ONLY bottom corners rounded */
 }
-
 /* Make summary connect flush into body when open */
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
 .listbox.tile-card.mode-tile details[open] > summary{
@@ -324,31 +276,26 @@ div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
   border-bottom-right-radius: 0 !important;
 }
 
-/* =========================
-   Select-a-Case tile spacing (DETERMINISTIC)
-   ========================= */
+/* === SELECT A CASE - TILE SPACING ==== */
 /* Tile padding: top and bottom must match */
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
 .listbox.case-tile{
   padding: 30px 30px !important;   /* top/bottom symmetry */
 }
-
 /* Badge → title spacing */
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
 .listbox.case-tile .case-badge-wrap{
   margin: 0 0 20px 0 !important;
 }
-
 /* Title styling + Title → hook spacing */
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
 .listbox.case-tile .tile-title{
   font-weight: 800 !important;
   font-size: 1.05rem !important;
   text-align: center !important;
-  margin: 0 0 20px 0 !important;   /* THIS is the consistent title→hook gap */
+  margin: 0 0 20px 0 !important;   
   line-height: 1.45 !important;
 }
-
 /* Hook styling; Hook → bottom spacing comes ONLY from tile padding */
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
 .listbox.case-tile .tile-hook{
@@ -358,10 +305,7 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
   line-height: 1.45 !important;
 }
 
-/* =========================
-   CLICKABLE NAV BUTTON AFFORDANCE
-   ========================= */
-
+/* === CLICKABLE NAV BUTTON AFFORDANCE === */
 /* Apply blue rim ONLY to real buttons */
 div[data-testid="stButton"] > button{
   border: 1px solid rgba(76,139,245,0.55) !important;
@@ -369,7 +313,6 @@ div[data-testid="stButton"] > button{
     0 0 0 1px rgba(76,139,245,0.35),
     0 10px 20px rgba(76,139,245,0.35) !important;
 }
-
 /* Stronger affordance on hover */
 div[data-testid="stButton"] > button:hover{
   border-color: rgba(76,139,245,0.85) !important;
@@ -377,14 +320,12 @@ div[data-testid="stButton"] > button:hover{
     0 0 0 2px rgba(76,139,245,0.55),
     0 14px 26px rgba(76,139,245,0.45) !important;
 }
-
 /* Subtle press feedback */
 div[data-testid="stButton"] > button:active{
   box-shadow:
     0 0 0 1px rgba(76,139,245,0.45),
     0 8px 16px rgba(76,139,245,0.30) !important;
 }
-
 /* Click affordances */
 .listbox:hover{
   cursor: pointer;
@@ -394,18 +335,17 @@ div[data-testid="stButton"] > button:active{
     0 18px 38px rgba(0,0,0,0.45);
   border-color: rgba(76,139,245,0.75);
 }
-
 .listbox:active{
   transform: translateY(0);
   box-shadow: 0 10px 20px rgba(0,0,0,0.25);
 }
 
-/* === Bullet list inside tiles === */
+/* === BULLET LISTS INSIDE TILES === */
 .tight-list{ margin: 0.25rem 0 0 1.15rem; padding: 0; }
 .tight-list li{ margin: 6px 0; }
 .tight-list li::marker{ color: var(--text-muted); }
 
-/* === Case badges === */
+/* === CASE BADGES === */
 .case-badge-wrap{
   width:100% !important;
   display:flex !important;
@@ -434,7 +374,6 @@ div[data-testid="stButton"] > button:active{
   border: 1px solid rgba(85,202,255,0.85) !important;
   box-shadow: inset 0 0 0 1px rgba(255,255,255,0.15);
 }
-
 /* MAIN CONTENT expanders only (exclude sidebar) */
 div[data-testid="stAppViewContainer"]
 :not(section[data-testid="stSidebar"])
@@ -446,9 +385,7 @@ details > summary{
   color: var(--text-strong);
 }
 
-/* =========================
-   DETAILS CHEVRON — LANDING MODE TILES
-   ========================= */
+/* === DETAILS CHEVRON — LANDING MODE TILES ==== */
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details > summary::-webkit-details-marker{
   display: none !important;
 }
@@ -460,13 +397,11 @@ div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details > summary{
   display: flex !important;
   align-items: center !important;
   gap: 10px !important;
-
   margin: 0 !important;
   padding: 10px 12px !important;      /* single source of truth for summary padding */
   padding-left: 34px !important;      /* reserve space for chevron */
   position: relative !important;
 }
-
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details > summary::before{
   content: ">";
   font-weight: 800;
@@ -474,21 +409,17 @@ div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details > summary::be
   font-size: 1rem;
   line-height: 1;
   opacity: 0.8;
-
   position: absolute;
   left: 12px;
   top: 50%;
   transform: translateY(-50%) rotate(0deg);
   transition: transform 0.12s ease;
 }
-
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details[open] > summary::before{
   transform: translateY(-50%) rotate(90deg);
 }
 
-/* =========================
-   DETAILS CHEVRON — CASE MODE TILES
-   ========================= */
+/* === DETAILS CHEVRON — CASE MODE TILES ==== */
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details > summary::-webkit-details-marker{
   display: none !important;
 }
@@ -500,13 +431,11 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details > summary{
   display: flex !important;
   align-items: center !important;
   gap: 10px !important;
-
   margin: 0 !important;
   padding: 10px 12px !important;   
   padding-left: 34px !important;     
   position: relative !important;
 }
-
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details > summary::before{
   content: ">";
   font-weight: 800;
@@ -514,38 +443,31 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details > summary::be
   font-size: 1rem;
   line-height: 1;
   opacity: 0.8;
-
   position: absolute;
   left: 12px;
   top: 50%;
   transform: translateY(-50%) rotate(0deg);
   transition: transform 0.12s ease;
 }
-
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details[open] > summary::before{
   transform: translateY(-50%) rotate(90deg);
 }
-
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
 div[data-testid="stHorizontalBlock"]{
   align-items: flex-start !important;
 }
-
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
 div[data-testid="stHorizontalBlock"]{
   align-items: stretch !important;
 }
-
 div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
 div[data-testid="column"]:first-child div[data-testid="stButton"]{
   justify-content: flex-start !important;
 }
-
 div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
 div[data-testid="column"]:last-child div[data-testid="stButton"]{
   justify-content: flex-end !important;
 }
-
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) .listbox,
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) .listbox{
   display: flex !important;
@@ -554,10 +476,9 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) .listbox{
   min-height: 0 !important;        
 }
 
-/* === Hide Streamlit chrome === */
+/* === HIDE STREAMLIT CHROME === */
 header[data-testid="stHeader"]{ background: transparent; }
 footer, #MainMenu{ visibility: hidden; }
-
 /* Hide header anchor icons */
 div[data-testid="stMarkdownContainer"] h1 a,
 div[data-testid="stMarkdownContainer"] h2 a,
@@ -581,7 +502,6 @@ button[title*="Copy link"]{
   margin-top: 12px;
   margin-bottom: 12px !important;
 }
-
 .walkthrough-step-title{
   display: inline-block;     
   font-size: 1.25rem;
@@ -590,7 +510,6 @@ button[title*="Copy link"]{
   margin: 0 0 0.6rem 0;
   color: var(--text-strong);
 }
-
 /* kill the hover/active "clickable" affordance */
 .listbox.walkthrough-tile:hover,
 .listbox.walkthrough-tile:active{
@@ -599,19 +518,15 @@ button[title*="Copy link"]{
   border-color: rgba(255,255,255,0.10) !important;   /* normal */
   box-shadow: 0 10px 24px rgba(0,0,0,0.25) !important; /* normal */
 }
-
 /* Optional polish: soften walkthrough tiles slightly */
 .listbox.walkthrough-tile{
   box-shadow: 0 8px 18px rgba(0,0,0,0.22) !important;
 }
-
 :root{ --disclaimer-h: 56px; }
-
 /* Reserve space so content never hides behind the footer */
 div[data-testid="stMainBlockContainer"]{
   padding-bottom: calc(var(--disclaimer-h) + 16px) !important;
 }
-
 .disclaimer-overlay{
   position: fixed !important;
   left: 0 !important;
@@ -627,7 +542,6 @@ div[data-testid="stMainBlockContainer"]{
   z-index: 2147483647 !important; /* go nuclear */
   pointer-events: none !important;
 }
-
 /* Prevent any ancestor from turning fixed into “fixed inside container” */
 div[data-testid="stAppViewContainer"],
 div[data-testid="stMain"],
@@ -637,29 +551,70 @@ main{
   filter: none !important;
   perspective: none !important;
 }
-
 /* The actual bar */
 .disclaimer-footer{
   height: var(--disclaimer-h) !important;
   width: 100% !important;
-
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-
   background: rgba(11,16,32,0.92) !important;
   border-top: 1px solid rgba(255,255,255,0.10) !important;
-
   color: rgba(229,231,235,0.75) !important;
   font-size: 0.85rem !important;
   font-weight: 500 !important;
   letter-spacing: 0.01em !important;
-
   margin: 0 !important;
   padding: 0 12px !important; /* small side padding */
   text-align: center !important;
-
   pointer-events: none !important;
+}
+
+/* === WALKTHROUGH NAV — SINGLE SOURCE OF TRUTH ==== */
+/* Full-width alignment wrapper INSIDE each column */
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor)) .nav-wrap{
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+}
+/* Left pinned */
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor)) .nav-left{
+  justify-content: flex-start !important;
+}
+/* Right pinned */
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor)) .nav-right{
+  justify-content: flex-end !important;
+}
+/* Buttons stay pill-sized */
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
+.nav-wrap div[data-testid="stButton"] > button{
+  width: auto !important;
+  min-width: unset !important;
+}
+/* Stack only when truly narrow */
+@media (max-width: 520px){
+  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor)) .nav-wrap{
+    justify-content: stretch !important;
+  }
+  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
+  .nav-wrap div[data-testid="stButton"] > button{
+    width: 100% !important;
+    min-width: 100% !important;
+  }
+}
+/* === WALKTHROUGH NAV — LANE STRETCH PATCH === */
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
+div[data-testid="column"]{
+  display: flex !important;
+}
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
+div[data-testid="column"] > div{
+  width: 100% !important;
+  display: flex !important;
+}
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
+div[data-testid="stHorizontalBlock"]{
+  width: 100% !important;
 }
 </style>
 """,
