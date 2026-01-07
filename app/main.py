@@ -505,8 +505,8 @@ div[data-testid="stHorizontalBlock"]{
   width: 100% !important;
   display: flex !important;
   align-items: stretch !important;
-  padding-left: 30px !important;
-  padding-right: 30px !important;
+  padding-left: 14px !important;
+  padding-right: 14px !important;
   margin-top: 12px !important;
 }
 
@@ -539,8 +539,9 @@ div[data-testid="stColumn"]:last-child
 div[data-testid="stVerticalBlock"]{
   width: 100% !important;
   display: flex !important;
-  justify-content: flex-end !important;
-  align-items: center !important;
+
+  justify-content: flex-start !important;  /* vertical: top (neutral) */
+  align-items: flex-end !important;        /* horizontal: RIGHT */
 }
 
 /* Keep nav buttons pill-sized */
