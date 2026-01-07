@@ -496,20 +496,24 @@ main{
   text-align: center !important;
   pointer-events: none !important;
 }
-/* === WALKTHROUGH NAV ==== */
-/* Only inside the nav row area */
+/* === WALKTHROUGH NAV (CB + OE) === */
 div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
 div[data-testid="stHorizontalBlock"]{
   width: 100% !important;
+  display: flex !important;           /* critical: make it a flex row */
+  align-items: stretch !important;
 }
-/* Make each column a flex lane */
+/* Each column must be a full-width flex lane (NOT shrink-to-content) */
 div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
 div[data-testid="column"]{
+  flex: 1 1 0 !important;             /* critical: makes lanes expand */
+  width: 100% !important;
   display: flex !important;
 }
-/* The column inner wrapper must stretch full width */
+/* Inner wrapper stretches so justify-content has space to work */
 div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
 div[data-testid="column"] > div{
+  flex: 1 1 auto !important;
   width: 100% !important;
   display: flex !important;
 }
