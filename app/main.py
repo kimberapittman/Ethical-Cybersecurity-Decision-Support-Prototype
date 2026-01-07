@@ -47,6 +47,9 @@ html, body, .stApp{
   --text-muted: #94a3b8;
   --card-bg: rgba(255,255,255,0.05);
 }
+:root{
+  --tile-x-pad: 14px;
+}
 
 
 /* === APP BACKGROUND === */
@@ -505,8 +508,8 @@ div[data-testid="stHorizontalBlock"]{
   width: 100% !important;
   display: flex !important;
   align-items: stretch !important;
-  padding-left: 14px !important;
-  padding-right: 14px !important;
+  padding-left: var(--tile-x-pad) !important;
+  padding-right: var(---tile-x-pad) !important;
   margin-top: 12px !important;
 }
 
