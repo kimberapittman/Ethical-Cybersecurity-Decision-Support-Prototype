@@ -545,41 +545,28 @@ div[data-testid="stButton"] > button{
     min-width: 100% !important;
   }
 
-/* === CASE-BASED WALKTHROUGH NAV (scoped to nav container) === */
+/* === CASE-BASED WALKTHROUGH NAV (hard pin) === */
 
-/* Give the nav row the same inner edge as the tile padding */
+/* Make sure the nav row itself is full width */
 div[data-testid="stVerticalBlock"]:has(.cb-nav-scope)
 div[data-testid="stHorizontalBlock"]{
   width: 100% !important;
-  padding-left: 30px !important;
-  padding-right: 30px !important;
-  margin-top: 12px !important;
 }
 
-/* Make each nav column a flex lane */
-div[data-testid="stVerticalBlock"]:has(.cb-nav-scope)
-div[data-testid="column"]{
-  display: flex !important;
-}
-
-/* Ensure the column inner wrapper stretches full width (required for flex alignment) */
-div[data-testid="stVerticalBlock"]:has(.cb-nav-scope)
-div[data-testid="column"] > div{
+/* Left wrapper pins left */
+.cb-nav-left{
   width: 100% !important;
   display: flex !important;
-}
-
-/* Left lane pinned left */
-div[data-testid="stVerticalBlock"]:has(.cb-nav-scope)
-div[data-testid="column"]:first-child > div{
   justify-content: flex-start !important;
 }
 
-/* Right lane pinned right (THIS is the Next alignment) */
-div[data-testid="stVerticalBlock"]:has(.cb-nav-scope)
-div[data-testid="column"]:last-child > div{
+/* Right wrapper pins right */
+.cb-nav-right{
+  width: 100% !important;
+  display: flex !important;
   justify-content: flex-end !important;
 }
+
 </style>
 """,
     unsafe_allow_html=True,
