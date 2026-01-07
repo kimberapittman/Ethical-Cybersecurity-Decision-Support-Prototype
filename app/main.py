@@ -205,12 +205,6 @@ div[data-testid="stButton"] > button:disabled:hover{
   border-color: rgba(255,255,255,0.22) !important;
   filter: none !important;
 }
-/* OPTIONAL: only make “normal” (non-nav) buttons full width */
-div[data-testid="stVerticalBlock"]:not(:has(:is(.cb-nav-anchor,.oe-nav-anchor)))
-div[data-testid="stButton"] > button{
-  width: 100% !important;
-      min-width: 100% !important;
-}
 /* Keyboard focus only (no mouse click outline) */
 div[data-testid="stButton"] > button:focus-visible{
   outline: none !important;
