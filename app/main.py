@@ -508,8 +508,7 @@ div[data-testid="stHorizontalBlock"]{
   width: 100% !important;
   display: flex !important;
   align-items: stretch !important;
-  padding-left: var(--tile-x-pad) !important;
-  padding-right: var(---tile-x-pad) !important;
+  padding: 0 var(--tile-x-pad) !important;
   margin-top: 12px !important;
 }
 
@@ -529,10 +528,12 @@ div[data-testid="stColumn"] > div{
   display: flex !important;
 }
 
-/* Left lane pinned left */
+/* Left lane true-left align (column flex => align-items controls horizontal) */
 div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
-div[data-testid="stColumn"]:first-child > div{
-  justify-content: flex-start !important;
+div[data-testid="stHorizontalBlock"]
+div[data-testid="stColumn"]:first-child
+div[data-testid="stVerticalBlock"]{
+  align-items: flex-start !important;
 }
 
 /* Right lane pinned right — actual lane is the inner stVerticalBlock in the right column */
