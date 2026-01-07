@@ -496,77 +496,76 @@ main{
   text-align: center !important;
   pointer-events: none !important;
 }
-/* === WALKTHROUGH NAV (CB + OE) === */
+
+/* === WALKTHROUGH NAV (CB + OE) — CLEAN + RELIABLE === */
+
+/* Scope: only the nav row that contains the anchor */
 div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
 div[data-testid="stHorizontalBlock"]{
   width: 100% !important;
-  display: flex !important;           /* critical: make it a flex row */
+  display: flex !important;
   align-items: stretch !important;
+
+  /* match the “inner edge” you want (adjust if your tile padding differs) */
+  padding-left: 30px !important;
+  padding-right: 30px !important;
+  margin-top: 12px !important;
 }
-/* Each column must be a full-width flex lane (NOT shrink-to-content) */
+
+/* Columns must expand to fill the row */
 div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
 div[data-testid="column"]{
-  flex: 1 1 0 !important;             /* critical: makes lanes expand */
+  flex: 1 1 0 !important;
   width: 100% !important;
   display: flex !important;
 }
-/* Inner wrapper stretches so justify-content has space to work */
+
+/* Inner wrapper must stretch full width so justify-content can work */
 div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
 div[data-testid="column"] > div{
   flex: 1 1 auto !important;
   width: 100% !important;
   display: flex !important;
 }
-/* Left lane pinned */
+
+/* Left lane pinned left */
 div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
 div[data-testid="column"]:first-child > div{
   justify-content: flex-start !important;
 }
-/* Right lane pinned */
+
+/* Right lane pinned right */
 div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
 div[data-testid="column"]:last-child > div{
   justify-content: flex-end !important;
 }
+
+/* EXTRA insurance: force the right lane button wrapper to auto-push */
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
+div[data-testid="column"]:last-child div[data-testid="stButton"]{
+  margin-left: auto !important;
+}
+
 /* Keep nav buttons pill-sized */
 div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
 div[data-testid="stButton"] > button{
   width: auto !important;
   min-width: unset !important;
 }
+
 /* Stack only when truly narrow */
 @media (max-width: 520px){
   div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
   div[data-testid="column"] > div{
     justify-content: stretch !important;
   }
+
   div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
   div[data-testid="stButton"] > button{
     width: 100% !important;
     min-width: 100% !important;
   }
-
-/* === CASE-BASED WALKTHROUGH NAV (hard pin) === */
-
-/* Make sure the nav row itself is full width */
-div[data-testid="stVerticalBlock"]:has(.cb-nav-scope)
-div[data-testid="stHorizontalBlock"]{
-  width: 100% !important;
 }
-
-/* Left wrapper pins left */
-.cb-nav-left{
-  width: 100% !important;
-  display: flex !important;
-  justify-content: flex-start !important;
-}
-
-/* Right wrapper pins right */
-.cb-nav-right{
-  width: 100% !important;
-  display: flex !important;
-  justify-content: flex-end !important;
-}
-
 </style>
 """,
     unsafe_allow_html=True,
