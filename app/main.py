@@ -31,11 +31,12 @@ html, body{
   overflow: auto !important;
 }
 
-/* === Font === */
+/* === FONT === */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 html, body, .stApp{
   font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji" !important;
 }
+
 
 /* === TOKENS === */
 :root{
@@ -47,12 +48,14 @@ html, body, .stApp{
   --card-bg: rgba(255,255,255,0.05);
 }
 
+
 /* === APP BACKGROUND === */
 div[data-testid="stAppViewContainer"]{
   background: radial-gradient(1200px 600px at 10% -10%, rgba(76,139,245,0.15), transparent 60%),
               radial-gradient(900px 500px at 100% 0%, rgba(122,168,255,0.10), transparent 60%),
               var(--bg-soft)
 }
+
 
 /* === HEADER CONTAINER === */
 .block-container > div:first-child{
@@ -61,6 +64,7 @@ div[data-testid="stAppViewContainer"]{
   border: 1px solid rgba(255,255,255,0.06);
   background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
 }
+
 
 /* === SIDEBAR === */
 section[data-testid="stSidebar"]{
@@ -131,6 +135,7 @@ section[data-testid="stSidebar"] span{
   margin: 0 !important;
   border-top: 1px solid rgba(255,255,255,0.08) !important;
 }
+
 
 /* === BUTTONS === */
 div[data-testid="stButton"] > button:not([kind="secondary"]){
@@ -214,6 +219,7 @@ div[data-testid="stButton"] > button:focus-visible{
     0 0 0 6px rgba(76,139,245,0.25) !important;
 }
 
+
 /* === INPUTS === */
 input, textarea, select, .stTextInput input, .stTextArea textarea{
   background: rgba(255,255,255,0.06) !important;
@@ -224,6 +230,7 @@ input, textarea, select, .stTextInput input, .stTextArea textarea{
 label, .stRadio, .stSelectbox, .stMultiSelect, .stExpander{
   color: var(--text-strong) !important;
 }
+
 
 /* === CARD TILES === */
 .listbox{
@@ -238,6 +245,7 @@ label, .stRadio, .stSelectbox, .stMultiSelect, .stExpander{
 }
 .listbox, .listbox *{ color: var(--text-strong) !important; }
 section-note, .tile-hook { color: var(--text-muted) !important; }
+
 
 /* === SELECT A MODE TILE SPACING ==== */
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
@@ -276,6 +284,7 @@ div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
   border-bottom-right-radius: 0 !important;
 }
 
+
 /* === SELECT A CASE - TILE SPACING ==== */
 /* Tile padding: top and bottom must match */
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
@@ -304,6 +313,7 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
   margin: 0 !important;
   line-height: 1.45 !important;
 }
+
 
 /* === CLICKABLE NAV BUTTON AFFORDANCE === */
 /* Apply blue rim ONLY to real buttons */
@@ -340,10 +350,12 @@ div[data-testid="stButton"] > button:active{
   box-shadow: 0 10px 20px rgba(0,0,0,0.25);
 }
 
+
 /* === BULLET LISTS INSIDE TILES === */
 .tight-list{ margin: 0.25rem 0 0 1.15rem; padding: 0; }
 .tight-list li{ margin: 6px 0; }
 .tight-list li::marker{ color: var(--text-muted); }
+
 
 /* === CASE BADGES === */
 .case-badge-wrap{
@@ -385,6 +397,7 @@ details > summary{
   color: var(--text-strong);
 }
 
+
 /* === DETAILS CHEVRON — LANDING MODE TILES ==== */
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details > summary::-webkit-details-marker{
   display: none !important;
@@ -418,6 +431,7 @@ div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details > summary::be
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details[open] > summary::before{
   transform: translateY(-50%) rotate(90deg);
 }
+
 
 /* === DETAILS CHEVRON — CASE MODE TILES ==== */
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details > summary::-webkit-details-marker{
@@ -476,6 +490,7 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) .listbox{
   min-height: 0 !important;        
 }
 
+
 /* === HIDE STREAMLIT CHROME === */
 header[data-testid="stHeader"]{ background: transparent; }
 footer, #MainMenu{ visibility: hidden; }
@@ -494,9 +509,8 @@ button[title*="Copy link"]{
   display: none !important;
 }
 
-/* =========================
-   WALKTHROUGH TILES: NOT CLICKABLE
-   ========================= */
+
+/* === WALKTHROUGH TILES: NOT CLICKABLE ==== */
 .listbox.walkthrough-tile{
   cursor: default !important;
   margin-top: 12px;
@@ -532,13 +546,10 @@ div[data-testid="stMainBlockContainer"]{
   left: 0 !important;
   right: 0 !important;
   bottom: 0 !important;
-
   width: 100% !important;
   max-width: 100% !important;
-
   margin: 0 !important;
   padding: 0 !important;
-
   z-index: 2147483647 !important; /* go nuclear */
   pointer-events: none !important;
 }
@@ -569,52 +580,50 @@ main{
   text-align: center !important;
   pointer-events: none !important;
 }
-
-/* === WALKTHROUGH NAV — SINGLE SOURCE OF TRUTH ==== */
-/* Full-width alignment wrapper INSIDE each column */
-div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor)) .nav-wrap{
-  width: 100% !important;
-  display: flex !important;
-  align-items: center !important;
-}
-/* Left pinned */
-div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor)) .nav-left{
-  justify-content: flex-start !important;
-}
-/* Right pinned */
-div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor)) .nav-right{
-  justify-content: flex-end !important;
-}
-/* Buttons stay pill-sized */
+/* === WALKTHROUGH NAV ==== */
+/* Only inside the nav row area */
 div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
-.nav-wrap div[data-testid="stButton"] > button{
-  width: auto !important;
-  min-width: unset !important;
+div[data-testid="stHorizontalBlock"]{
+  width: 100% !important;
 }
-/* Stack only when truly narrow */
-@media (max-width: 520px){
-  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor)) .nav-wrap{
-    justify-content: stretch !important;
-  }
-  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
-  .nav-wrap div[data-testid="stButton"] > button{
-    width: 100% !important;
-    min-width: 100% !important;
-  }
-}
-/* === WALKTHROUGH NAV — LANE STRETCH PATCH === */
+/* Make each column a flex lane */
 div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
 div[data-testid="column"]{
   display: flex !important;
 }
+/* The column inner wrapper must stretch full width */
 div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
 div[data-testid="column"] > div{
   width: 100% !important;
   display: flex !important;
 }
+/* Left lane pinned */
 div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
-div[data-testid="stHorizontalBlock"]{
-  width: 100% !important;
+div[data-testid="column"]:first-child > div{
+  justify-content: flex-start !important;
+}
+/* Right lane pinned */
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
+div[data-testid="column"]:last-child > div{
+  justify-content: flex-end !important;
+}
+/* Keep nav buttons pill-sized */
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
+div[data-testid="stButton"] > button{
+  width: auto !important;
+  min-width: unset !important;
+}
+/* Stack only when truly narrow */
+@media (max-width: 520px){
+  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
+  div[data-testid="column"] > div{
+    justify-content: stretch !important;
+  }
+  div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
+  div[data-testid="stButton"] > button{
+    width: 100% !important;
+    min-width: 100% !important;
+  }
 }
 </style>
 """,

@@ -781,29 +781,23 @@ def render_open_ended():
     col_l, col_r = st.columns(2, gap="large")
 
     with col_l:
-        st.markdown('<div class="nav-wrap nav-left">', unsafe_allow_html=True)
         if step > 1:
             if st.button("◀ Previous", key=f"oenav_prev_{step}", use_container_width=False):
                 st.session_state["oe_step"] = step - 1
                 _safe_rerun()
         else:
             st.empty()
-        st.markdown("</div>", unsafe_allow_html=True)
 
     with col_r:
-        st.markdown('<div class="nav-wrap nav-right">', unsafe_allow_html=True)
-
         if step < total_steps:
             if st.button("Next ▶", key=f"oenav_next_{step}", use_container_width=False):
                 st.session_state["oe_step"] = step + 1
                 _safe_rerun()
         else:
-            # Last step only: Generate PDF in the same right slot
             if st.button("Generate PDF", key="oe_generate_pdf", use_container_width=False):
                 st.session_state["oe_generate"] = True
                 _safe_rerun()
 
-        st.markdown("</div>", unsafe_allow_html=True)
 
 
 
