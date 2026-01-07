@@ -326,7 +326,7 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
   border-color: rgba(76,139,245,0.75);
 }
 .listbox:active{
-  transform: translateY(0);
+  transform: translateY(1px);
   box-shadow: 0 10px 20px rgba(0,0,0,0.25);
 }
 
