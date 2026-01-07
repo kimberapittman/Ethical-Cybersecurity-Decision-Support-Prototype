@@ -264,7 +264,7 @@ div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
 .listbox.tile-card.mode-tile .tile-hook{
   text-align: center !important;
-  font-size: 1.05rem !important;
+  font-size: 1.25rem !important;
   margin: 0 0 20px 0 !important;   
   line-height: 1.45 !important;
 }
@@ -300,7 +300,7 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
 .listbox.case-tile .tile-title{
   font-weight: 800 !important;
-  font-size: 1.05rem !important;
+  font-size: 1.25rem !important;
   text-align: center !important;
   margin: 0 0 20px 0 !important;   
   line-height: 1.45 !important;
@@ -309,8 +309,8 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
 .listbox.case-tile .tile-hook{
   text-align: center !important;
-  font-size: 1.05rem !important;
-  margin: 0 !important;
+  font-size: 1.25rem !important;
+  margin: 0 0 20px 0 !important;
   line-height: 1.45 !important;
 }
 
@@ -378,24 +378,24 @@ details > summary{
 }
 
 
-/* === DETAILS CHEVRON — LANDING MODE TILES ==== */
-div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details > summary::-webkit-details-marker{
+/* DETAILS CHEVRON — MODE + CASE TILES (shared) */
+div[data-testid="stVerticalBlock"]:has(:is(.mode-tiles-anchor,.case-tiles-anchor)) details > summary::-webkit-details-marker{
   display: none !important;
 }
-div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details > summary::marker{
+div[data-testid="stVerticalBlock"]:has(:is(.mode-tiles-anchor,.case-tiles-anchor)) details > summary::marker{
   content: "" !important;
 }
-div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details > summary{
+div[data-testid="stVerticalBlock"]:has(:is(.mode-tiles-anchor,.case-tiles-anchor)) details > summary{
   list-style: none !important;
   display: flex !important;
   align-items: center !important;
   gap: 10px !important;
   margin: 0 !important;
-  padding: 10px 12px !important;      /* single source of truth for summary padding */
-  padding-left: 34px !important;      /* reserve space for chevron */
+  padding: 10px 12px !important;
+  padding-left: 34px !important;
   position: relative !important;
 }
-div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details > summary::before{
+div[data-testid="stVerticalBlock"]:has(:is(.mode-tiles-anchor,.case-tiles-anchor)) details > summary::before{
   content: ">";
   font-weight: 800;
   display: inline-block;
@@ -408,66 +408,8 @@ div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details > summary::be
   transform: translateY(-50%) rotate(0deg);
   transition: transform 0.12s ease;
 }
-div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) details[open] > summary::before{
+div[data-testid="stVerticalBlock"]:has(:is(.mode-tiles-anchor,.case-tiles-anchor)) details[open] > summary::before{
   transform: translateY(-50%) rotate(90deg);
-}
-
-
-/* === DETAILS CHEVRON — CASE MODE TILES ==== */
-div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details > summary::-webkit-details-marker{
-  display: none !important;
-}
-div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details > summary::marker{
-  content: "" !important;
-}
-div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details > summary{
-  list-style: none !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  margin: 0 !important;
-  padding: 10px 12px !important;   
-  padding-left: 34px !important;     
-  position: relative !important;
-}
-div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details > summary::before{
-  content: ">";
-  font-weight: 800;
-  display: inline-block;
-  font-size: 1rem;
-  line-height: 1;
-  opacity: 0.8;
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%) rotate(0deg);
-  transition: transform 0.12s ease;
-}
-div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) details[open] > summary::before{
-  transform: translateY(-50%) rotate(90deg);
-}
-div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
-div[data-testid="stHorizontalBlock"]{
-  align-items: flex-start !important;
-}
-div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
-div[data-testid="stHorizontalBlock"]{
-  align-items: stretch !important;
-}
-div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
-div[data-testid="column"]:first-child div[data-testid="stButton"]{
-  justify-content: flex-start !important;
-}
-div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor, .oe-nav-anchor))
-div[data-testid="column"]:last-child div[data-testid="stButton"]{
-  justify-content: flex-end !important;
-}
-div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor) .listbox,
-div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor) .listbox{
-  display: flex !important;
-  flex-direction: column !important;
-  height: auto !important;        
-  min-height: 0 !important;        
 }
 
 
