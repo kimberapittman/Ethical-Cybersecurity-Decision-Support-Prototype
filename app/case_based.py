@@ -214,9 +214,12 @@ def render_case(case_id: str):
 
         def _render_step_tile_html(title, body):
             st.markdown(f"""
+            <div class="cb-wt-wrap">
+            <div class="cb-wt-tile-anchor"></div>
             <div class="listbox walkthrough-tile">
                 <div class="walkthrough-step-title">{title}</div>
                 {body}
+            </div>
             </div>
             """, unsafe_allow_html=True)
 

@@ -544,6 +544,27 @@ div[data-testid="stButton"] > button{
     width: 100% !important;
     min-width: 100% !important;
   }
+
+/* === CASE-BASED WALKTHROUGH: make nav "feel inside" tile === */
+div[data-testid="stVerticalBlock"]:has(.cb-wt-tile-anchor){
+  /* tile width + padding context for anything inside this block */
+}
+
+/* The HTML tile already has padding; we match nav row margins to tile padding */
+div[data-testid="stVerticalBlock"]:has(.cb-wt-tile-anchor)
+div[data-testid="stHorizontalBlock"]{
+  margin-top: 12px !important;     /* space below tile */
+}
+
+/* Match the tile's internal padding so buttons sit on the same “inner edge” */
+div[data-testid="stVerticalBlock"]:has(.cb-wt-tile-anchor)
+div[data-testid="column"]:first-child{
+  padding-left: 30px !important;
+}
+div[data-testid="stVerticalBlock"]:has(.cb-wt-tile-anchor)
+div[data-testid="column"]:last-child{
+  padding-right: 30px !important;
+}
 }
 </style>
 """,
