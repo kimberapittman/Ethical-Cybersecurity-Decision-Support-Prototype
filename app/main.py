@@ -265,17 +265,17 @@ div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
 .listbox.tile-card.mode-tile .tile-hook{
   text-align: center !important;
   font-size: 1.05rem !important;
-  margin: 0 0 20px 0 !important;   /* hook → details spacing */
+  margin: 0 0 20px 0 !important;   
   line-height: 1.45 !important;
 }
 /* Expanded body: continuous with summary (no "second tile" look) */
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
 .listbox.tile-card.mode-tile details .details-body{
-  margin-top: 0 !important;                 /* REMOVE gap */
+  margin-top: 0 !important;               
   padding: 12px 12px !important;
   background: rgba(255,255,255,0.03) !important;
-  border: 0 !important;                      /* no second card border */
-  border-radius: 0 0 12px 12px !important;   /* ONLY bottom corners rounded */
+  border: 0 !important;                     
+  border-radius: 0 0 12px 12px !important;   
 }
 /* Make summary connect flush into body when open */
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
@@ -315,27 +315,7 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
 }
 
 
-/* === CLICKABLE NAV BUTTON AFFORDANCE === */
-/* Apply blue rim ONLY to real buttons */
-div[data-testid="stButton"] > button{
-  border: 1px solid rgba(76,139,245,0.55) !important;
-  box-shadow:
-    0 0 0 1px rgba(76,139,245,0.35),
-    0 10px 20px rgba(76,139,245,0.35) !important;
-}
-/* Stronger affordance on hover */
-div[data-testid="stButton"] > button:hover{
-  border-color: rgba(76,139,245,0.85) !important;
-  box-shadow:
-    0 0 0 2px rgba(76,139,245,0.55),
-    0 14px 26px rgba(76,139,245,0.45) !important;
-}
-/* Subtle press feedback */
-div[data-testid="stButton"] > button:active{
-  box-shadow:
-    0 0 0 1px rgba(76,139,245,0.45),
-    0 8px 16px rgba(76,139,245,0.30) !important;
-}
+/* === TILE CLICK AFFORDANCE === */
 /* Click affordances */
 .listbox:hover{
   cursor: pointer;
