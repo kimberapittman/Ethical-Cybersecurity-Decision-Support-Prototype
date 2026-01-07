@@ -426,9 +426,10 @@ def render_case(case_id: str):
             _render_step_tile_html(title, body)
 
 
-        # NAV CONTROLS
+        # NAV CONTROLS (scoped)
         with st.container():
-            st.markdown('<div class="cb-nav-anchor"></div>', unsafe_allow_html=True)
+            # Anchor MUST be inside the same container as the columns you want to style
+            st.markdown('<div class="cb-nav-scope"></div>', unsafe_allow_html=True)
 
             col_l, col_r = st.columns(2, gap="large")
 
@@ -447,6 +448,7 @@ def render_case(case_id: str):
                         _safe_rerun()
                 else:
                     st.button("End of Case", key=f"cb_end_{case_id}", disabled=True, use_container_width=False)
+
 
 
 

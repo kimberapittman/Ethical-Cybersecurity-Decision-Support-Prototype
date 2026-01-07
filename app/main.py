@@ -545,26 +545,40 @@ div[data-testid="stButton"] > button{
     min-width: 100% !important;
   }
 
-/* === CASE-BASED WALKTHROUGH: make nav "feel inside" tile === */
-div[data-testid="stVerticalBlock"]:has(.cb-wt-tile-anchor){
-  /* tile width + padding context for anything inside this block */
-}
+/* === CASE-BASED WALKTHROUGH NAV (scoped to nav container) === */
 
-/* The HTML tile already has padding; we match nav row margins to tile padding */
-div[data-testid="stVerticalBlock"]:has(.cb-wt-tile-anchor)
+/* Give the nav row the same inner edge as the tile padding */
+div[data-testid="stVerticalBlock"]:has(.cb-nav-scope)
 div[data-testid="stHorizontalBlock"]{
-  margin-top: 12px !important;     /* space below tile */
+  width: 100% !important;
+  padding-left: 30px !important;
+  padding-right: 30px !important;
+  margin-top: 12px !important;
 }
 
-/* Match the tile's internal padding so buttons sit on the same “inner edge” */
-div[data-testid="stVerticalBlock"]:has(.cb-wt-tile-anchor)
-div[data-testid="column"]:first-child{
-  padding-left: 30px !important;
+/* Make each nav column a flex lane */
+div[data-testid="stVerticalBlock"]:has(.cb-nav-scope)
+div[data-testid="column"]{
+  display: flex !important;
 }
-div[data-testid="stVerticalBlock"]:has(.cb-wt-tile-anchor)
-div[data-testid="column"]:last-child{
-  padding-right: 30px !important;
+
+/* Ensure the column inner wrapper stretches full width (required for flex alignment) */
+div[data-testid="stVerticalBlock"]:has(.cb-nav-scope)
+div[data-testid="column"] > div{
+  width: 100% !important;
+  display: flex !important;
 }
+
+/* Left lane pinned left */
+div[data-testid="stVerticalBlock"]:has(.cb-nav-scope)
+div[data-testid="column"]:first-child > div{
+  justify-content: flex-start !important;
+}
+
+/* Right lane pinned right (THIS is the Next alignment) */
+div[data-testid="stVerticalBlock"]:has(.cb-nav-scope)
+div[data-testid="column"]:last-child > div{
+  justify-content: flex-end !important;
 }
 </style>
 """,
