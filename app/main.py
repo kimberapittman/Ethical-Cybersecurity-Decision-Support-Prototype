@@ -516,6 +516,16 @@ main{
   pointer-events: none !important;
 }
 
+/* === BASELINE “BLUE RIM” (match buttons) — MODE + CASE TILES ONLY === */
+div[data-testid="stVerticalBlock"]:has(:is(.mode-tiles-anchor,.case-tiles-anchor))
+.listbox{
+  border: 1px solid rgba(76,139,245,0.55) !important;
+  box-shadow:
+    0 0 0 1px rgba(76,139,245,0.35),
+    0 10px 20px rgba(76,139,245,0.35) !important;
+    cursor: pointer !important;
+}
+
 /* === WALKTHROUGH NAV (CB + OE) — CLEAN + RELIABLE === */
 
 /* Scope: only the nav row that contains the anchor */
