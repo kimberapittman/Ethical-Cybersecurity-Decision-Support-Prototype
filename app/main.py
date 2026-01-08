@@ -150,6 +150,7 @@ div[data-testid="stButton"] > button:not([kind="secondary"]){
   box-sizing: border-box !important;
   padding: 0.7rem 1rem !important;
   border-radius: 12px !important;
+  cursor: pointer !important;
   background: rgba(255,255,255,0.06) !important;
   color: var(--text-strong) !important;
   border: 1px solid rgba(76,139,245,0.55) !important;
@@ -161,7 +162,7 @@ div[data-testid="stButton"] > button:not([kind="secondary"]){
 }
 div[data-testid="stButton"] > button:not([kind="secondary"]):hover{
   transform: translateY(-3px) !important;
-  cursor: pointer;
+  cursor: pointer !important;
   box-shadow:
     0 0 0 3px rgba(76,139,245,0.65),
     0 18px 38px rgba(76,139,245,0.45) !important;
@@ -173,6 +174,7 @@ div[data-testid="stButton"] > button[kind="secondary"]{
   box-sizing: border-box !important;
   padding: 0.7rem 1rem !important;
   border-radius: 12px !important;
+  cursor: pointer !important;
   background: rgba(255,255,255,0.06) !important;
   color: var(--text-strong) !important;
   border: 1px solid rgba(76,139,245,0.55) !important;
@@ -184,7 +186,7 @@ div[data-testid="stButton"] > button[kind="secondary"]{
 }
 div[data-testid="stButton"] > button[kind="secondary"]:hover{
   transform: translateY(-3px) !important;
-  cursor: pointer;
+  cursor: pointer !important;
   box-shadow:
     0 0 0 3px rgba(76,139,245,0.65),
     0 18px 38px rgba(76,139,245,0.45) !important;
@@ -241,9 +243,9 @@ label, .stRadio, .stSelectbox, .stMultiSelect, .stExpander{
   border: 1px solid rgba(255,255,255,0.10);
   box-shadow: 0 10px 24px rgba(0,0,0,0.25);
   padding: 12px 14px;
-  border-radius: 14px;
+  border-radius: 12px;
   margin: 0 0 8px;
-  transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+  transition: transform .06s ease, box-shadow .15s ease, border-color 0.12s ease, background 0.12s ease;
 }
 .listbox, .listbox *{ color: var(--text-strong) !important; }
 section-note, .tile-hook { color: var(--text-muted) !important; }
@@ -331,16 +333,7 @@ div[data-testid="stVerticalBlock"]:has(:is(.mode-tiles-anchor,.case-tiles-anchor
   transform: translateY(-1px) !important;
   box-shadow:
     0 0 0 1px rgba(76,139,245,0.45),
-    0 8px 16px rgba(0,0,0,0.30) !important;
-}
-
-/* Default tile glow (match button baseline, but softer) */
-div[data-testid="stVerticalBlock"]:has(:is(.mode-tiles-anchor,.case-tiles-anchor))
-.listbox{
-  box-shadow:
-    0 0 0 1px rgba(76,139,245,0.20),
-    0 10px 24px rgba(0,0,0,0.25) !important;
-  transition: transform .06s ease, box-shadow .15s ease, filter .15s ease, border-color .15s ease !important;
+    0 8px 16px rgba(76,139,245,0.30) !important;
 }
 
 
@@ -368,16 +361,6 @@ div[data-testid="stVerticalBlock"]:has(:is(.mode-tiles-anchor,.case-tiles-anchor
   border-radius:999px !important;
   white-space:nowrap !important;
   color:#ffffff !important;
-}
-.case-badge.real{
-  background-color: rgba(55,138,237,0.85) !important;
-  border: 1px solid rgba(55,138,237,0.85) !important;
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.15);
-}
-.case-badge.hypo{
-  background-color: rgba(85,202,255,0.85) !important;
-  border: 1px solid rgba(85,202,255,0.85) !important;
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.15);
 }
 /* MAIN CONTENT expanders only (exclude sidebar) */
 div[data-testid="stAppViewContainer"]
@@ -419,7 +402,7 @@ div[data-testid="stVerticalBlock"]:has(:is(.mode-tiles-anchor,.case-tiles-anchor
   left: 12px;
   top: 50%;
   transform: translateY(-50%) rotate(0deg);
-  transition: transform 0.12s ease;
+  transition: transform .06s ease;
 }
 div[data-testid="stVerticalBlock"]:has(:is(.mode-tiles-anchor,.case-tiles-anchor)) details[open] > summary::before{
   transform: translateY(-50%) rotate(90deg);
@@ -523,7 +506,7 @@ div[data-testid="stVerticalBlock"]:has(:is(.mode-tiles-anchor,.case-tiles-anchor
   box-shadow:
     0 0 0 1px rgba(76,139,245,0.35),
     0 10px 20px rgba(76,139,245,0.35) !important;
-    cursor: pointer !important;
+  cursor: pointer !important;
 }
 
 /* === WALKTHROUGH NAV (CB + OE) — CLEAN + RELIABLE === */
