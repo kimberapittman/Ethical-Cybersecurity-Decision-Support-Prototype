@@ -362,6 +362,11 @@ div[data-testid="stVerticalBlock"]:has(:is(.mode-tiles-anchor,.case-tiles-anchor
   white-space:nowrap !important;
   color:#ffffff !important;
 }
+.case-badge.real,
+.case-badge.hypo{
+  border: 1px solid rgba(255,255,255,0.65) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.15) !important;
+}
 /* MAIN CONTENT expanders only (exclude sidebar) */
 div[data-testid="stAppViewContainer"]
 :not(section[data-testid="stSidebar"])
