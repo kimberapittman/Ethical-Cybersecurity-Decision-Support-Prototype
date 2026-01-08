@@ -85,12 +85,11 @@ def _load_core_data():
     return csf, crosswalk, pfce, constraints
 
 OE_STEP_TITLES = {
-    1: "1. Triggering Condition",
-    2: "2. Decision Context",
-    3: "3. NIST CSF 2.0 Mapping",
-    4: "4. PFCE Analysis and Ethical Tension",
-    5: "5. Institutional and Governance Constraints",
-    6: "6. Decision (and documented rationale)",
+    1: "1. Decision Context",
+    2: "2. NIST CSF 2.0 Mapping",
+    3: "3. PFCE Analysis and Ethical Tension",
+    4: "4. Institutional and Governance Constraints",
+    5: "5. Decision (and documented rationale)",
 }
 OE_TOTAL_STEPS = len(OE_STEP_TITLES)
 

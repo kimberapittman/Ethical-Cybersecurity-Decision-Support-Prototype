@@ -1080,9 +1080,9 @@ def main():
                     </div>
 
                     <ul style="margin: 0 0 0 18px; padding: 0;">
-                      <li>The triggering condition and decision context</li>
+                      <li>The decision context</li>
                       <li>Where the decision sits within the NIST Cybersecurity Framework (CSF) 2.0</li>
-                      <li>The ethical tension articulated using the Principlist Framework for Cybersecurity Ethics (PFCE)</li>
+                      <li>What, if any, ethical tension arises using the Principlist Framework for Cybersecurity Ethics (PFCE)</li>
                       <li>Institutional and governance constraints shaping feasible response options</li>
                     </ul>
                       </li>
