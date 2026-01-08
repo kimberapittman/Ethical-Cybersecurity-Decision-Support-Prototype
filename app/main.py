@@ -528,12 +528,40 @@ div[data-testid="stColumn"] > div{
   display: flex !important;
 }
 
+/* --- LEFT LANE: pin to left rail (wrapper row axis + inner column axis) --- */
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
+div[data-testid="stHorizontalBlock"]
+div[data-testid="stColumn"]:first-child > div{
+  justify-content: flex-start !important;
+  padding-left: 0 !important;
+}
+
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
+div[data-testid="stHorizontalBlock"]
+div[data-testid="stColumn"]:first-child{
+  padding-left: 0 !important;
+}
+
 /* Left lane true-left align (column flex => align-items controls horizontal) */
 div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
 div[data-testid="stHorizontalBlock"]
 div[data-testid="stColumn"]:first-child
 div[data-testid="stVerticalBlock"]{
   align-items: flex-start !important;
+}
+
+/* --- RIGHT LANE: pin to right rail (wrapper row axis + inner column axis) --- */
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
+div[data-testid="stHorizontalBlock"]
+div[data-testid="stColumn"]:last-child > div{
+  justify-content: flex-end !important;
+  padding-right: 0 !important;
+}
+
+div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
+div[data-testid="stHorizontalBlock"]
+div[data-testid="stColumn"]:last-child{
+  padding-right: 0 !important;
 }
 
 /* Right lane pinned right — actual lane is the inner stVerticalBlock in the right column */
@@ -555,18 +583,25 @@ div[data-testid="stButton"] > button{
   min-width: unset !important;
 }
 
+div[data-testid="stVerticalBlock"]:has(.walkthrough-scope){
+  padding-left: var(--tile-x-pad) !important;
+  padding-right: var(--tile-x-pad) !important;
+}
+
 /* Stack only when truly narrow */
 @media (max-width: 520px){
   div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
   div[data-testid="stColumn"] > div{
     justify-content: stretch !important;
   }
-    /* On narrow screens, don't force right-pin; let buttons go full-width */
+
+  /* On narrow screens, don't force right-pin; let buttons go full-width */
   div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
   div[data-testid="stHorizontalBlock"]
   div[data-testid="stColumn"]:last-child
   div[data-testid="stVerticalBlock"]{
     justify-content: stretch !important;
+    align-items: stretch !important;
   }
 
   div[data-testid="stVerticalBlock"]:has(:is(.cb-nav-anchor,.oe-nav-anchor))
