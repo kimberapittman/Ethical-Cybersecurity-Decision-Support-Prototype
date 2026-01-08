@@ -771,7 +771,7 @@ def _render_landing_page():
 
                         <ul class="tight-list">
                           <li>Pre-structured cases reconstructed from documented municipal incidents</li>
-                          <li>Walks through defined decision points and ethical triggers</li>
+                          <li>Walks through defined decision points and ethical tensions</li>
                           <li>Shows how CSF procedural logic and PFCE reasoning are applied in practice</li>
                           <li>Establishes a shared reference point for how the prototype is intended to be used</li>
                         </ul>

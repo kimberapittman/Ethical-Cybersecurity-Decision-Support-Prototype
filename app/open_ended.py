@@ -344,55 +344,13 @@ def render_open_ended():
             unsafe_allow_html=True,
         )
 
-
     # ==========================================================
-    # STEP 1: TRIGGERING CONDITION
+    # STEP 1: DECISION CONTEXT 
     # ==========================================================
     if step == 1:
         _render_step_tile_html(
-            "Describe the triggering condition that made this situation ethically significant. "
-            "This should describe what occurred, not how you responded or why it matters."
-        )
-
-        # Optional reference examples (NOT a tile, NOT selectable)
-        with st.expander("View illustrative triggering-condition examples (optional)"):
-            st.markdown(
-                """
-                **Examples drawn from prior municipal cases that informed this prototype’s design**
-
-                **Baltimore (Ransomware):**  
-                Ransomware was deployed across multiple municipal systems.
-
-                **San Diego (Surveillance Repurposing):**  
-                Smart streetlight footage was accessed for law-enforcement use beyond the program’s documented scope.
-
-                **Riverton (AI-Enabled Control System):**  
-                An AI system flagged anomalous control activity.
-                """
-            )
-
-        # Input tile (the ONLY tile in this step)
-        st.text_area(
-            "Triggering condition",
-            key="oe_triggering_condition",
-            height=140,
-        )
-
-        st.caption(
-            "Focus only on what occurred. Do not describe response options, impacts, or ethical considerations yet."
-        )
-
-
-    # ==========================================================
-    # STEP 2: DECISION CONTEXT 
-    # ==========================================================
-    if step == 2:
-        _render_step_tile_html(
                 "State the operational decision context in clear procedural terms. Keep it short and concrete.",
         )
-
-        st.markdown("**Triggering condition and key events (from Step 1)**")
-        st.write(st.session_state.get("oe_gate_triggering_condition", "—") or "—")
 
         st.markdown("---")
 
@@ -415,9 +373,9 @@ def render_open_ended():
         st.session_state["oe_suggested_func"] = guess_csf_function(decision_context)
 
     # ==========================================================
-    # STEP 3: NIST CSF 
+    # STEP 2: NIST CSF 
     # ==========================================================
-    if step == 3:
+    if step == 2:
         _render_step_tile_html(
             "Use the CSF to situate the decision procedurally. This does not prescribe actions; it structures context.",
         )
@@ -508,9 +466,9 @@ def render_open_ended():
         st.session_state["oe_pfce_auto"] = pfce_auto_local
 
     # ==========================================================
-    # STEP 4: PFCE + TENSION
+    # STEP 3: PFCE + TENSION
     # ==========================================================
-    if step == 4:
+    if step == 3:
         _render_step_tile_html(
             "Make ethically significant conditions explicit, then state the central tension as two justified obligations.",
         )
@@ -599,9 +557,9 @@ def render_open_ended():
         )
 
     # ==========================================================
-    # STEP 5: CONSTRAINTS
+    # STEP 4: CONSTRAINTS
     # ==========================================================
-    if step == 5:
+    if step == 4:
         _render_step_tile_html(
             "Document constraints that shape or limit feasible actions or justification.",
         )
@@ -619,9 +577,9 @@ def render_open_ended():
         )
 
     # ==========================================================
-    # STEP 6: DECISION + OUTPUT 
+    # STEP 5: DECISION + OUTPUT 
     # ==========================================================
-    if step == 6:
+    if step == 5:
         _render_step_tile_html(
             "Record the decision in operational terms, then generate a structured rationale for demonstration purposes.",
         )
