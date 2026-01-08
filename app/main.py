@@ -728,6 +728,21 @@ def _render_landing_page():
         unsafe_allow_html=True,
     )
 
+    st.markdown(
+    """
+    <div style="
+        margin: 4px 0 16px 0;
+        color: rgba(229,231,235,0.75);
+        font-size: 0.95rem;
+        line-height: 1.45;
+        text-align: center;
+    ">
+      Choose whether to explore reconstructed cases or apply the walkthrough to a decision context you define.
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
     col1, col2 = st.columns(2, gap="large")
 
     with col1:
