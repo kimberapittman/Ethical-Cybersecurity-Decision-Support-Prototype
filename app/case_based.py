@@ -59,9 +59,9 @@ PFCE_HOVER = (
 )
 
 CASE_HOOKS = {
-    "baltimore": "Preventing harm while sustaining essential public services",
-    "sandiego": "Protecting public safety while respecting autonomy and public oversight",
-    "riverton": "Delegating control to automated systems without relinquishing human responsibility",
+    "baltimore": "Responding to a ransomware attack while maintaining essential public services",
+    "sandiego": "Deploying surveillance technology while managing privacy, oversight, and public trust",
+    "riverton": "Relying on AI-enabled security systems while retaining human accountability",
 }
 
 def _html_block(s: str) -> str:
