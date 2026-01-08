@@ -314,6 +314,32 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
   line-height: 1.45 !important;
 }
 
+/* === TILE HOVER MATCH BUTTONS (Select-a-Mode + Select-a-Case only) === */
+div[data-testid="stVerticalBlock"]:has(:is(.mode-tiles-anchor,.case-tiles-anchor))
+.listbox:hover{
+  transform: translateY(var(--hover-lift)) !important;
+  cursor: pointer !important;
+  box-shadow: var(--hover-shadow-1), var(--hover-shadow-2) !important;
+  border-color: rgba(76,139,245,0.95) !important;
+  filter: brightness(1.05) !important;
+}
+
+div[data-testid="stVerticalBlock"]:has(:is(.mode-tiles-anchor,.case-tiles-anchor))
+.listbox:active{
+  transform: translateY(-1px) !important;
+  box-shadow:
+    0 0 0 1px rgba(76,139,245,0.45),
+    0 8px 16px rgba(0,0,0,0.30) !important;
+}
+
+/* Default tile glow (match button baseline, but softer) */
+div[data-testid="stVerticalBlock"]:has(:is(.mode-tiles-anchor,.case-tiles-anchor))
+.listbox{
+  box-shadow:
+    0 0 0 1px rgba(76,139,245,0.20),
+    0 10px 24px rgba(0,0,0,0.25) !important;
+  transition: transform .06s ease, box-shadow .15s ease, filter .15s ease, border-color .15s ease !important;
+}
 
 /* === TILE CLICK AFFORDANCE === */
 /* Click affordances */
