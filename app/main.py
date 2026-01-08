@@ -1034,36 +1034,37 @@ def main():
                     </span>
 
                     <ul style="margin: 8px 0 14px 18px; padding: 0;">
-                      <li>A decision-support prototype designed to help municipal cybersecurity practitioners surface and reason through ethical tensions that may arise within cybersecurity decision-making</li>
-                      <li>Focused on structuring ethical and technical reasoning, not prescribing actions or determining outcomes</li>
+                      <li>A decision-support prototype designed to help municipal cybersecurity practitioners surface and reason through ethical tensions that arise in cybersecurity decision-making.</li>
+                      <li>Structures ethical and technical reasoning without prescribing actions or determining outcomes.</li>
                     </ul>
 
                     <span style="font-weight:700; border-bottom:2px solid rgba(255,255,255,0.6); padding-bottom:2px;">
                     How It Works
                     </span>
 
-                    <ul style="margin: 8px 0 10px 18px; padding: 0;">
-                      <li>Guides practitioners through a structured, step-by-step reasoning walkthrough implemented in two complementary modes:</li>
-                    </ul>
+                    <div style="margin: 8px 0 10px 0;">
+                      The prototype guides users through a structured reasoning walkthrough implemented in two complementary modes:
+                    </div>
 
                     <div style="margin-left: 18px;">
                       <strong>Case-Based Mode</strong><br>
-                      Uses reconstructed municipal cybersecurity cases to demonstrate the walkthrough and illustrate how the prototype was developed through analysis of real-world incidents.
+                      Demonstrates the walkthrough using reconstructed municipal cybersecurity cases, showing how the prototype structures reasoning in complex, real-world decision contexts.
                       <br><br>
                       <strong>Open-Ended Mode</strong><br>
                       Applies the same walkthrough to a user-defined cybersecurity decision context and represents the intended use of the prototype.
                     </div>
 
                     <ul style="margin: 10px 0 0 18px; padding: 0;">
-                      <li>Across both modes, the walkthrough is structured to surface and document:
+                      <li>Across both modes, the walkthrough helps surface and document:
                         <ul style="margin: 6px 0 0 18px; padding: 0;">
-                          <li>A triggering condition and decision context</li>
-                          <li>Where the decision sits procedurally within the <strong>NIST Cybersecurity Framework (CSF) 2.0</strong></li>
-                          <li>The ethical tension raised by the decision context and how it can be articulated using the <strong>Principlist Framework for Cybersecurity Ethics (PFCE)</strong></li>
-                          <li>Institutional and governance constraints that shape feasible response options</li>
+                          <li>The triggering condition and decision context</li>
+                          <li>Where the decision sits within the NIST Cybersecurity Framework (CSF) 2.0</li>
+                          <li>The ethical tension articulated using the Principlist Framework for Cybersecurity Ethics (PFCE)</li>
+                          <li>Institutional and governance constraints shaping feasible response options</li>
                         </ul>
                       </li>
                     </ul>
+
 
                   </div>
                 </details>
