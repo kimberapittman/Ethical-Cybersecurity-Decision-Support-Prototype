@@ -1030,38 +1030,46 @@ def main():
                   <div class="sb-details-body">
 
                     <span style="font-weight:700; border-bottom:2px solid rgba(255,255,255,0.6); padding-bottom:2px;">
-                    What It Is
+                      What It Is
                     </span>
 
-                    <ul style="margin: 8px 0 14px 18px; padding: 0;">
-                      <li>A decision-support prototype designed to help municipal cybersecurity practitioners surface and reason through ethical tensions that arise in cybersecurity decision-making.</li>
-                      <li>Structures ethical and technical reasoning without prescribing actions or determining outcomes.</li>
-                    </ul>
+                    <div style="margin: 8px 0 6px 0;">
+                      A decision-support prototype designed to help municipal cybersecurity practitioners surface and reason through ethical tensions that arise in cybersecurity decision-making.
+                    </div>
+
+                    <div style="margin: 0 0 14px 0;">
+                      It is not designed to prescribe actions or determine outcomes.
+                    </div>
 
                     <span style="font-weight:700; border-bottom:2px solid rgba(255,255,255,0.6); padding-bottom:2px;">
-                    How It Works
+                      How It Works
                     </span>
 
                     <div style="margin: 8px 0 10px 0;">
                       The prototype guides users through a structured reasoning walkthrough implemented in two complementary modes:
                     </div>
 
-                    <div style="margin-left: 18px;">
-                      <strong>Case-Based Mode</strong><br>
-                      Demonstrates the walkthrough using reconstructed municipal cybersecurity cases, showing how the prototype structures reasoning in complex, real-world decision contexts.
-                      <br><br>
-                      <strong>Open-Ended Mode</strong><br>
-                      Applies the same walkthrough to a user-defined cybersecurity decision context and represents the intended use of the prototype.
+                    <ul style="margin: 0 0 12px 18px; padding: 0;">
+                      <li>
+                        <strong>Case-Based Mode</strong><br>
+                        Demonstrates the walkthrough using reconstructed municipal cybersecurity cases—two real-world incidents and one hypothetical scenario—to show how analysis of complex decision contexts informed the prototype’s design.
+                      </li>
+                      <li style="margin-top: 8px;">
+                        <strong>Open-Ended Mode</strong><br>
+                        Applies the same reasoning structure to a user-defined cybersecurity decision context and represents the intended use of the prototype.
+                      </li>
+                    </ul>
+
+                    <div style="margin: 6px 0 6px 0;">
+                      Across both modes, the walkthrough helps surface and document:
                     </div>
 
-                    <ul style="margin: 10px 0 0 18px; padding: 0;">
-                      <li>Across both modes, the walkthrough helps surface and document:
-                        <ul style="margin: 6px 0 0 18px; padding: 0;">
-                          <li>The triggering condition and decision context</li>
-                          <li>Where the decision sits within the NIST Cybersecurity Framework (CSF) 2.0</li>
-                          <li>The ethical tension articulated using the Principlist Framework for Cybersecurity Ethics (PFCE)</li>
-                          <li>Institutional and governance constraints shaping feasible response options</li>
-                        </ul>
+                    <ul style="margin: 0 0 0 18px; padding: 0;">
+                      <li>The triggering condition and decision context</li>
+                      <li>Where the decision sits within the NIST Cybersecurity Framework (CSF) 2.0</li>
+                      <li>The ethical tension articulated using the Principlist Framework for Cybersecurity Ethics (PFCE)</li>
+                      <li>Institutional and governance constraints shaping feasible response options</li>
+                    </ul>
                       </li>
                     </ul>
 
