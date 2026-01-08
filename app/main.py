@@ -50,6 +50,9 @@ html, body, .stApp{
 :root{
   --tile-x-pad: 14px;
 }
+:root{
+  --tile-edge-offset: 5px; /* 4px left stripe + 1px border */
+}
 
 
 /* === APP BACKGROUND === */
@@ -508,7 +511,7 @@ div[data-testid="stHorizontalBlock"]{
   width: 100% !important;
   display: flex !important;
   align-items: stretch !important;
-  padding: 0 var(--tile-x-pad) !important;
+  padding: 0 calc(var(--tile-x-pad) - var(--tile-edge-offset)) !important;
   margin-top: 12px !important;
 }
 
