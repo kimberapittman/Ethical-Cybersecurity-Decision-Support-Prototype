@@ -740,7 +740,7 @@ def _render_landing_page():
 
                     <div class="tile-title">Case-Based Mode</div>
 
-                    <div class="tile-hook">Explore the prototype through reconstructed case demonstrations.</div>
+                    <div class="tile-hook">Explore the prototype through reconstructed municipal cybersecurity cases.</div>
 
 
                     <!-- Collapsible details (inside tile) -->
@@ -751,7 +751,7 @@ def _render_landing_page():
 
                       <div class="details-body">
                         <div class="mode-detail-text">
-                          Uses reconstructed municipal cybersecurity cases to demonstrate how the decision-support prototype structures ethical reasoning and technical decision-making across an entire decision process.
+                          Uses reconstructed municipal cybersecurity cases to demonstrate how the decision-support prototype structures ethical reasoning and technical decision-making across a structured decision context.
                         </div>
 
                         <ul class="tight-list">
@@ -780,7 +780,7 @@ def _render_landing_page():
 
                     <div class="tile-title">Open-Ended Mode</div>
 
-                    <div class="tile-hook">Utilize the prototype for a decision context you define.</div>
+                    <div class="tile-hook">Apply the prototype to a cybersecurity decision context you define.</div>
 
                     <!-- Collapsible details (inside tile) -->
                     <details onclick="event.stopPropagation();">
@@ -790,7 +790,7 @@ def _render_landing_page():
 
                       <div class="details-body">
                         <div class="mode-detail-text">
-                          Provides a structured walkthrough for analyzing the ethical significance of a user-defined cybersecurity decision, without prescribing outcomes.
+                          Provides a structured walkthrough for examining the ethical significance of a user-defined cybersecurity decision, without prescribing outcomes.
                         </div>
 
                         <ul class="tight-list">
