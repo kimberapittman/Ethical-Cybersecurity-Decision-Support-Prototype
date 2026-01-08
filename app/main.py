@@ -37,7 +37,6 @@ html, body, .stApp{
   font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji" !important;
 }
 
-
 /* === TOKENS === */
 :root{
   --brand: #378AED;     /* Real-World Incident */
@@ -46,12 +45,15 @@ html, body, .stApp{
   --text-strong: #e5e7eb;
   --text-muted: #94a3b8;
   --card-bg: rgba(255,255,255,0.05);
-}
-:root{
+
+  /* Layout rails */
   --tile-x-pad: 14px;
-}
-:root{
   --tile-edge-offset: 5px; /* 4px left stripe + 1px border */
+
+  /* Hover affordance (match buttons) */
+  --hover-lift: -3px;
+  --hover-shadow-1: 0 0 0 3px rgba(76,139,245,0.65);
+  --hover-shadow-2: 0 18px 38px rgba(76,139,245,0.45);
 }
 
 
@@ -339,21 +341,6 @@ div[data-testid="stVerticalBlock"]:has(:is(.mode-tiles-anchor,.case-tiles-anchor
     0 0 0 1px rgba(76,139,245,0.20),
     0 10px 24px rgba(0,0,0,0.25) !important;
   transition: transform .06s ease, box-shadow .15s ease, filter .15s ease, border-color .15s ease !important;
-}
-
-/* === TILE CLICK AFFORDANCE === */
-/* Click affordances */
-.listbox:hover{
-  cursor: pointer;
-  transform: translateY(-3px);
-  box-shadow:
-    0 0 0 2px rgba(76,139,245,0.45),
-    0 18px 38px rgba(0,0,0,0.45);
-  border-color: rgba(76,139,245,0.75);
-}
-.listbox:active{
-  transform: translateY(1px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.25);
 }
 
 
