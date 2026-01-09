@@ -333,11 +333,12 @@ def render_open_ended():
     st.progress(step / float(total_steps))
     st.caption(f"Step {step} of {total_steps}")
 
-    def _render_step_tile_html(body_html: str):
+    def _render_step_tile_html(title: str, body_html: str):
         st.markdown(
             f"""
             <div class="listbox walkthrough-tile">
-            <div class="wt-body">{body_html}</div>
+            <div class="walkthrough-step-title">{title}</div>
+            {body_html}
             </div>
             """,
             unsafe_allow_html=True,
@@ -346,50 +347,44 @@ def render_open_ended():
     # ==========================================================
     # STEP 1: DECISION CONTEXT 
     # ==========================================================
-    if step == 1:
+    _render_step_tile_html(
+        OE_STEP_TITLES[1],
+        """
+        <div class="wt-text" style="margin: 6px 0 12px 0;">
+        Describe the cybersecurity decision under consideration.
+        </div>
+        """
+    )
+
+
+    decision_context = st.text_area(
+        "Decision context (1–2 sentences)",
+        key="oe_decision_context",
+        height=120,
+    )
+
+    with st.expander("View illustrative decision context examples"):
         st.markdown(
             """
-            <div style="
-                margin: 6px 0 12px 0;
-                color: rgba(229,231,235,0.85);
-                font-size: 0.95rem;
-                line-height: 1.45;
-            ">
-            Describe the cybersecurity decision under consideration.
+            <div title="Examples are drawn from an analysis of real-world municipal cybersecurity incidents and a purpose-built hypothetical scenario that informed the design of this prototype."
+                style="font-size:0.85rem; color: rgba(229,231,235,0.70); margin-bottom: 10px;">
             </div>
             """,
             unsafe_allow_html=True
         )
+        st.markdown(
+            """
 
+            Baltimore (Ransomware):  
+            Maintain network connectivity while assessing the scope of a ransomware attack or proactively disconnect additional systems.
 
-        decision_context = st.text_area(
-            "Decision context (1–2 sentences)",
-            key="oe_decision_context",
-            height=120,
+            San Diego (Surveillance Repurposing):  
+            Maintain or modify current law-enforcement access to smart streetlight video surveillance.
+
+            Riverton (AI-Enabled Control System):  
+            Maintain AI-imposed restrictions or restore full operator control.
+            """
         )
-
-        with st.expander("View illustrative decision context examples"):
-            st.markdown(
-                """
-                <div title="Examples are drawn from an analysis of real-world municipal cybersecurity incidents and a purpose-built hypothetical scenario that informed the design of this prototype."
-                    style="font-size:0.85rem; color: rgba(229,231,235,0.70); margin-bottom: 10px;">
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-            st.markdown(
-                """
-
-                Baltimore (Ransomware):  
-                Maintain network connectivity while assessing the scope of a ransomware attack or proactively disconnect additional systems.
-
-                San Diego (Surveillance Repurposing):  
-                Maintain or modify current law-enforcement access to smart streetlight video surveillance.
-
-                Riverton (AI-Enabled Control System):  
-                Maintain AI-imposed restrictions or restore full operator control.
-                """
-            )
 
 
     # ==========================================================
