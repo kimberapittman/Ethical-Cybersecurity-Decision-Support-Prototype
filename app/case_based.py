@@ -117,7 +117,7 @@ def render_case(case_id: str):
             <div style="
                 margin: 4px 0 16px 0;
                 color: rgba(229,231,235,0.75);
-                font-size: 0.95rem;
+                font-size: 1.05rem;
                 line-height: 1.45;
                 text-align: center;
             ">

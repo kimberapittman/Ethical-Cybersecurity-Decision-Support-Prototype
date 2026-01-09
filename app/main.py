@@ -122,6 +122,38 @@ section[data-testid="stSidebar"] span{
   /* behavior */
   cursor: pointer !important;
 }
+
+/* === SIDEBAR EXPANDER HOVER (SUBTLE AFFORDANCE ONLY) === */
+.sb-details > summary{
+  transition:
+    background-color 0.12s ease,
+    border-color 0.12s ease,
+    box-shadow 0.12s ease,   /* ← added */
+    filter 0.12s ease,
+    transform 0.12s ease;
+}
+
+.sb-details > summary:hover{
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.09),
+    rgba(255,255,255,0.05)
+  ) !important;
+
+  /* Neutral rim amplification (NO blue) */
+  border-color: rgba(255,255,255,0.24) !important;
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.08) !important;
+
+  filter: brightness(1.04) !important;
+  transform: translateY(-2px); /* unchanged */
+}
+
+/* === SIDEBAR EXPANDERS: FLATTEN SUMMARY BOTTOM CORNERS WHEN OPEN === */
+.sb-details[open] > summary{
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
 /* Sidebar chevron */
 .sb-details > summary::-webkit-details-marker{ display:none !important; }
 .sb-details > summary::marker{ content:"" !important; }
@@ -733,7 +765,7 @@ def _render_landing_page():
     <div style="
         margin: 4px 0 16px 0;
         color: rgba(229,231,235,0.75);
-        font-size: 0.95rem;
+        font-size: 1.0rem;
         line-height: 1.45;
         text-align: center;
     ">
