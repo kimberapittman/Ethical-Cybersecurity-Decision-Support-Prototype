@@ -367,13 +367,13 @@ def render_open_ended():
                 """
                 **Examples drawn from prior municipal cases that informed this prototype’s design**
 
-                    **Baltimore (Ransomware):**  
+                    Baltimore (Ransomware):  
                     Maintain network connectivity while assessing the scope of a ransomware attack or proactively disconnect additional systems.
 
-                    **San Diego (Surveillance Repurposing):**  
+                    San Diego (Surveillance Repurposing): 
                     Maintain or modify current law-enforcement access to smart streetlight video surveillance.
 
-                    **Riverton (AI-Enabled Control System):**  
+                    Riverton (AI-Enabled Control System): 
                     Maintain AI-imposed restrictions or restore full operator control.
                     """
             )
