@@ -102,7 +102,7 @@ section[data-testid="stSidebar"] span{
   border: 1px solid rgba(255,255,255,0.10) !important;
   border-radius: 14px !important;
   padding: 0 !important;
-  overflow: hidden !important; /* critical */
+  overflow: visible !important; /* critical */
 }
 .sb-details > summary{
   /* layout */
@@ -178,6 +178,7 @@ section[data-testid="stSidebar"] span{
   padding: 12px 14px !important;
   margin: 0 !important;
   border-top: 1px solid rgba(255,255,255,0.08) !important;
+  overflow: hidden !important;
 }
 
 
