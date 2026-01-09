@@ -85,11 +85,11 @@ def _load_core_data():
     return csf, crosswalk, pfce, constraints
 
 OE_STEP_TITLES = {
-    1: "1. Decision Context",
-    2: "2. NIST CSF 2.0 Mapping",
-    3: "3. PFCE Analysis and Ethical Tension",
-    4: "4. Institutional and Governance Constraints",
-    5: "5. Decision (and documented rationale)",
+    1: "Decision Context",
+    2: "NIST CSF 2.0 Mapping",
+    3: "PFCE Analysis and Ethical Tension",
+    4: "Institutional and Governance Constraints",
+    5: "Decision (and documented rationale)",
 }
 OE_TOTAL_STEPS = len(OE_STEP_TITLES)
 
@@ -355,7 +355,7 @@ def render_open_ended():
                 font-size: 0.95rem;
                 line-height: 1.45;
             ">
-            Describe the cybersecurity decision under consideration.
+            Step 1: Describe the cybersecurity decision under consideration.
             </div>
             """,
             unsafe_allow_html=True
