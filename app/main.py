@@ -142,7 +142,11 @@ section[data-testid="stSidebar"] span{
 
   /* Neutral rim amplification (NO blue) */
   border-color: rgba(255,255,255,0.24) !important;
-  box-shadow: 0 0 0 2px rgba(255,255,255,0.08) !important;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.18),   /* crisp rim */
+    0 0 12px rgba(255,255,255,0.18),    /* soft glow */
+    0 0 24px rgba(255,255,255,0.08);    /* diffuse fade */
+    0 12px 28px rgba(255,255,255,0.18);    /* BOTTOM UNDER-GLOW */
 
   filter: brightness(1.04) !important;
   transform: translateY(-2px); /* unchanged */
