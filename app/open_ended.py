@@ -347,11 +347,37 @@ def render_open_ended():
     # STEP 1: DECISION CONTEXT 
     # ==========================================================
     if step == 1:
-        _render_step_tile_html(
-                "State the operational decision context in clear procedural terms. Keep it short and concrete.",
+        st.markdown(
+            """
+            <div style="
+                margin: 6px 0 12px 0;
+                color: rgba(229,231,235,0.85);
+                font-size: 0.95rem;
+                line-height: 1.45;
+            ">
+            Describe the triggering condition that made this situation ethically significant.
+            This should describe what occurred, not how you responded or why it matters.
+            </div>
+            """,
+            unsafe_allow_html=True
         )
 
-        st.markdown("---")
+        # Optional reference examples (NOT a tile, NOT selectable)
+        with st.expander("View illustrative triggering-condition examples (optional)"):
+            st.markdown(
+                """
+                **Examples drawn from prior municipal cases that informed this prototype’s design**
+
+                **Baltimore (Ransomware):**  
+                Ransomware was deployed across multiple municipal systems.
+
+                **San Diego (Surveillance Repurposing):**  
+                Smart streetlight footage was accessed for law-enforcement use beyond the program’s documented scope.
+
+                **Riverton (AI-Enabled Control System):**  
+                An AI system flagged anomalous control activity.
+                """
+            )
 
         st.selectbox(
             "Primary decision context type (optional)",
