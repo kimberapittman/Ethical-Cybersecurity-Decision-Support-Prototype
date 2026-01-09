@@ -361,7 +361,18 @@ def render_open_ended():
             unsafe_allow_html=True
         )
 
-        # Optional reference examples (NOT a tile, NOT selectable)
+
+        decision_context = st.text_area(
+            "Decision context (1–2 sentences)",
+            key="oe_decision_context",
+            height=120,
+            placeholder=(
+                "Example: Determine whether to disconnect additional systems to limit potential spread "
+                "while the scope of compromise remains unclear."
+            ),
+        )
+
+                # Optional reference examples (NOT a tile, NOT selectable)
         with st.expander("View decision context examples"):
             st.markdown(
                 """
@@ -377,22 +388,6 @@ def render_open_ended():
                     Maintain AI-imposed restrictions or restore full operator control.
                     """
             )
-
-        st.selectbox(
-            "Primary decision context type (optional)",
-            options=DECISION_TYPE_OPTIONS,
-            key="oe_decision_type",
-        )
-
-        decision_context = st.text_area(
-            "Decision context (1–2 sentences)",
-            key="oe_decision_context",
-            height=120,
-            placeholder=(
-                "Example: Determine whether to disconnect additional systems to limit potential spread "
-                "while the scope of compromise remains unclear."
-            ),
-        )
 
         st.session_state["oe_suggested_func"] = guess_csf_function(decision_context)
 
