@@ -368,27 +368,28 @@ def render_open_ended():
             height=120,
         )
 
-        # Optional reference examples (NOT a tile, NOT selectable)
-        with st.expander(
-            """
-            <span title="Examples are drawn from an analysis of real-world municipal cybersecurity incidents and a purpose-built hypothetical scenario that informed the design of this prototype.">
-                View illustrative decision context examples
-            </span>
-            """,
-            unsafe_allow_html=True
-        ):
+        with st.expander("View illustrative decision context examples"):
+            st.markdown(
+                """
+                <div title="Examples are drawn from an analysis of real-world municipal cybersecurity incidents and a purpose-built hypothetical scenario that informed the design of this prototype."
+                    style="font-size:0.85rem; color: rgba(229,231,235,0.70); margin-bottom: 10px;">
+                    Hover text available here via tooltip.
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
             st.markdown(
                 """
                 **Examples drawn from prior municipal cases that informed this prototype’s design**
 
-                    Baltimore (Ransomware):  
-                    Maintain network connectivity while assessing the scope of a ransomware attack or proactively disconnect additional systems.
+                Baltimore (Ransomware):  
+                Maintain network connectivity while assessing the scope of a ransomware attack or proactively disconnect additional systems.
 
-                    San Diego (Surveillance Repurposing): 
-                    Maintain or modify current law-enforcement access to smart streetlight video surveillance.
+                San Diego (Surveillance Repurposing):  
+                Maintain or modify current law-enforcement access to smart streetlight video surveillance.
 
-                    Riverton (AI-Enabled Control System): 
-                    Maintain AI-imposed restrictions or restore full operator control.
+                Riverton (AI-Enabled Control System):  
+                Maintain AI-imposed restrictions or restore full operator control.
                 """
             )
 

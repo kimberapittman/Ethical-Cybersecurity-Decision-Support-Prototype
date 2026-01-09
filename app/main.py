@@ -104,31 +104,33 @@ section[data-testid="stSidebar"] span{
   padding: 0 !important;
   overflow: visible !important; /* critical */
 }
+
 .sb-details > summary{
   /* layout */
   list-style: none !important;
   display: flex !important;
   align-items: center !important;
   gap: 10px !important;
+
   /* visual */
   background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)) !important;
   border: 1px solid rgba(255,255,255,0.10) !important;
   border-radius: 12px !important;
   color: var(--text-strong) !important;
+
   /* spacing + typography */
-  padding: 12px 14px !important; 
+  padding: 12px 14px !important;
   margin: 0 !important;
   font-weight: 700 !important;
+
   /* behavior */
   cursor: pointer !important;
-}
 
-/* === SIDEBAR EXPANDER HOVER (SUBTLE AFFORDANCE ONLY) === */
-.sb-details > summary{
+  /* hover animation */
   transition:
     background-color 0.12s ease,
     border-color 0.12s ease,
-    box-shadow 0.12s ease,   /* ← added */
+    box-shadow 0.12s ease,
     filter 0.12s ease,
     transform 0.12s ease;
 }
@@ -140,19 +142,19 @@ section[data-testid="stSidebar"] span{
     rgba(255,255,255,0.05)
   ) !important;
 
-  /* Neutral rim amplification (NO blue) */
   border-color: rgba(255,255,255,0.24) !important;
+
   box-shadow:
-    0 0 0 1px rgba(255,255,255,0.18),   /* crisp rim */
-    0 0 12px rgba(255,255,255,0.18),    /* soft glow */
-    0 0 24px rgba(255,255,255,0.08),    /* diffuse fade */
-    0 16px 34px rgba(255,255,255,0.22);    /* BOTTOM UNDER-GLOW */
+    0 0 0 1px rgba(255,255,255,0.18),
+    0 0 12px rgba(255,255,255,0.18),
+    0 0 24px rgba(255,255,255,0.08),
+    0 16px 26px rgba(255,255,255,0.12);
 
   filter: brightness(1.04) !important;
-  transform: translateY(-2px); /* unchanged */
+  transform: translateY(-2px);
 }
 
-/* === SIDEBAR EXPANDERS: FLATTEN SUMMARY BOTTOM CORNERS WHEN OPEN === */
+/* flatten summary bottom corners when open */
 .sb-details[open] > summary{
   border-bottom-left-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
