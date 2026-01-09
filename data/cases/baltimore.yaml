@@ -31,7 +31,7 @@ background:
 
 technical:
   decision_context:
-    - After identifying that servers supporting key administrative functions were affected, the cybersecurity practitioners faced a decision to maintain system connectivity while assessing the scope of the ransomware deployment or to disconnect additional systems to limit potential further spread.
+    - After confirming that ransomware had compromised servers supporting critical municipal functions, cybersecurity practitioners faced a decision about whether to maintain network connectivity while assessing the scope of the compromise or to proactively disconnect additional systems to limit potential further spread. The decision required determining how to proceed operationally while uncertainty about the extent of the intrusion remained.
 
   nist_csf_mapping:
     - function: "Respond (RS)"

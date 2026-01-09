@@ -87,7 +87,7 @@ constraints:
 
 decision_outcome:
   decision: 
-    - Riverton maintained the AI-initiated restrictions while analysts reviewed the anomalous activity, then restored full manual control after diagnostics and vendor consultation indicated a misconfiguration rather than malicious activity.
+    - Following an AI system’s autonomous classification of network activity as high risk and its initiation of restrictive controls, cybersecurity practitioners had to decide whether to maintain AI-imposed restrictions or restore full operator control while further analysis was conducted. The decision focused on how AI-generated alerts should guide operational posture during an ongoing assessment.
 
   outcomes_implications:
     - The precautionary posture preserved system safety during uncertainty.

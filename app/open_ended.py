@@ -355,28 +355,27 @@ def render_open_ended():
                 font-size: 0.95rem;
                 line-height: 1.45;
             ">
-            Describe the triggering condition that made this situation ethically significant.
-            This should describe what occurred, not how you responded or why it matters.
+            Describe the cybersecurity decision under consideration.
             </div>
             """,
             unsafe_allow_html=True
         )
 
         # Optional reference examples (NOT a tile, NOT selectable)
-        with st.expander("View illustrative triggering-condition examples (optional)"):
+        with st.expander("View decision context examples"):
             st.markdown(
                 """
                 **Examples drawn from prior municipal cases that informed this prototype’s design**
 
-                **Baltimore (Ransomware):**  
-                Ransomware was deployed across multiple municipal systems.
+                    **Baltimore (Ransomware):**  
+                    Maintain network connectivity while assessing the scope of a ransomware attack or proactively disconnect additional systems.
 
-                **San Diego (Surveillance Repurposing):**  
-                Smart streetlight footage was accessed for law-enforcement use beyond the program’s documented scope.
+                    **San Diego (Surveillance Repurposing):**  
+                    Maintain or modify current law-enforcement access to smart streetlight video surveillance.
 
-                **Riverton (AI-Enabled Control System):**  
-                An AI system flagged anomalous control activity.
-                """
+                    **Riverton (AI-Enabled Control System):**  
+                    Maintain AI-imposed restrictions or restore full operator control.
+                    """
             )
 
         st.selectbox(

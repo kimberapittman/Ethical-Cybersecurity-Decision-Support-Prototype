@@ -32,9 +32,7 @@ background:
 
 technical:
   decision_context:
-    - Once expanded law-enforcement access became apparent, municipal staff had to determine whether existing access permissions should remain in place or be modified.
-    - The platform lacked a fully articulated governance structure specifying when and how video data could be retrieved.
-    - Practitioners were required to assess access configurations while questions of authority and appropriate use were addressed through administrative processes.
+    - As expanded law-enforcement access to the smart streetlights platform became operationally visible, municipal cybersecurity practitioners were required to decide whether existing access permissions should remain in place or be modified. The decision centered on configuring system access controls in the absence of a clearly articulated governance structure specifying when and how video data retrieval was authorized.
 
   nist_csf_mapping:
     - function: "Protect (PR)"
