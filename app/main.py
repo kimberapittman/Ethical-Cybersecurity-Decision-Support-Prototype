@@ -810,9 +810,9 @@ def _render_landing_page():
 
                         <ul class="tight-list">
                           <li>User-defined decision context</li>
-                          <li>Supports identification of ethical significance and competing obligations</li>
+                          <li>Supports identification of ethical significance in cybersecurity decision-making</li>
                           <li>Structures reasoning using CSF procedural context and PFCE principles</li>
-                          <li>Documents ethical reasoning to support transparency and defensibility</li>
+                          <li>Documents the reasoning to support transparency</li>
                         </ul>
                       </div>
                     </details>

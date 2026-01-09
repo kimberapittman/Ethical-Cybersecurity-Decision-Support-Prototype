@@ -366,14 +366,17 @@ def render_open_ended():
             "Decision context (1–2 sentences)",
             key="oe_decision_context",
             height=120,
-            placeholder=(
-                "Example: Determine whether to disconnect additional systems to limit potential spread "
-                "while the scope of compromise remains unclear."
-            ),
         )
 
-                # Optional reference examples (NOT a tile, NOT selectable)
-        with st.expander("View decision context examples"):
+        # Optional reference examples (NOT a tile, NOT selectable)
+        with st.expander(
+            """
+            <span title="Examples are drawn from an analysis of real-world municipal cybersecurity incidents and a purpose-built hypothetical scenario that informed the design of this prototype.">
+                View illustrative decision context examples
+            </span>
+            """,
+            unsafe_allow_html=True
+        ):
             st.markdown(
                 """
                 **Examples drawn from prior municipal cases that informed this prototype’s design**
@@ -386,10 +389,9 @@ def render_open_ended():
 
                     Riverton (AI-Enabled Control System): 
                     Maintain AI-imposed restrictions or restore full operator control.
-                    """
+                """
             )
 
-        st.session_state["oe_suggested_func"] = guess_csf_function(decision_context)
 
     # ==========================================================
     # STEP 2: NIST CSF 
