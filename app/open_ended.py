@@ -345,52 +345,60 @@ def render_open_ended():
         )
 
     # ==========================================================
-    # STEP 1: DECISION CONTEXT 
+    # STEP 1: DECISION CONTEXT
     # ==========================================================
-    _render_step_tile_html(
-        OE_STEP_TITLES[1],
-        """
-        <div class="wt-text" style="margin: 6px 0 12px 0;">
-        Describe the cybersecurity decision under consideration.
-        </div>
-        """
-    )
-
-
-    decision_context = st.text_area(
-        "Decision context (1–2 sentences)",
-        key="oe_decision_context",
-        height=120,
-    )
-
-    with st.expander("View illustrative decision context examples"):
+    if step == 1:
+        # Instruction text (no tile)
         st.markdown(
             """
-            <div title="Examples are drawn from an analysis of real-world municipal cybersecurity incidents and a purpose-built hypothetical scenario that informed the design of this prototype."
-                style="font-size:0.85rem; color: rgba(229,231,235,0.70); margin-bottom: 10px;">
+            <div style="
+                margin: 6px 0 12px 0;
+                color: rgba(229,231,235,0.85);
+                font-size: 0.95rem; /* keep */
+                line-height: 1.45;
+            ">
+            Describe the cybersecurity decision under consideration.
             </div>
             """,
             unsafe_allow_html=True
         )
-        st.markdown(
-            """
 
-            Baltimore (Ransomware):  
-            Maintain network connectivity while assessing the scope of a ransomware attack or proactively disconnect additional systems.
-
-            San Diego (Surveillance Repurposing):  
-            Maintain or modify current law-enforcement access to smart streetlight video surveillance.
-
-            Riverton (AI-Enabled Control System):  
-            Maintain AI-imposed restrictions or restore full operator control.
-            """
+        # Input (this is the only “tile-like” element on the screen)
+        decision_context = st.text_area(
+            "Decision context (1–2 sentences)",
+            key="oe_decision_context",
+            height=120,
         )
+
+        # Optional examples (expander)
+        with st.expander("View illustrative decision context examples"):
+            st.markdown(
+                """
+                <div title="Examples are drawn from an analysis of real-world municipal cybersecurity incidents and a purpose-built hypothetical scenario that informed the design of this prototype."
+                    style="font-size:0.85rem; color: rgba(229,231,235,0.70); margin-bottom: 10px;">
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+            st.markdown(
+                """
+                Baltimore (Ransomware):  
+                Maintain network connectivity while assessing the scope of a ransomware attack or proactively disconnect additional systems.
+
+                San Diego (Surveillance Repurposing):  
+                Maintain or modify current law-enforcement access to smart streetlight video surveillance.
+
+                Riverton (AI-Enabled Control System):  
+                Maintain AI-imposed restrictions or restore full operator control.
+                """
+            )
 
 
     # ==========================================================
     # STEP 2: NIST CSF 
     # ==========================================================
-    if step == 2:
+    elif step == 2:
         _render_step_tile_html(
             "Use the CSF to situate the decision procedurally. This does not prescribe actions; it structures context.",
         )
@@ -483,7 +491,7 @@ def render_open_ended():
     # ==========================================================
     # STEP 3: PFCE + TENSION
     # ==========================================================
-    if step == 3:
+    elif step == 3:
         _render_step_tile_html(
             "Make ethically significant conditions explicit, then state the central tension as two justified obligations.",
         )
@@ -574,7 +582,7 @@ def render_open_ended():
     # ==========================================================
     # STEP 4: CONSTRAINTS
     # ==========================================================
-    if step == 4:
+    elif step == 4:
         _render_step_tile_html(
             "Document constraints that shape or limit feasible actions or justification.",
         )
@@ -594,7 +602,7 @@ def render_open_ended():
     # ==========================================================
     # STEP 5: DECISION + OUTPUT 
     # ==========================================================
-    if step == 5:
+    elif step == 5:
         _render_step_tile_html(
             "Record the decision in operational terms, then generate a structured rationale for demonstration purposes.",
         )
