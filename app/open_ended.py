@@ -355,7 +355,7 @@ def render_open_ended():
                 font-size: 0.95rem;
                 line-height: 1.45;
             ">
-            Step 1: Describe the cybersecurity decision under consideration.
+            Describe the cybersecurity decision under consideration.
             </div>
             """,
             unsafe_allow_html=True
@@ -373,14 +373,12 @@ def render_open_ended():
                 """
                 <div title="Examples are drawn from an analysis of real-world municipal cybersecurity incidents and a purpose-built hypothetical scenario that informed the design of this prototype."
                     style="font-size:0.85rem; color: rgba(229,231,235,0.70); margin-bottom: 10px;">
-                    Hover text available here via tooltip.
                 </div>
                 """,
                 unsafe_allow_html=True
             )
             st.markdown(
                 """
-                **Examples drawn from prior municipal cases that informed this prototype’s design**
 
                 Baltimore (Ransomware):  
                 Maintain network connectivity while assessing the scope of a ransomware attack or proactively disconnect additional systems.

@@ -282,17 +282,17 @@ def render_case(case_id: str):
         st.caption(f"Step {step} of 9")
 
         if step == 1:
-            title = "1. Technical and Operational Background"
+            title = "Technical and Operational Background"
             body = _bullets_html(case["background"].get("technical_operational_background"))
             _render_step_tile_html(title, body)
 
         elif step == 2:
-            title = "2. Triggering Condition and Key Events"
+            title = "Triggering Condition and Key Events"
             body = _bullets_html(case["background"].get("triggering_condition_key_events"))
             _render_step_tile_html(title, body)
 
         elif step == 3:
-            title = "3. Decision Context"
+            title = "Decision Context"
             body = _bullets_html(case["technical"].get("decision_context"))
             _render_step_tile_html(title, body)
 
@@ -335,7 +335,7 @@ def render_case(case_id: str):
                 f'</a>'
             )
 
-            title = f"4. {nist_title} Mapping"
+            title = f"{nist_title} Mapping"
 
             _render_step_tile_html(title, body)
 
@@ -352,7 +352,7 @@ def render_case(case_id: str):
             else:
                 body = "<div class='wt-tbd'>TBD</div>"
 
-            title = "5. Ethical Tension"
+            title = "Ethical Tension"
 
             _render_step_tile_html(title, body)
 
@@ -398,7 +398,7 @@ def render_case(case_id: str):
                 # Fallback: render list/string/None as HTML bullets/text
                 body = _bullets_html(pfce_items)
 
-            title = f"6. {pfce_title} Analysis"
+            title = f"{pfce_title} Analysis"
 
             _render_step_tile_html(title, body)
 
@@ -432,19 +432,19 @@ def render_case(case_id: str):
             else:
                 body = "<div class='wt-tbd'>TBD</div>"
 
-            title = "7. Institutional and Governance Constraints"
+            title = "Institutional and Governance Constraints"
 
             _render_step_tile_html(title, body)
 
 
         elif step == 8:
-            title = "8. Decision"
+            title = "Decision"
             body = _bullets_html(case["decision_outcome"].get("decision"))
             _render_step_tile_html(title, body)
 
 
         elif step == 9:
-            title = "9. Outcomes and Implications"
+            title = "Outcomes and Implications"
             body = _bullets_html(case["decision_outcome"].get("outcomes_implications"))
             _render_step_tile_html(title, body)
 
