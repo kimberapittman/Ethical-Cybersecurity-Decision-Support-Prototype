@@ -303,6 +303,7 @@ div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
   text-align: center !important;
   margin: 0 0 20px 0 !important;
   line-height: 1.45 !important;
+  overflow: hidden !important;
 }
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
 .listbox.tile-card.mode-tile .tile-hook{
@@ -347,6 +348,7 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
   text-align: center !important;
   margin: 0 0 20px 0 !important;   
   line-height: 1.45 !important;
+  overflow: hidden !important;
 }
 /* Hook styling; Hook → bottom spacing comes ONLY from tile padding */
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
@@ -398,8 +400,12 @@ div[data-testid="stVerticalBlock"]:has(:is(.mode-tiles-anchor,.case-tiles-anchor
   letter-spacing:0.02em !important;
   padding:8px 14px !important;
   border-radius:999px !important;
-  white-space:nowrap !important;
+  white-space: normal !important;
+  text-align: center !important;
+  line-height: 1.2 !important;
   color:#ffffff !important;
+  max-width: 100% !important;
+  flex-wrap: wrap !important;
 }
 .case-badge.real,
 .case-badge.hypo{
