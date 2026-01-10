@@ -1164,8 +1164,6 @@ def main():
                     </a><br>
                     Formosa, Paul; Michael Wilson; Deborah Richards (2021)<br>
 
-                    (Access to the full text may depend on institutional or publisher subscriptions.)
-
                   </div>
                 </details>
                 """
