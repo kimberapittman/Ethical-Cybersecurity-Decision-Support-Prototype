@@ -290,6 +290,46 @@ label, .stRadio, .stSelectbox, .stMultiSelect, .stExpander{
 section-note, .tile-hook { color: var(--text-muted) !important; }
 
 
+/* === CASE BADGES === */
+.case-badge-wrap{
+  width:100% !important;
+  display:flex !important;
+  justify-content:center !important;
+  margin: 0 0 10px 0 !important;
+}
+.case-badge{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  font-size:0.85rem !important;
+  font-weight:800 !important;
+  letter-spacing:0.02em !important;
+  padding:8px 14px !important;
+  border-radius:999px !important;
+  white-space: normal !important;
+  text-align: center !important;
+  line-height: 1.2 !important;
+  max-width: 100% !important;
+  flex-wrap: wrap !important;
+  color:#ffffff !important;
+}
+.case-badge.real,
+.case-badge.hypo{
+  border: 1px solid rgba(255,255,255,0.65) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.15) !important;
+}
+/* MAIN CONTENT expanders only (exclude sidebar) */
+div[data-testid="stAppViewContainer"]
+:not(section[data-testid="stSidebar"])
+details > summary{
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 12px;
+  padding: 10px 12px;
+  color: var(--text-strong);
+}
+
+
 /* === SELECT A MODE TILE SPACING ==== */
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
 .listbox.tile-card.mode-tile{
@@ -303,7 +343,6 @@ div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
   text-align: center !important;
   margin: 0 0 20px 0 !important;
   line-height: 1.45 !important;
-  overflow: hidden !important;
 }
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
 .listbox.tile-card.mode-tile .tile-hook{
@@ -311,6 +350,10 @@ div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
   font-size: 1.25rem !important;
   margin: 0 0 20px 0 !important;   
   line-height: 1.45 !important;
+}
+div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
+.listbox.tile-card.mode-tile{
+  overflow: hidden !important;
 }
 /* Expanded body: continuous with summary (no "second tile" look) */
 div[data-testid="stVerticalBlock"]:has(.mode-tiles-anchor)
@@ -348,7 +391,6 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
   text-align: center !important;
   margin: 0 0 20px 0 !important;   
   line-height: 1.45 !important;
-  overflow: hidden !important;
 }
 /* Hook styling; Hook → bottom spacing comes ONLY from tile padding */
 div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
@@ -357,6 +399,10 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
   font-size: 1.25rem !important;
   margin: 0 0 20px 0 !important;
   line-height: 1.45 !important;
+}
+div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
+.listbox.case-tile{
+  overflow: hidden !important;
 }
 
 /* === TILE HOVER MATCH BUTTONS (Select-a-Mode + Select-a-Case only) === */
@@ -382,46 +428,6 @@ div[data-testid="stVerticalBlock"]:has(:is(.mode-tiles-anchor,.case-tiles-anchor
 .tight-list{ margin: 0.25rem 0 0 1.15rem; padding: 0; }
 .tight-list li{ margin: 6px 0; }
 .tight-list li::marker{ color: var(--text-muted); }
-
-
-/* === CASE BADGES === */
-.case-badge-wrap{
-  width:100% !important;
-  display:flex !important;
-  justify-content:center !important;
-  margin: 0 0 10px 0 !important;
-}
-.case-badge{
-  display:inline-flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  font-size:0.85rem !important;
-  font-weight:800 !important;
-  letter-spacing:0.02em !important;
-  padding:8px 14px !important;
-  border-radius:999px !important;
-  white-space: normal !important;
-  text-align: center !important;
-  line-height: 1.2 !important;
-  color:#ffffff !important;
-  max-width: 100% !important;
-  flex-wrap: wrap !important;
-}
-.case-badge.real,
-.case-badge.hypo{
-  border: 1px solid rgba(255,255,255,0.65) !important;
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.15) !important;
-}
-/* MAIN CONTENT expanders only (exclude sidebar) */
-div[data-testid="stAppViewContainer"]
-:not(section[data-testid="stSidebar"])
-details > summary{
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.10);
-  border-radius: 12px;
-  padding: 10px 12px;
-  color: var(--text-strong);
-}
 
 
 /* DETAILS CHEVRON — MODE + CASE TILES (shared) */
