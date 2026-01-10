@@ -412,6 +412,24 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
     line-height: 1.25 !important;
   }
 }
+/* === SELECT A CASE: STACK COLUMNS ON NARROW SCREENS (DESKTOP + SIDEBAR OPEN) === */
+@media (max-width: 1100px){
+  /* Target only the row that contains the case tiles */
+  div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
+  div[data-testid="stHorizontalBlock"]{
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+
+  /* Ensure each Streamlit column spans full width */
+  div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
+  div[data-testid="stColumn"]{
+    width: 100% !important;
+    flex: unset !important;
+  }
+}
+
 
 /* === TILE HOVER MATCH BUTTONS (Select-a-Mode + Select-a-Case only) === */
 div[data-testid="stVerticalBlock"]:has(:is(.mode-tiles-anchor,.case-tiles-anchor))
