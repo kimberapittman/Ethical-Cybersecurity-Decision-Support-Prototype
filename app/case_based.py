@@ -296,7 +296,6 @@ def render_case(case_id: str):
             body = _bullets_html(case["technical"].get("decision_context"))
             _render_step_tile_html(title, body)
 
-
         elif step == 4:
             mapping = case["technical"].get("nist_csf_mapping", [])
 
@@ -310,13 +309,20 @@ def render_case(case_id: str):
                         cats = [cats]
                     cat_text = html.escape(", ".join(cats) if cats else "TBD")
 
-                    # main line
-                    line = f"<li><strong>{fn} — {cat_text}</strong>"
+                    # main line (heading only)
+                    line = (
+                        f"<li>"
+                        f"<strong>{fn} — {cat_text}</strong>"
+                    )
 
-                    # rationale (if present)
+                    # rationale (separate block)
                     if m.get("rationale"):
                         rationale = html.escape(m.get("rationale"))
-                        line += f"<div class='wt-rationale'>Rationale: {rationale}</div>"
+                        line += (
+                            f"<div class='wt-rationale'>"
+                            f"<strong>Rationale:</strong> {rationale}"
+                            f"</div>"
+                        )
 
                     line += "</li>"
                     items.append(line)
