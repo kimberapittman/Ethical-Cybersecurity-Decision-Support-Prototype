@@ -1078,7 +1078,7 @@ def main():
                     </div>
 
                     <div style="margin: 0 0 14px 0;">
-                      It is not designed to prescribe actions or determine outcomes.
+                      It is not designed to prescribe actions or assert what the decision should be.
                     </div>
 
                     <span style="font-weight:700; border-bottom:2px solid rgba(255,255,255,0.6); padding-bottom:2px;">
@@ -1086,29 +1086,29 @@ def main():
                     </span>
 
                     <div style="margin: 8px 0 10px 0;">
-                      The prototype guides users through a structured reasoning walkthrough implemented in two complementary modes:
+                      The prototype is designed to support a structured walkthrough implemented in two modes:
                     </div>
 
                     <ul style="margin: 0 0 12px 18px; padding: 0;">
                       <li>
                         <strong>Case-Based Mode</strong><br>
-                        Demonstrates the walkthrough using reconstructed municipal cybersecurity cases—two real-world incidents and one hypothetical scenario—to show how analysis of complex decision contexts informed the prototype’s design.
+                        Demonstrates the walkthrough using reconstructed municipal cybersecurity cases—two real-world incidents and one hypothetical scenario—to illustrate how analysis of complex decision contexts informed the prototype’s design.
                       </li>
                       <li style="margin-top: 8px;">
                         <strong>Open-Ended Mode</strong><br>
-                        Applies the same reasoning structure to a user-defined cybersecurity decision context and represents the intended use of the prototype.
+                        Applies the same underlying reasoning logic to a user-defined cybersecurity decision context, reflecting the intended operational use of the prototype.
                       </li>
                     </ul>
 
                     <div style="margin: 6px 0 6px 0;">
-                      Across both modes, the walkthrough helps surface and document:
+                      Across both modes, the walkthrough is designed to surface and document:
                     </div>
 
                     <ul style="margin: 0 0 0 18px; padding: 0;">
                       <li>The decision context</li>
                       <li>Where the decision sits within the NIST Cybersecurity Framework (CSF) 2.0</li>
-                      <li>What, if any, ethical tension arises using the Principlist Framework for Cybersecurity Ethics (PFCE)</li>
-                      <li>Institutional and governance constraints shaping feasible response options</li>
+                      <li>Ethical tensions surfaced through the Principlist Framework for Cybersecurity Ethics (PFCE)</li>
+                      <li>Institutional and governance constraints shaping feasible decision options</li>
                     </ul>
                       </li>
                     </ul>
