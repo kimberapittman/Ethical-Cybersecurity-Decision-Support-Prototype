@@ -404,6 +404,14 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
 .listbox.case-tile{
   overflow: hidden !important;
 }
+/* === SELECT A CASE – RESPONSIVE TITLE TIGHTENING === */
+@media (max-width: 1100px){
+  div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
+  .listbox.case-tile .tile-title{
+    font-size: 1.05rem !important;
+    line-height: 1.25 !important;
+  }
+}
 
 /* === TILE HOVER MATCH BUTTONS (Select-a-Mode + Select-a-Case only) === */
 div[data-testid="stVerticalBlock"]:has(:is(.mode-tiles-anchor,.case-tiles-anchor))
