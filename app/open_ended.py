@@ -372,29 +372,30 @@ if step == 1:
     )
 
 
-        # Optional examples (expander)
-        with st.expander("See example decision contexts (optional)"):
-            st.markdown(
-                """
-                <div title="Examples are drawn from an analysis of real-world municipal cybersecurity incidents and a purpose-built hypothetical scenario that informed the design of this prototype."
-                    style="font-size:0.85rem; color: rgba(229,231,235,0.70); margin-bottom: 10px;">
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
+    # Optional examples (expander)
+    with st.expander("See example decision contexts (optional)"):
+        st.markdown(
+            """
+            <div title="Examples are drawn from an analysis of real-world municipal cybersecurity incidents and a purpose-built hypothetical scenario that informed the design of this prototype."
+                style="font-size:0.85rem; color: rgba(229,231,235,0.70); margin-bottom: 10px; cursor: help;">
+                ⓘ
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
-            st.markdown(
-                """
-                Baltimore (Ransomware):  
-                Maintain network connectivity while assessing the scope of a ransomware attack or proactively disconnect additional systems.
+        st.markdown(
+            """
+            Baltimore (Ransomware):  
+            Maintain network connectivity while assessing the scope of a ransomware attack or proactively disconnect additional systems.
 
-                San Diego (Surveillance Repurposing):  
-                Maintain or modify current law-enforcement access to smart streetlight video surveillance.
+            San Diego (Surveillance Repurposing):  
+            Maintain or modify current law-enforcement access to smart streetlight video surveillance.
 
-                Riverton (AI-Enabled Control System):  
-                Maintain AI-imposed restrictions or restore full operator control.
-                """
-            )
+            Riverton (AI-Enabled Control System):  
+            Maintain AI-imposed restrictions or restore full operator control.
+            """
+        )
 
 
     # ==========================================================
