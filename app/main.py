@@ -150,14 +150,18 @@ section[data-testid="stSidebar"]{
 }
 .sb-details-body .sb-section{
   font-weight: 800 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1.2 !important;
   color: #ffffff !important;
   text-decoration: underline !important;
   text-decoration-color: rgba(255,255,255,0.85) !important;
   text-decoration-thickness: 2px !important;
   text-underline-offset: 4px !important;
 }
-.sb-details-body .sb-section + *{
+.sb-details-body .sb-section + .sb-p{
   margin-top: 0 !important;
+  padding-top: 0 !important;
 }
 /* Allow long sidebar text/URLs to wrap */
 section[data-testid="stSidebar"] .sb-details-body a,
