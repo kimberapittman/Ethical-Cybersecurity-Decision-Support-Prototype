@@ -80,7 +80,6 @@ section[data-testid="stSidebar"]{
   border-right: 1px solid rgba(255,255,255,0.08);
   backdrop-filter: blur(6px);
 }
-
 /* The whole expander container */
 .sb-details{
   background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)) !important;
@@ -89,28 +88,23 @@ section[data-testid="stSidebar"]{
   padding: 0 !important;
   overflow: visible !important; /* keeps hover glow + under-glow from clipping */
 }
-
 .sb-details > summary{
   /* layout */
   list-style: none !important;
   display: flex !important;
   align-items: center !important;
   gap: 10px !important;
-
   /* visual */
   background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)) !important;
   border: 1px solid rgba(255,255,255,0.10) !important;
   border-radius: 12px !important;
-
   /* spacing + typography */
   padding: 12px 14px !important;
   margin: 0 !important;
   color: var(--text-strong) !important;
   font-weight: 800 !important;
-
   /* behavior */
   cursor: pointer !important;
-
   /* hover animation */
   transition:
     background-color 0.12s ease,
@@ -119,32 +113,26 @@ section[data-testid="stSidebar"]{
     filter 0.12s ease,
     transform 0.12s ease;
 }
-
 .sb-details > summary:hover{
   background: linear-gradient(
     180deg,
     rgba(255,255,255,0.09),
     rgba(255,255,255,0.05)
   ) !important;
-
   border-color: rgba(255,255,255,0.24) !important;
-
   box-shadow:
     0 0 0 1px rgba(255,255,255,0.18),
     0 0 12px rgba(255,255,255,0.18),
     0 0 24px rgba(255,255,255,0.08),
     0 16px 26px rgba(255,255,255,0.12);
-
   filter: brightness(1.04) !important;
   transform: translateY(-2px);
 }
-
 /* flatten summary bottom corners when open */
 .sb-details[open] > summary{
   border-bottom-left-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
 }
-
 /* Sidebar chevron */
 .sb-details > summary::-webkit-details-marker{ display:none !important; }
 .sb-details > summary::marker{ content:"" !important; }
@@ -160,27 +148,17 @@ section[data-testid="stSidebar"]{
 .sb-details[open] > summary::before{
   transform: rotate(90deg);
 }
-/* === SIDEBAR DETAILS BODY: CONSISTENT TYPOGRAPHY + SPACING === */
-.sb-details-body{
-  padding: 12px 14px !important;
-  margin: 0 !important;
-  border-top: 1px solid rgba(255,255,255,0.08) !important;
-  overflow: hidden !important;
-  color: rgba(229,231,235,0.88) !important;
-  line-height: 1.45 !important;
-  font-size: 0.95rem !important;
-}
-
 .sb-details-body .sb-section{
   font-weight: 800 !important;
   color: #ffffff !important;
-  color: white;
-  text-decoration-line: underline;
-  text-decoration-color: white;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 4px;
+  text-decoration: underline !important;
+  text-decoration-color: rgba(255,255,255,0.85) !important;
+  text-decoration-thickness: 2px !important;
+  text-underline-offset: 4px !important;
 }
-
+.sb-details-body .sb-section + *{
+  margin-top: 0 !important;
+}
 /* Allow long sidebar text/URLs to wrap */
 section[data-testid="stSidebar"] .sb-details-body a,
 section[data-testid="stSidebar"] .sb-details-body p,
@@ -1238,11 +1216,11 @@ def main():
 
                     <ul>
                       <li>
-                        <strong>Case-Based Mode:</strong><br>
+                        <strong>Case-Based Mode</strong><br>
                         Uses reconstructed municipal cybersecurity cases to construct and apply a stepwise reasoning process, showing how technical and ethical reasoning unfold across a full decision process and how that logic informed the design of the Open-Ended Mode.
                       </li>
                       <li>
-                        <strong>Open-Ended Mode:</strong><br>
+                        <strong>Open-Ended Mode</strong><br>
                         Applies the same underlying reasoning logic to a user-defined cybersecurity decision context, reflecting the intended operational use of the prototype.
                       </li>
                     </ul>
