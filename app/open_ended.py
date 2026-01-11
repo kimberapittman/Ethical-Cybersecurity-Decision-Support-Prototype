@@ -367,7 +367,7 @@ def render_open_ended():
         st.markdown(
             """
             <div style="
-                margin: 0 0 4px 0;
+                margin: 0 0 6px 0;
                 font-weight: 500;
                 color: rgba(229,231,235,0.90);
                 font-size: 1.05rem;
@@ -390,29 +390,26 @@ def render_open_ended():
 
 
         # Optional examples (expander)
-        with st.expander("See example decision contexts (optional)"):
-            st.markdown(
-                """
-                <div title="Examples are drawn from an analysis of real-world municipal cybersecurity incidents and a purpose-built hypothetical scenario that informed the design of this prototype."
-                    style="font-size:0.85rem; color: rgba(229,231,235,0.70); margin-bottom: 10px; cursor: help;">
-                    ⓘ
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
+        st.markdown(
+            """
+            <details class="oe-example-expander">
+            <summary title="Examples are drawn from reconstructed municipal cybersecurity incidents and a purpose-built hypothetical scenario used to inform the design of this prototype.">
+                See example decision contexts (optional)
+            </summary>
+            <div class="oe-example-body">
+                <p><strong>Baltimore (Ransomware):</strong><br>
+                Maintain network connectivity while assessing the scope of a ransomware attack or proactively disconnect additional systems.</p>
 
-            st.markdown(
-                """
-                Baltimore (Ransomware):  
-                Maintain network connectivity while assessing the scope of a ransomware attack or proactively disconnect additional systems.
+                <p><strong>San Diego (Surveillance Repurposing):</strong><br>
+                Maintain or modify current law-enforcement access to smart streetlight video surveillance.</p>
 
-                San Diego (Surveillance Repurposing):  
-                Maintain or modify current law-enforcement access to smart streetlight video surveillance.
-
-                Riverton (AI-Enabled Control System):  
-                Maintain AI-imposed restrictions or restore full operator control.
-                """
-            )
+                <p><strong>Riverton (AI-Enabled Control System):</strong><br>
+                Maintain AI-imposed restrictions or restore full operator control.</p>
+            </div>
+            </details>
+            """,
+            unsafe_allow_html=True,
+        )
 
 
     # ==========================================================

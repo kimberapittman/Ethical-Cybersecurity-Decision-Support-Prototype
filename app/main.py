@@ -267,6 +267,21 @@ textarea::placeholder {
   font-size: 0.95rem;
 }
 
+.oe-example-expander > summary{
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.oe-example-expander > summary::marker{
+  display: none;
+}
+
+.oe-example-expander[open] > summary{
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+
 /* === INPUTS === */
 input, textarea, select, .stTextInput input, .stTextArea textarea{
   background: rgba(255,255,255,0.06) !important;
