@@ -174,7 +174,6 @@ section[data-testid="stSidebar"]{
 .sb-details-body .sb-section{
   font-weight: 800 !important;
   color: #ffffff !important;
-  margin: 0 !important;
   color: white;
   text-decoration-line: underline;
   text-decoration-color: white;
