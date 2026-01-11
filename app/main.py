@@ -80,40 +80,14 @@ section[data-testid="stSidebar"]{
   border-right: 1px solid rgba(255,255,255,0.08);
   backdrop-filter: blur(6px);
 }
-/* === SIDEBAR TYPOGRAPHIC HIERARCHY === */
 
-/* Section headers (e.g., "What It Is", "How It Works") */
-section[data-testid="stSidebar"] h3,
-section[data-testid="stSidebar"] h4{
-  color: var(--text-strong) !important;
-  font-weight: 800 !important;
-}
-
-/* Explanatory paragraph text (readable, slightly softened) */
-section[data-testid="stSidebar"] .stMarkdown p{
-  color: rgba(229,231,235,0.88) !important;
-}
-
-/* Allow long sidebar text/URLs to wrap */
-section[data-testid="stSidebar"] a,
-section[data-testid="stSidebar"] p,
-section[data-testid="stSidebar"] li,
-section[data-testid="stSidebar"] span{
-  overflow-wrap: anywhere !important;
-  word-break: break-word !important;
-  white-space: normal !important;
-}
 /* The whole expander container */
 .sb-details{
-  background: linear-gradient(
-    180deg,
-    rgba(255,255,255,0.06),
-    rgba(255,255,255,0.03)
-  ) !important;
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)) !important;
   border: 1px solid rgba(255,255,255,0.10) !important;
   border-radius: 14px !important;
   padding: 0 !important;
-  overflow: visible !important; /* critical */
+  overflow: visible !important; /* keeps hover glow + under-glow from clipping */
 }
 
 .sb-details > summary{
@@ -127,12 +101,12 @@ section[data-testid="stSidebar"] span{
   background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)) !important;
   border: 1px solid rgba(255,255,255,0.10) !important;
   border-radius: 12px !important;
-  color: var(--text-strong) !important;
 
   /* spacing + typography */
   padding: 12px 14px !important;
   margin: 0 !important;
-  font-weight: 700 !important;
+  color: var(--text-strong) !important;
+  font-weight: 800 !important;
 
   /* behavior */
   cursor: pointer !important;
@@ -178,7 +152,7 @@ section[data-testid="stSidebar"] span{
   content: ">";
   font-size: 1rem;
   font-weight: 800;
-  line-height: 1.45;
+  line-height: 1;
   opacity: 0.8;
   margin-top: -1px;
   transition: transform 0.12s ease, opacity 0.12s ease;
@@ -186,12 +160,36 @@ section[data-testid="stSidebar"] span{
 .sb-details[open] > summary::before{
   transform: rotate(90deg);
 }
-/* Body = same container, no new “tile” */
+/* === SIDEBAR DETAILS BODY: CONSISTENT TYPOGRAPHY + SPACING === */
 .sb-details-body{
   padding: 12px 14px !important;
   margin: 0 !important;
   border-top: 1px solid rgba(255,255,255,0.08) !important;
   overflow: hidden !important;
+  color: rgba(229,231,235,0.88) !important;
+  line-height: 1.45 !important;
+  font-size: 0.95rem !important;
+}
+
+.sb-details-body .sb-section{
+  font-weight: 800 !important;
+  color: #ffffff !important;
+  margin: 0 !important;
+  color: white;
+  text-decoration-line: underline;
+  text-decoration-color: white;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+/* Allow long sidebar text/URLs to wrap */
+section[data-testid="stSidebar"] .sb-details-body a,
+section[data-testid="stSidebar"] .sb-details-body p,
+section[data-testid="stSidebar"] .sb-details-body li,
+section[data-testid="stSidebar"] .sb-details-body span{
+  overflow-wrap: anywhere !important;
+  word-break: break-word !important;
+  white-space: normal !important;
 }
 
 
@@ -1223,50 +1221,43 @@ def main():
                   <summary>ℹ️ About This Prototype</summary>
                   <div class="sb-details-body">
 
-                    <span style="font-weight:700; border-bottom:2px solid rgba(255,255,255,0.6); padding-bottom:2px;">
-                      What It Is
-                    </span>
+                    <span class="sb-section">What It Is</span>
 
-                    <div style="margin: 8px 0 6px 0;">
+                    <div class="sb-p">
                       A decision-support prototype designed to help municipal cybersecurity practitioners surface and reason through ethical tensions that arise in cybersecurity decision-making.
                     </div>
 
-                    <div style="margin: 0 0 14px 0;">
+                    <div class="sb-p">
                       It is not designed to prescribe actions.
                     </div>
 
-                    <span style="font-weight:700; border-bottom:2px solid rgba(255,255,255,0.6); padding-bottom:2px;">
-                      How It Works
-                    </span>
+                    <span class="sb-section">How It Works</span>
 
-                    <div style="margin: 8px 0 10px 0;">
+                    <div class="sb-p">
                       The prototype consists of two modes:
                     </div>
 
-                    <ul style="margin: 0 0 12px 18px; padding: 0;">
+                    <ul>
                       <li>
                         <strong>Case-Based Mode:</strong><br>
                         Uses reconstructed municipal cybersecurity cases to construct and apply a stepwise reasoning process, showing how technical and ethical reasoning unfold across a full decision process and how that logic informed the design of the Open-Ended Mode.
                       </li>
-                      <li style="margin-top: 8px;">
+                      <li>
                         <strong>Open-Ended Mode:</strong><br>
                         Applies the same underlying reasoning logic to a user-defined cybersecurity decision context, reflecting the intended operational use of the prototype.
                       </li>
                     </ul>
 
-                    <div style="margin: 6px 0 6px 0;">
+                    <div class="sb-p">
                       Across both modes, the prototype is designed to surface and document:
                     </div>
 
-                    <ul style="margin: 0 0 0 18px; padding: 0;">
+                    <ul>
                       <li>The decision context.</li>
                       <li>Where the decision sits within the NIST Cybersecurity Framework (CSF), clarifying the technical and operational nature of the decision.</li>
                       <li>What ethical tensions arise within that decision context, surfaced through the Principlist Framework for Cybersecurity Ethics (PFCE).</li>
                       <li>Institutional and governance constraints shaping the decision environment.</li>
                     </ul>
-                      </li>
-                    </ul>
-
 
                   </div>
                 </details>
@@ -1294,6 +1285,7 @@ def main():
                       style="
                         font-weight:800;
                         color: white;
+                        text-decoration: none;
                       ">
                     NIST Cybersecurity Framework (CSF) 2.0
                     </a><br>
@@ -1305,6 +1297,7 @@ def main():
                       style="
                         font-weight:800;
                         color: white;
+                        text-decoration: none;
                       ">
                     Principlist Framework for Cybersecurity Ethics (PFCE)
                     </a><br>
