@@ -262,6 +262,10 @@ div[data-testid="stButton"] > button:focus-visible{
     0 0 0 6px rgba(76,139,245,0.25) !important;
 }
 
+textarea::placeholder {
+  color: rgba(229,231,235,0.55);
+  font-size: 0.95rem;
+}
 
 /* === INPUTS === */
 input, textarea, select, .stTextInput input, .stTextArea textarea{

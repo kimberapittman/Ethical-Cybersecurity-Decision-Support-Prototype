@@ -354,10 +354,10 @@ def render_open_ended():
             <div style="
                 margin: 6px 0 12px 0;
                 color: rgba(229,231,235,0.85);
-                font-size: 0.95rem; /* keep */
+                font-size: 1.05rem; /* keep */
                 line-height: 1.45;
             ">
-            Describe the cybersecurity decision under consideration.
+            Describe the cybersecurity decision you are facing or examining.
             </div>
             """,
             unsafe_allow_html=True
@@ -365,13 +365,17 @@ def render_open_ended():
 
         # Input (this is the only “tile-like” element on the screen)
         decision_context = st.text_area(
-            "Decision context (1–2 sentences)",
+            "Decision context (1–2 sentences describing the decision, not the outcome)",
             key="oe_decision_context",
             height=120,
+            placeholder=(
+                "Example: Whether to disconnect additional systems to contain a ransomware "
+                "infection while maintaining essential public services."
+            ),
         )
 
         # Optional examples (expander)
-        with st.expander("View illustrative decision context examples"):
+        with st.expander("See example decision contexts (optional)"):
             st.markdown(
                 """
                 <div title="Examples are drawn from an analysis of real-world municipal cybersecurity incidents and a purpose-built hypothetical scenario that informed the design of this prototype."
