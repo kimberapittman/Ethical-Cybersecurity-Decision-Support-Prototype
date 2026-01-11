@@ -49,7 +49,7 @@ NIST_CSF_HOVER = (
     "National Institute of Standards and Technology (NIST) Cybersecurity Framework (CSF): "
     "A voluntary framework that provides a common structure for identifying, assessing, and "
     "managing cybersecurity activities across the cybersecurity lifecycle. In this prototype, "
-    "the CSF is used to situate decisions procedurally, not to prescribe actions."
+    "the CSF is used to situate decisions procedurally, "
 )
 
 PFCE_HOVER = (
@@ -309,22 +309,17 @@ def render_case(case_id: str):
                         cats = [cats]
                     cat_text = html.escape(", ".join(cats) if cats else "TBD")
 
-                    # main line (heading only)
-                    line = (
-                        f"<li>"
-                        f"<strong>{fn} — {cat_text}</strong>"
-                    )
+                    line = f"<li><strong>{fn} — {cat_text}</strong>"
 
-                    # rationale (separate block)
                     if m.get("rationale"):
                         rationale = html.escape(m.get("rationale"))
-                        line += (
-                            f"<div class='wt-rationale'>"
-                            f"<strong>Rationale:</strong> {rationale}"
-                            f"</div>"
-                        )
-
+                        line += f"""
+                        <div class="wt-rationale">
+                            <span class="wt-rationale-label">Rationale:</span> {rationale}
+                        </div>
+                        """
                     line += "</li>"
+
                     items.append(line)
 
                 body = f"<ul class='wt-list'>{''.join(items)}</ul>"

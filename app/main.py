@@ -430,7 +430,6 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
   }
 }
 
-
 /* === TILE HOVER MATCH BUTTONS (Select-a-Mode + Select-a-Case only) === */
 div[data-testid="stVerticalBlock"]:has(:is(.mode-tiles-anchor,.case-tiles-anchor))
 .listbox:hover{
@@ -509,6 +508,18 @@ button[title*="Copy link"]{
   display: none !important;
 }
 
+.wt-rationale{
+  margin-top: 8px;
+  padding-left: 14px;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  color: rgba(229,231,235,0.75);
+}
+
+.wt-rationale-label{
+  font-weight: 600;
+  color: rgba(229,231,235,0.85);
+}
 
 /* === WALKTHROUGH TILES: NOT CLICKABLE ==== */
 .listbox.walkthrough-tile{
@@ -1116,7 +1127,7 @@ def main():
                     </div>
 
                     <div style="margin: 0 0 14px 0;">
-                      It is not designed to prescribe actions or assert what the decision should be.
+                      It is not designed to prescribe actions.
                     </div>
 
                     <span style="font-weight:700; border-bottom:2px solid rgba(255,255,255,0.6); padding-bottom:2px;">
@@ -1124,13 +1135,13 @@ def main():
                     </span>
 
                     <div style="margin: 8px 0 10px 0;">
-                      The prototype is designed to support a structured walkthrough implemented in two modes:
+                      The prototype consists of two modes:
                     </div>
 
                     <ul style="margin: 0 0 12px 18px; padding: 0;">
                       <li>
                         <strong>Case-Based Mode</strong><br>
-                        Demonstrates the walkthrough using reconstructed municipal cybersecurity cases—two real-world incidents and one hypothetical scenario—to illustrate how analysis of complex decision contexts informed the prototype’s design.
+                        Uses reconstructed municipal cybersecurity cases to structure and apply a stepwise reasoning process, showing how technical and ethical reasoning unfold across a full decision process and how that logic informed the design of the Open-Ended Mode.
                       </li>
                       <li style="margin-top: 8px;">
                         <strong>Open-Ended Mode</strong><br>
@@ -1144,8 +1155,8 @@ def main():
 
                     <ul style="margin: 0 0 0 18px; padding: 0;">
                       <li>The decision context</li>
-                      <li>Where the decision sits within the NIST Cybersecurity Framework (CSF) 2.0</li>
-                      <li>Ethical tensions surfaced through the Principlist Framework for Cybersecurity Ethics (PFCE)</li>
+                      <li>Where the decision sits within the NIST Cybersecurity Framework (CSF), clarifying the technical and operational nature of the decision</li>
+                      <li>What ethical tensions arise within that decision context, surfaced through the Principlist Framework for Cybersecurity Ethics (PFCE)</li>
                       <li>Institutional and governance constraints shaping feasible decision options</li>
                     </ul>
                       </li>
