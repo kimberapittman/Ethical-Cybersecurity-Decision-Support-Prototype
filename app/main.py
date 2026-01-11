@@ -152,12 +152,22 @@ section[data-testid="stSidebar"]{
   font-weight: 800 !important;
   margin: 0 !important;
   padding: 0 !important;
-  line-height: 1.2 !important;
+  line-height: 1.2
   color: #ffffff !important;
   text-decoration: underline !important;
   text-decoration-color: rgba(255,255,255,0.85) !important;
   text-decoration-thickness: 2px !important;
   text-underline-offset: 4px !important;
+}
+/* Match the visual inset seen in mode-tile details bodies */
+.sb-details-body{
+  padding: 12px 12px !important;           /* match mode tiles */
+  background: rgba(255,255,255,0.03) !important;
+}
+
+/* Ensure inner content doesn’t hug the left edge */
+.sb-details-body > *{
+  padding-left: 6px !important;
 }
 .sb-details-body .sb-section + .sb-p{
   margin-top: 0 !important;
