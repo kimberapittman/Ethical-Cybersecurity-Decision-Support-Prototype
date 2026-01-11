@@ -347,55 +347,72 @@ def render_open_ended():
     # ==========================================================
     # STEP 1: DECISION CONTEXT
     # ==========================================================
-if step == 1:
-    # Instruction text above the input
-    st.markdown(
-        """
-        <div style="
-            margin: 6px 0 12px 0;
-            color: rgba(229,231,235,0.85);
-            font-size: 1.05rem;
-            line-height: 1.45;
-        ">
-        Describe the cybersecurity decision you are facing or examining.
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-    # Text box with ONLY guidance as placeholder
-    decision_context = st.text_area(
-        label="",  # no visible label
-        key="oe_decision_context",
-        height=120,
-        placeholder="1–2 sentences describing the decision context, not the outcome.",
-    )
-
-
-    # Optional examples (expander)
-    with st.expander("See example decision contexts (optional)"):
+    if step == 1:
+        # Tighten spacing ONLY for this Step 1 text area
         st.markdown(
             """
-            <div title="Examples are drawn from an analysis of real-world municipal cybersecurity incidents and a purpose-built hypothetical scenario that informed the design of this prototype."
-                style="font-size:0.85rem; color: rgba(229,231,235,0.70); margin-bottom: 10px; cursor: help;">
-                ⓘ
+            <style>
+            /* Scope to Open-Ended Step 1 only */
+            div[data-testid="stVerticalBlock"]:has(#oe-step1-anchor)
+            div[data-testid="stTextArea"]{
+            margin-top: 0 !important;
+            }
+            </style>
+            <div id="oe-step1-anchor"></div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        # Instruction text above the input
+        st.markdown(
+            """
+            <div style="
+                margin: 0 0 4px 0;
+                font-weight: 500;
+                color: rgba(229,231,235,0.90);
+                font-size: 1.05rem;
+                line-height: 1.45;
+            ">
+            Describe the cybersecurity decision you are facing or examining before a course of action is chosen.
             </div>
             """,
             unsafe_allow_html=True
         )
 
-        st.markdown(
-            """
-            Baltimore (Ransomware):  
-            Maintain network connectivity while assessing the scope of a ransomware attack or proactively disconnect additional systems.
-
-            San Diego (Surveillance Repurposing):  
-            Maintain or modify current law-enforcement access to smart streetlight video surveillance.
-
-            Riverton (AI-Enabled Control System):  
-            Maintain AI-imposed restrictions or restore full operator control.
-            """
+        # Text box with ONLY guidance as placeholder
+        decision_context = st.text_area(
+            "Decision context",
+            key="oe_decision_context",
+            height=120,
+            placeholder="1–2 sentences describing the decision context (not the outcome or justification).",
+            label_visibility="collapsed",
         )
+
+
+        # Optional examples (expander)
+        with st.expander("See example decision contexts (optional)"):
+            st.markdown(
+                """
+                <div title="Examples are drawn from an analysis of real-world municipal cybersecurity incidents and a purpose-built hypothetical scenario that informed the design of this prototype."
+                    style="font-size:0.85rem; color: rgba(229,231,235,0.70); margin-bottom: 10px; cursor: help;">
+                    ⓘ
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+            st.markdown(
+                """
+                Baltimore (Ransomware):  
+                Maintain network connectivity while assessing the scope of a ransomware attack or proactively disconnect additional systems.
+
+                San Diego (Surveillance Repurposing):  
+                Maintain or modify current law-enforcement access to smart streetlight video surveillance.
+
+                Riverton (AI-Enabled Control System):  
+                Maintain AI-imposed restrictions or restore full operator control.
+                """
+            )
 
 
     # ==========================================================
