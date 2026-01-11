@@ -390,14 +390,13 @@ def render_open_ended():
 
 
         # Optional examples (expander)
-        import textwrap
-
         st.markdown(
             textwrap.dedent("""
-            <details class="oe-example-expander">
+        <details class="oe-example-expander">
             <summary title="Examples are drawn from reconstructed municipal cybersecurity incidents and a purpose-built hypothetical scenario used to inform the design of this prototype.">
                 See example decision contexts (optional)
             </summary>
+
             <div class="oe-example-body">
                 <p><strong>Baltimore (Ransomware):</strong><br>
                 Maintain network connectivity while assessing the scope of a ransomware attack or proactively disconnect additional systems.</p>
@@ -408,11 +407,10 @@ def render_open_ended():
                 <p><strong>Riverton (AI-Enabled Control System):</strong><br>
                 Maintain AI-imposed restrictions or restore full operator control.</p>
             </div>
-            </details>
-            """),
+        </details>
+        """),
             unsafe_allow_html=True
         )
-
 
     # ==========================================================
     # STEP 2: NIST CSF 
