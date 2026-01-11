@@ -80,20 +80,20 @@ section[data-testid="stSidebar"]{
   border-right: 1px solid rgba(255,255,255,0.08);
   backdrop-filter: blur(6px);
 }
-/* Sidebar headings + labels stay strong */
-section[data-testid="stSidebar"] h1,
-section[data-testid="stSidebar"] h2,
+/* === SIDEBAR TYPOGRAPHIC HIERARCHY === */
+
+/* Section headers (e.g., "What It Is", "How It Works") */
 section[data-testid="stSidebar"] h3,
-section[data-testid="stSidebar"] h4,
-section[data-testid="stSidebar"] strong,
-section[data-testid="stSidebar"] summary{
+section[data-testid="stSidebar"] h4{
   color: var(--text-strong) !important;
+  font-weight: 800 !important;
 }
-/* Sidebar body text = muted (match tile subtitles) */
-section[data-testid="stSidebar"] p,
-section[data-testid="stSidebar"] li{
-  color: var(--text-muted) !important;
+
+/* Explanatory paragraph text (readable, slightly softened) */
+section[data-testid="stSidebar"] .stMarkdown p{
+  color: rgba(229,231,235,0.88) !important;
 }
+
 /* Allow long sidebar text/URLs to wrap */
 section[data-testid="stSidebar"] a,
 section[data-testid="stSidebar"] p,
@@ -1245,11 +1245,11 @@ def main():
 
                     <ul style="margin: 0 0 12px 18px; padding: 0;">
                       <li>
-                        <strong>Case-Based Mode</strong><br>
+                        <strong>Case-Based Mode:</strong><br>
                         Uses reconstructed municipal cybersecurity cases to construct and apply a stepwise reasoning process, showing how technical and ethical reasoning unfold across a full decision process and how that logic informed the design of the Open-Ended Mode.
                       </li>
                       <li style="margin-top: 8px;">
-                        <strong>Open-Ended Mode</strong><br>
+                        <strong>Open-Ended Mode:</strong><br>
                         Applies the same underlying reasoning logic to a user-defined cybersecurity decision context, reflecting the intended operational use of the prototype.
                       </li>
                     </ul>
@@ -1294,10 +1294,6 @@ def main():
                       style="
                         font-weight:800;
                         color: white;
-                        text-decoration-line: underline;
-                        text-decoration-color: white;
-                        text-decoration-thickness: 2px;
-                        text-underline-offset: 4px;
                       ">
                     NIST Cybersecurity Framework (CSF) 2.0
                     </a><br>
@@ -1309,10 +1305,6 @@ def main():
                       style="
                         font-weight:800;
                         color: white;
-                        text-decoration-line: underline;
-                        text-decoration-color: white;
-                        text-decoration-thickness: 2px;
-                        text-underline-offset: 4px;
                       ">
                     Principlist Framework for Cybersecurity Ethics (PFCE)
                     </a><br>
