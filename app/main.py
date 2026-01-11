@@ -840,14 +840,15 @@ def _render_landing_page():
 
                       <div class="details-body">
                         <div class="mode-detail-text">
-                          Uses two real-world municipal cybersecurity incidents and one purpose-built hypothetical scenario to examine how technical and ethical reasoning unfold across different types of cybersecurity decisions, including both retrospective incidents and forward-looking contexts. These cases provide a shared reference point for understanding how the prototype’s stepwise reasoning process is applied in practice and how it informed the design of the Open-Ended Mode.
+                          Uses reconstructed municipal cybersecurity cases to demonstrate the prototype’s stepwise reasoning process:
                         </div>
 
                         <ul class="tight-list">
-                          <li>Pre-structured cases reconstructed from documented municipal incidents</li>
-                          <li>Walks through defined decision points and ethical tensions</li>
-                          <li>Shows how CSF procedural logic and PFCE reasoning are applied in practice</li>
-                          <li>Establishes a shared reference point for how the prototype is intended to be used</li>
+                          <li>Two real-world municipal incidents and one purpose-built hypothetical scenario</li>
+                          <li>Examines both retrospective incidents and forward-looking decision contexts</li>
+                          <li>Shows how technical and ethical reasoning unfold across a full decision process</li>
+                          <li>Establishes a shared reference point for how the prototype is applied in practice</li>
+                          <li>Informed the structure and logic of the Open-Ended Mode</li>
                         </ul>
                       </div>
                     </details>
@@ -879,14 +880,14 @@ def _render_landing_page():
 
                       <div class="details-body">
                         <div class="mode-detail-text">
-                          allows users to apply the prototype’s stepwise reasoning process to a cybersecurity decision context they define. This mode supports real-time ethical reasoning by helping users situate an active or hypothetical decision within its technical, ethical, and institutional context, while generating a structured record of the reasoning used.
+                          Applies the prototype’s stepwise reasoning process to a user-defined cybersecurity decision context:
                         </div>
 
                         <ul class="tight-list">
-                          <li>User-defined decision context</li>
-                          <li>Supports identification of ethical significance in cybersecurity decision-making</li>
-                          <li>Structures reasoning using CSF procedural context and PFCE principles</li>
-                          <li>Documents the reasoning to support transparency</li>
+                          <li>upports real-time examination of active or hypothetical decisions</li>
+                          <li>Situates decisions within their technical, ethical, and institutional context</li>
+                          <li>Structures ethical reasoning without prescribing actions or outcomes</li>
+                          <li>Generates a structured record of the reasoning used to support transparency</li>
                         </ul>
                       </div>
                     </details>
