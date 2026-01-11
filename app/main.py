@@ -840,7 +840,7 @@ def _render_landing_page():
 
                       <div class="details-body">
                         <div class="mode-detail-text">
-                          Uses reconstructed municipal cybersecurity cases to demonstrate how the decision-support prototype structures ethical reasoning and technical decision-making across a structured decision context.
+                          Uses two real-world municipal cybersecurity incidents and one purpose-built hypothetical scenario to examine how technical and ethical reasoning unfold across different types of cybersecurity decisions, including both retrospective incidents and forward-looking contexts. These cases provide a shared reference point for understanding how the prototype’s stepwise reasoning process is applied in practice and how it informed the design of the Open-Ended Mode.
                         </div>
 
                         <ul class="tight-list">
@@ -879,7 +879,7 @@ def _render_landing_page():
 
                       <div class="details-body">
                         <div class="mode-detail-text">
-                          Provides a structured walkthrough for examining the ethical significance of a user-defined cybersecurity decision, without prescribing outcomes.
+                          allows users to apply the prototype’s stepwise reasoning process to a cybersecurity decision context they define. This mode supports real-time ethical reasoning by helping users situate an active or hypothetical decision within its technical, ethical, and institutional context, while generating a structured record of the reasoning used.
                         </div>
 
                         <ul class="tight-list">
@@ -1141,7 +1141,7 @@ def main():
                     <ul style="margin: 0 0 12px 18px; padding: 0;">
                       <li>
                         <strong>Case-Based Mode</strong><br>
-                        Uses reconstructed municipal cybersecurity cases to structure and apply a stepwise reasoning process, showing how technical and ethical reasoning unfold across a full decision process and how that logic informed the design of the Open-Ended Mode.
+                        Uses reconstructed municipal cybersecurity cases to construct and apply a stepwise reasoning process, showing how technical and ethical reasoning unfold across a full decision process and how that logic informed the design of the Open-Ended Mode.
                       </li>
                       <li style="margin-top: 8px;">
                         <strong>Open-Ended Mode</strong><br>
@@ -1150,14 +1150,14 @@ def main():
                     </ul>
 
                     <div style="margin: 6px 0 6px 0;">
-                      Across both modes, the walkthrough is designed to surface and document:
+                      Across both modes, the prototype is designed to surface and document:
                     </div>
 
                     <ul style="margin: 0 0 0 18px; padding: 0;">
-                      <li>The decision context</li>
-                      <li>Where the decision sits within the NIST Cybersecurity Framework (CSF), clarifying the technical and operational nature of the decision</li>
-                      <li>What ethical tensions arise within that decision context, surfaced through the Principlist Framework for Cybersecurity Ethics (PFCE)</li>
-                      <li>Institutional and governance constraints shaping feasible decision options</li>
+                      <li>The decision context.</li>
+                      <li>Where the decision sits within the NIST Cybersecurity Framework (CSF), clarifying the technical and operational nature of the decision.</li>
+                      <li>What ethical tensions arise within that decision context, surfaced through the Principlist Framework for Cybersecurity Ethics (PFCE).</li>
+                      <li>Institutional and governance constraints shaping the decision environment.</li>
                     </ul>
                       </li>
                     </ul>
