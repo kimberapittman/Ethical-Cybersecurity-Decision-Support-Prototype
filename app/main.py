@@ -80,8 +80,19 @@ section[data-testid="stSidebar"]{
   border-right: 1px solid rgba(255,255,255,0.08);
   backdrop-filter: blur(6px);
 }
-section[data-testid="stSidebar"] *{
+/* Sidebar headings + labels stay strong */
+section[data-testid="stSidebar"] h1,
+section[data-testid="stSidebar"] h2,
+section[data-testid="stSidebar"] h3,
+section[data-testid="stSidebar"] h4,
+section[data-testid="stSidebar"] strong,
+section[data-testid="stSidebar"] summary{
   color: var(--text-strong) !important;
+}
+/* Sidebar body text = muted (match tile subtitles) */
+section[data-testid="stSidebar"] p,
+section[data-testid="stSidebar"] li{
+  color: var(--text-muted) !important;
 }
 /* Allow long sidebar text/URLs to wrap */
 section[data-testid="stSidebar"] a,
@@ -181,11 +192,6 @@ section[data-testid="stSidebar"] span{
   margin: 0 !important;
   border-top: 1px solid rgba(255,255,255,0.08) !important;
   overflow: hidden !important;
-}
-/* Sidebar body text = muted (match tile subtitles) */
-section[data-testid="stSidebar"] p,
-section[data-testid="stSidebar"] li{
-  color: var(--text-muted) !important;
 }
 
 
