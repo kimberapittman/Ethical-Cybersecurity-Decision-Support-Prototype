@@ -347,32 +347,30 @@ def render_open_ended():
     # ==========================================================
     # STEP 1: DECISION CONTEXT
     # ==========================================================
-    if step == 1:
-        # Instruction text (no tile)
-        st.markdown(
-            """
-            <div style="
-                margin: 6px 0 12px 0;
-                color: rgba(229,231,235,0.85);
-                font-size: 1.05rem; /* keep */
-                line-height: 1.45;
-            ">
-            Describe the cybersecurity decision you are facing or examining.
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+if step == 1:
+    # Instruction text above the input
+    st.markdown(
+        """
+        <div style="
+            margin: 6px 0 12px 0;
+            color: rgba(229,231,235,0.85);
+            font-size: 1.05rem;
+            line-height: 1.45;
+        ">
+        Describe the cybersecurity decision you are facing or examining.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
-        # Input (this is the only “tile-like” element on the screen)
-        decision_context = st.text_area(
-            "Decision context (1–2 sentences describing the decision, not the outcome)",
-            key="oe_decision_context",
-            height=120,
-            placeholder=(
-                "Example: Whether to disconnect additional systems to contain a ransomware "
-                "infection while maintaining essential public services."
-            ),
-        )
+    # Text box with ONLY guidance as placeholder
+    decision_context = st.text_area(
+        label="",  # no visible label
+        key="oe_decision_context",
+        height=120,
+        placeholder="1–2 sentences describing the decision context, not the outcome.",
+    )
+
 
         # Optional examples (expander)
         with st.expander("See example decision contexts (optional)"):
