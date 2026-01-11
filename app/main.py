@@ -167,7 +167,7 @@ section[data-testid="stSidebar"] span{
   content: ">";
   font-size: 1rem;
   font-weight: 800;
-  line-height: 1;
+  line-height: 1.45;
   opacity: 0.8;
   margin-top: -1px;
   transition: transform 0.12s ease, opacity 0.12s ease;
@@ -181,6 +181,11 @@ section[data-testid="stSidebar"] span{
   margin: 0 !important;
   border-top: 1px solid rgba(255,255,255,0.08) !important;
   overflow: hidden !important;
+}
+/* Sidebar body text = muted (match tile subtitles) */
+section[data-testid="stSidebar"] p,
+section[data-testid="stSidebar"] li{
+  color: var(--text-muted) !important;
 }
 
 
@@ -267,18 +272,92 @@ textarea::placeholder {
   font-size: 0.95rem;
 }
 
+/* === OPEN-ENDED STEP 1: EXAMPLES EXPANDER (MATCH OTHER DROPDOWNS) === */
+.oe-example-expander{
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.06),
+    rgba(255,255,255,0.03)
+  ) !important;
+  border: 1px solid rgba(255,255,255,0.10) !important;
+  border-radius: 12px !important;
+  padding: 0 !important;
+  overflow: hidden !important; /* keeps body "inside the tile" */
+}
+
+/* Summary/header row */
 .oe-example-expander > summary{
-  cursor: pointer;
-  font-weight: 600;
+  list-style: none !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)) !important;
+  border: 0 !important;                 /* container provides border */
+  border-radius: 12px !important;
+
+  color: var(--text-strong) !important;
+  font-weight: 500 !important;
+
+  padding: 12px 14px !important;
+  padding-left: 34px !important;        /* room for chevron */
+  margin: 0 !important;
+
+  cursor: pointer !important;
+  position: relative !important;
+
+  transition:
+    background-color 0.12s ease,
+    filter 0.12s ease,
+    transform 0.12s ease;
 }
 
-.oe-example-expander > summary::marker{
-  display: none;
+/* Subtle hover (secondary affordance) */
+.oe-example-expander > summary:hover{
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.09),
+    rgba(255,255,255,0.05)
+  ) !important;
+  filter: brightness(1.03) !important;
+  transform: translateY(-1px) !important;
 }
 
+/* Hide default marker */
+.oe-example-expander > summary::-webkit-details-marker{ display:none !important; }
+.oe-example-expander > summary::marker{ content:"" !important; }
+
+/* Chevron matches your other dropdowns */
+.oe-example-expander > summary::before{
+  content: ">" !important;
+  font-weight: 500 !important;
+  font-size: 1rem !important;
+  line-height: 1.45 !important;
+  opacity: 0.8 !important;
+
+  position: absolute !important;
+  left: 12px !important;
+  top: 50% !important;
+  transform: translateY(-50%) rotate(0deg) !important;
+  transition: transform 0.12s ease, opacity 0.12s ease !important;
+}
+
+.oe-example-expander[open] > summary::before{
+  transform: translateY(-50%) rotate(90deg) !important;
+}
+
+/* Flatten bottom corners when open (so summary merges into body) */
 .oe-example-expander[open] > summary{
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+/* Body stays inside the same tile */
+.oe-example-body{
+  padding: 12px 14px !important;
+  margin: 0 !important;
+  border-top: 1px solid rgba(255,255,255,0.08) !important;
+  background: rgba(255,255,255,0.03) !important;
 }
 
 
@@ -327,7 +406,7 @@ section-note, .tile-hook { color: var(--text-muted) !important; }
   border-radius:999px !important;
   white-space: normal !important;
   text-align: center !important;
-  line-height: 1.2 !important;
+  line-height: 1.45 !important;
   max-width: 100% !important;
   flex-wrap: wrap !important;
   color:#ffffff !important;
@@ -428,7 +507,7 @@ div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
   div[data-testid="stVerticalBlock"]:has(.case-tiles-anchor)
   .listbox.case-tile .tile-title{
     font-size: 1.05rem !important;
-    line-height: 1.25 !important;
+    line-height: 1.45 !important;
   }
 }
 /* === SELECT A CASE: STACK COLUMNS ON NARROW SCREENS (DESKTOP + SIDEBAR OPEN) === */
@@ -496,7 +575,7 @@ div[data-testid="stVerticalBlock"]:has(:is(.mode-tiles-anchor,.case-tiles-anchor
   font-weight: 800;
   display: inline-block;
   font-size: 1rem;
-  line-height: 1;
+  line-height: 1.45;
   opacity: 0.8;
   position: absolute;
   left: 12px;
@@ -550,7 +629,7 @@ button[title*="Copy link"]{
   display: inline-block;     
   font-size: 1.25rem;
   font-weight: 700;
-  line-height: 1.4;
+  line-height: 1.45;
   margin: 0 0 0.6rem 0;
   color: var(--text-strong);
 }
