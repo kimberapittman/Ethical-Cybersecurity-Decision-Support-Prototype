@@ -491,45 +491,52 @@ def render_open_ended():
         # ---------- CSF Category (subordinate) ----------
         selected_func_id = st.session_state.get("oe_csf_function")
 
-        csf_section_open(
-            "NIST CSF Category",
-            "Within this function, what kind of work or concern is this decision about?"
-        )
+        with st.container():
+            st.markdown('<div class="csf-cat-anchor"></div>', unsafe_allow_html=True)
 
-        cat_options = CATS_BY_FUNC.get(selected_func_id, [])
-        cat_ids = [cid for cid, _ in cat_options]
-        cat_labels = {cid: lbl for cid, lbl in cat_options}
+            csf_section_open(
+                "NIST CSF Category",
+                "Within this function, what kind of work or concern is this decision about?"
+            )
 
-        selected_cat_id = st.selectbox(
-            "Category",
-            options=[""] + cat_ids,  # blank placeholder keeps it unselected
-            format_func=lambda cid: "Select a category…" if cid == "" else cat_labels.get(cid, cid),
-            key="oe_csf_category",
-        )
+            cat_options = CATS_BY_FUNC.get(selected_func_id, [])
+            cat_ids = [cid for cid, _ in cat_options]
+            cat_labels = {cid: lbl for cid, lbl in cat_options}
 
-        if not selected_cat_id:
+            selected_cat_id = st.selectbox(
+                "Category",
+                options=[""] + cat_ids,  # blank placeholder keeps it unselected
+                format_func=lambda cid: "Select a category…" if cid == "" else cat_labels.get(cid, cid),
+                key="oe_csf_category",
+                label_visibility="collapsed",
+            )
+
+            if not selected_cat_id:
+                csf_section_close()
+                st.stop()
+
             csf_section_close()
-            st.stop()
-
-        csf_section_close()
 
         # ---------- Subcategory outcomes ----------
-        csf_section_open(
-            "NIST CSF Subcategory Outcomes",
-            "Select all outcomes that are directly implicated by this decision."
-        )
+        with st.container():
+            st.markdown('<div class="csf-sub-anchor"></div>', unsafe_allow_html=True)
 
-        subs = SUBS_BY_CAT.get(selected_cat_id, [])
-        selected_sub_ids = []
+            csf_section_open(
+                "NIST CSF Subcategory Outcomes",
+                "Select all outcomes that are directly implicated by this decision."
+            )
 
-        with st.container(height=320):
-            for sid, label in subs:
-                if st.checkbox(f"**{sid}** — {label}", key=f"oe_sub_{sid}"):
-                    selected_sub_ids.append(sid)
+            subs = SUBS_BY_CAT.get(selected_cat_id, [])
+            selected_sub_ids = []
 
-        st.session_state["oe_csf_subcategories"] = selected_sub_ids
+            with st.container(height=320):
+                for sid, label in subs:
+                    if st.checkbox(f"**{sid}** — {label}", key=f"oe_sub_{sid}"):
+                        selected_sub_ids.append(sid)
 
-        csf_section_close()
+            st.session_state["oe_csf_subcategories"] = selected_sub_ids
+
+            csf_section_close()
 
 
     # ==========================================================
