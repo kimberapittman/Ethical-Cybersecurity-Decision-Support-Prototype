@@ -157,6 +157,14 @@ PFCE_DEFINITIONS = {
     ),
 }
 
+PFCE_PROMPTS = {
+    "Beneficence": "Could this decision affect human well-being or access to essential services?",
+    "Non-maleficence": "Could this decision foreseeably cause harm (directly or indirectly)?",
+    "Autonomy": "Could this decision constrain people’s ability to make informed choices about how they are affected?",
+    "Justice": "Could impacts or protections be distributed unevenly across groups or neighborhoods?",
+    "Explicability": "Is accountability, transparency, or explainability central to this decision?",
+}
+
 
 def _index_csf(csf_raw):
     if isinstance(csf_raw, dict):
@@ -520,7 +528,7 @@ def render_open_ended():
                 format_func=lambda cid: cat_labels.get(cid, cid),
             )
 
-            
+
             with st.expander("Preview category descriptions (optional)"):
                 for cid in cat_ids:
                     st.markdown(f"**{cat_labels.get(cid, cid)}**")
@@ -563,92 +571,118 @@ def render_open_ended():
     # STEP 3: PFCE + TENSION
     # ==========================================================
     elif step == 3:
-        _render_step_tile_html(
-            "Make ethically significant conditions explicit, then state the central tension as two justified obligations.",
-        )
 
-        st.multiselect(
-            "Ethical condition tags (optional)",
-            options=ETHICAL_CONDITION_TAG_OPTIONS,
-            key="oe_ethical_condition_tags",
-        )
+        # ---------- Ethical condition tags (optional) ----------
+        with st.container():
+            st.markdown('<div class="pfce-tags-anchor"></div>', unsafe_allow_html=True)
 
-        st.text_area(
-            "PFCE analysis (brief — what is ethically significant here?)",
-            key="oe_pfce_analysis",
-            height=160,
-            placeholder=(
-                "Example: Containment actions may protect against spread but disrupt essential services; "
-                "limited visibility constrains justification for isolation scope; impacts may fall unevenly across residents."
-            ),
-        )
+            csf_section_open(
+                "Ethically Significant Conditions (optional)",
+                "Tag the conditions that make this cybersecurity decision ethically significant."
+            )
 
-        # ----------------------------------------------------------
-        # PFCE PRINCIPLE TRIAGE (mirrors CSF step style, multi-select)
-        # ----------------------------------------------------------
+            st.multiselect(
+                "Ethical condition tags",
+                options=ETHICAL_CONDITION_TAG_OPTIONS,
+                key="oe_ethical_condition_tags",
+                label_visibility="collapsed",
+            )
 
-        # Build display strings like: "BENEFICENCE (B): Does this decision impact human well-being?"
-        # You can adjust label formatting to match your preferred style.
-        pfce_option_texts = []
-        pfce_ids = list(PFCE_DEFINITIONS.keys())  # assumes keys like "beneficence", etc.
+            csf_section_close()
 
-        for pid in pfce_ids:
-            name = pid.replace("-", " ").title()  # fallback if you don't have PFCE_NAMES mapping
-            definition = PFCE_DEFINITIONS.get(pid, "").strip()
-            pfce_option_texts.append(f"{name}: {definition}")
+        # ---------- PFCE principle triage (multi-select) ----------
+        with st.container():
+            st.markdown('<div class="pfce-principles-anchor"></div>', unsafe_allow_html=True)
 
-        # Default selections: use auto suggestions (from CSF crosswalk) if present
-        pfce_auto_unique = []
-        for p in st.session_state.get("oe_pfce_auto", []):
-            # allow either ids or names depending on what your crosswalk produces
-            if p in pfce_ids and p not in pfce_auto_unique:
-                pfce_auto_unique.append(p)
+            csf_section_open(
+                "PFCE Principle Triage",
+                "Use the prompts below to identify which PFCE principles are implicated by this decision context. "
+                "This does not prescribe outcomes; it structures ethical reasoning."
+            )
 
-        # Convert defaults into the same "Name: definition" strings
-        default_pfce_texts = []
-        for pid in pfce_auto_unique:
-            name = pid.replace("-", " ").title()
-            definition = PFCE_DEFINITIONS.get(pid, "").strip()
-            default_pfce_texts.append(f"{name}: {definition}")
+            selected_pfce_ids = []
+            pfce_ids = list(PFCE_DEFINITIONS.keys())  # e.g., ["Beneficence", "Non-maleficence", ...]
 
-        _render_step_tile_html(
-            "Use the PFCE to make ethically significant conditions explicit. "
-            "This does not prescribe outcomes; it structures ethical reasoning.",
-        )
+            # Keep list scannable; definitions available on demand
+            with st.container(height=280):
+                for pid in pfce_ids:
+                    prompt = PFCE_PROMPTS.get(pid, "").strip()
+                    definition = PFCE_DEFINITIONS.get(pid, "").strip()
 
-        selected_pfce_texts = st.multiselect(
-            "Which PFCE principles are implicated in this decision context?",
-            options=pfce_option_texts,
-            default=default_pfce_texts,
-            key="oe_pfce_choice_step4",
-        )
+                    checked = st.checkbox(
+                        f"**{pid}** — {prompt}" if prompt else f"**{pid}**",
+                        key=f"oe_pfce_{pid}",
+                    )
+                    if checked:
+                        selected_pfce_ids.append(pid)
 
-        # Map back to principle IDs
-        selected_pfce_ids = []
-        for opt in selected_pfce_texts:
-            label_prefix = opt.split(":")[0].strip().lower()
-            # rebuild the pid format you used earlier
-            # (this matches our fallback name formatting)
-            pid_guess = label_prefix.replace(" ", "-")
-            if pid_guess in pfce_ids and pid_guess not in selected_pfce_ids:
-                selected_pfce_ids.append(pid_guess)
+                    # Optional definition without clutter
+                    if definition:
+                        with st.expander(f"View {pid} definition", expanded=False):
+                            st.write(definition)
 
-        # Store into the same keys you already use elsewhere
-        st.session_state["oe_pfce_principles"] = selected_pfce_ids
+            st.session_state["oe_pfce_principles"] = selected_pfce_ids
 
-        # Optional "current selection" indicator (mirrors your st.info pattern)
-        if selected_pfce_ids:
-            pretty = ", ".join([pid.replace("-", " ").title() for pid in selected_pfce_ids])
-            st.info(f"Current PFCE context: **{pretty}**")
-        else:
-            st.info("Current PFCE context: **None selected**")
+            if selected_pfce_ids:
+                st.info(f"Selected PFCE principles: **{', '.join(selected_pfce_ids)}**")
+            else:
+                st.info("Selected PFCE principles: **None selected**")
 
-        st.caption("Optional: explain how the selected PFCE principles show up in this decision context.")
-        st.text_area(
-            "PFCE rationale (optional)",
-            key="oe_pfce_rationale",
-            height=110,
-        )
+            csf_section_close()
+
+        # If no principles selected, stop here to avoid overwhelming the user
+        if not st.session_state.get("oe_pfce_principles"):
+            st.stop()
+
+        # ---------- PFCE analysis (now grounded in selected principles) ----------
+        with st.container():
+            st.markdown('<div class="pfce-analysis-anchor"></div>', unsafe_allow_html=True)
+
+            csf_section_open(
+                "PFCE Analysis",
+                "In 2–4 sentences, explain what is ethically significant about this decision context using the selected principles as reference points."
+            )
+
+            st.text_area(
+                "PFCE analysis",
+                key="oe_pfce_analysis",
+                height=160,
+                placeholder=(
+                    "Example: Containment actions may reduce spread but disrupt essential services; "
+                    "limited visibility constrains defensible scoping; impacts may fall unevenly across residents."
+                ),
+                label_visibility="collapsed",
+            )
+
+            csf_section_close()
+
+        # ---------- Ethical tension (two justified obligations) ----------
+        with st.container():
+            st.markdown('<div class="pfce-tension-anchor"></div>', unsafe_allow_html=True)
+
+            csf_section_open(
+                "Ethical Tension",
+                "State the central tension as two justified obligations that cannot both be fully fulfilled."
+            )
+
+            a = st.text_area(
+                "Obligation A",
+                key="oe_tension_a",
+                height=90,
+                placeholder="Example: Maintain continuity of essential services to prevent harm to residents.",
+            )
+
+            b = st.text_area(
+                "Obligation B",
+                key="oe_tension_b",
+                height=90,
+                placeholder="Example: Contain the threat quickly to prevent wider compromise and longer disruption.",
+            )
+
+            st.session_state["oe_ethical_tension"] = f"{a.strip()}  ⟷  {b.strip()}".strip(" ⟷ ")
+
+            csf_section_close()
+
 
     # ==========================================================
     # STEP 4: CONSTRAINTS

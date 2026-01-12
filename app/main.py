@@ -820,14 +820,39 @@ div[data-testid="stVerticalBlock"]:has(.walkthrough-scope){
   border: 0 !important;
   background: transparent !important;
   padding: 0 !important;
-  margin: 0 0 0.75rem 0 !important; /* space below header text */
+  margin: 0 0 0.75rem 0 !important;
 }
-/* === CSF SECTION WRAPPERS (robust across Streamlit DOM) === */
-div[data-testid="stContainer"]:has(:is(.csf-func-anchor,.csf-cat-anchor,.csf-sub-anchor)),
-div[data-testid="stVerticalBlock"]:has(:is(.csf-func-anchor,.csf-cat-anchor,.csf-sub-anchor)){
+
+/* === SECTION WRAPPERS (CSF + PFCE) === */
+div[data-testid="stContainer"]:has(
+  :is(
+    .csf-func-anchor,
+    .csf-cat-anchor,
+    .csf-sub-anchor,
+    .pfce-tags-anchor,
+    .pfce-principles-anchor,
+    .pfce-analysis-anchor,
+    .pfce-tension-anchor
+  )
+),
+div[data-testid="stVerticalBlock"]:has(
+  :is(
+    .csf-func-anchor,
+    .csf-cat-anchor,
+    .csf-sub-anchor,
+    .pfce-tags-anchor,
+    .pfce-principles-anchor,
+    .pfce-analysis-anchor,
+    .pfce-tension-anchor
+  )
+){
   border: 1px solid rgba(255,255,255,0.10);
   border-radius: 14px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.05),
+    rgba(255,255,255,0.02)
+  );
   padding: 16px 18px;
   margin: 0 0 1rem 0;
 }
