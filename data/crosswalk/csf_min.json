@@ -451,13 +451,6 @@
             ]
           },
           {
-            "id": "ID.AM-06",
-            "outcome": "Cybersecurity roles and responsibilities for the entire workforce and third-party stakeholders (e.g., suppliers, customers, partners) are established",
-            "examples": [
-              "Incorporated into GV.RR-02, GV.SC-02"
-            ]
-          },
-          {
             "id": "ID.AM-07",
             "outcome": "Inventories of data and corresponding metadata for designated data types are maintained",
             "examples": [
