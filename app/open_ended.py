@@ -436,7 +436,7 @@ def render_open_ended():
         st.markdown(
             """
             <div style="font-size: 1.35rem; font-weight: 750; margin: 0 0 0.25rem 0;">
-                CSF Function
+                NIST CSF Function
             </div>
             <div style="color: rgba(229,231,235,0.75); margin: 0 0 0.75rem 0; line-height: 1.45;">
                 Within your current decision context, where are you operating in the cybersecurity process?
@@ -472,18 +472,17 @@ def render_open_ended():
             f"**{st.session_state['oe_csf_function_label']}**"
         )
 
-        render_divider()
+        st.markdown("</div>", unsafe_allow_html=True)
 
         # ---------- CSF Category (subordinate) ----------
         selected_func_id = st.session_state.get("oe_csf_function")
 
         if selected_func_id:
-            render_divider()  # your existing divider helper
 
             st.markdown(
                 """
                 <div style="font-size: 1.15rem; font-weight: 700; margin: 0 0 0.25rem 0;">
-                    CSF Category
+                    NIST CSF Category
                 </div>
                 <div style="color: rgba(229,231,235,0.70); margin: 0 0 0.5rem 0;">
                     Within this function, what kind of work or concern is this decision about?
@@ -506,16 +505,15 @@ def render_open_ended():
             if not selected_cat_id:
                 st.stop()
 
-        render_divider()
+            st.markdown("</div>", unsafe_allow_html=True)
 
         # ---------- Subcategory outcomes ----------
         if selected_cat_id:
-            render_divider()
 
             st.markdown(
                 """
                 <div style="font-size: 1.15rem; font-weight: 700; margin: 0 0 0.25rem 0;">
-                    Relevant CSF Subcategory Outcomes
+                    NIST CSF Subcategory
                 </div>
                 <div style="color: rgba(229,231,235,0.70); margin: 0 0 0.5rem 0;">
                     Select all outcomes that are directly implicated by this decision.
@@ -534,7 +532,8 @@ def render_open_ended():
 
             st.session_state["oe_csf_subcategories"] = selected_sub_ids
 
-        render_divider()
+            st.markdown("</div>", unsafe_allow_html=True)
+
 
     # ==========================================================
     # STEP 3: PFCE + TENSION

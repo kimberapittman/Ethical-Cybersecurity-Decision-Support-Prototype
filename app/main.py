@@ -813,6 +813,19 @@ div[data-testid="stVerticalBlock"]:has(.walkthrough-scope){
     width: 100% !important;
     min-width: 100% !important;
   }
+
+/* === CSF STEP SECTION CARD === */
+.csf-section{
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 14px;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.05),
+    rgba(255,255,255,0.02)
+  );
+  padding: 16px 18px;
+  margin: 0 0 1rem 0;
+}
 }
 </style>
 """,
