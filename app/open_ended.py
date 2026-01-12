@@ -550,7 +550,7 @@ def render_open_ended():
             st.markdown('<div class="csf-sub-anchor"></div>', unsafe_allow_html=True)
 
             csf_section_open(
-                "NIST CSF Subcategory Outcomes",
+                "NIST CSF Subcategory",
                 "Select all outcomes that are directly implicated by this decision."
             )
 
@@ -564,31 +564,35 @@ def render_open_ended():
 
             st.session_state["oe_csf_subcategories"] = selected_sub_ids
 
-            csf_section_close()
+            if not selected_sub_ids:
+                st.warning("Select at least one CSF subcategory outcome to complete your CSF mapping.")
+                csf_section_close()
+                st.stop()
+
+
+        # ---------- CSF mapping summary (end-of-step confirmation) ----------
+        func_label = st.session_state.get("oe_csf_function_label", "—")
+
+        # Build a global category label map (safe at end of Step 2)
+        cat_labels_all = {cid: lbl for _, cats in CATS_BY_FUNC.items() for cid, lbl in cats}
+        cat_id = st.session_state.get("oe_csf_category")
+        cat_label = cat_labels_all.get(cat_id, cat_id) if cat_id else "—"
+
+        sub_ids = st.session_state.get("oe_csf_subcategories", []) or []
+
+        st.info(
+            "**NIST CSF 2.0 mapping complete**\n\n"
+            f"**Function:** {func_label}\n\n"
+            f"**Category:** {cat_label}\n\n"
+            f"**Subcategory outcomes selected:** {len(sub_ids)}\n\n"
+            f"**Subcategory IDs:** {', '.join(sub_ids)}"
+        )
 
 
     # ==========================================================
     # STEP 3: PFCE + TENSION
     # ==========================================================
     elif step == 3:
-
-        # ---------- Ethical condition tags (optional) ----------
-        with st.container():
-            st.markdown('<div class="pfce-tags-anchor"></div>', unsafe_allow_html=True)
-
-            csf_section_open(
-                "Ethically Significant Conditions (optional)",
-                "Tag the conditions that make this cybersecurity decision ethically significant."
-            )
-
-            st.multiselect(
-                "Ethical condition tags",
-                options=ETHICAL_CONDITION_TAG_OPTIONS,
-                key="oe_ethical_condition_tags",
-                label_visibility="collapsed",
-            )
-
-            csf_section_close()
 
         # ---------- PFCE principle triage (multi-select) ----------
         with st.container():
@@ -630,58 +634,77 @@ def render_open_ended():
 
             csf_section_close()
 
-        # If no principles selected, stop here to avoid overwhelming the user
         if not st.session_state.get("oe_pfce_principles"):
-            st.stop()
+            st.warning("Select at least one PFCE principle to continue to analysis and ethical tension.")
+        else:
 
-        # ---------- PFCE analysis (now grounded in selected principles) ----------
-        with st.container():
-            st.markdown('<div class="pfce-analysis-anchor"></div>', unsafe_allow_html=True)
 
-            csf_section_open(
-                "PFCE Analysis",
-                "In 2–4 sentences, explain what is ethically significant about this decision context using the selected principles as reference points."
-            )
+            # ---------- Ethical condition tags (optional) ----------
+            with st.container():
+                st.markdown('<div class="pfce-tags-anchor"></div>', unsafe_allow_html=True)
 
-            st.text_area(
-                "PFCE analysis",
-                key="oe_pfce_analysis",
-                height=160,
-                placeholder=(
-                    "Example: Containment actions may reduce spread but disrupt essential services; "
-                    "limited visibility constrains defensible scoping; impacts may fall unevenly across residents."
-                ),
-                label_visibility="collapsed",
-            )
+                csf_section_open(
+                    "Ethically Significant Conditions (optional)",
+                    "Tag the conditions that make this cybersecurity decision ethically significant."
+                )
 
-            csf_section_close()
+                st.multiselect(
+                    "Ethical condition tags",
+                    options=ETHICAL_CONDITION_TAG_OPTIONS,
+                    key="oe_ethical_condition_tags",
+                    label_visibility="collapsed",
+                )
 
-        # ---------- Ethical tension (two justified obligations) ----------
-        with st.container():
-            st.markdown('<div class="pfce-tension-anchor"></div>', unsafe_allow_html=True)
+                csf_section_close()
 
-            csf_section_open(
-                "Ethical Tension",
-                "State the central tension as two justified obligations that cannot both be fully fulfilled."
-            )
+            # ---------- PFCE analysis (now grounded in selected principles) ----------
+            with st.container():
+                st.markdown('<div class="pfce-analysis-anchor"></div>', unsafe_allow_html=True)
 
-            a = st.text_area(
-                "Obligation A",
-                key="oe_tension_a",
-                height=90,
-                placeholder="Example: Maintain continuity of essential services to prevent harm to residents.",
-            )
+                csf_section_open(
+                    "PFCE Analysis",
+                    "In 2–4 sentences, explain what is ethically significant about this decision context using the selected principles as reference points."
+                )
 
-            b = st.text_area(
-                "Obligation B",
-                key="oe_tension_b",
-                height=90,
-                placeholder="Example: Contain the threat quickly to prevent wider compromise and longer disruption.",
-            )
+                st.text_area(
+                    "PFCE analysis",
+                    key="oe_pfce_analysis",
+                    height=160,
+                    placeholder=(
+                        "Example: Containment actions may reduce spread but disrupt essential services; "
+                        "limited visibility constrains defensible scoping; impacts may fall unevenly across residents."
+                    ),
+                    label_visibility="collapsed",
+                )
 
-            st.session_state["oe_ethical_tension"] = f"{a.strip()}  ⟷  {b.strip()}".strip(" ⟷ ")
+                csf_section_close()
 
-            csf_section_close()
+            # ---------- Ethical tension (two justified obligations) ----------
+            with st.container():
+                st.markdown('<div class="pfce-tension-anchor"></div>', unsafe_allow_html=True)
+
+                csf_section_open(
+                    "Ethical Tension",
+                    "State the central tension as two justified obligations that cannot both be fully fulfilled."
+                )
+
+                a = st.text_area(
+                    "Obligation A",
+                    key="oe_tension_a",
+                    height=90,
+                    placeholder="Example: Maintain continuity of essential services to prevent harm to residents.",
+                )
+
+                b = st.text_area(
+                    "Obligation B",
+                    key="oe_tension_b",
+                    height=90,
+                    placeholder="Example: Contain the threat quickly to prevent wider compromise and longer disruption.",
+                )
+
+                st.session_state["oe_ethical_tension"] = f"{a.strip()}  ⟷  {b.strip()}".strip(" ⟷ ")
+
+                csf_section_close()
 
 
     # ==========================================================
