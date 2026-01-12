@@ -418,6 +418,10 @@ def render_open_ended():
     # STEP 2: NIST CSF 
     # ==========================================================
     elif step == 2:
+        st.markdown("### CSF Function")
+        st.caption(
+            "Select the function that best reflects the type of cybersecurity activity involved."
+        )
         st.markdown(
             """
             <div style="
