@@ -470,7 +470,7 @@ def render_open_ended():
 
             prev_func = st.session_state.get("oe_csf_function")
             if selected_code is not None and selected_code != prev_func:
-                st.session_state["oe_csf_category"] = ""
+                st.session_state["oe_csf_category"] = None
                 st.session_state["oe_csf_subcategories"] = []
 
             if selected_code is None:
@@ -496,22 +496,28 @@ def render_open_ended():
 
             csf_section_open(
                 "NIST CSF Category",
-                f"Within the **{st.session_state['oe_csf_function_label']}** function, what kind of work or concern is this decision about?"
+                f"Within the {st.session_state['oe_csf_function_label']} function, what kind of work or concern is this decision about?"
             )
 
             cat_options = CATS_BY_FUNC.get(selected_func_id, [])
             cat_ids = [cid for cid, _ in cat_options]
             cat_labels = {cid: lbl for cid, lbl in cat_options}
 
+            current_cat = st.session_state.get("oe_csf_category")
+            if current_cat not in cat_ids:
+                st.session_state["oe_csf_category"] = None 
+
+
             selected_cat_id = st.radio(
                 "Select the CSF category that best fits this decision:",
                 options=cat_ids,
-                format_func=lambda cid: f"{cid} — {cat_labels.get(cid, '')}",
+                index=None,
                 key="oe_csf_category",
+                format_func=lambda cid: f"{cid} — {cat_labels.get(cid, '')}",
             )
 
 
-            if not selected_cat_id:
+            if selected_cat_id is None:
                 csf_section_close()
                 st.stop()
 
