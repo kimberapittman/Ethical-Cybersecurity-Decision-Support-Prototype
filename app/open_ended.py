@@ -46,6 +46,23 @@ def render_divider():
         unsafe_allow_html=True,
     )
 
+def csf_section_open(title: str, subtitle: str):
+    st.markdown(
+        f"""
+        <div class="csf-section">
+          <div style="font-size: 1.15rem; font-weight: 750; margin: 0 0 0.25rem 0;">
+            {title}
+          </div>
+          <div style="color: rgba(229,231,235,0.75); margin: 0 0 0.75rem 0; line-height: 1.45;">
+            {subtitle}
+          </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+def csf_section_close():
+    st.markdown("</div>", unsafe_allow_html=True)
+
 
 # Practitioner-friendly NIST CSF 2.0 function prompts for Open-Ended Mode
 CSF_FUNCTION_OPTIONS = {
@@ -433,19 +450,11 @@ def render_open_ended():
     # ==========================================================
     elif step == 2:
         # ---------- CSF Function ----------
-        st.markdown(
-            """
-            <div style="font-size: 1.35rem; font-weight: 750; margin: 0 0 0.25rem 0;">
-                NIST CSF Function
-            </div>
-            <div style="color: rgba(229,231,235,0.75); margin: 0 0 0.75rem 0; line-height: 1.45;">
-                Within your current decision context, where are you operating in the cybersecurity process?
-            </div>
-            """,
-            unsafe_allow_html=True,
+        csf_section_open(
+            "NIST CSF Function",
+            "Within your current decision context, where are you operating in the cybersecurity process?"
         )
 
-        # Fixed pedagogical order (don’t rely on dict order)
         codes_list = ["GV", "ID", "PR", "DE", "RS", "RC"]
 
         selected_code = st.radio(
@@ -458,7 +467,7 @@ def render_open_ended():
 
         prev_func = st.session_state.get("oe_csf_function")
         if selected_code is not None and selected_code != prev_func:
-            st.session_state["oe_csf_category"] = None
+            st.session_state["oe_csf_category"] = ""
             st.session_state["oe_csf_subcategories"] = []
 
         if selected_code is None:
@@ -472,67 +481,49 @@ def render_open_ended():
             f"**{st.session_state['oe_csf_function_label']}**"
         )
 
-        st.markdown("</div>", unsafe_allow_html=True)
+        csf_section_close()
 
         # ---------- CSF Category (subordinate) ----------
         selected_func_id = st.session_state.get("oe_csf_function")
 
-        if selected_func_id:
+        csf_section_open(
+            "NIST CSF Category",
+            "Within this function, what kind of work or concern is this decision about?"
+        )
 
-            st.markdown(
-                """
-                <div style="font-size: 1.15rem; font-weight: 700; margin: 0 0 0.25rem 0;">
-                    NIST CSF Category
-                </div>
-                <div style="color: rgba(229,231,235,0.70); margin: 0 0 0.5rem 0;">
-                    Within this function, what kind of work or concern is this decision about?
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
+        cat_options = CATS_BY_FUNC.get(selected_func_id, [])
+        cat_ids = [cid for cid, _ in cat_options]
+        cat_labels = {cid: lbl for cid, lbl in cat_options}
 
-            cat_options = CATS_BY_FUNC.get(selected_func_id, [])
-            cat_ids = [cid for cid, _ in cat_options]
-            cat_labels = {cid: lbl for cid, lbl in cat_options}
+        selected_cat_id = st.selectbox(
+            "Category",
+            options=[""] + cat_ids,  # blank placeholder keeps it unselected
+            format_func=lambda cid: "Select a category…" if cid == "" else cat_labels.get(cid, cid),
+            key="oe_csf_category",
+        )
 
-            selected_cat_id = st.selectbox(
-                "Category",
-                options=[""] + cat_ids,  # blank placeholder keeps it unselected
-                format_func=lambda cid: "Select a category…" if cid == "" else cat_labels.get(cid, cid),
-                key="oe_csf_category",
-            )
+        if not selected_cat_id:
+            st.stop()
 
-            if not selected_cat_id:
-                st.stop()
-
-            st.markdown("</div>", unsafe_allow_html=True)
+        csf_section_close()
 
         # ---------- Subcategory outcomes ----------
-        if selected_cat_id:
+        csf_section_open(
+            "NIST CSF Subcategory Outcomes",
+            "Select all outcomes that are directly implicated by this decision."
+        )
 
-            st.markdown(
-                """
-                <div style="font-size: 1.15rem; font-weight: 700; margin: 0 0 0.25rem 0;">
-                    NIST CSF Subcategory
-                </div>
-                <div style="color: rgba(229,231,235,0.70); margin: 0 0 0.5rem 0;">
-                    Select all outcomes that are directly implicated by this decision.
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
+        subs = SUBS_BY_CAT.get(selected_cat_id, [])
+        selected_sub_ids = []
 
-            subs = SUBS_BY_CAT.get(selected_cat_id, [])
-            selected_sub_ids = []
+        with st.container(height=320):
+            for sid, label in subs:
+                if st.checkbox(f"**{sid}** — {label}", key=f"oe_sub_{sid}"):
+                    selected_sub_ids.append(sid)
 
-            with st.container(height=320):
-                for sid, label in subs:
-                    if st.checkbox(f"**{sid}** — {label}", key=f"oe_sub_{sid}"):
-                        selected_sub_ids.append(sid)
+        st.session_state["oe_csf_subcategories"] = selected_sub_ids
 
-            st.session_state["oe_csf_subcategories"] = selected_sub_ids
-
-            st.markdown("</div>", unsafe_allow_html=True)
+        csf_section_close()
 
 
     # ==========================================================
