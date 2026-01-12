@@ -50,7 +50,7 @@ def csf_section_open(title: str, subtitle: str):
     st.markdown(
         f"""
         <div class="csf-section">
-          <div style="font-size: 1.15rem; font-weight: 750; margin: 0 0 0.25rem 0;">
+          <div style="font-size: 1.35rem; font-weight: 750; margin: 0 0 0.25rem 0;">
             {title}
           </div>
           <div style="color: rgba(229,231,235,0.75); margin: 0 0 0.75rem 0; line-height: 1.45;">

@@ -826,6 +826,8 @@ div[data-testid="stVerticalBlock"]:has(.walkthrough-scope){
   padding: 16px 18px;
   margin: 0 0 1rem 0;
 }
+.csf-section{
+  outline: 2px solid red !important;
 }
 </style>
 """,
