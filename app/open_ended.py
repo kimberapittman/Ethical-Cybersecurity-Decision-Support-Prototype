@@ -28,6 +28,24 @@ def _safe_rerun():
 def _html_block(s: str) -> str:
     return "\n".join(line.lstrip() for line in s.splitlines())
 
+def render_divider():
+    st.markdown(
+        """
+        <hr style="
+            margin: 1.25rem 0;
+            border: none;
+            height: 1px;
+            background: linear-gradient(
+                90deg,
+                rgba(255,255,255,0.00),
+                rgba(255,255,255,0.35),
+                rgba(255,255,255,0.00)
+            );
+        ">
+        """,
+        unsafe_allow_html=True,
+    )
+
 
 # Practitioner-friendly NIST CSF 2.0 function prompts for Open-Ended Mode
 CSF_FUNCTION_OPTIONS = {
@@ -129,6 +147,16 @@ def _index_csf(csf_raw):
     elif isinstance(csf_raw, list):
         functions = csf_raw
     else:
+        functions = []
+
+    cats_by_func = {}
+    subs_by_cat = {}
+
+    for fn in functions:
+        func_id = fn.get("id")
+        if not func_id:
+            continue
+
         categories = fn.get("categories", []) or []
         cat_tuples = []
 
@@ -143,13 +171,14 @@ def _index_csf(csf_raw):
 
             outcomes = cat.get("outcomes") or cat.get("subcategories") or []
             sub_tuples = []
+
             for item in outcomes:
                 sub_id = item.get("id")
                 if not sub_id:
                     continue
+
                 desc = (item.get("outcome") or item.get("description") or "").strip()
                 sub_tuples.append((sub_id, desc if desc else sub_id))
-
 
             subs_by_cat[cat_id] = sub_tuples
 
@@ -403,7 +432,6 @@ def render_open_ended():
     # STEP 2: NIST CSF
     # ==========================================================
     elif step == 2:
-
         # ---------- CSF Function ----------
         st.markdown(
             """
@@ -445,7 +473,7 @@ def render_open_ended():
             f"**{st.session_state['oe_csf_function_label']}**"
         )
 
-        st.markdown("<div style='height: 0.75rem;'></div>", unsafe_allow_html=True)
+        render_divider()
 
         # ---------- CSF Category (subordinate) ----------
         st.markdown(
@@ -473,7 +501,7 @@ def render_open_ended():
             label_visibility="collapsed",
         )
 
-        st.markdown("<div style='height: 0.75rem;'></div>", unsafe_allow_html=True)
+        render_divider()
 
         # ---------- Subcategory outcomes ----------
         st.markdown(
@@ -491,16 +519,6 @@ def render_open_ended():
         subs = SUBS_BY_CAT.get(selected_cat_id, [])
         selected_sub_ids = []
 
-        # Quick controls (makes a big difference)
-        ctrl_l, ctrl_r = st.columns([1, 1])
-        with ctrl_l:
-            if st.button("Select all", key="oe_sub_select_all"):
-                for sid, _ in subs:
-                    st.session_state[f"oe_sub_{sid}"] = True
-        with ctrl_r:
-            if st.button("Clear all", key="oe_sub_clear_all"):
-                for sid, _ in subs:
-                    st.session_state[f"oe_sub_{sid}"] = False
 
         # Scroll container to prevent endless wall of text
         with st.container(height=320):
@@ -513,9 +531,6 @@ def render_open_ended():
                     selected_sub_ids.append(sid)
 
         st.session_state["oe_csf_subcategories"] = selected_sub_ids
-
-        # Optional: show count for user feedback
-        st.caption(f"Selected outcomes: {len(selected_sub_ids)}")
 
 
     # ==========================================================
