@@ -813,6 +813,7 @@ div[data-testid="stVerticalBlock"]:has(.walkthrough-scope){
     width: 100% !important;
     min-width: 100% !important;
   }
+}
 
 /* === CSF STEP SECTION CARD === */
 .csf-section{

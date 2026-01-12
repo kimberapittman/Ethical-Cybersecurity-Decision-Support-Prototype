@@ -471,6 +471,7 @@ def render_open_ended():
             st.session_state["oe_csf_subcategories"] = []
 
         if selected_code is None:
+            csf_section_close()
             st.stop()
 
         st.session_state["oe_csf_function"] = selected_code
@@ -503,6 +504,7 @@ def render_open_ended():
         )
 
         if not selected_cat_id:
+            csf_section_close()
             st.stop()
 
         csf_section_close()
