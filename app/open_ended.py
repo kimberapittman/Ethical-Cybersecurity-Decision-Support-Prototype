@@ -476,62 +476,66 @@ def render_open_ended():
         render_divider()
 
         # ---------- CSF Category (subordinate) ----------
-        st.markdown(
-            """
-            <div style="font-size: 1.15rem; font-weight: 700; margin: 0 0 0.25rem 0;">
-                CSF Category
-            </div>
-            <div style="color: rgba(229,231,235,0.70); margin: 0 0 0.5rem 0;">
-                Within this function, what kind of work or concern is this decision about?
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
         selected_func_id = st.session_state.get("oe_csf_function")
-        cat_options = CATS_BY_FUNC.get(selected_func_id, [])
-        cat_ids = [cid for cid, _ in cat_options]
-        cat_labels = {cid: lbl for cid, lbl in cat_options}
 
-        selected_cat_id = st.selectbox(
-            "Category",
-            options=cat_ids if cat_ids else ["(no categories defined)"],
-            format_func=lambda cid: cat_labels.get(cid, cid),
-            key="oe_csf_category",
-            label_visibility="collapsed",
-        )
+        if selected_func_id:
+            render_divider()  # your existing divider helper
+
+            st.markdown(
+                """
+                <div style="font-size: 1.15rem; font-weight: 700; margin: 0 0 0.25rem 0;">
+                    CSF Category
+                </div>
+                <div style="color: rgba(229,231,235,0.70); margin: 0 0 0.5rem 0;">
+                    Within this function, what kind of work or concern is this decision about?
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+            cat_options = CATS_BY_FUNC.get(selected_func_id, [])
+            cat_ids = [cid for cid, _ in cat_options]
+            cat_labels = {cid: lbl for cid, lbl in cat_options}
+
+            selected_cat_id = st.selectbox(
+                "Category",
+                options=cat_ids,
+                format_func=lambda cid: cat_labels.get(cid, cid),
+                key="oe_csf_category",
+                label_visibility="collapsed",
+            )
+        else:
+            selected_cat_id = None
 
         render_divider()
 
         # ---------- Subcategory outcomes ----------
-        st.markdown(
-            """
-            <div style="font-size: 1.15rem; font-weight: 700; margin: 0 0 0.25rem 0;">
-                Relevant CSF Subcategory Outcomes
-            </div>
-            <div style="color: rgba(229,231,235,0.70); margin: 0 0 0.5rem 0;">
-                Select all outcomes that are directly implicated by this decision.
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+        if selected_cat_id:
+            render_divider()
 
-        subs = SUBS_BY_CAT.get(selected_cat_id, [])
-        selected_sub_ids = []
+            st.markdown(
+                """
+                <div style="font-size: 1.15rem; font-weight: 700; margin: 0 0 0.25rem 0;">
+                    Relevant CSF Subcategory Outcomes
+                </div>
+                <div style="color: rgba(229,231,235,0.70); margin: 0 0 0.5rem 0;">
+                    Select all outcomes that are directly implicated by this decision.
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
 
+            subs = SUBS_BY_CAT.get(selected_cat_id, [])
+            selected_sub_ids = []
 
-        # Scroll container to prevent endless wall of text
-        with st.container(height=320):
-            for sid, label in subs:
-                checked = st.checkbox(
-                    f"**{sid}** — {label}",
-                    key=f"oe_sub_{sid}",
-                )
-                if checked:
-                    selected_sub_ids.append(sid)
+            with st.container(height=320):
+                for sid, label in subs:
+                    if st.checkbox(f"**{sid}** — {label}", key=f"oe_sub_{sid}"):
+                        selected_sub_ids.append(sid)
 
-        st.session_state["oe_csf_subcategories"] = selected_sub_ids
+            st.session_state["oe_csf_subcategories"] = selected_sub_ids
 
+        render_divider()
 
     # ==========================================================
     # STEP 3: PFCE + TENSION
