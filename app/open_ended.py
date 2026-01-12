@@ -454,14 +454,15 @@ def render_open_ended():
             format_func=lambda c: CSF_FUNCTION_OPTIONS[c]["prompt"],  # show prompts only
         )
 
-        st.caption(f"Mapped CSF Function: {CSF_FUNCTION_OPTIONS[selected_code]['label']}")
-
         # Persist selection
         st.session_state["oe_csf_function"] = selected_code
         st.session_state["oe_csf_function_label"] = CSF_FUNCTION_OPTIONS[selected_code]["label"]
 
-        # Show revealed CSF function AFTER selection
-        st.info(f"Current CSF 2.0 context: **{st.session_state['oe_csf_function_label']}**")
+        # One explicit, highlighted statement (no duplication)
+        st.info(
+            f"Based on your selection, the applicable CSF Function is: "
+            f"**{st.session_state['oe_csf_function_label']}**"
+        )
 
         selected_func_id = st.session_state.get("oe_csf_function")
         cat_options = CATS_BY_FUNC.get(selected_func_id, [])
