@@ -447,7 +447,7 @@ def render_open_ended():
 
         # Radio returns the selected CODE, but displays only the PROMPT
         selected_code = st.radio(
-            "Which description best matches your current situation?",
+            "Select which description best matches your current situation?",
             options=codes_list,  # store codes internally
             index=default_index,
             key="oe_csf_choice_step3",
@@ -485,12 +485,6 @@ def render_open_ended():
             key="oe_csf_subcategories",
         )
 
-        st.caption("Optional: explain why these CSF outcomes are most relevant to the decision context.")
-        st.text_area(
-            "CSF rationale (optional)",
-            key="oe_csf_rationale",
-            height=90,
-        )
 
         pfce_auto_local = []
         if selected_sub_ids and PFCE_CROSSWALK:
