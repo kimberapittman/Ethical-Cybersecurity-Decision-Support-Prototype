@@ -121,7 +121,7 @@ def _load_core_data():
 
 OE_STEP_TITLES = {
     1: "Decision Context",
-    2: "NIST CSF 2.0 Mapping",
+    2: "NIST CSF Mapping",
     3: "PFCE Analysis and Ethical Tension",
     4: "Institutional and Governance Constraints",
     5: "Decision (and documented rationale)",
@@ -168,6 +168,7 @@ def _index_csf(csf_raw):
 
     cats_by_func = {}
     subs_by_cat = {}
+    cat_desc_by_id = {}  # NEW
 
     for fn in functions:
         func_id = fn.get("id")
@@ -186,6 +187,9 @@ def _index_csf(csf_raw):
             cat_label = f"{cat_id} – {cat_title}" if cat_title else cat_id
             cat_tuples.append((cat_id, cat_label))
 
+            # NEW: store the category description (for pre-selection help)
+            cat_desc_by_id[cat_id] = (cat.get("description") or "").strip()
+
             outcomes = cat.get("outcomes") or cat.get("subcategories") or []
             sub_tuples = []
 
@@ -201,10 +205,10 @@ def _index_csf(csf_raw):
 
         cats_by_func[func_id] = cat_tuples
 
-    return cats_by_func, subs_by_cat
+    return cats_by_func, subs_by_cat, cat_desc_by_id
 
 
-CATS_BY_FUNC, SUBS_BY_CAT = _index_csf(CSF_DATA)
+CATS_BY_FUNC, SUBS_BY_CAT, CAT_DESC_BY_ID = _index_csf(CSF_DATA)
 
 
 def _normalize_constraints(raw):
@@ -481,7 +485,7 @@ def render_open_ended():
             st.session_state["oe_csf_function_label"] = CSF_FUNCTION_OPTIONS[selected_code]["label"]
 
             st.info(
-                f"Based on your selection, your CSF 2.0 context is: "
+                f"Based on your selection, your NIST CSF Function is: "
                 f"**{st.session_state['oe_csf_function_label']}**"
             )
 
@@ -515,6 +519,16 @@ def render_open_ended():
                 key="oe_csf_category",
                 format_func=lambda cid: cat_labels.get(cid, cid),
             )
+
+            
+            with st.expander("Preview category descriptions (optional)"):
+                for cid in cat_ids:
+                    st.markdown(f"**{cat_labels.get(cid, cid)}**")
+                    desc = CAT_DESC_BY_ID.get(cid, "")
+                    if desc:
+                        st.caption(desc)
+                    else:
+                        st.caption("—")
 
 
             if selected_cat_id is None:
