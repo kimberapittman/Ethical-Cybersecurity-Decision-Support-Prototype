@@ -161,14 +161,12 @@ section[data-testid="stSidebar"]{
 }
 /* Match the visual inset seen in mode-tile details bodies */
 .sb-details-body{
-  padding: 12px 12px !important;           /* match mode tiles */
+  padding: 12px 12px !important; 
+  padding-left: 6px !important;          /* match mode tiles */
   background: rgba(255,255,255,0.03) !important;
 }
 
-/* Ensure inner content doesn’t hug the left edge */
-.sb-details-body > *{
-  padding-left: 6px !important;
-}
+
 .sb-details-body .sb-section + .sb-p{
   margin-top: 0 !important;
   padding-top: 0 !important;
@@ -879,7 +877,7 @@ def _open_sidebar_once():
 
 
 def render_disclaimer_footer():
-    txt = "This prototype is designed for research and demonstration purposes and is not intended for operational deployment"
+    txt = "This prototype is designed for research and demonstration purposes"
 
     st.markdown(
         f"""
@@ -1200,8 +1198,9 @@ def main():
 
     with st.sidebar:
         st.markdown("---")
+        
         st.markdown(
-            "<h3 style='margin:0 0 0.5rem 0; font-weight:700;'>Prototype Overview</h3>",
+            "<h3 style=font-weight:700;'>Prototype Overview</h3>",
             unsafe_allow_html=True,
         )
 
@@ -1258,8 +1257,9 @@ def main():
         )
 
         st.markdown("---")
+
         st.markdown(
-            "<h3 style='margin:0 0 0.5rem 0; font-weight:700;'>Appendix</h3>",
+            "<h3 style=font-weight:700;'>Appendix</h3>",
             unsafe_allow_html=True,
         )
 
