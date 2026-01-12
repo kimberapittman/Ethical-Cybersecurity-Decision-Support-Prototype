@@ -1193,14 +1193,54 @@ def main():
     # ---------- SIDEBAR (ALWAYS) ----------
     import textwrap
 
+    def sidebar_divider():
+      st.markdown(
+          """
+          <hr style="
+              margin: 1.25rem 0;
+              border: none;
+              height: 1px;
+              background: linear-gradient(
+                  90deg,
+                  rgba(255,255,255,0.00),
+                  rgba(255,255,255,0.35),
+                  rgba(255,255,255,0.00)
+              );
+          ">
+          """,
+          unsafe_allow_html=True,
+      )
+
+      st.markdown(
+          """
+          <style>
+          /* Sidebar: normalize custom HTML expanders */
+          section[data-testid="stSidebar"] details.sb-details {
+              margin: 0 !important;
+              padding: 0 !important;
+          }
+
+          section[data-testid="stSidebar"] details.sb-details > summary {
+              margin: 0 !important;
+          }
+
+          section[data-testid="stSidebar"] details.sb-details[open] > .sb-details-body {
+              margin-top: 0.6rem !important;
+              padding-bottom: 0.2rem !important;
+          }
+          </style>
+          """,
+          unsafe_allow_html=True,
+      )
+
     def html_block(s: str) -> str:
         return "\n".join(line.lstrip() for line in textwrap.dedent(s).splitlines())
 
     with st.sidebar:
-        st.markdown("---")
-        
+        sidebar_divider()
+
         st.markdown(
-            "<h3 style=font-weight:700;'>Prototype Overview</h3>",
+            "<h3 style='font-weight:700;'>Prototype Overview</h3>",
             unsafe_allow_html=True,
         )
 
@@ -1256,10 +1296,10 @@ def main():
             unsafe_allow_html=True,
         )
 
-        st.markdown("---")
+        sidebar_divider()
 
         st.markdown(
-            "<h3 style=font-weight:700;'>Appendix</h3>",
+            "<h3 style='font-weight:700;'>Appendix</h3>",
             unsafe_allow_html=True,
         )
 
@@ -1301,7 +1341,7 @@ def main():
             unsafe_allow_html=True,
         )
 
-        st.markdown("---")
+        sidebar_divider()
 
 
     # ---------- HEADER ----------
