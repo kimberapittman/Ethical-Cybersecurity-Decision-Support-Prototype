@@ -86,7 +86,7 @@ section[data-testid="stSidebar"] .sb-details{
   border: 1px solid rgba(255,255,255,0.10) !important;
   border-radius: 14px !important;
   padding: 0 !important;
-  margin: 0.75rem 0 !important;
+  margin: 0.35rem 0 0.75rem 0 !important;
   overflow: visible !important; /* keeps hover glow + under-glow from clipping */
 }
 section[data-testid="stSidebar"] .sb-details > summary{
@@ -153,6 +153,7 @@ section[data-testid="stSidebar"] .sb-details-body .sb-section{
   font-weight: 800 !important;
   margin: 0 !important;
   padding: 0 !important;
+  margin top: 0.75 rem !important;
   line-height: 1.2;
   color: #ffffff !important;
   text-decoration: underline !important;
@@ -167,10 +168,6 @@ section[data-testid="stSidebar"] .sb-details-body{
   background: rgba(255,255,255,0.03) !important;
 }
 
-section[data-testid="stSidebar"] .sb-details-body .sb-section + .sb-p{
-  margin-top: 0 !important;
-  padding-top: 0 !important;
-}
 /* Allow long sidebar text/URLs to wrap */
 section[data-testid="stSidebar"] .sb-details-body a,
 section[data-testid="stSidebar"] .sb-details-body p,
@@ -187,7 +184,7 @@ section[data-testid="stSidebar"] details.sb-details[open] > .sb-details-body {
 }
 
 section[data-testid="stSidebar"] div[data-testid="stMarkdown"]{
-  margin-bottom: 0.5rem !important;
+  margin-bottom: 0.2rem !important;
 }
 
 
