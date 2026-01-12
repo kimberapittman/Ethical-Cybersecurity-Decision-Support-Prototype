@@ -817,18 +817,17 @@ div[data-testid="stVerticalBlock"]:has(.walkthrough-scope){
 
 /* === CSF STEP SECTION CARD === */
 .csf-section{
+  border: 0 !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 0 0.75rem 0 !important; /* space below header text */
+}
+div[data-testid="stVerticalBlock"]:has(:is(.csf-func-anchor,.csf-cat-anchor,.csf-sub-anchor)){
   border: 1px solid rgba(255,255,255,0.10);
   border-radius: 14px;
-  background: linear-gradient(
-    180deg,
-    rgba(255,255,255,0.05),
-    rgba(255,255,255,0.02)
-  );
+  background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
   padding: 16px 18px;
   margin: 0 0 1rem 0;
-}
-.csf-section{
-  outline: 2px solid red !important;
 }
 </style>
 """,

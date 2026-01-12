@@ -450,39 +450,43 @@ def render_open_ended():
     # ==========================================================
     elif step == 2:
         # ---------- CSF Function ----------
-        csf_section_open(
-            "NIST CSF Function",
-            "Within your current decision context, where are you operating in the cybersecurity process?"
-        )
+        with st.container():
+            st.markdown('<div class="csf-func-anchor"></div>', unsafe_allow_html=True)
 
-        codes_list = ["GV", "ID", "PR", "DE", "RS", "RC"]
+            csf_section_open(
+                "NIST CSF Function",
+                "Within your current decision context, where are you operating in the cybersecurity process?"
+            )
 
-        selected_code = st.radio(
-            "Select the description that best matches your situation:",
-            options=codes_list,
-            index=None,  # <-- critical: start with no selection
-            key="oe_csf_choice_step2",
-            format_func=lambda c: CSF_FUNCTION_OPTIONS[c]["prompt"],
-        )
+            codes_list = ["GV", "ID", "PR", "DE", "RS", "RC"]
 
-        prev_func = st.session_state.get("oe_csf_function")
-        if selected_code is not None and selected_code != prev_func:
-            st.session_state["oe_csf_category"] = ""
-            st.session_state["oe_csf_subcategories"] = []
+            selected_code = st.radio(
+                "Select the description that best matches your situation:",
+                options=codes_list,
+                index=None,
+                key="oe_csf_choice_step2",
+                format_func=lambda c: CSF_FUNCTION_OPTIONS[c]["prompt"],
+            )
 
-        if selected_code is None:
+            prev_func = st.session_state.get("oe_csf_function")
+            if selected_code is not None and selected_code != prev_func:
+                st.session_state["oe_csf_category"] = ""
+                st.session_state["oe_csf_subcategories"] = []
+
+            if selected_code is None:
+                csf_section_close()
+                st.stop()
+
+            st.session_state["oe_csf_function"] = selected_code
+            st.session_state["oe_csf_function_label"] = CSF_FUNCTION_OPTIONS[selected_code]["label"]
+
+            st.info(
+                f"Based on your selection, your CSF 2.0 context is: "
+                f"**{st.session_state['oe_csf_function_label']}**"
+            )
+
             csf_section_close()
-            st.stop()
 
-        st.session_state["oe_csf_function"] = selected_code
-        st.session_state["oe_csf_function_label"] = CSF_FUNCTION_OPTIONS[selected_code]["label"]
-
-        st.info(
-            f"Based on your selection, your CSF 2.0 context is: "
-            f"**{st.session_state['oe_csf_function_label']}**"
-        )
-
-        csf_section_close()
 
         # ---------- CSF Category (subordinate) ----------
         selected_func_id = st.session_state.get("oe_csf_function")
