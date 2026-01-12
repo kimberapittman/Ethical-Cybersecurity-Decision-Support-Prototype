@@ -426,45 +426,42 @@ def render_open_ended():
                 font-size: 1.0rem;
                 line-height: 1.45;
             ">
-            Use the NIST CSF 2.0 to situate the decision within the cybersecurity process. This does not prescribe actions.
+            Within your current decision context, where are you operating in the cybersecurity process?
             </div>
             """,
             unsafe_allow_html=True,
         )
 
-        option_texts = []
+        # Build ordered list of CSF function codes
         codes_list = list(CSF_FUNCTION_OPTIONS.keys())
-        for code in codes_list:
-            meta = CSF_FUNCTION_OPTIONS[code]
-            option_texts.append(f"{meta['label']}: {meta['prompt']}")
 
+        # Determine default index based on existing selection or suggestion
         default_index = 0
         current_code = st.session_state.get("oe_csf_function")
         suggested = st.session_state.get("oe_suggested_func")
+
         if current_code in CSF_FUNCTION_OPTIONS:
             default_index = codes_list.index(current_code)
         elif suggested in CSF_FUNCTION_OPTIONS:
             default_index = codes_list.index(suggested)
 
-        selected_option = st.radio(
-            "Which CSF function best matches your procedural situation?",
-            options=option_texts,
+        # Radio returns the selected CODE, but displays only the PROMPT
+        selected_code = st.radio(
+            "Which description best matches your current situation?",
+            options=codes_list,  # store codes internally
             index=default_index,
             key="oe_csf_choice_step3",
+            format_func=lambda c: CSF_FUNCTION_OPTIONS[c]["prompt"],  # show prompts only
         )
 
-        selected_label_prefix = selected_option.split(":")[0]
-        selected_code = None
-        for code, meta in CSF_FUNCTION_OPTIONS.items():
-            if meta["label"] == selected_label_prefix:
-                selected_code = code
-                break
+        st.caption(f"Mapped CSF Function: {CSF_FUNCTION_OPTIONS[selected_code]['label']}")
 
-        if selected_code:
-            st.session_state["oe_csf_function"] = selected_code
-            st.session_state["oe_csf_function_label"] = CSF_FUNCTION_OPTIONS[selected_code]["label"]
+        # Persist selection
+        st.session_state["oe_csf_function"] = selected_code
+        st.session_state["oe_csf_function_label"] = CSF_FUNCTION_OPTIONS[selected_code]["label"]
 
-        st.info(f"Current CSF 2.0 context: **{st.session_state.get('oe_csf_function_label', 'Not selected')}**")
+        # Show revealed CSF function AFTER selection
+        st.info(f"Current CSF 2.0 context: **{st.session_state['oe_csf_function_label']}**")
 
         selected_func_id = st.session_state.get("oe_csf_function")
         cat_options = CATS_BY_FUNC.get(selected_func_id, [])
