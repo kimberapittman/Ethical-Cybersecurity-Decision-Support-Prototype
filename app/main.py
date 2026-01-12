@@ -151,16 +151,18 @@ section[data-testid="stSidebar"] .sb-details[open] > summary::before{
 }
 section[data-testid="stSidebar"] .sb-details-body .sb-section{
   font-weight: 800 !important;
-  margin: 0 !important;
   padding: 0 !important;
-  margin top: 0.75 rem !important;
   line-height: 1.2;
   color: #ffffff !important;
   text-decoration: underline !important;
   text-decoration-color: rgba(255,255,255,0.85) !important;
   text-decoration-thickness: 2px !important;
   text-underline-offset: 4px !important;
+
+  margin: 0 !important;             /* remove space under header */
+  margin-top: 0.75rem !important;   /* add space above header */
 }
+
 /* Match the visual inset seen in mode-tile details bodies */
 section[data-testid="stSidebar"] .sb-details-body{
   padding: 12px 12px !important; 
@@ -187,6 +189,9 @@ section[data-testid="stSidebar"] div[data-testid="stMarkdown"]{
   margin-bottom: 0.2rem !important;
 }
 
+section[data-testid="stSidebar"] .sb-details-body .sb-p{
+  margin: 0 0 0.4rem 0 !important;  /* small gap after paragraphs */
+}
 
 /* === BUTTONS === */
 div[data-testid="stButton"] > button:not([kind="secondary"]){
