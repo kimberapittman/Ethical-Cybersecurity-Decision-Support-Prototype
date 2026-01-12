@@ -418,8 +418,18 @@ def render_open_ended():
     # STEP 2: NIST CSF 
     # ==========================================================
     elif step == 2:
-        _render_step_tile_html(
-            "Use the CSF to situate the decision procedurally. This does not prescribe actions; it structures context.",
+        st.markdown(
+            """
+            <div style="
+                margin: 0 0 10px 0;
+                color: rgba(229,231,235,0.88);
+                font-size: 1.0rem;
+                line-height: 1.45;
+            ">
+            Use the NIST CSF 2.0 to situate the decision within the cybersecurity process. This does not prescribe actions.
+            </div>
+            """,
+            unsafe_allow_html=True,
         )
 
         option_texts = []
