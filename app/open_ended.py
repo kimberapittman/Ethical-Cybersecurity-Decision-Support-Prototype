@@ -447,7 +447,7 @@ def render_open_ended():
 
         # Radio returns the selected CODE, but displays only the PROMPT
         selected_code = st.radio(
-            "Select which description best matches your current situation?",
+            "Select which description best matches your current situation.",
             options=codes_list,  # store codes internally
             index=default_index,
             key="oe_csf_choice_step3",
@@ -464,27 +464,42 @@ def render_open_ended():
             f"**{st.session_state['oe_csf_function_label']}**"
         )
 
+        st.markdown("### CSF Category")
+        st.caption(
+            "Select the category that best reflects the type of cybersecurity activity involved."
+        )
+
         selected_func_id = st.session_state.get("oe_csf_function")
         cat_options = CATS_BY_FUNC.get(selected_func_id, [])
         cat_ids = [cid for cid, _ in cat_options]
         cat_labels = {cid: lbl for cid, lbl in cat_options}
 
         selected_cat_id = st.selectbox(
-            "Category",
+            "Within this function, what kind of work or concern is this decision about?",
             options=cat_ids if cat_ids else ["(no categories defined)"],
             format_func=lambda cid: cat_labels.get(cid, cid),
             key="oe_csf_category",
         )
 
+        st.markdown("### Relevant CSF Subcategory Outcomes")
+        st.caption(
+            "Select all outcomes that are directly implicated by this decision."
+        )
+
         subs = SUBS_BY_CAT.get(selected_cat_id, [])
         sub_labels = {sid: lbl for sid, lbl in subs}
 
-        selected_sub_ids = st.multiselect(
-            "Subcategories / outcomes most directly involved",
-            options=[sid for sid, _ in subs],
-            format_func=lambda sid: sub_labels.get(sid, sid),
-            key="oe_csf_subcategories",
-        )
+        selected_sub_ids = []
+
+        for sid, label in subs:
+            checked = st.checkbox(
+                f"**{sid}** — {label}",
+                key=f"oe_sub_{sid}"
+            )
+            if checked:
+                selected_sub_ids.append(sid)
+
+        st.session_state["oe_csf_subcategories"] = selected_sub_ids
 
 
         pfce_auto_local = []
