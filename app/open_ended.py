@@ -129,21 +129,6 @@ def _index_csf(csf_raw):
     elif isinstance(csf_raw, list):
         functions = csf_raw
     else:
-        functions = []
-
-    func_options = []
-    cats_by_func = {}
-    subs_by_cat = {}
-
-    for fn in functions:
-        func_id = fn.get("id")
-        if not func_id:
-            continue
-
-        func_title = fn.get("title") or fn.get("name") or ""
-        func_label = f"{func_id} – {func_title}" if func_title else func_id
-        func_options.append((func_id, func_label))
-
         categories = fn.get("categories", []) or []
         cat_tuples = []
 
@@ -162,18 +147,18 @@ def _index_csf(csf_raw):
                 sub_id = item.get("id")
                 if not sub_id:
                     continue
-                desc = item.get("outcome") or item.get("description") or ""
-                sub_label = f"{sub_id} – {desc}" if desc else sub_id
-                sub_tuples.append((sub_id, sub_label))
+                desc = (item.get("outcome") or item.get("description") or "").strip()
+                sub_tuples.append((sub_id, desc if desc else sub_id))
+
 
             subs_by_cat[cat_id] = sub_tuples
 
         cats_by_func[func_id] = cat_tuples
 
-    return func_options, cats_by_func, subs_by_cat
+    return cats_by_func, subs_by_cat
 
 
-FUNC_OPTIONS, CATS_BY_FUNC, SUBS_BY_CAT = _index_csf(CSF_DATA)
+CATS_BY_FUNC, SUBS_BY_CAT = _index_csf(CSF_DATA)
 
 
 def _normalize_constraints(raw):
@@ -415,31 +400,26 @@ def render_open_ended():
 
 
     # ==========================================================
-    # STEP 2: NIST CSF 
+    # STEP 2: NIST CSF
     # ==========================================================
     elif step == 2:
-        st.markdown("### CSF Function")
-        st.caption(
-            "Select the function that best reflects the type of cybersecurity activity involved."
-        )
+
+        # ---------- CSF Function ----------
         st.markdown(
             """
-            <div style="
-                margin: 0 0 10px 0;
-                color: rgba(229,231,235,0.88);
-                font-size: 1.0rem;
-                line-height: 1.45;
-            ">
-            Within your current decision context, where are you operating in the cybersecurity process?
+            <div style="font-size: 1.35rem; font-weight: 750; margin: 0 0 0.25rem 0;">
+                CSF Function
+            </div>
+            <div style="color: rgba(229,231,235,0.75); margin: 0 0 0.75rem 0; line-height: 1.45;">
+                Within your current decision context, where are you operating in the cybersecurity process?
             </div>
             """,
             unsafe_allow_html=True,
         )
 
-        # Build ordered list of CSF function codes
-        codes_list = list(CSF_FUNCTION_OPTIONS.keys())
+        # Fixed pedagogical order (don’t rely on dict order)
+        codes_list = ["GV", "ID", "PR", "DE", "RS", "RC"]
 
-        # Determine default index based on existing selection or suggestion
         default_index = 0
         current_code = st.session_state.get("oe_csf_function")
         suggested = st.session_state.get("oe_suggested_func")
@@ -449,28 +429,35 @@ def render_open_ended():
         elif suggested in CSF_FUNCTION_OPTIONS:
             default_index = codes_list.index(suggested)
 
-        # Radio returns the selected CODE, but displays only the PROMPT
         selected_code = st.radio(
-            "Select which description best matches your current situation.",
-            options=codes_list,  # store codes internally
+            "Select the description that best matches your situation:",
+            options=codes_list,
             index=default_index,
-            key="oe_csf_choice_step3",
-            format_func=lambda c: CSF_FUNCTION_OPTIONS[c]["prompt"],  # show prompts only
+            key="oe_csf_choice_step2",
+            format_func=lambda c: CSF_FUNCTION_OPTIONS[c]["prompt"],
         )
 
-        # Persist selection
         st.session_state["oe_csf_function"] = selected_code
         st.session_state["oe_csf_function_label"] = CSF_FUNCTION_OPTIONS[selected_code]["label"]
 
-        # One explicit, highlighted statement (no duplication)
         st.info(
-            f"Based on your selection, the applicable CSF Function is: "
+            f"Based on your selection, your CSF 2.0 context is: "
             f"**{st.session_state['oe_csf_function_label']}**"
         )
 
-        st.markdown("### CSF Category")
-        st.caption(
-            "Select the category that best reflects the type of cybersecurity activity involved."
+        st.markdown("<div style='height: 0.75rem;'></div>", unsafe_allow_html=True)
+
+        # ---------- CSF Category (subordinate) ----------
+        st.markdown(
+            """
+            <div style="font-size: 1.15rem; font-weight: 700; margin: 0 0 0.25rem 0;">
+                CSF Category
+            </div>
+            <div style="color: rgba(229,231,235,0.70); margin: 0 0 0.5rem 0;">
+                Within this function, what kind of work or concern is this decision about?
+            </div>
+            """,
+            unsafe_allow_html=True,
         )
 
         selected_func_id = st.session_state.get("oe_csf_function")
@@ -479,54 +466,57 @@ def render_open_ended():
         cat_labels = {cid: lbl for cid, lbl in cat_options}
 
         selected_cat_id = st.selectbox(
-            "Within this function, what kind of work or concern is this decision about?",
+            "Category",
             options=cat_ids if cat_ids else ["(no categories defined)"],
             format_func=lambda cid: cat_labels.get(cid, cid),
             key="oe_csf_category",
+            label_visibility="collapsed",
         )
 
-        st.markdown("### Relevant CSF Subcategory Outcomes")
-        st.caption(
-            "Select all outcomes that are directly implicated by this decision."
+        st.markdown("<div style='height: 0.75rem;'></div>", unsafe_allow_html=True)
+
+        # ---------- Subcategory outcomes ----------
+        st.markdown(
+            """
+            <div style="font-size: 1.15rem; font-weight: 700; margin: 0 0 0.25rem 0;">
+                Relevant CSF Subcategory Outcomes
+            </div>
+            <div style="color: rgba(229,231,235,0.70); margin: 0 0 0.5rem 0;">
+                Select all outcomes that are directly implicated by this decision.
+            </div>
+            """,
+            unsafe_allow_html=True,
         )
 
         subs = SUBS_BY_CAT.get(selected_cat_id, [])
-        sub_labels = {sid: lbl for sid, lbl in subs}
-
         selected_sub_ids = []
 
-        for sid, label in subs:
-            checked = st.checkbox(
-                f"**{sid}** — {label}",
-                key=f"oe_sub_{sid}"
-            )
-            if checked:
-                selected_sub_ids.append(sid)
+        # Quick controls (makes a big difference)
+        ctrl_l, ctrl_r = st.columns([1, 1])
+        with ctrl_l:
+            if st.button("Select all", key="oe_sub_select_all"):
+                for sid, _ in subs:
+                    st.session_state[f"oe_sub_{sid}"] = True
+        with ctrl_r:
+            if st.button("Clear all", key="oe_sub_clear_all"):
+                for sid, _ in subs:
+                    st.session_state[f"oe_sub_{sid}"] = False
+
+        # Scroll container to prevent endless wall of text
+        with st.container(height=320):
+            for sid, label in subs:
+                checked = st.checkbox(
+                    f"**{sid}** — {label}",
+                    key=f"oe_sub_{sid}",
+                )
+                if checked:
+                    selected_sub_ids.append(sid)
 
         st.session_state["oe_csf_subcategories"] = selected_sub_ids
 
+        # Optional: show count for user feedback
+        st.caption(f"Selected outcomes: {len(selected_sub_ids)}")
 
-        pfce_auto_local = []
-        if selected_sub_ids and PFCE_CROSSWALK:
-            st.markdown("#### CSF → PFCE Ethical Hints (non-prescriptive)")
-            matches = apply_crosswalk(selected_sub_ids, PFCE_CROSSWALK)
-            for m in matches:
-                csf_id = m.get("csf_id", "")
-                outcome = m.get("csf_outcome", "")
-                pfce = m.get("pfce", []) or []
-                rationale = m.get("rationale", "")
-
-                if csf_id or outcome:
-                    st.markdown(f"**{csf_id} – {outcome}**".strip(" –"))
-
-                if pfce:
-                    st.markdown("• Suggested principles: " + ", ".join(pfce))
-                    pfce_auto_local.extend(pfce)
-                if rationale:
-                    st.markdown(f"_Why this matters_: {rationale}")
-                st.markdown("---")
-
-        st.session_state["oe_pfce_auto"] = pfce_auto_local
 
     # ==========================================================
     # STEP 3: PFCE + TENSION
@@ -664,7 +654,7 @@ def render_open_ended():
             st.markdown("#### Decision Rationale (Open-Ended Mode)")
             st.write(f"**Timestamp:** {ts}")
 
-            func_labels = {fid: lbl for fid, lbl in FUNC_OPTIONS}
+            func_labels = {fid: meta["label"] for fid, meta in CSF_FUNCTION_OPTIONS.items()}
             cat_labels = {cid: lbl for _, cats in CATS_BY_FUNC.items() for cid, lbl in cats}
             sub_labels = {sid: lbl for _, subs in SUBS_BY_CAT.items() for sid, lbl in subs}
 
@@ -709,7 +699,7 @@ def render_open_ended():
             if selected_sub_ids:
                 st.write("- Subcategories / outcomes:")
                 for sid in selected_sub_ids:
-                    st.write(f"  - {sub_labels.get(sid, sid)}")
+                    st.write(f"  - {sid} — {sub_labels.get(sid, '') or '—'}")
             else:
                 st.write("- Subcategories / outcomes: —")
             if csf_rationale:
@@ -760,7 +750,7 @@ def render_open_ended():
                 f"Category: {cat_labels.get(selected_cat_id, selected_cat_id or '—')}",
                 "Subcategories / outcomes:",
                 *(
-                    ["  - " + sub_labels.get(sid, sid) for sid in selected_sub_ids]
+                    ["  - " + sid + " — " + (sub_labels.get(sid, "") or "—") for sid in selected_sub_ids]
                     if selected_sub_ids
                     else ["  - —"]
                 ),
