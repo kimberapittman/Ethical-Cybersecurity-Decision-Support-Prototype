@@ -448,22 +448,21 @@ def render_open_ended():
         # Fixed pedagogical order (don’t rely on dict order)
         codes_list = ["GV", "ID", "PR", "DE", "RS", "RC"]
 
-        default_index = 0
-        current_code = st.session_state.get("oe_csf_function")
-        suggested = st.session_state.get("oe_suggested_func")
-
-        if current_code in CSF_FUNCTION_OPTIONS:
-            default_index = codes_list.index(current_code)
-        elif suggested in CSF_FUNCTION_OPTIONS:
-            default_index = codes_list.index(suggested)
-
         selected_code = st.radio(
             "Select the description that best matches your situation:",
             options=codes_list,
-            index=default_index,
+            index=None,  # <-- critical: start with no selection
             key="oe_csf_choice_step2",
             format_func=lambda c: CSF_FUNCTION_OPTIONS[c]["prompt"],
         )
+
+        prev_func = st.session_state.get("oe_csf_function")
+        if selected_code is not None and selected_code != prev_func:
+            st.session_state["oe_csf_category"] = None
+            st.session_state["oe_csf_subcategories"] = []
+
+        if selected_code is None:
+            st.stop()
 
         st.session_state["oe_csf_function"] = selected_code
         st.session_state["oe_csf_function_label"] = CSF_FUNCTION_OPTIONS[selected_code]["label"]
@@ -499,13 +498,13 @@ def render_open_ended():
 
             selected_cat_id = st.selectbox(
                 "Category",
-                options=cat_ids,
-                format_func=lambda cid: cat_labels.get(cid, cid),
+                options=[""] + cat_ids,  # blank placeholder keeps it unselected
+                format_func=lambda cid: "Select a category…" if cid == "" else cat_labels.get(cid, cid),
                 key="oe_csf_category",
-                label_visibility="collapsed",
             )
-        else:
-            selected_cat_id = None
+
+            if not selected_cat_id:
+                st.stop()
 
         render_divider()
 
