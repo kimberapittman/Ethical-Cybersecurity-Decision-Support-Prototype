@@ -496,20 +496,20 @@ def render_open_ended():
 
             csf_section_open(
                 "NIST CSF Category",
-                "Within this function, what kind of work or concern is this decision about?"
+                f"Within the **{st.session_state['oe_csf_function_label']}** function, what kind of work or concern is this decision about?"
             )
 
             cat_options = CATS_BY_FUNC.get(selected_func_id, [])
             cat_ids = [cid for cid, _ in cat_options]
             cat_labels = {cid: lbl for cid, lbl in cat_options}
 
-            selected_cat_id = st.selectbox(
-                "Category",
-                options=[""] + cat_ids,  # blank placeholder keeps it unselected
-                format_func=lambda cid: "Select a category…" if cid == "" else cat_labels.get(cid, cid),
+            selected_cat_id = st.radio(
+                "Select the CSF category that best fits this decision:",
+                options=cat_ids,
+                format_func=lambda cid: f"{cid} — {cat_labels.get(cid, '')}",
                 key="oe_csf_category",
-                label_visibility="collapsed",
             )
+
 
             if not selected_cat_id:
                 csf_section_close()
