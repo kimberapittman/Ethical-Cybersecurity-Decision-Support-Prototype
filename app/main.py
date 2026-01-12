@@ -1316,7 +1316,7 @@ def main():
                     <ul>
                       <li>The decision context.</li>
                       <li>Where the decision sits within the NIST Cybersecurity Framework (CSF), clarifying the technical and operational nature of the decision.</li>
-                      <li>What ethical tensions arise within that decision context, surfaced through the Principlist Framework for Cybersecurity Ethics (PFCE).</li>
+                      <li>What ethical tension(s) arise within that decision context, surfaced through the Principlist Framework for Cybersecurity Ethics (PFCE).</li>
                       <li>Institutional and governance constraints shaping the decision environment.</li>
                     </ul>
 

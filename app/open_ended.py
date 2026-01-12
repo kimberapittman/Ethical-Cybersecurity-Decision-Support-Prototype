@@ -628,7 +628,7 @@ def render_open_ended():
             st.session_state["oe_pfce_principles"] = selected_pfce_ids
 
             if selected_pfce_ids:
-                st.info(f"Selected PFCE principles: **{', '.join(selected_pfce_ids)}**")
+                st.info(f"Selected PFCE principle(s): **{', '.join(selected_pfce_ids)}**")
             else:
                 st.info("Selected PFCE principles: **None selected**")
 
@@ -638,24 +638,6 @@ def render_open_ended():
             st.warning("Select at least one PFCE principle to continue to analysis and ethical tension.")
         else:
 
-
-            # ---------- Ethical condition tags (optional) ----------
-            with st.container():
-                st.markdown('<div class="pfce-tags-anchor"></div>', unsafe_allow_html=True)
-
-                csf_section_open(
-                    "Ethically Significant Conditions (optional)",
-                    "Tag the conditions that make this cybersecurity decision ethically significant."
-                )
-
-                st.multiselect(
-                    "Ethical condition tags",
-                    options=ETHICAL_CONDITION_TAG_OPTIONS,
-                    key="oe_ethical_condition_tags",
-                    label_visibility="collapsed",
-                )
-
-                csf_section_close()
 
             # ---------- PFCE analysis (now grounded in selected principles) ----------
             with st.container():
