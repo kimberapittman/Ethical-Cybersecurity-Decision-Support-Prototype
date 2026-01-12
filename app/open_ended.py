@@ -513,7 +513,7 @@ def render_open_ended():
                 options=cat_ids,
                 index=None,
                 key="oe_csf_category",
-                format_func=lambda cid: f"{cid} — {cat_labels.get(cid, '')}",
+                format_func=lambda cid: cat_labels.get(cid, cid),
             )
 
 
