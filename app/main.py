@@ -77,18 +77,19 @@ div[data-testid="stAppViewContainer"]{
 /* === SIDEBAR === */
 section[data-testid="stSidebar"]{
   background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
-  border-right: 1px solid rgba(255,255,255,0.08);
+  border-right: 1px solid rgba(255,255,255,0.10);
   backdrop-filter: blur(6px);
 }
 /* The whole expander container */
-.sb-details{
+section[data-testid="stSidebar"] .sb-details{
   background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)) !important;
   border: 1px solid rgba(255,255,255,0.10) !important;
   border-radius: 14px !important;
   padding: 0 !important;
+  margin: 0.75rem 0 !important;
   overflow: visible !important; /* keeps hover glow + under-glow from clipping */
 }
-.sb-details > summary{
+section[data-testid="stSidebar"] .sb-details > summary{
   /* layout */
   list-style: none !important;
   display: flex !important;
@@ -113,7 +114,7 @@ section[data-testid="stSidebar"]{
     filter 0.12s ease,
     transform 0.12s ease;
 }
-.sb-details > summary:hover{
+section[data-testid="stSidebar"] .sb-details > summary:hover{
   background: linear-gradient(
     180deg,
     rgba(255,255,255,0.09),
@@ -129,14 +130,14 @@ section[data-testid="stSidebar"]{
   transform: translateY(-2px);
 }
 /* flatten summary bottom corners when open */
-.sb-details[open] > summary{
+section[data-testid="stSidebar"] .sb-details[open] > summary{
   border-bottom-left-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
 }
 /* Sidebar chevron */
-.sb-details > summary::-webkit-details-marker{ display:none !important; }
-.sb-details > summary::marker{ content:"" !important; }
-.sb-details > summary::before{
+section[data-testid="stSidebar"] .sb-details > summary::-webkit-details-marker{ display:none !important; }
+section[data-testid="stSidebar"] .sb-details > summary::marker{ content:"" !important; }
+section[data-testid="stSidebar"] .sb-details > summary::before{
   content: ">";
   font-size: 1rem;
   font-weight: 800;
@@ -145,14 +146,14 @@ section[data-testid="stSidebar"]{
   margin-top: -1px;
   transition: transform 0.12s ease, opacity 0.12s ease;
 }
-.sb-details[open] > summary::before{
+section[data-testid="stSidebar"] .sb-details[open] > summary::before{
   transform: rotate(90deg);
 }
-.sb-details-body .sb-section{
+section[data-testid="stSidebar"] .sb-details-body .sb-section{
   font-weight: 800 !important;
   margin: 0 !important;
   padding: 0 !important;
-  line-height: 1.2
+  line-height: 1.2;
   color: #ffffff !important;
   text-decoration: underline !important;
   text-decoration-color: rgba(255,255,255,0.85) !important;
@@ -160,14 +161,13 @@ section[data-testid="stSidebar"]{
   text-underline-offset: 4px !important;
 }
 /* Match the visual inset seen in mode-tile details bodies */
-.sb-details-body{
+section[data-testid="stSidebar"] .sb-details-body{
   padding: 12px 12px !important; 
   padding-left: 6px !important;          /* match mode tiles */
   background: rgba(255,255,255,0.03) !important;
 }
 
-
-.sb-details-body .sb-section + .sb-p{
+section[data-testid="stSidebar"] .sb-details-body .sb-section + .sb-p{
   margin-top: 0 !important;
   padding-top: 0 !important;
 }
@@ -179,6 +179,15 @@ section[data-testid="stSidebar"] .sb-details-body span{
   overflow-wrap: anywhere !important;
   word-break: break-word !important;
   white-space: normal !important;
+}
+
+section[data-testid="stSidebar"] details.sb-details[open] > .sb-details-body {
+  margin-top: 0.6rem !important;
+  padding-bottom: 0.2rem !important;
+}
+
+section[data-testid="stSidebar"] div[data-testid="stMarkdown"]{
+  margin-bottom: 0.5rem !important;
 }
 
 
@@ -1207,28 +1216,6 @@ def main():
                   rgba(255,255,255,0.00)
               );
           ">
-          """,
-          unsafe_allow_html=True,
-      )
-
-      st.markdown(
-          """
-          <style>
-          /* Sidebar: normalize custom HTML expanders */
-          section[data-testid="stSidebar"] details.sb-details {
-              margin: 0 !important;
-              padding: 0 !important;
-          }
-
-          section[data-testid="stSidebar"] details.sb-details > summary {
-              margin: 0 !important;
-          }
-
-          section[data-testid="stSidebar"] details.sb-details[open] > .sb-details-body {
-              margin-top: 0.6rem !important;
-              padding-bottom: 0.2rem !important;
-          }
-          </style>
           """,
           unsafe_allow_html=True,
       )
